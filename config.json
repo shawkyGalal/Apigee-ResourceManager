@@ -1,0 +1,205 @@
+{
+	"Partners":[		
+	{	"Name" : "MasterWorks" , 
+		"Customers" : [
+			{	"Name" : "MOJ"  
+				,"Infras" : [
+					{	"Name" : "Prod", 
+						"OauthMgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
+						"MgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
+						"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@1357" , 
+							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
+							"clientSecret" : "UKLBn325ZIX1mulU"
+						}, 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod/hosts" , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Prod-DR", 
+						"MgmServerUrl" : "http://10.169.3.142:8383" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@1357"
+						}, 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/dr/hosts" , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Dev" , 
+						"MgmServerUrl" : "http://devtest.apigee.moj.gov.local:9001/api-management" , 
+						"tokenUrl" : "http://devtest.apigee.moj.gov.local:9001/v1/authorize/access-token" ,
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@1357",
+							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
+							"clientSecret" : "UKLBn325ZIX1mulU"
+					},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/dev/hosts" 
+					}, 
+					{	"Name" : "Stage" ,
+						"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
+						"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
+						"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@1357" , 
+							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
+							"clientSecret" : "UKLBn325ZIX1mulU"
+						}, 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Stage-DR" ,
+						"MgmServerUrl" : "https://10.184.43.1:8443" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@13579"
+						},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage_dr_only/hosts"  , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Emergency" ,
+						"MgmServerUrl" : "http://10.161.9.129:8080" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@1357"
+						},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod-emrg/hosts" 
+					}
+					
+				]
+			} ,
+			{	"Name" : "LEAN"  
+				,"Infras" : [
+					{
+						"Name" : "Prod" , 
+						"MgmServerUrl" : "" , 
+						"sysadminCred" : {
+							"Username" : "" , 
+							"Password" : ""
+						}  
+					}, 
+					{
+						"Name" : "Dev" , 
+						"MgmServerUrl" : "" , 
+						"sysadminCred" : {
+							"Username" : "" , 
+							"Password" : ""
+						}  
+					}, 
+					{
+						"Name" : "Stage" , 
+						"MgmServerUrl" : "" , 
+						"sysadminCred" : {
+							"Username" : "" , 
+							"Password" : ""
+						}  
+
+					}
+				]
+			}			
+			
+		]
+	}, 
+	{	"Name" : "SmartValue" , 
+			"Customers" : [
+				{	"Name" : "Demo" ,  
+					"Infras" : [
+						{	"Name" : "Prod" , 
+							"MgmServerUrl" : "http://192.168.56.103:8080" , 
+							"sysadminCred" : {
+								"Username" : "jenkins@smart-value.com" , 
+								"Password" : "Smart@123"
+							}  
+						}, 
+						{	"Name" : "Dev", 
+							"MgmServerUrl" : "http://192.168.56.103:8080" , 
+							"sysadminCred" : {
+								"Username" : "jenkins@smart-value.com" , 
+								"Password" : "Smart@123"
+							}  
+						}, 
+						{	"Name" : "Stage" , 
+							"MgmServerUrl" : "http://192.168.56.103:8080" , 
+							"sysadminCred" : {
+								"Username" : "jenkins@smart-value.com" , 
+								"Password" : "Smart@123"
+							}  
+						}
+					]
+				} 
+			]
+	}, 
+	{	"Name" : "CloudyPedia" , 
+			"Customers" : [
+				{	"Name" : "Najm" , 
+					"Infras" : [
+						{	"Name" : "Dev" ,
+							"MgmServerUrl" : "http://192.168.0.150:8080" , 
+							"sysadminCred" : {
+								"Username" : "jenkins@najm.sa", 
+								"Password" :"Najm@123"
+							}  
+						}, 
+						{	"Name" : "Test" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}, 
+						{	"Name" : "PreProd" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}, 
+						{	"Name" : "Prod" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}
+					]
+				} ,
+				{	"Name" : "Sdaia" , 
+					"Infras" : [
+						{
+							"Name" : "Prod" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}, 
+						{
+							"Name" : "Dev" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}, 
+						{
+							"Name" : "Stage" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+
+						}
+					]
+				}			
+			]
+			
+		} 
+		
+	]
+}
