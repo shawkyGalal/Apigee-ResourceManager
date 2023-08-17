@@ -22,13 +22,13 @@ public class Tester {
 	{
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		//Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
 				 
 		ManagementServer ms = new ManagementServer(infra) ; 
 				
-		String orgName = "stg" ; // "smart-value" 
-		String envName = "iam-protected" ; //"Prod"
+		String orgName =  "smart-value"  ; // "stg" ; 
+		String envName = "Prod"  ; // "iam-protected"
 		Organization org = ms.getOrgs().get(orgName) ;  
 		Environment env = org.getEnvs().get(envName);
 		
