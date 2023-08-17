@@ -15,6 +15,8 @@
 							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
 							"clientSecret" : "UKLBn325ZIX1mulU"
 						}, 
+						"connectionTimeout" : "0" ,
+						"socketTimeout" : "20000" , 
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod/hosts" , 
 						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 					}, 
@@ -50,6 +52,8 @@
 							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
 							"clientSecret" : "UKLBn325ZIX1mulU"
 						}, 
+						"connectionTimeout" : "0" ,
+						"socketTimeout" : "20000" , 
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
 						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 					}, 

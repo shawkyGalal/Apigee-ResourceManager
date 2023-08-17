@@ -15,7 +15,6 @@ import org.springframework.security.crypto.codec.Base64;
 
 import com.google.apigee.json.JavaxJson;
 import com.google.gson.Gson;
-//import com.google.gson.internal.Primitives;
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -26,7 +25,6 @@ import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.Organization;
 import com.smartvalue.apigee.rest.schema.Server  ;
 
-import io.apigee.buildTools.enterprise4g.utils.ServerProfile;
 
 public class ManagementServer extends Server{
 	
@@ -57,6 +55,9 @@ public class ManagementServer extends Server{
 		result.setHostUrl(m_infra.getMgmServerUrl());
 		result.setOauthHostURL(m_infra.getOauthMgmServerUrl());
 		
+		result.setConnectionTimeout(m_infra.getConnectionTimeout());
+		result.setSocketTimeout(m_infra.getSocketTimeout());
+		
 		return result;
 	}
 
@@ -80,7 +81,7 @@ public class ManagementServer extends Server{
 
 	public HttpResponse<String> getApiHttpResponse(String m_apiPath , String m_verb ) throws UnirestException, IOException  {
 		 
-		Unirest.setTimeouts(0, 1000);
+		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
 		String hostUrl ; 
 		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
 		{

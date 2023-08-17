@@ -14,6 +14,8 @@ public class Infra {
 	private String OauthMgmServerUrl ; 
 	private String AuthType ;
 	private String tokenUrl ; 
+	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
+	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
 	 
 	
 	public SysAdminCred getSysadminCred() {
@@ -70,6 +72,19 @@ public class Infra {
 	public void setOauthMgmServerUrl(String oauthMgmServerUrl) {
 		OauthMgmServerUrl = oauthMgmServerUrl;
 	}
+	public int getConnectionTimeout() {
+		return connectionTimeout;
+	}
+	public void setConnectionTimeout(int connectionTimeout) {
+		this.connectionTimeout = connectionTimeout;
+	}
+	public int getSocketTimeout() {
+		return socketTimeout;
+	}
+	public void setSocketTimeout(int socketTimeout) {
+		this.socketTimeout = socketTimeout;
+	}
+	
 	
 
 }
