@@ -1,10 +1,7 @@
-
 package com.smartvalue.apigee.resourceManager;
-
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

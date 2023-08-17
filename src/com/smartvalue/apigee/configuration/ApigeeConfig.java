@@ -40,7 +40,7 @@ public class ApigeeConfig {
 		ApigeeConfig result = null; 
 		result = gson.fromJson(fileContent, (Type) ApigeeConfig.class);
 		
-		result = (ApigeeConfig) Primitives.wrap(ApigeeConfig.class).cast(result);
+		//result = (ApigeeConfig) Primitives.wrap(ApigeeConfig.class).cast(result);
 		this.setPartners(result.getPartners()) ; 
 	
 		//---using a HashMap instead of ArrayList 
