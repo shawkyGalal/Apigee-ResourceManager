@@ -53,7 +53,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		{
 			String apiPath01 = apiPath + "/" + proxyName ; 
 			@SuppressWarnings("deprecation")
-			Proxy proxy = this.ms.executeMgmntAPIUsingGson(apiPath01 , Proxy.class , "GET") ;
+			Proxy proxy = this.ms.executeMgmntAPI(apiPath01 , Proxy.class , "GET") ;
 			proxy.setOrgName(this.getName()) ; 
 			proxy.setManagmentServer(this.ms) ; 
 			proxies.put (proxyName , proxy) ; 

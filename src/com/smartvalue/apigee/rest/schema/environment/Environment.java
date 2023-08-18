@@ -37,7 +37,7 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
 	{
 		String targetServerApiPath = apiPath + "/"+ tsName ; 
 		@SuppressWarnings("deprecation")
-		TargetServer ts = this.ms.executeMgmntAPIUsingGson(targetServerApiPath , TargetServer.class , "GET") ; 
+		TargetServer ts = this.ms.executeMgmntAPI(targetServerApiPath , TargetServer.class , "GET") ; 
 		tss.put (tsName , ts) ;
 	}
 	return tss ; 
@@ -49,7 +49,7 @@ public List<Server> getMessageProcesors() throws UnirestException, IOException
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<Server>>() {}.getType();
 	@SuppressWarnings("deprecation")
-	List<Server> serversArray = this.ms.executeMgmntAPIUsingGson(apiPath , listType , "GET") ; 
+	List<Server> serversArray = this.ms.executeMgmntAPI(apiPath , listType , "GET") ; 
 	for (Server server : serversArray )
 	{
 		server.setManagmentServer(ms);

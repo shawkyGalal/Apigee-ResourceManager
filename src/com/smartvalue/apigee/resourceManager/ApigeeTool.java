@@ -1,11 +1,16 @@
 package com.smartvalue.apigee.resourceManager;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.product.Product;
+import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 
 
 public class ApigeeTool 
@@ -13,9 +18,10 @@ public class ApigeeTool
 	private static String configFile ; 
 	private static String infra ;
 	private static String org ; 
-	private static String operation ; 
+	private static String operation ;
+	private static ManagementServer ms ; 
 	
-	private static void initialize(String[] args)
+	private static void initialize(String[] args) throws Exception
 	{
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
 		System.out.println(argsMap );
@@ -23,6 +29,11 @@ public class ApigeeTool
 	 	configFile = argsMap.get("-configFile") ; 
     	infra = argsMap.get("-infra") ;
     	org = argsMap.get("-org") ;
+    	
+    	ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
+    	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
+    	ms = new ManagementServer(infraObj) ; 
+		Organization orgObj = ms.getOrgs().get(org) ;  
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -36,6 +47,11 @@ public class ApigeeTool
             case "listProxiesNotDeployed":
                 listProxiesNotDeployed(args);
                 break;
+            case "productsWithoutProxies":
+            	productsWithoutProxies(args);
+                break;
+                
+                
             default:
                 System.out.println("Unknown operation: " + operation);
                 printUsage();
@@ -45,7 +61,16 @@ public class ApigeeTool
     	else { printUsage();  } 
     }
 
- private static String getMandatoryArg( HashMap<String , String>  args , String arg)
+ private static ArrayList<String>  productsWithoutProxies(String[] args) throws UnirestException, IOException {
+		
+	 Organization orgObj = ms.getOrgs().get(org) ;  
+	 ProductsServices ps = ms.getProductServices() ; 
+	 ArrayList<String> results  = ps.getProductsWithoutProxies(orgObj) ;
+	return results; 
+		
+	}
+
+private static String getMandatoryArg( HashMap<String , String>  args , String arg)
  { 
 	String result = args.get(arg) ;
 	if ( result == null && ! arg.equalsIgnoreCase("-operation"))
@@ -77,10 +102,7 @@ public class ApigeeTool
     }
     
     private static void listProxiesNotDeployed(String[] args ) throws Exception {
-   	
-    	ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
-    	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
-    	ManagementServer ms = new ManagementServer(infraObj) ; 
+   	 
 		Organization orgObj = ms.getOrgs().get(org) ;  
 		
     	ArrayList<String> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
@@ -92,11 +114,6 @@ public class ApigeeTool
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
     	
-    	// String operation = argsMap.get("-operation") ;
-    	String org = argsMap.get("-org") ;
-    	ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
-		Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
-		ManagementServer ms = new ManagementServer(infraObj) ; 
 		Organization orgObj = ms.getOrgs().get(org) ;  
         System.out.println("Config File: " + configFile);
         System.out.println("trgetServer: " + targetServer);

@@ -27,7 +27,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	{
 		ProxyRevision result = null; 
 		String apiPath = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + revision ; 
-		result = this.getManagmentServer().executeMgmntAPIUsingGson(apiPath , ProxyRevision.class , "GET") ;
+		result = this.getManagmentServer().executeMgmntAPI(apiPath , ProxyRevision.class , "GET") ;
 		result.setManagementServer(this.getManagmentServer()) ; 
 		result.setOrgName(this.getOrgName());
 		return result ; 
