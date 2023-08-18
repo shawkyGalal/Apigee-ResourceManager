@@ -120,9 +120,7 @@ public class ManagementServer extends Server{
 		
 	}
 	
-	@Deprecated
-	/** gson is not allowed inside Apigee Java Callout policy as gson uses java reflection **/
-	public <T> T executeMgmntAPIUsingGson(String m_apiPath ,  Class<T> classOfT , String m_verb ) throws UnirestException, IOException
+	public <T> T executeMgmntAPI(String m_apiPath ,  Class<T> classOfT , String m_verb ) throws UnirestException, IOException
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ;
@@ -138,9 +136,7 @@ public class ManagementServer extends Server{
 		
 	}
 	
-	@Deprecated
-	/** gson is not allowed inside Apigee Java Callout policy as gson uses java reflection **/
-	public <T> T executeMgmntAPIUsingGson(String m_apiPath, Type listType, String m_verb) throws UnirestException, IOException 
+	public <T> T executeMgmntAPI(String m_apiPath, Type listType, String m_verb) throws UnirestException, IOException 
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ;
@@ -160,8 +156,8 @@ public class ManagementServer extends Server{
 
 	
 	
-			
-	public <T> T executeMgmntAPI(String m_apiPath , Class<T> classOfT ,  String m_verb ) throws UnirestException, IOException
+	/*		
+	public <T> T executeMgmntAPIUsingJaxJson(String m_apiPath , Class<T> classOfT ,  String m_verb ) throws UnirestException, IOException
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ; 
@@ -176,6 +172,7 @@ public class ManagementServer extends Server{
 		return result ; // Primitives.wrap(classOfT).cast(result);
 		
 	}
+	*/
 	
 	
 	
@@ -216,9 +213,11 @@ public class ManagementServer extends Server{
 		String apiPath = "/v1/servers" ; 
 		// === Thanks To ChatGPT 
 		Type listType = new TypeToken<List<Server>>() {}.getType();
-		List<Server> serversArray = this.executeMgmntAPIUsingGson(apiPath , listType , "GET") ; 
+		List<Server> serversArray = this.executeMgmntAPI(apiPath , listType , "GET") ; 
 		return serversArray ; 
 	}
+	
+	public ProductsServices getProductServices()
 	{
 		ProductsServices srv = new ProductsServices() ; 
 		srv.setMs(this);
