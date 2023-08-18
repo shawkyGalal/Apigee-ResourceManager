@@ -2,7 +2,7 @@ package com.smartvalue.apigee.resourceManager.helpers;
 
 import java.util.List;
 
-import com.smartvalue.apigee.rest.schema.auto.server.Property;
+import com.smartvalue.apigee.rest.schema.server.auto.Property;
 
 public class Helper {
 

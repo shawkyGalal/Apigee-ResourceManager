@@ -16,11 +16,12 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.Infra;
+import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
-import com.smartvalue.apigee.rest.schema.Organization;
-import com.smartvalue.apigee.rest.schema.Server  ;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+import com.smartvalue.apigee.rest.schema.server.Server  ;
 
 
 public class ManagementServer extends Server{
@@ -217,6 +218,12 @@ public class ManagementServer extends Server{
 		Type listType = new TypeToken<List<Server>>() {}.getType();
 		List<Server> serversArray = this.executeMgmntAPIUsingGson(apiPath , listType , "GET") ; 
 		return serversArray ; 
+	}
+	{
+		ProductsServices srv = new ProductsServices() ; 
+		srv.setMs(this);
+		return srv;
+		
 	}
 
 	

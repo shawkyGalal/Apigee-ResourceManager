@@ -23,6 +23,7 @@ import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.Primitives;
+import com.smartvalue.apigee.configuration.infra.Infra;
 import com.sun.codemodel.JCodeModel;
 
 public class ApigeeConfig {

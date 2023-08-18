@@ -3,6 +3,8 @@ package com.smartvalue.apigee.configuration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.smartvalue.apigee.configuration.infra.Infra;
+
 public class Customer {
 	
 	private String Name ; 

@@ -3,6 +3,8 @@ package com.smartvalue.apigee.configuration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.smartvalue.apigee.configuration.infra.Infra;
+
 public class Partner {
 	private ArrayList<Customer> Customers ;
 	//private HashMap<String , HashMap<String , Infra>> CustomersMap  = new HashMap<String , HashMap<String, Infra>> () ;

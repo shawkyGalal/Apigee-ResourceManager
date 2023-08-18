@@ -28,6 +28,4 @@ target/classes/META-INF/MANIFEST.MF
 *.class
 .classpath
 *.class
-src/com/smartvalue/apigee/resourceManager/Tester.java
-*.class
-*.class
+

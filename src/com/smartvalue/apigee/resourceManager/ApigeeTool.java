@@ -1,13 +1,11 @@
 package com.smartvalue.apigee.resourceManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
-import com.smartvalue.apigee.configuration.Infra;
-import com.smartvalue.apigee.rest.schema.Organization;
+import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 
 public class ApigeeTool 
