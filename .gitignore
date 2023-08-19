@@ -30,5 +30,4 @@ target/classes/META-INF/MANIFEST.MF
 .classpath
 *.class
 
-
-src/com/smartvalue/apigee/configuration/Tester.java
+/bin/
