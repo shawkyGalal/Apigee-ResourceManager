@@ -1,6 +1,5 @@
 # Compiled class file
 *.class
-src/com/smartvalue/apigee/resourceManager/Tester.java
 .classpath
 # Log file
 *.log
