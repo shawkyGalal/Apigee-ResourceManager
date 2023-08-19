@@ -18,7 +18,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	{
 		Map<String, Object> result = null; 
 		String apiPath = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/deployments" ; 
-		result = this.getManagmentServer().executeMgmntAPI(apiPath , Map.class , "GET") ;
+		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , Map.class ) ;
 		return result ; 
 	}	
 	
@@ -27,7 +27,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	{
 		ProxyRevision result = null; 
 		String apiPath = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + revision ; 
-		result = this.getManagmentServer().executeMgmntAPI(apiPath , ProxyRevision.class , "GET") ;
+		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
 		result.setManagementServer(this.getManagmentServer()) ; 
 		result.setOrgName(this.getOrgName());
 		return result ; 

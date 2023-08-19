@@ -12,7 +12,11 @@ import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.server.MPServer;
+import com.smartvalue.apigee.rest.schema.server.Postgres;
+import com.smartvalue.apigee.rest.schema.server.Router;
 import com.smartvalue.apigee.rest.schema.server.Server;
+import com.smartvalue.apigee.rest.schema.server.ServerServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost; 
@@ -25,14 +29,17 @@ public class Tester {
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		
 		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-				 
+		//String orgName = "stg" ; 
+		//String envName = "iam-protected" ; 
+		
+		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 String orgName =  "smart-value"  ; // "stg" ; 
+		 String envName = "prod"  ; // "iam-protected"		 
+
 		ManagementServer ms = new ManagementServer(infra) ; 
-				
-		String orgName =  "smart-value"  ; // "stg" ; 
-		String envName = "prod"  ; // "iam-protected"
 		Organization org = ms.getOrgs().get(orgName) ;  
 		Environment env = org.getEnvs().get(envName);
+
 		
 		ProductsServices   productServices = ms.getProductServices() ; 
 		ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies(org) ;  
@@ -56,14 +63,20 @@ public class Tester {
 		System.out.println(proxiesNotDeployed.toString());
 		
 		
-		List<Server> mpServers = env.getMessageProcesors() ;
-		mpServers.get(0).healthCheck() ; 
-		System.out.println(mpServers);
+		List<Server> envMpServers = env.getMessageProcesors() ;
+		envMpServers.get(0).healthCheck() ; 
+		System.out.println(envMpServers);
 		
-		List<Server>  servers = ms.getServers() ; 
-		System.out.println(servers);
+		ServerServices ss = ms.getServerServices() ; 
+		List<Server>  gatewayServers = ss.getServers("gateway") ;
+		List<Server>  analyticsServers = ss.getServers("analytics") ;
+		List<Server>  centralServers = ss.getServers("central") ;
+		List<MPServer> allMpServers = ss.getAllMessageProcessorServers(); 
+		List<Router> routerServers =  ss.getAllRouterServers();
+		List<Postgres> potgresServers = ss.getAllPostgres(); 
 		
-		
+		System.out.println(gatewayServers);
+	
 		String[] allVirtuslHosts = env.getAllVirtualHosts() ; 
 		System.out.println(allVirtuslHosts.toString());
 		
@@ -73,8 +86,6 @@ public class Tester {
 		String[] allShardFlows = org.getAllShardFlow() ;
 		SharedFlow shardFlow = org.getShardFlow(allShardFlows[1]) ; 
 		System.out.println(shardFlow.toString());
-		
-		
 		
 		String enviro = "{\r\n"
 				+ "    \"createdAt\": 1543337768969,\r\n"
@@ -112,9 +123,6 @@ public class Tester {
 				+ "    }\r\n"
 				+ "}" ; 
 		//ac.generateJavaClassFromJson(enviro, "Environment" , "com.smartvalue.apigee.rest.schema.environment.auto");
-		
-		
-		
 		
 	}
 
