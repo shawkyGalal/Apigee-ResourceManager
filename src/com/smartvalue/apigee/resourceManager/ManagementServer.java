@@ -100,11 +100,14 @@ public class ManagementServer extends Server{
 		else {hostUrl = this.serverProfile.getOauthHostURL() ; }
 		return hostUrl ; 
 	}
-	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body ) throws UnirestException, IOException  {
+	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
 		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
-		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath).header("Authorization", authorization ).body(m_body).asString();
+		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath)
+				.header("Authorization", authorization )
+				.header("Content-Type", m_contentType )
+				.body(m_body).asString();
 		return response ;  
 	}
 	public HttpResponse<String> getGetHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
@@ -154,10 +157,10 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; // Primitives.wrap(classOfT).cast(result);
 	}
 	
-	public <T> T executePostMgmntAPI(String m_apiPath ,  Class<T> classOfT , String m_body  ) throws UnirestException, IOException
+	public <T> T executePostMgmntAPI(String m_apiPath ,  Class<T> classOfT , String m_body , String m_contentType ) throws UnirestException, IOException
 	{
 		T result = null ; 
-		HttpResponse<String> response =  this.getPostHttpResponse(m_apiPath , m_body) ;
+		HttpResponse<String> response =  this.getPostHttpResponse(m_apiPath , m_body , m_contentType) ;
 		result = GsonClassMapper(response , classOfT  ) ; 
 		return result ; // Primitives.wrap(classOfT).cast(result);
 	} 

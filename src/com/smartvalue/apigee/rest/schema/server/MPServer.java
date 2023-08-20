@@ -2,29 +2,35 @@ package com.smartvalue.apigee.rest.schema.server;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public class MPServer extends Server {
-
-			
 	
 	
 	
-	public HashMap<String , Object > associateWithEnvironment(Environment env ) throws UnirestException, IOException
+	
+	private  ArrayList<String>  associateWithEnvironment(Organization org , Environment env , String m_operation ) throws UnirestException, IOException
 	{
-		String path = "/v1/o/"+this.getOrgName()+"/e/"+env.getName()+"/servers" ; 
+		String path = "/v1/o/"+org.getName()+"/e/"+env.getName()+"/servers" ; 
 		String uuid = this.getuUID() ;
 		@SuppressWarnings("unchecked")
-		HashMap<String , Object > result =  this.getManagmentServer().executePostMgmntAPI(path, HashMap.class, "action=add&uuid=" + uuid) ; 
+		ArrayList<String>  result =  this.getManagmentServer().executePostMgmntAPI(path, ArrayList.class, "action="+m_operation+"&uuid=" + uuid , "application/x-www-form-urlencoded") ; 
 		return result ; 
 	}
 	
-	public void desAssociateWithEnvironment(Environment env )
+	public ArrayList<String> removeFromEnvironmnt(Organization org , Environment env ) throws UnirestException, IOException
 	{
-		//====ToDo Implement logic
+		return associateWithEnvironment(org , env , "remove" ) ; 
+	}
+	
+	public ArrayList<String> addToEnvironmnt(Organization org , Environment env ) throws UnirestException, IOException
+	{
+		return associateWithEnvironment(org , env , "add" ) ; 
 	}
 	
 }

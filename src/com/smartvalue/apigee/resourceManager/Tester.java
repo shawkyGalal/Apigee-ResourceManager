@@ -28,24 +28,26 @@ public class Tester {
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		
-		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		//String orgName = "stg" ; 
-		//String envName = "iam-protected" ; 
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		String orgName = "stg" ; 
+		String envName = "cert-protected" ; 
+		String proxyName = "oidc-core" ; 
 		
-		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 String orgName =  "smart-value"  ; // "stg" ; 
-		 String envName = "prod"  ; // "iam-protected"		 
+		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 //String orgName =  "smart-value"  ; // "stg" ; 
+		 //String envName = "prod"  ; // "iam-protected"
+		//String proxyName = "DZIT" ;
 
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = ms.getOrgs().get(orgName) ;  
 		Environment env = org.getEnvs().get(envName);
 
-		
+		/*
 		ProductsServices   productServices = ms.getProductServices() ; 
 		ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies(org) ;  
 		System.out.println(productsWithoutProxies); 
 		
-		Proxy proxy = org.getProxy("DZIT"); 
+		Proxy proxy = org.getProxy(proxyName); 
 		HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server") ; 
 		System.out.println(xx);
 		
@@ -61,10 +63,12 @@ public class Tester {
 		
 		ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
+		*/
 		
-		
-		List<Server> envMpServers = env.getMessageProcesors() ;
-		envMpServers.get(0).healthCheck() ; 
+		List<MPServer> envMpServers = env.getMessageProcesors() ;
+		envMpServers.get(0).healthCheck() ;
+		ArrayList<String> result = envMpServers.get(0).removeFromEnvironmnt(org , env ) ; 
+		result = envMpServers.get(0).addToEnvironmnt(org , env ) ; 
 		System.out.println(envMpServers);
 		
 		ServerServices ss = ms.getServerServices() ; 

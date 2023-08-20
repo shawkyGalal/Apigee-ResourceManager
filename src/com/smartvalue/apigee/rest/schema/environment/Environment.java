@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
+import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 
@@ -43,13 +44,13 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
 	return tss ; 
 }
 
-public List<Server> getMessageProcesors() throws UnirestException, IOException
+public List<MPServer> getMessageProcesors() throws UnirestException, IOException
 {
 	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.name+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 
-	Type listType = new TypeToken<List<Server>>() {}.getType();
+	Type listType = new TypeToken<List<MPServer>>() {}.getType();
 	@SuppressWarnings("deprecation")
-	List<Server> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ; 
+	List<MPServer> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ; 
 	for (Server server : serversArray )
 	{
 		server.setManagmentServer(ms);
