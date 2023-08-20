@@ -16,13 +16,17 @@ public  ArrayList <String> getProductsWithoutProxies(Organization m_org ) throws
 {
 	ArrayList <String> result = new ArrayList <String> () ; 
 	ArrayList<String> all = m_org.getAllProductsNames() ; 
+	System.out.println("======== Processing "+all.size()+" Products ==========  " );
+	int counter = 1 ; 
 	for (String productName : all )
 	{
+		System.out.println(counter + "-Checking Product :" + productName);
 		Product product = m_org.getProduct(productName) ; 
 		if (product.getProxies().size() == 0 )
 		{
 			result.add(productName) ; 
 		}
+		counter++ ; 
 	}
 
 	return result;

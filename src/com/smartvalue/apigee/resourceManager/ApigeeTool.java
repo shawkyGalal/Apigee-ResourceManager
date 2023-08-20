@@ -66,6 +66,7 @@ public class ApigeeTool
 	 Organization orgObj = ms.getOrgs().get(org) ;  
 	 ProductsServices ps = ms.getProductServices() ; 
 	 ArrayList<String> results  = ps.getProductsWithoutProxies(orgObj) ;
+	 System.out.println(results);
 	return results; 
 		
 	}
@@ -90,6 +91,8 @@ private static String getMandatoryArg( HashMap<String , String>  args , String a
         System.out.println("Operations:");
         System.out.println("  listProxiesUsingTargetServer -targetServer <TargetServer> ");
         System.out.println("  listProxiesNotDeployed");
+        System.out.println("  productsWithoutProxies");
+        
     }
     
     private static HashMap<String , String> convertArgsToHashMap(String[] args )
