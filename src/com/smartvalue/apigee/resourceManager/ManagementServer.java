@@ -6,22 +6,22 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.security.crypto.codec.Base64;
 
-import com.google.apigee.json.JavaxJson;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+
 import com.smartvalue.apigee.rest.schema.server.Server  ;
+import com.smartvalue.apigee.rest.schema.server.ServerServices;
 
 
 public class ManagementServer extends Server{
@@ -68,7 +68,7 @@ public class ManagementServer extends Server{
 	public HashMap <String , Organization>  getOrgs() throws UnirestException, IOException {
 		
 		String apiPath = "/v1/o/" ; 
-		String[] orgNames  = this.executeMgmntAPI(apiPath , String[].class , "GET") ; 
+		String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ; 
 		HashMap <String , Organization> result = new HashMap <String , Organization> () ; 
 		for (String orgname : orgNames )
 		{
@@ -77,32 +77,8 @@ public class ManagementServer extends Server{
 		return result ; 
 	}
 
-	public HttpResponse<String> getApiHttpResponse(String m_apiPath , String m_verb ) throws UnirestException, IOException  {
-		 
-		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
-		String hostUrl ; 
-		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
-		{
-			hostUrl = this.serverProfile.getHostUrl() ;
-		}
-		else {hostUrl = this.serverProfile.getOauthHostURL() ; }
-		
-		com.mashape.unirest.request.HttpRequest  httpRequest = null ; 
-		HttpResponse<String> response ; 
-		switch (m_verb) {
-		case "GET" : 
-			httpRequest = Unirest.get(hostUrl + m_apiPath);
-			break; 
-		case "POST" : 
-			httpRequest = Unirest.post(hostUrl + m_apiPath);
-			break; 
-		case "DELETE" : 
-			httpRequest = Unirest.delete(hostUrl + m_apiPath);
-			break;
-		case "PUT" : 
-			httpRequest = Unirest.put(hostUrl + m_apiPath);
-			break; 
-		}
+	private String  getAuthorizationHeader()
+	{
 		String authorization = null ; 
 		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
 		{
@@ -113,33 +89,83 @@ public class ManagementServer extends Server{
 			String accessToken  = this.serverProfile.getBearerToken() ;
 			 authorization = "Bearer "+ accessToken ; 
 		}
-		 
-		response = httpRequest.header("Authorization", authorization ).asString();
-
+		return authorization ; 
+	}
+	
+	private String getHostUrl()
+	{
+		String hostUrl ; 
+		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
+		{hostUrl = this.serverProfile.getHostUrl() ;}
+		else {hostUrl = this.serverProfile.getOauthHostURL() ; }
+		return hostUrl ; 
+	}
+	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body ) throws UnirestException, IOException  {
+		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		String hostUrl = getHostUrl () ; 
+		String authorization = getAuthorizationHeader() ; 
+		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath).header("Authorization", authorization ).body(m_body).asString();
+		return response ;  
+	}
+	public HttpResponse<String> getGetHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
+		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		String hostUrl = getHostUrl() ;
+		String authorization = getAuthorizationHeader() ; 
+		HttpResponse<String> response  = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
 		return response ;
 		
 	}
 	
-	public <T> T executeMgmntAPI(String m_apiPath ,  Class<T> classOfT , String m_verb ) throws UnirestException, IOException
-	{
-		T result = null ; 
-		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ;
-		if (Helper.isConsideredSuccess(response.getStatus()) )   
-		{
-			Gson gson = new Gson();
-			result = gson.fromJson(response.getBody(),  classOfT);
-		} 
-		else {
-			throw new UnirestException ( response.getBody()) ; 
-		}
-		return result ; // Primitives.wrap(classOfT).cast(result);
-		
+	public HttpResponse<String> getDeleteHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
+		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		String hostUrl = getHostUrl() ;
+		String authorization = getAuthorizationHeader() ; 
+		HttpResponse<String> response  = Unirest.delete(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
+		return response ;
 	}
 	
-	public <T> T executeMgmntAPI(String m_apiPath, Type listType, String m_verb) throws UnirestException, IOException 
+	public HttpResponse<String> getPutHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
+		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		String hostUrl = getHostUrl() ;
+		String authorization = getAuthorizationHeader() ; 
+		HttpResponse<String> response  = Unirest.put(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
+		return response ;
+	}
+	
+private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT  ) throws UnirestException 
+{
+	T result = null ; 
+	if (Helper.isConsideredSuccess(response.getStatus()) )   
+	{
+		Gson gson = new Gson();
+		result = gson.fromJson(response.getBody(),  classOfT);
+	} 
+	else {
+		throw new UnirestException ( response.getBody()) ; 
+	}
+	return result ; // Primitives.wrap(classOfT).cast(result);
+}
+	
+	public <T> T executeGetMgmntAPI(String m_apiPath ,  Class<T> classOfT  ) throws UnirestException, IOException
 	{
 		T result = null ; 
-		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ;
+		HttpResponse<String> response =  this.getGetHttpResponse(m_apiPath) ;
+		result = GsonClassMapper(response , classOfT  ) ; 
+		return result ; // Primitives.wrap(classOfT).cast(result);
+	}
+	
+	public <T> T executePostMgmntAPI(String m_apiPath ,  Class<T> classOfT , String m_body  ) throws UnirestException, IOException
+	{
+		T result = null ; 
+		HttpResponse<String> response =  this.getPostHttpResponse(m_apiPath , m_body) ;
+		result = GsonClassMapper(response , classOfT  ) ; 
+		return result ; // Primitives.wrap(classOfT).cast(result);
+	} 
+	
+	public <T> T executeMgmntAPI(String m_apiPath, Type listType) throws UnirestException, IOException 
+	{
+		T result = null ; 
+		HttpResponse<String> response = this.getGetHttpResponse(m_apiPath) ;
 		if (Helper.isConsideredSuccess(response.getStatus()) )   
 		{
 			
@@ -203,19 +229,13 @@ public class ManagementServer extends Server{
 	{
 		ArrayList<String> targetServersNames = null; 
 		String apiPath = "/v1/o/"+m_org+"/e/"+m_env+"/targetservers?expand=true" ; 
-		targetServersNames = this.executeMgmntAPI(apiPath , ArrayList.class ,  "GET") ; 
+		targetServersNames = this.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
 		return targetServersNames ; 
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Server>  getServers() throws UnirestException, IOException
-	{
-		String apiPath = "/v1/servers" ; 
-		// === Thanks To ChatGPT 
-		Type listType = new TypeToken<List<Server>>() {}.getType();
-		List<Server> serversArray = this.executeMgmntAPI(apiPath , listType , "GET") ; 
-		return serversArray ; 
-	}
+	
+	
+	
 	
 	public ProductsServices getProductServices()
 	{
@@ -225,5 +245,11 @@ public class ManagementServer extends Server{
 		
 	}
 
-	
+	public ServerServices getServerServices()
+	{
+		ServerServices srv = new ServerServices() ; 
+		srv.setMs(this);
+		return srv;
+		
+	}
 }

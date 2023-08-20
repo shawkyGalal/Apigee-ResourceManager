@@ -1,6 +1,7 @@
 # Compiled class file
 *.class
-
+src/com/smartvalue/apigee/resourceManager/Tester.java
+.classpath
 # Log file
 *.log
 
@@ -29,3 +30,4 @@ target/classes/META-INF/MANIFEST.MF
 .classpath
 *.class
 
+/bin/

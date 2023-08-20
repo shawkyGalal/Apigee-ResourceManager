@@ -31,13 +31,13 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
 {
 	String[] targetServersNames = null; 
 	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.name+"/targetservers" ; 
-	targetServersNames = this.ms.executeMgmntAPI(apiPath , String[].class , "GET") ; 
+	targetServersNames = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ; 
 	HashMap<String , TargetServer> tss = new HashMap<String , TargetServer>() ; 
 	for ( String  tsName : targetServersNames )
 	{
 		String targetServerApiPath = apiPath + "/"+ tsName ; 
 		@SuppressWarnings("deprecation")
-		TargetServer ts = this.ms.executeMgmntAPI(targetServerApiPath , TargetServer.class , "GET") ; 
+		TargetServer ts = this.ms.executeGetMgmntAPI(targetServerApiPath , TargetServer.class ) ; 
 		tss.put (tsName , ts) ;
 	}
 	return tss ; 
@@ -49,7 +49,7 @@ public List<Server> getMessageProcesors() throws UnirestException, IOException
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<Server>>() {}.getType();
 	@SuppressWarnings("deprecation")
-	List<Server> serversArray = this.ms.executeMgmntAPI(apiPath , listType , "GET") ; 
+	List<Server> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ; 
 	for (Server server : serversArray )
 	{
 		server.setManagmentServer(ms);
@@ -67,7 +67,7 @@ public TargetServer  getTargetServer(String m_targetServerName) throws UnirestEx
 public VirtualHost  getVirtualHost(String virtualHostName ) throws UnirestException, IOException
 {
 	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/" + virtualHostName ; 
-	VirtualHost virtualHost  = this.ms.executeMgmntAPI(apiPath , VirtualHost.class , "GET") ;
+	VirtualHost virtualHost  = this.ms.executeGetMgmntAPI(apiPath , VirtualHost.class ) ;
 	virtualHost.setOrgName(this.getName()) ; 
 	virtualHost.setManagmentServer(this.ms) ; 
 	
@@ -78,7 +78,7 @@ public VirtualHost  getVirtualHost(String virtualHostName ) throws UnirestExcept
 public String[]  getAllVirtualHosts() throws UnirestException, IOException
 {
 	String apiPath =  "/v1/o/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/"  ; 
-	String[] virtualHosts  = this.ms.executeMgmntAPI(apiPath , String[].class , "GET") ;
+	String[] virtualHosts  = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ;
 	
 	return virtualHosts ; 
 }
