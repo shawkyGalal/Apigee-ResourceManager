@@ -142,15 +142,14 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	public ArrayList<String> getUndeployedProxies() throws UnirestException, InterruptedException, IOException
 	{
-		 
 		ArrayList<String> apis = this.getAllProxiesNames();
 		ArrayList<String> proxiesNotDeployed = new ArrayList<String>();  
 		HashMap<String , String> proxiesFailed = new HashMap<String , String>();
-		int count =0 ; 
+		int count =1 ; 
 		for (String proxyname : apis )
 		{
 		 System.out.print(count + "-Procesing Proxy " + proxyname );
-		  TimeUnit.MILLISECONDS.sleep(200);
+		  TimeUnit.MILLISECONDS.sleep(100);
 		  try {
 			  //Proxy proxy = this.getProxy(proxyname) ; 
 	  		  Map<String , Object > proxyDeployments  = this.getProxyDeployments(proxyname) ;

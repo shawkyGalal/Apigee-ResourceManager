@@ -66,7 +66,8 @@ public class ApigeeTool
 	 Organization orgObj = ms.getOrgs().get(org) ;  
 	 ProductsServices ps = ms.getProductServices() ; 
 	 ArrayList<String> results  = ps.getProductsWithoutProxies(orgObj) ;
-	 System.out.println(results);
+	 System.out.println("=================List Of Products without Proxies ======================");
+ 	 System.out.println(results); 
 	return results; 
 		
 	}

@@ -39,11 +39,9 @@ public class ApigeeConfig {
 		Gson gson = new Gson();
 		ApigeeConfig result = null; 
 		result = gson.fromJson(fileContent, (Type) ApigeeConfig.class);
-		
-		//result = (ApigeeConfig) Primitives.wrap(ApigeeConfig.class).cast(result);
-		this.setPartners(result.getPartners()) ; 
 	
-		//---using a HashMap instead of ArrayList 
+		this.setPartners(result.getPartners()) ; 
+ 
 		for ( Partner partner : this.Partners  )
 		{
 			this.partnersMap.put (partner.getName()  , partner.getCustomersMap()) ; 
@@ -112,7 +110,6 @@ public class ApigeeConfig {
 		File f = new File ("src") ;
 		this.convertJsonToJavaClass(jsonObject ,  f, m_packageName, m_ClassName  )  ;
 		//=======
-		
 	}
 	
 	private  void convertJsonToJavaClass(String jsonObject , File outputJavaClassDirectory, String packageName, String javaClassName)			  throws IOException 

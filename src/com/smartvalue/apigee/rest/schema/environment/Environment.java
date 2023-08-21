@@ -2,6 +2,7 @@ package com.smartvalue.apigee.rest.schema.environment;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,8 +10,8 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
-import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 
 public class Environment {
@@ -44,18 +45,32 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
 	return tss ; 
 }
 
-public List<MPServer> getMessageProcesors() throws UnirestException, IOException
+/**
+ * 
+ * @param m_region  use null value to return all MP's 
+ * @return
+ * @throws UnirestException
+ * @throws IOException
+ */
+public List<MPServer> getMessageProcesors(String m_region) throws UnirestException, IOException
 {
 	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.name+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<MPServer>>() {}.getType();
 	@SuppressWarnings("deprecation")
-	List<MPServer> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ; 
-	for (Server server : serversArray )
+	List<MPServer> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ;
+	List<MPServer> filteredMpServers = new ArrayList<MPServer>() ; 
+	for (MPServer server : serversArray )
 	{
-		server.setManagmentServer(ms);
+		String mpRegion = server.getRegion() ; 
+		if ( m_region == null || mpRegion.equalsIgnoreCase(m_region))
+		{ 
+			server.setManagmentServer(ms);
+			filteredMpServers.add(server) ; 
+		}
+		
 	}
-	return serversArray ; 
+	return filteredMpServers ; 
 	
 }
 
@@ -82,6 +97,20 @@ public String[]  getAllVirtualHosts() throws UnirestException, IOException
 	String[] virtualHosts  = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ;
 	
 	return virtualHosts ; 
+}
+
+public ArrayList<String> addMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
+{
+	Organization org = this.ms.getOrgs().get(this.orgName) ;
+	ArrayList<String> result = mpServer.addToEnvironmnt(org, this); 
+	return result;
+}
+
+public ArrayList<String> removeMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
+{
+	Organization org = this.ms.getOrgs().get(this.orgName) ;
+	ArrayList<String> result = mpServer.removeFromEnvironmnt(org, this); 
+	return result;
 }
 
 }

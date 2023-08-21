@@ -9,17 +9,16 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 
-public class ServerServices {
+public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 
-	private ManagementServer managementServer;
-	
+		
 	@SuppressWarnings("unchecked")
 	public List<Server>  getServers(String m_pod) throws UnirestException, IOException
 	{
 		String apiPath = "/v1/servers?pod="+m_pod ; 
 		// === Thanks To ChatGPT 
 		Type listType = new TypeToken<List<Server>>() {}.getType();
-		List<Server> serversArray = this.managementServer.executeMgmntAPI(apiPath , listType ) ; 
+		List<Server> serversArray = this.getMs().executeMgmntAPI(apiPath , listType ) ; 
 		return serversArray ; 
 	}
 
@@ -73,9 +72,5 @@ public class ServerServices {
 		return result ; 
 	}
 
-	public void setMs(ManagementServer m_managementServer) {
-		this.managementServer = m_managementServer; 
-		
-	}
 	
 }

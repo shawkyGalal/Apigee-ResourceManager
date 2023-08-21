@@ -17,6 +17,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 
@@ -236,10 +237,6 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return targetServersNames ; 
 	}
 	
-	
-	
-	
-	
 	public ProductsServices getProductServices()
 	{
 		ProductsServices srv = new ProductsServices() ; 
@@ -251,6 +248,14 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ServerServices getServerServices()
 	{
 		ServerServices srv = new ServerServices() ; 
+		srv.setMs(this);
+		return srv;
+		
+	}
+	
+	public KvmServices getKeyValueMapServices()
+	{
+		KvmServices  srv = new KvmServices() ; 
 		srv.setMs(this);
 		return srv;
 		

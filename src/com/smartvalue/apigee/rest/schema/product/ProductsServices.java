@@ -7,11 +7,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 
-public class ProductsServices {
+public class ProductsServices extends com.smartvalue.apigee.rest.schema.Service {
 
-	private ManagementServer ms ;
-	//private Organization org ; 
-	
+
 public  ArrayList <String> getProductsWithoutProxies(Organization m_org ) throws UnirestException, IOException
 {
 	ArrayList <String> result = new ArrayList <String> () ; 
@@ -20,21 +18,18 @@ public  ArrayList <String> getProductsWithoutProxies(Organization m_org ) throws
 	int counter = 1 ; 
 	for (String productName : all )
 	{
-		System.out.println(counter + "-Checking Product :" + productName);
-		Product product = m_org.getProduct(productName) ; 
-		if (product.getProxies().size() == 0 )
+		System.out.print(counter + "-Checking Product :" + productName);
+		Product product = m_org.getProduct(productName) ;
+		int size = product.getProxies().size() ; 
+		if (size == 0 )
 		{
 			result.add(productName) ; 
 		}
+		System.out.println( size ==0  ? ".....\t\t\t Risky" : ".....\t\t\t OK" ) ; 
 		counter++ ; 
 	}
 
 	return result;
 }
-public ManagementServer getMs() {
-	return ms;
-}
-public void setMs(ManagementServer ms) {
-	this.ms = ms;
-}
+
 }

@@ -38,38 +38,41 @@ public class Tester {
 		 //String envName = "prod"  ; // "iam-protected"
 		//String proxyName = "DZIT" ;
 
-		ManagementServer ms = new ManagementServer(infra) ; 
-		Organization org = ms.getOrgs().get(orgName) ;  
-		Environment env = org.getEnvs().get(envName);
+		//ManagementServer ms = new ManagementServer(infra) ; 
+		//Organization org = ms.getOrgs().get(orgName) ;  
+		//Environment env = org.getEnvs().get(envName);
 
+		
+		//ProductsServices   productServices = ms.getProductServices() ; 
+		//ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies(org) ;  
+		//System.out.println(productsWithoutProxies); 
+		
+		//Proxy proxy = org.getProxy(proxyName); 
+		//HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server") ; 
+		//System.out.println(xx);
+		
+		//HashMap<String, Proxy> allProxies = org.getAllProxies();
+		//HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server");
+		//allProxies.entrySet().stream().filter(entry -> entry.getValue().getName().equalsIgnoreCase("ghfgh") ) ; 
+
+		
+		//System.out.println(proxies);
+		
+		//HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
+		//System.out.println(allTargetServers);
+		
+		//ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
+		//System.out.println(proxiesNotDeployed.toString());
+		
 		/*
-		ProductsServices   productServices = ms.getProductServices() ; 
-		ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies(org) ;  
-		System.out.println(productsWithoutProxies); 
-		
-		Proxy proxy = org.getProxy(proxyName); 
-		HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server") ; 
-		System.out.println(xx);
-		
-		HashMap<String, Proxy> allProxies = org.getAllProxies();
-		HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server");
-		allProxies.entrySet().stream().filter(entry -> entry.getValue().getName().equalsIgnoreCase("ghfgh") ) ; 
-
-		
-		System.out.println(proxies);
-		
-		HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
-		System.out.println(allTargetServers);
-		
-		ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
-		System.out.println(proxiesNotDeployed.toString());
-		*/
-		
-		List<MPServer> envMpServers = env.getMessageProcesors() ;
-		envMpServers.get(0).healthCheck() ;
+		List<MPServer> envMpServers = env.getMessageProcesors("dc-1") ;
+		//envMpServers.get(0).healthCheck() ;
 		ArrayList<String> result = envMpServers.get(0).removeFromEnvironmnt(org , env ) ; 
 		result = envMpServers.get(0).addToEnvironmnt(org , env ) ; 
 		System.out.println(envMpServers);
+		
+		result = env.removeMessageProcessor(envMpServers.get(0)) ; 
+		result = env.addMessageProcessor(envMpServers.get(0)) ;
 		
 		ServerServices ss = ms.getServerServices() ; 
 		List<Server>  gatewayServers = ss.getServers("gateway") ;
@@ -90,43 +93,46 @@ public class Tester {
 		String[] allShardFlows = org.getAllShardFlow() ;
 		SharedFlow shardFlow = org.getShardFlow(allShardFlows[1]) ; 
 		System.out.println(shardFlow.toString());
-		
-		String enviro = "{\r\n"
-				+ "    \"createdAt\": 1543337768969,\r\n"
-				+ "    \"createdBy\": \"sfoda@master-works.net\",\r\n"
-				+ "    \"lastModifiedAt\": 1543337768969,\r\n"
-				+ "    \"lastModifiedBy\": \"sfoda@master-works.net\",\r\n"
-				+ "    \"name\": \"prod\",\r\n"
-				+ "    \"properties\": {\r\n"
-				+ "        \"property\": [\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"useSampling\",\r\n"
-				+ "                \"value\": \"100\"\r\n"
-				+ "            },\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"samplingThreshold\",\r\n"
-				+ "                \"value\": \"100000\"\r\n"
-				+ "            },\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"samplingTables\",\r\n"
-				+ "                \"value\": \"10=ten;1=one;\"\r\n"
-				+ "            },\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"samplingAlgo\",\r\n"
-				+ "                \"value\": \"reservoir_sampler\"\r\n"
-				+ "            },\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"samplingInterval\",\r\n"
-				+ "                \"value\": \"300000\"\r\n"
-				+ "            },\r\n"
-				+ "            {\r\n"
-				+ "                \"name\": \"aggregationinterval\",\r\n"
-				+ "                \"value\": \"300000\"\r\n"
-				+ "            }\r\n"
-				+ "        ]\r\n"
-				+ "    }\r\n"
-				+ "}" ; 
-		//ac.generateJavaClassFromJson(enviro, "Environment" , "com.smartvalue.apigee.rest.schema.environment.auto");
+	*/	
+		String keyValueMap = "{\r\n" + 
+				"    \"encrypted\": false,\r\n" + 
+				"    \"entry\": [\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"dc1\",\r\n" + 
+				"            \"value\": \"stage\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"dc2\",\r\n" + 
+				"            \"value\": \"local\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"dnBase\",\r\n" + 
+				"            \"value\": \"CN=Users,DC=stage,DC=local\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"providerURL\",\r\n" + 
+				"            \"value\": \"ldap://10.162.2.100:389\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"providerURL_Secure\",\r\n" + 
+				"            \"value\": \"ldaps://DCSTAG01.stage.local:636\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"securityCredential\",\r\n" + 
+				"            \"value\": \"Moj1@#4567\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"securityPrinciple\",\r\n" + 
+				"            \"value\": \"CN=create,OU=APIG,DC=stage,DC=local\"\r\n" + 
+				"        },\r\n" + 
+				"        {\r\n" + 
+				"            \"name\": \"securityPrinciple-create\",\r\n" + 
+				"            \"value\": \"CN=create,OU=APIG,DC=stage,DC=local\"\r\n" + 
+				"        }\r\n" + 
+				"    ],\r\n" + 
+				"    \"name\": \"AD-Stage\"\r\n" + 
+				"}" ; 
+		ac.generateJavaClassFromJson(keyValueMap, "KeyValueMap" , "com.smartvalue.apigee.rest.schema.keyValueMap.auto");
 		
 	}
 

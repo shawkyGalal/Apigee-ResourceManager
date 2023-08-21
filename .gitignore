@@ -30,3 +30,8 @@ target/classes/META-INF/MANIFEST.MF
 *.class
 
 /bin/
+.settings/org.eclipse.jdt.core.prefs
+.project
+.settings/org.eclipse.wst.common.project.facet.core.xml
+.settings/org.eclipse.wst.common.component
+.settings/org.eclipse.jdt.core.prefs
