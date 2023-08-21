@@ -62,10 +62,9 @@ public class ApigeeTool
     }
 
  private static ArrayList<String>  productsWithoutProxies(String[] args) throws UnirestException, IOException {
-		
-	 Organization orgObj = ms.getOrgs().get(org) ;  
-	 ProductsServices ps = ms.getProductServices() ; 
-	 ArrayList<String> results  = ps.getProductsWithoutProxies(orgObj) ;
+	
+	 ProductsServices ps = ms.getProductServices(org) ; 
+	 ArrayList<String> results  = ps.getProductsWithoutProxies() ;
 	 System.out.println("=================List Of Products without Proxies ======================");
  	 System.out.println(results); 
 	return results; 

@@ -12,6 +12,12 @@ import com.smartvalue.apigee.resourceManager.ManagementServer;
 public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 
 		
+	
+	
+	public ServerServices(ManagementServer ms) {
+		super(ms);
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Server>  getServers(String m_pod) throws UnirestException, IOException
 	{

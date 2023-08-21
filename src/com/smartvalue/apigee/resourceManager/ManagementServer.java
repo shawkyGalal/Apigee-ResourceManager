@@ -237,25 +237,24 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return targetServersNames ; 
 	}
 	
-	public ProductsServices getProductServices()
+	public ProductsServices getProductServices(String m_orgName)
 	{
-		ProductsServices srv = new ProductsServices() ; 
+		ProductsServices srv = new ProductsServices( this, m_orgName) ; 
 		srv.setMs(this);
 		return srv;
 		
 	}
 
-	public ServerServices getServerServices()
+	public ServerServices getServerServices( )
 	{
-		ServerServices srv = new ServerServices() ; 
+		ServerServices srv = new ServerServices(this) ; 
 		srv.setMs(this);
 		return srv;
-		
 	}
 	
-	public KvmServices getKeyValueMapServices()
+	public KvmServices getKeyValueMapServices(String m_orgName, String m_envName )
 	{
-		KvmServices  srv = new KvmServices() ; 
+		KvmServices  srv = new KvmServices(this , m_orgName, m_envName) ; 
 		srv.setMs(this);
 		return srv;
 		

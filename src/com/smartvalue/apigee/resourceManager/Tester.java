@@ -38,33 +38,33 @@ public class Tester {
 		 //String envName = "prod"  ; // "iam-protected"
 		//String proxyName = "DZIT" ;
 
-		//ManagementServer ms = new ManagementServer(infra) ; 
-		//Organization org = ms.getOrgs().get(orgName) ;  
-		//Environment env = org.getEnvs().get(envName);
+		ManagementServer ms = new ManagementServer(infra) ; 
+		Organization org = ms.getOrgs().get(orgName) ;  
+		Environment env = org.getEnvs().get(envName);
 
 		
-		//ProductsServices   productServices = ms.getProductServices() ; 
-		//ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies(org) ;  
+		ProductsServices   productServices = ms.getProductServices(orgName) ; 
+		//ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		//System.out.println(productsWithoutProxies); 
 		
-		//Proxy proxy = org.getProxy(proxyName); 
-		//HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server") ; 
-		//System.out.println(xx);
+		Proxy proxy = org.getProxy(proxyName); 
+		HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server") ; 
+		System.out.println(xx);
 		
 		//HashMap<String, Proxy> allProxies = org.getAllProxies();
-		//HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server");
-		//allProxies.entrySet().stream().filter(entry -> entry.getValue().getName().equalsIgnoreCase("ghfgh") ) ; 
+		HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server");
+		
 
 		
-		//System.out.println(proxies);
+		System.out.println(proxies);
 		
-		//HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
-		//System.out.println(allTargetServers);
+		HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
+		System.out.println(allTargetServers);
 		
-		//ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
-		//System.out.println(proxiesNotDeployed.toString());
+		ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
+		System.out.println(proxiesNotDeployed.toString());
 		
-		/*
+		
 		List<MPServer> envMpServers = env.getMessageProcesors("dc-1") ;
 		//envMpServers.get(0).healthCheck() ;
 		ArrayList<String> result = envMpServers.get(0).removeFromEnvironmnt(org , env ) ; 
@@ -93,7 +93,7 @@ public class Tester {
 		String[] allShardFlows = org.getAllShardFlow() ;
 		SharedFlow shardFlow = org.getShardFlow(allShardFlows[1]) ; 
 		System.out.println(shardFlow.toString());
-	*/	
+		
 		String keyValueMap = "{\r\n" + 
 				"    \"encrypted\": false,\r\n" + 
 				"    \"entry\": [\r\n" + 

@@ -10,8 +10,16 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.Service {
 
 
-public  ArrayList <String> getProductsWithoutProxies(Organization m_org ) throws UnirestException, IOException
+
+
+
+public ProductsServices(ManagementServer ms, String m_orgName) {
+		super(ms, m_orgName);
+	}
+
+public  ArrayList <String> getProductsWithoutProxies() throws UnirestException, IOException
 {
+	Organization m_org= this.getMs().getOrgs().get(this.orgName) ; 
 	ArrayList <String> result = new ArrayList <String> () ; 
 	ArrayList<String> all = m_org.getAllProductsNames() ; 
 	System.out.println("======== Processing "+all.size()+" Products ==========  " );
