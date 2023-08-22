@@ -70,7 +70,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		return proxiesName ;  
 	}
 	
-	public HashMap < String , Object > getAllProxiesUsesTargetServer(String m_targetServerName) throws UnirestException, IOException
+	public HashMap < String , Object > getAllProxiesUsesTargetServer(String m_targetServerName , boolean m_deployedVersionOnly) throws UnirestException, IOException
 	{
 		HashMap < String , Object > result = new HashMap < String , Object >() ;
 		ArrayList<String> allProxies = getAllProxiesNames(); 
@@ -82,7 +82,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 			Proxy proxy = this.getProxy(proxyName);
 			int revisionsSize = proxy.getRevision().size() ;  
 			System.out.print(counter + "- Checking Proxy <"+ proxyName + "> ("+revisionsSize+") revisions ...");
-			HashMap<String, ArrayList<String>> revisions = proxy.getRevisionsUsesTargetServer(m_targetServerName) ; 
+			HashMap<String, ArrayList<String>> revisions = proxy.getRevisionsUsesTargetServer(m_targetServerName , m_deployedVersionOnly) ; 
 			if (revisions.size() > 0 )
 			{
 				result.put(proxyName , revisions ) ; 

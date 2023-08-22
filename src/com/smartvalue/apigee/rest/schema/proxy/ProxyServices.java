@@ -2,7 +2,6 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
@@ -12,7 +11,6 @@ public class ProxyServices extends Service {
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
-		// TODO Auto-generated constructor stub
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -33,6 +31,16 @@ public class ProxyServices extends Service {
 			proxies.add (proxy) ; 
 		}
 		return proxies ; 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<String>  getAllProxiesNames() throws UnirestException, IOException
+	{
+		ArrayList<String> proxiesName = null; 
+		String apiPath = "/v1/o/"+orgName+"/apis" ; 
+		ManagementServer ms = this.getMs() ; 
+		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		return proxiesName ;  
 	}
 
 }

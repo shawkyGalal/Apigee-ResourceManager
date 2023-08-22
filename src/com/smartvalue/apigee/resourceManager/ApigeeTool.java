@@ -89,7 +89,7 @@ private static String getMandatoryArg( HashMap<String , String>  args , String a
         System.out.println("Usage:");
         System.out.println("java ApigeeTool -configFile <configFile> -infra <infra> -org <orgName> -operation <operation> [<operation-specific-args>]");
         System.out.println("Operations:");
-        System.out.println("  listProxiesUsingTargetServer -targetServer <TargetServer> ");
+        System.out.println("  listProxiesUsingTargetServer -targetServer <TargetServer> -deployedRevisionOnly <true/false>");
         System.out.println("  listProxiesNotDeployed");
         System.out.println("  productsWithoutProxies");
         
@@ -116,12 +116,13 @@ private static String getMandatoryArg( HashMap<String , String>  args , String a
     private static void listProxiesUsingTargetServer(String[] args) throws Exception {
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
+    	String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
     	
 		Organization orgObj = ms.getOrgs().get(org) ;  
         System.out.println("Config File: " + configFile);
         System.out.println("trgetServer: " + targetServer);
         
-        HashMap<String, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer); 
+        HashMap<String, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer , deployedRevisionOnly.equals("true")); 
 		System.out.println(proxies);
     }
 }
