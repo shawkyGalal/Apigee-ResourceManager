@@ -33,7 +33,7 @@ public class ApigeeTool
     	ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
     	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
     	ms = new ManagementServer(infraObj) ; 
-		Organization orgObj = ms.getOrgs().get(org) ;  
+		Organization orgObj = (Organization) ms.getOrgs().get(org) ;  
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -106,7 +106,7 @@ private static String getMandatoryArg( HashMap<String , String>  args , String a
     
     private static void listProxiesNotDeployed(String[] args ) throws Exception {
    	 
-		Organization orgObj = ms.getOrgs().get(org) ;  
+		Organization orgObj = (Organization) ms.getOrgs().get(org) ;  
 		
     	ArrayList<String> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
     	System.out.println("=================List Of Proxies With 0 Deployments ======================");
@@ -118,7 +118,7 @@ private static String getMandatoryArg( HashMap<String , String>  args , String a
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
     	String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
     	
-		Organization orgObj = ms.getOrgs().get(org) ;  
+		Organization orgObj = (Organization) ms.getOrgs().get(org) ;  
         System.out.println("Config File: " + configFile);
         System.out.println("trgetServer: " + targetServer);
         

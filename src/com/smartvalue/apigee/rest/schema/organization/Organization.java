@@ -15,29 +15,26 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
 public class Organization extends com.smartvalue.apigee.rest.schema.organization.auto.Organization {
 
-	private ManagementServer ms ; 
-	private String name ;
+	//private ManagementServer ms ; 
+	//private String name ;
 	private ArrayList<Environment>  envs ;
 	
-	public Organization(ManagementServer m_ms, String m_name  ) 
-	{
-		this.ms = m_ms ; 
-		this.name = (m_name) ; 
-	}
 	
-	public String getName() {
-		return name;
-	}
+	
 	
 	@SuppressWarnings("unchecked")
-	public HashMap<String , Environment> getEnvs() throws UnirestException, IOException {
+	public HashMap<String , Object> getEnvs() throws UnirestException, IOException {
 		ArrayList<String> envNames = null; 
-		HashMap<String , Environment> result  = new HashMap<String , Environment> () ;
+		HashMap<String , Object > result  = new HashMap<String , Object> () ;
 		String apiPath = "/v1/o/"+this.getName() +"/e" ; 
-		envNames = this.ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		ManagementServer ms = this.getManagmentServer() ; 
+		envNames = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		for (String envName : envNames )
 		{
-			result.put(envName , new Environment(this.ms , this.name , envName)) ; 
+			Environment env = ms.executeGetMgmntAPI(apiPath +"/" + envName , Environment.class ) ;
+			env.setOrgName(this.getName());
+			env.setMs(ms);
+			result.put(envName , env) ; 
 		}
 		return result ; 
 	}
@@ -47,15 +44,16 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		ArrayList<String> proxiesName = null; 
 		String apiPath = "/v1/o/"+this.getName()+"/apis" ; 
-		proxiesName = this.ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
+		ManagementServer ms = this.getManagmentServer() ;
+		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
 		HashMap<String , Proxy> proxies = new HashMap<String , Proxy>() ; 
 		for (String proxyName : proxiesName)
 		{
 			String apiPath01 = apiPath + "/" + proxyName ; 
 			@SuppressWarnings("deprecation")
-			Proxy proxy = this.ms.executeGetMgmntAPI(apiPath01 , Proxy.class ) ;
+			Proxy proxy = ms.executeGetMgmntAPI(apiPath01 , Proxy.class ) ;
 			proxy.setOrgName(this.getName()) ; 
-			proxy.setManagmentServer(this.ms) ; 
+			proxy.setManagmentServer(ms) ; 
 			proxies.put (proxyName , proxy) ; 
 		}
 		return proxies ; 
@@ -66,7 +64,8 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		ArrayList<String> proxiesName = null; 
 		String apiPath = "/v1/o/"+this.getName()+"/apis" ; 
-		proxiesName = this.ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		ManagementServer ms = this.getManagmentServer() ;
+		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		return proxiesName ;  
 	}
 	
@@ -102,9 +101,10 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	public Proxy  getProxy(String ProxyName) throws UnirestException, IOException
 	{
 		String apiPath = "/v1/o/"+this.getName()+"/apis/" + ProxyName ; 
-		Proxy proxy  = this.ms.executeGetMgmntAPI(apiPath , Proxy.class ) ;
+		ManagementServer ms = this.getManagmentServer() ;
+		Proxy proxy  = ms.executeGetMgmntAPI(apiPath , Proxy.class ) ;
 		proxy.setOrgName(this.getName()) ; 
-		proxy.setManagmentServer(this.ms) ; 
+		proxy.setManagmentServer(ms) ; 
 		
 		return proxy ; 
 	}
@@ -114,7 +114,8 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		Map<String, Object> result = null; 
 		String apiPath = "/v1/o/"+this.getName()+"/apis/"+m_ProxyName+"/deployments" ; 
-		result = this.ms.executeGetMgmntAPI(apiPath , Map.class ) ;
+		ManagementServer ms = this.getManagmentServer() ;
+		result = ms.executeGetMgmntAPI(apiPath , Map.class ) ;
 		return result ; 
 	}
 	
@@ -124,7 +125,8 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	public String[]  getAllShardFlow() throws UnirestException, IOException
 	{
 		String apiPath = "/v1/o/"+this.getName()+"/sharedflows/"  ; 
-		String[] sharedFlows  = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ;
+		ManagementServer ms = this.getManagmentServer() ;
+		String[] sharedFlows  = ms.executeGetMgmntAPI(apiPath , String[].class ) ;
 		return sharedFlows ; 
 	}
 	
@@ -132,9 +134,10 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	public SharedFlow  getShardFlow(String sharedFlowName) throws UnirestException, IOException
 	{
 		String apiPath = "/v1/o/"+this.getName()+"/sharedflows/" + sharedFlowName ; 
-		SharedFlow sharedFlow  = this.ms.executeGetMgmntAPI(apiPath , SharedFlow.class ) ;
+		ManagementServer ms = this.getManagmentServer() ;
+		SharedFlow sharedFlow  = ms.executeGetMgmntAPI(apiPath , SharedFlow.class ) ;
 		sharedFlow.setOrgName(this.getName()) ; 
-		sharedFlow.setManagmentServer(this.ms) ; 
+		sharedFlow.setManagmentServer(ms) ; 
 		
 		return sharedFlow ; 
 	}
@@ -172,8 +175,9 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	public ArrayList<String> getAllProductsNames() throws UnirestException, IOException {
 		
 		String apiPath = "/v1/o/"+this.getName()+"/apiproducts" ; 
+		ManagementServer ms = this.getManagmentServer() ;
 		@SuppressWarnings("unchecked")
-		ArrayList<String> allProducts  = this.ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		ArrayList<String> allProducts  = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		return allProducts ; 
 		
 	}
@@ -181,7 +185,8 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		Product result ; 
 		String apiPath = "/v1/o/"+this.getName()+"/apiproducts/"+ m_productName ;
-		result = this.ms.executeGetMgmntAPI(apiPath , Product.class ) ; 
+		ManagementServer ms = this.getManagmentServer() ;
+		result = ms.executeGetMgmntAPI(apiPath , Product.class ) ; 
 		return result;
 		
 	}

@@ -14,25 +14,34 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 
-public class Environment {
-private String name ;
+public class Environment extends com.smartvalue.apigee.rest.schema.environment.auto.Environment{
+
 private String orgName ;
+public String getOrgName() {
+	return orgName;
+}
+
+public void setOrgName(String orgName) {
+	this.orgName = orgName;
+}
+
+public ManagementServer getMs() {
+	return ms;
+}
+
+public void setMs(ManagementServer ms) {
+	this.ms = ms;
+}
+
 private ManagementServer ms ; 
 
-public Environment(ManagementServer m_ms, String orgName , String envName) {
-	this.ms = m_ms ; 
-	this.name = envName ; 
-	this.orgName = orgName ; 
-}
 
-public String getName() {
-	return name;
-}
+
 
 public HashMap<String , TargetServer>  getTargetServers() throws UnirestException, IOException
 {
 	String[] targetServersNames = null; 
-	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.name+"/targetservers" ; 
+	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/targetservers" ; 
 	targetServersNames = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ; 
 	HashMap<String , TargetServer> tss = new HashMap<String , TargetServer>() ; 
 	for ( String  tsName : targetServersNames )
@@ -54,7 +63,7 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
  */
 public List<MPServer> getMessageProcesors(String m_region) throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.name+"/servers?expand=true" ; 
+	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<MPServer>>() {}.getType();
 	@SuppressWarnings("deprecation")
@@ -101,14 +110,14 @@ public String[]  getAllVirtualHosts() throws UnirestException, IOException
 
 public ArrayList<String> addMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = this.ms.getOrgs().get(this.orgName) ;
+	Organization org = (Organization) this.ms.getOrgs().get(this.orgName) ;
 	ArrayList<String> result = mpServer.addToEnvironmnt(org, this); 
 	return result;
 }
 
 public ArrayList<String> removeMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = this.ms.getOrgs().get(this.orgName) ;
+	Organization org = (Organization) this.ms.getOrgs().get(this.orgName) ;
 	ArrayList<String> result = mpServer.removeFromEnvironmnt(org, this); 
 	return result;
 }

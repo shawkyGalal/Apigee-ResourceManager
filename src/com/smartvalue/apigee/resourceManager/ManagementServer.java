@@ -66,14 +66,17 @@ public class ManagementServer extends Server{
 		serverProfile = m_serverProfile; 
 	}
    
-	public HashMap <String , Organization>  getOrgs() throws UnirestException, IOException {
+	public HashMap <String , Object>  getOrgs() throws UnirestException, IOException {
 		
 		String apiPath = "/v1/o/" ; 
 		String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ; 
-		HashMap <String , Organization> result = new HashMap <String , Organization> () ; 
+		HashMap <String , Object> result = new HashMap <String , Object> () ; 
 		for (String orgname : orgNames )
 		{
-			result.put(orgname  , new Organization(this , orgname)) ; 
+			String path2 = "/v1/o/" + orgname ; 
+			Organization org = this.executeGetMgmntAPI(path2 , Organization.class) ;
+			org.setManagmentServer(this);
+			result.put(orgname  , org) ; 
 		}
 		return result ; 
 	}

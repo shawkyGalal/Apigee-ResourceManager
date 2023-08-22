@@ -39,8 +39,8 @@ public class Tester {
 		 //String proxyName = "DZIT" ;
 
 		ManagementServer ms = new ManagementServer(infra) ; 
-		Organization org = ms.getOrgs().get(orgName) ;  
-		Environment env = org.getEnvs().get(envName);
+		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
+		Environment env = (Environment) org.getEnvs().get(envName);
 
 		
 		//ProductsServices   productServices = ms.getProductServices(orgName) ; 
