@@ -28,15 +28,15 @@ public class Tester {
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		String orgName = "stg" ; 
-		String envName = "cert-protected" ; 
-		String proxyName = "oidc-core" ; 
+		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		//String orgName = "stg" ; 
+		//String envName = "cert-protected" ; 
+		//String proxyName = "oidc-core" ; 
 		
-		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 //String orgName =  "smart-value"  ; // "stg" ; 
-		 //String envName = "prod"  ; // "iam-protected"
-		//String proxyName = "DZIT" ;
+		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 String orgName =  "smart-value"  ; // "stg" ; 
+		 String envName = "prod"  ; // "iam-protected"
+		 String proxyName = "DZIT" ;
 
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = ms.getOrgs().get(orgName) ;  

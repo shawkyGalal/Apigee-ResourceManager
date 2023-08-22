@@ -20,7 +20,7 @@ import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
-
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 
@@ -255,6 +255,14 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public KvmServices getKeyValueMapServices(String m_orgName, String m_envName )
 	{
 		KvmServices  srv = new KvmServices(this , m_orgName, m_envName) ; 
+		srv.setMs(this);
+		return srv;
+		
+	}
+	
+	public ProxyServices getProxyServices(String m_orgName )
+	{
+		ProxyServices  srv = new ProxyServices(this , m_orgName) ; 
 		srv.setMs(this);
 		return srv;
 		
