@@ -17,10 +17,10 @@ public ProductsServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
 	}
 
-public  ArrayList <String> getProductsWithoutProxies() throws UnirestException, IOException
+public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, IOException
 {
 	Organization m_org= (Organization) this.getMs().getOrgs().get(this.orgName) ; 
-	ArrayList <String> result = new ArrayList <String> () ; 
+	ArrayList <Object> result = new ArrayList <Object> () ; 
 	ArrayList<String> all = m_org.getAllProductsNames() ; 
 	System.out.println("======== Processing "+all.size()+" Products ==========  " );
 	int counter = 1 ; 

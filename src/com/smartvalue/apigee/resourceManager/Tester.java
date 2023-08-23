@@ -59,10 +59,9 @@ public class Tester {
 		HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 		System.out.println(allTargetServers);
 		
-		ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
+		ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
-		
-		
+ 		
 		List<MPServer> envMpServers = env.getMessageProcesors("dc-1") ;
 		boolean healthy = envMpServers.get(0).healthCheck() ;
 		ArrayList<String> result = envMpServers.get(0).removeFromEnvironmnt(org , env ) ; 
