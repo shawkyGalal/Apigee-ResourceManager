@@ -12,18 +12,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.jsonschema2pojo.DefaultGenerationConfig;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jackson2Annotator;
-import org.jsonschema2pojo.SchemaGenerator;
-import org.jsonschema2pojo.SchemaMapper;
-import org.jsonschema2pojo.SchemaStore;
-import org.jsonschema2pojo.SourceType;
-import org.jsonschema2pojo.rules.RuleFactory;
 
 import com.google.gson.Gson;
 import com.smartvalue.apigee.configuration.infra.Infra;
-import com.sun.codemodel.JCodeModel;
+
 
 public class ApigeeConfig {
 	
@@ -103,42 +95,6 @@ public class ApigeeConfig {
 
 	public HashMap<String , HashMap<String , HashMap<String , Infra> > > getPartnersMap() {
 		return partnersMap;
-	}
-	
-	public void generateJavaClassFromJson(String jsonObject , String m_ClassName , String m_packageName) throws IOException {
-		//=========Generate Java Classes From Json Object 
-		File f = new File ("src") ;
-		this.convertJsonToJavaClass(jsonObject ,  f, m_packageName, m_ClassName  )  ;
-		//=======
-	}
-	
-	private  void convertJsonToJavaClass(String jsonObject , File outputJavaClassDirectory, String packageName, String javaClassName)			  throws IOException 
-	{
-				
-	    JCodeModel jcodeModel = new JCodeModel();
-
-	    GenerationConfig config = new DefaultGenerationConfig() {
-			    @Override
-			    public boolean isGenerateBuilders() 
-			    {
-				     return true;
-				}
-		
-				@Override
-				public SourceType getSourceType() 
-				{
-				   return SourceType.JSON;
-				}
-		 };
-
-		 	SchemaGenerator schemaGenerator = new SchemaGenerator();
-	        Jackson2Annotator annotator = new Jackson2Annotator(config);
-	        SchemaStore schemaStore = new SchemaStore() ; 
-	        RuleFactory ruleFactory = new RuleFactory(config, annotator, schemaStore) ;
-	                
-	        SchemaMapper mapper01 = new SchemaMapper( ruleFactory , schemaGenerator );
-			mapper01.generate(jcodeModel, javaClassName, packageName, jsonObject) ; 
-	 		jcodeModel.build(outputJavaClassDirectory);
 	}
 	
 

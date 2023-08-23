@@ -3,6 +3,7 @@ package com.smartvalue.apigee.rest.schema.proxyRevision;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -59,6 +60,26 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			}
 		}
 		return result ; 
+	}
+	/**
+	 * Checks if this proxy revision is using a policy with the given names - useful to check validity of the proxy to conform to standards and uses a shared flow like ELK-Logger 
+	 * @param policynames
+	 * @return
+	 */
+	public boolean isUsingPolicy(String[] policynames )
+	{
+		boolean result = false ; 
+		for (String policyname : policynames )
+		{
+			List<String> polices = this.getPolicies() ; 
+			if ( polices.contains(policyname) )
+			{
+				result = true ; 
+				break ; 
+			}
+		}
+		return result;
+		
 	}
 
 }

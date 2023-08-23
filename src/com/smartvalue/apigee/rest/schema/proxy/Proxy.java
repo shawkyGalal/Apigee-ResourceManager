@@ -92,6 +92,45 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 		return result ; 
 	}
 	
+	public ArrayList<Object> getRevisionsNotUsingPolices(String[] policies  , boolean m_deployedVersionOnly) throws UnirestException, IOException
+	{
+		ArrayList<Object> result = new ArrayList<Object>() ; 
+		 
+		ProxyRevision pr ; 
+		if (m_deployedVersionOnly) 
+		{ 
+			ProxyDeployment deployments  = this.getDeployments() ; 
+		
+				for ( Environment e : deployments.getEnvironment() ) 
+				{
+					for ( Revision rev : e.getRevision() )
+					{
+						pr = this.getRevision(rev.getName()) ;
+						if ( ! pr.isUsingPolicy(policies)  )
+						{
+							result.add(rev.getName() ) ; 
+						}
+					}
+				}
+			
+		}
+		else 
+		{
+			List<String> allRevisions = this.getRevision();
+			for (String rev : allRevisions )
+			{
+				pr = this.getRevision(rev);
+				if ( ! pr.isUsingPolicy(policies) )
+				{
+					result.add(rev) ; 
+				}
+			}
+		}
+		
+				
+		return result ; 
+	}
+	
 	
 
 

@@ -2,10 +2,13 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 public class ProxyServices extends Service {
 
@@ -16,10 +19,9 @@ public class ProxyServices extends Service {
 	@SuppressWarnings("unchecked")
 	public ArrayList<Proxy>  getAllProxies() throws UnirestException, IOException
 	{
-		ArrayList<String> proxiesName = null; 
-		String apiPath = "/v1/o/"+this.orgName+"/apis" ; 
-		ManagementServer ms = this.getMs() ; 
-		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
+		ArrayList<String> proxiesName = getAllProxiesNames() ; 
+		ManagementServer ms = this.getMs() ;
+		String apiPath = "/v1/o/"+orgName+"/apis" ; 
 		ArrayList<Proxy> proxies = new ArrayList<Proxy>() ; 
 		for (String proxyName : proxiesName)
 		{
@@ -42,5 +44,38 @@ public class ProxyServices extends Service {
 		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		return proxiesName ;  
 	}
+	
+	/**
+	 * REturn a MashMap with proxyname and revision numbers that Does uses the given polices  
+	 * @param m_polices
+	 * @param m_deployedVersionOnly
+	 * @return
+	 * @throws UnirestException
+	 * @throws IOException
+	 */
+	public HashMap<String , ArrayList<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws UnirestException, IOException
+	{
+		HashMap<String , ArrayList<Object>> result = new HashMap<String , ArrayList<Object>>() ; 
+		ArrayList<String> proxiesName = getAllProxiesNames() ; 
+		ManagementServer ms = this.getMs() ;
+		Organization org = (Organization) ms.getOrgs().get(this.orgName) ;
+		int count = 0 ; 
+		System.out.println("===============Start Searching for Proxies ("+proxiesName.size()+") Does not Use Polices with names " +  m_polices +"=======");
+		for (String proxyName : proxiesName )
+		{   count++; 
+			System.out.print(count + "- Processing Proxy " + proxyName );
+			Proxy proxy = org.getProxy(proxyName);
+			ArrayList<Object> revisionWithoutPolices = proxy.getRevisionsNotUsingPolices(m_polices , m_deployedVersionOnly) ; 
+			if (revisionWithoutPolices.size() > 0 )
+			{  System.out.println("....  Found in revision(s)" +  revisionWithoutPolices );
+				result.put(proxyName , revisionWithoutPolices ) ;
+			}
+			else {System.out.println("...   Ok " );}
+		}
+		System.out.println("===============End Searching for Proxies ("+proxiesName.size()+") =======");
+		return result;
+		
+	}
+	
 
 }
