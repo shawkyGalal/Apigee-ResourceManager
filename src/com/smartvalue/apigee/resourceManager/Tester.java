@@ -28,15 +28,17 @@ public class Tester {
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		String orgName = "stg" ; 
-		String envName = "cert-protected" ; 
-		String proxyName = "oidc-core" ; 
+		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		//String orgName = "stg" ; 
+		//String envName = "cert-protected" ; 
+		//String proxyName = "oidc-core" ;
+		//String region = "dc-1" ; 
 		
-		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 //String orgName =  "smart-value"  ; // "stg" ; 
-		 //String envName = "prod"  ; // "iam-protected"
-		 //String proxyName = "DZIT" ;
+		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 String orgName =  "smart-value"  ; // "stg" ; 
+		 String envName = "prod"  ; // "iam-protected"
+		 String proxyName = "DZIT" ;
+		 String region = "dc-1" ; 
 
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
@@ -51,8 +53,10 @@ public class Tester {
 		//HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server" , true) ; 
 		//System.out.println(xx);
 		
-		//HashMap<String, Proxy> allProxies = org.getAllProxies();
-		//HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
+		HashMap<String, Proxy> allProxies = org.getAllProxies();
+		Renderer.hashMaptoHtmlTable(allProxies); 
+		
+		HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 		//System.out.println(proxies);
 		String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
 		ms.getProxyServices(orgName).getProxiesWithoutPolices(aa, true) ; 
@@ -62,22 +66,29 @@ public class Tester {
 		ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
  		
-		List<MPServer> envMpServers = env.getMessageProcesors("dc-1") ;
-		boolean healthy = envMpServers.get(0).healthCheck() ;
-		ArrayList<String> result = envMpServers.get(0).removeFromEnvironmnt(org , env ) ; 
-		result = envMpServers.get(0).addToEnvironmnt(org , env ) ; 
-		System.out.println(envMpServers);
 		
-		result = env.removeMessageProcessor(envMpServers.get(0)) ; 
-		result = env.addMessageProcessor(envMpServers.get(0)) ;
+		List<MPServer> envMpServers = env.getMessageProcesors(region) ;
+		Renderer.arrayListToHtmlTable(envMpServers) ; 
+
+		MPServer mps = ((MPServer)envMpServers.get(0)) ;
+		
+		boolean healthy = mps.healthCheck() ;
+		ArrayList<String> result = mps.removeFromEnvironmnt(org , env ) ; 
+		Renderer.arrayListToHtmlTable(result) ;
+		
+		result = mps.addToEnvironmnt(org , env ) ; 
+		Renderer.arrayListToHtmlTable(result) ;
+		
+		result = env.removeMessageProcessor(mps) ; 
+		result = env.addMessageProcessor(mps) ;
 		
 		ServerServices ss = ms.getServerServices() ; 
-		List<Server>  gatewayServers = ss.getServers("gateway") ;
-		List<Server>  analyticsServers = ss.getServers("analytics") ;
-		List<Server>  centralServers = ss.getServers("central") ;
-		List<MPServer> allMpServers = ss.getAllMessageProcessorServers(); 
-		List<Router> routerServers =  ss.getAllRouterServers();
-		List<Postgres> potgresServers = ss.getAllPostgres(); 
+		List<Server>  gatewayServers = ss.getServers("gateway" , region) ;
+		List<Server>  analyticsServers = ss.getServers("analytics" , region ) ;
+		List<Server>  centralServers = ss.getServers("central" , region) ;
+		List<MPServer> allMpServers = ss.getAllMessageProcessorServers(region); 
+		List<Router> routerServers =  ss.getAllRouterServers(region);
+		List<Postgres> potgresServers = ss.getAllPostgres(region); 
 		
 		System.out.println(gatewayServers);
 	

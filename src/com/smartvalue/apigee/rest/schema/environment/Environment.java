@@ -66,7 +66,6 @@ public List<MPServer> getMessageProcesors(String m_region) throws UnirestExcepti
 	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<MPServer>>() {}.getType();
-	@SuppressWarnings("deprecation")
 	List<MPServer> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ;
 	List<MPServer> filteredMpServers = new ArrayList<MPServer>() ; 
 	for (MPServer server : serversArray )

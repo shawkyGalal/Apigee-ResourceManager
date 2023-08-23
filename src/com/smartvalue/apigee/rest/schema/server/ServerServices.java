@@ -19,13 +19,21 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Server>  getServers(String m_pod) throws UnirestException, IOException
+	public List<Server>  getServers(String m_pod , String m_region) throws UnirestException, IOException
 	{
 		String apiPath = "/v1/servers?pod="+m_pod ; 
 		// === Thanks To ChatGPT 
 		Type listType = new TypeToken<List<Server>>() {}.getType();
-		List<Server> serversArray = this.getMs().executeMgmntAPI(apiPath , listType ) ; 
-		return serversArray ; 
+		List<Server> serversArray = this.getMs().executeMgmntAPI(apiPath , listType ) ;
+		List<Server> result = new ArrayList<Server> () ; 
+		for (Server server : serversArray)
+		{
+			if (server.getRegion().contains(m_region))
+			{
+				result.add(server) ; 
+			}
+		}
+		return result ; 
 	}
 
 	/**
@@ -38,7 +46,7 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	 * @throws UnirestException
 	 * @throws IOException
 	 */
-	private <T> List<T>  getAllServersOfType(String m_pod , Class<T> classOfT ) throws UnirestException, IOException
+	private <T> List<T>  getAllServersOfType(String m_pod , String m_region  , Class<T> classOfT ) throws UnirestException, IOException
 	{
 		boolean isMessageProcesor = classOfT.equals(MPServer.class) ;
 		boolean isRouter = classOfT.equals(Router.class) ;
@@ -47,7 +55,7 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 		String serverType = (isMessageProcesor) ? "message-processor" : ((isRouter)? "router": (isPostgres)? "postgres-server":"Not Yet" );  
 		List<T> result = new ArrayList<T>() ; 
 		 
-		for (Server server : this.getServers(m_pod) )
+		for (Server server : this.getServers(m_pod , m_region) )
 		{
 			if (server.getType().contains(serverType))
 			{
@@ -57,23 +65,23 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 		return result; 
 	}
 	
-	public List<MPServer>  getAllMessageProcessorServers() throws UnirestException, IOException
+	public List<MPServer>  getAllMessageProcessorServers(String m_region) throws UnirestException, IOException
 	{
-		List<MPServer> result = (List<MPServer> ) getAllServersOfType("gateway" , MPServer.class ) ;
+		List<MPServer> result = (List<MPServer> ) getAllServersOfType("gateway" , m_region , MPServer.class ) ;
 		
 		return result ; 
 	}
 	
-	public List<Router>  getAllRouterServers() throws UnirestException, IOException
+	public List<Router>  getAllRouterServers(String m_region) throws UnirestException, IOException
 	{
-		List<Router> result = (List<Router> ) getAllServersOfType("gateway" , Router.class ) ;
+		List<Router> result = (List<Router> ) getAllServersOfType("gateway" , m_region ,  Router.class ) ;
 		
 		return result ; 
 	}
 	
-	public List<Postgres>  getAllPostgres() throws UnirestException, IOException
+	public List<Postgres>  getAllPostgres(String m_region) throws UnirestException, IOException
 	{
-		List<Postgres> result = (List<Postgres> ) getAllServersOfType("analytics" , Postgres.class ) ;
+		List<Postgres> result = (List<Postgres> ) getAllServersOfType("analytics" , m_region ,  Postgres.class ) ;
 		
 		return result ; 
 	}

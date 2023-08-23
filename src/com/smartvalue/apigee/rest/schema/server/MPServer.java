@@ -3,7 +3,6 @@ package com.smartvalue.apigee.rest.schema.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.environment.Environment;

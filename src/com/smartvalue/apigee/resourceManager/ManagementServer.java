@@ -105,7 +105,8 @@ public class ManagementServer extends Server{
 		return hostUrl ; 
 	}
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
-		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		//Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		Unirest.setTimeouts(0, 0);
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
 		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath)
@@ -169,7 +170,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; // Primitives.wrap(classOfT).cast(result);
 	} 
 	
-	public <T> T executeMgmntAPI(String m_apiPath, Type listType) throws UnirestException, IOException 
+	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT) throws UnirestException, IOException 
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getGetHttpResponse(m_apiPath) ;
@@ -177,7 +178,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		{
 			
 			Gson gson = new Gson();
-			result = gson.fromJson(response.getBody(),  listType);
+			result = gson.fromJson(response.getBody(),  typeOfT);
 		} 
 		else {
 			throw new UnirestException ( response.getBody()) ; 

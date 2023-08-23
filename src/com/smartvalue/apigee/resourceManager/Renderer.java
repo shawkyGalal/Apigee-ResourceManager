@@ -32,7 +32,7 @@ public class Renderer {
 		return result.toString();
 	}
 	
-	public static String hashMaptoHtmlTable(HashMap<String , Object> m_object)
+	public static String hashMaptoHtmlTable(HashMap<String , ? extends Object > m_object)
 	{
 		StringBuffer result = new StringBuffer() ;
 		result.append("<table border = 1>") ;
@@ -50,7 +50,7 @@ public class Renderer {
 				{result.append(obj) ;}
 				else if (obj instanceof HashMap) 
 				{
-					result.append ( hashMaptoHtmlTable((HashMap<String, Object>) obj) ) ; 
+					result.append ( hashMaptoHtmlTable((HashMap<String, ? extends Object>) obj) ) ; 
 				}
 				else 
 				{
@@ -105,6 +105,10 @@ public class Renderer {
 		                {
 		                	htmlTable.append(hashMaptoHtmlTable((HashMap<String, Object>) value));
 		                }
+		                else if (fieldClass.getName().equalsIgnoreCase("java.lang.Boolean") )
+		                {
+		                	htmlTable.append(value);
+		                }
 		                else if (fieldClass.getName().equalsIgnoreCase("com.smartvalue.apigee.resourceManager.ManagementServer") )
 		                {
 		                	htmlTable.append("******");
@@ -157,7 +161,8 @@ public class Renderer {
 	        return htmlTable.toString();
 	    }
 	    
-	    public static String arrayListToHtmlTable(List<Object> array) {
+	    
+	    public static String arrayListToHtmlTable(List<? extends Object> array) {
 	        StringBuilder htmlTable = new StringBuilder("<table><tr><th>Index</th><th>Value</th></tr>");
 	        //int length = Array.getLength(array);
 	        int i =0 ; 
