@@ -33,7 +33,7 @@ public class MetaData {
     @JsonProperty("subType")
     private String subType;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("createdAt")
     public Long getCreatedAt() {

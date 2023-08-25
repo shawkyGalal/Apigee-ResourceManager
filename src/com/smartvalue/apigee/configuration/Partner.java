@@ -7,7 +7,6 @@ import com.smartvalue.apigee.configuration.infra.Infra;
 
 public class Partner {
 	private ArrayList<Customer> Customers ;
-	//private HashMap<String , HashMap<String , Infra>> CustomersMap  = new HashMap<String , HashMap<String, Infra>> () ;
 	private String Name ;  
 
 	public String getName() {
@@ -28,11 +27,11 @@ public class Partner {
 	}
 
 	public HashMap<String, HashMap<String, Infra>> getCustomersMap() {
-		HashMap<String, HashMap<String, Infra>> result = new HashMap<String, HashMap<String, Infra>>() ; 
+		HashMap<String, HashMap<String, Infra>> result = new HashMap<>() ; 
 		for (Customer cust : this.getCustomers())
 		{
 			
-			HashMap<String, Infra> infraMap = new HashMap<String, Infra>() ; 
+			HashMap<String, Infra> infraMap = new HashMap<>() ; 
 			for ( Infra infra : cust.getInfras())
 			{
 				infraMap.put(infra.getName() , infra) ; 

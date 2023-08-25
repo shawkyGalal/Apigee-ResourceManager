@@ -28,6 +28,7 @@ import com.smartvalue.apigee.rest.schema.server.ServerServices;
 public class ManagementServer extends Server{
 	
 	MyServerProfile serverProfile ;  
+	HashMap <String , Organization> orgs = new HashMap <String , Organization>(); 
 
 	public ManagementServer(Infra m_infra  ) throws UnirestException 
 	{
@@ -66,21 +67,44 @@ public class ManagementServer extends Server{
 		serverProfile = m_serverProfile; 
 	}
    
-	public HashMap <String , Object>  getOrgs() throws UnirestException, IOException {
-		
-		String apiPath = "/v1/o/" ; 
-		String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ; 
-		HashMap <String , Object> result = new HashMap <String , Object> () ; 
-		for (String orgname : orgNames )
-		{
-			String path2 = "/v1/o/" + orgname ; 
-			Organization org = this.executeGetMgmntAPI(path2 , Organization.class) ;
-			org.setManagmentServer(this);
-			result.put(orgname  , org) ; 
-		}
-		return result ; 
+	public ArrayList<String> getRegions() throws UnirestException, IOException {
+		// TODO Auto-generated method stub
+		 String apiPath = "/v1/regions/" ; 
+		 @SuppressWarnings("unchecked")
+		ArrayList<String> result  = this.executeGetMgmntAPI(apiPath , ArrayList.class) ; 
+		return result;
 	}
-
+	
+	public ArrayList<String> getRegionPods(String m_region) throws UnirestException, IOException {
+		// TODO Auto-generated method stub
+		 String apiPath = "/v1/regions/"+ m_region ; 
+		 @SuppressWarnings("unchecked")
+		ArrayList<String> result  = this.executeGetMgmntAPI(apiPath , ArrayList.class) ; 
+		return result;
+	}
+	
+	public HashMap <String , Organization>  getOrgs() throws UnirestException, IOException {
+		return this.getOrgs(false) ; 
+	}
+	public HashMap <String , Organization>  getOrgs(boolean m_refresh) throws UnirestException, IOException {
+		if (orgs.size() ==0  || m_refresh )
+		{
+			String apiPath = "/v1/o/" ; 
+			String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ;  
+			for (String orgname : orgNames )
+			{
+				String path2 = "/v1/o/" + orgname ; 
+				Organization org = this.executeGetMgmntAPI(path2 , Organization.class) ;
+				org.setManagmentServer(this);
+				orgs.put(orgname  , org) ; 
+			}
+		}
+		return orgs ; 
+	}
+	public Organization getOrgByName(String m_org) throws UnirestException, IOException
+	{
+		return (Organization) this.getOrgs().get(m_org) ; 
+	}
 	private String  getAuthorizationHeader()
 	{
 		String authorization = null ; 
@@ -271,4 +295,6 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return srv;
 		
 	}
+
+
 }

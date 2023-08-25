@@ -10,7 +10,8 @@ import java.util.List;
 
 public class Renderer {
 	
-	public static String hashMapWithArraylisttoHtmlTable(HashMap<String , ArrayList<Object>> m_object)
+	
+	public static String hashMapWithArraylisttoHtmlTable(HashMap<String , List<Object>> m_object)
 	{
 		StringBuffer result = new StringBuffer() ;
 		result.append("<table border = 1>") ;
@@ -23,7 +24,7 @@ public class Renderer {
 				result.append("</td>") ;
 				
 				result.append("<td>") ;
-				ArrayList<Object> obj = m_object.get(key) ; 
+				ArrayList<Object> obj = (ArrayList<Object>) m_object.get(key) ; 
 				result.append(arrayListToHtmlTable(obj)) ; 
 				result.append("</td>") ;
  			result.append("</tr>") ;

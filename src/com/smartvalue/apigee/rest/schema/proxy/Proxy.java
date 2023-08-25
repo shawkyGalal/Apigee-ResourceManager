@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.configuration.filteredList.FilteredList;
+import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
@@ -40,7 +42,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	@SuppressWarnings("unchecked")
 	public HashMap<Integer , ProxyRevision>  getAllRevision( ) throws UnirestException, IOException
 	{
-		HashMap<Integer , ProxyRevision> result = new HashMap<Integer , ProxyRevision> ();
+		HashMap<Integer , ProxyRevision> result = new HashMap<> ();
 		List<String> revisions = this.getRevision(); 
 		for (String revision : revisions )
 		{
@@ -53,7 +55,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	
 	public HashMap<String ,  ArrayList<String>> getRevisionsUsesTargetServer(String m_targetServerName , boolean m_deployedVersionOnly) throws UnirestException, IOException
 	{
-		HashMap<String , ArrayList<String>> result = new HashMap<String , ArrayList<String>>() ; 
+		HashMap<String , ArrayList<String>> result = new HashMap<>() ; 
 		ArrayList<String> targetEndpointsUsesTargetServer ; 
 		ProxyRevision pr ; 
 		if (m_deployedVersionOnly) 
@@ -94,14 +96,14 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	
 	public ArrayList<Object> getRevisionsNotUsingPolices(String[] policies  , boolean m_deployedVersionOnly) throws UnirestException, IOException
 	{
-		ArrayList<Object> result = new ArrayList<Object>() ; 
+		ArrayList<Object> result = new ArrayList<>() ; 
 		 
 		ProxyRevision pr ; 
 		if (m_deployedVersionOnly) 
 		{ 
 			ProxyDeployment deployments  = this.getDeployments() ; 
-		
-				for ( Environment e : deployments.getEnvironment() ) 
+			List<Environment> allEnvs =  deployments.getEnvironment() ; 
+			for ( Environment e : allEnvs ) 
 				{
 					for ( Revision rev : e.getRevision() )
 					{

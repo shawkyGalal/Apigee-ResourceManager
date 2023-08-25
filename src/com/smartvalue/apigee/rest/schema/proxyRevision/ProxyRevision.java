@@ -20,7 +20,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	
 	public HashMap<String , Object >  getTargetEndPointDetails(  ) throws UnirestException, IOException
 	{
-		HashMap<String , Object > result = new HashMap<String , Object >() ; 
+		HashMap<String , Object > result = new HashMap<>() ; 
 		for (Object targetEndpoint :   this.getTargetEndpoints())
 		{
 			String path = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision() + "/targets/"+(String) targetEndpoint  ; 

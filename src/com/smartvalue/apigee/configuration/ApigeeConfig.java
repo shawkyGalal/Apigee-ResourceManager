@@ -21,7 +21,7 @@ public class ApigeeConfig {
 	
 	private ArrayList<Partner> Partners ;
 	
-	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<String , HashMap<String , HashMap<String , Infra> > > () ; 
+	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
 
 	public ApigeeConfig (String  m_apigeeConfigFilePath) throws FileNotFoundException , IOException
 	{

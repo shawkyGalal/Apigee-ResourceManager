@@ -3,12 +3,12 @@ package com.smartvalue.apigee.rest.schema.proxy;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 public class ProxyServices extends Service {
 
@@ -53,12 +53,12 @@ public class ProxyServices extends Service {
 	 * @throws UnirestException
 	 * @throws IOException
 	 */
-	public HashMap<String , ArrayList<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws UnirestException, IOException
+	public HashMap<String, List<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws UnirestException, IOException
 	{
-		HashMap<String , ArrayList<Object>> result = new HashMap<String , ArrayList<Object>>() ; 
+		HashMap<String, List<Object>> result = new HashMap<>() ; 
 		ArrayList<String> proxiesName = getAllProxiesNames() ; 
 		ManagementServer ms = this.getMs() ;
-		Organization org = (Organization) ms.getOrgs().get(this.orgName) ;
+		Organization org = (Organization) ms.getOrgByName(this.orgName) ;
 		int count = 0 ; 
 		System.out.println("===============Start Searching for Proxies ("+proxiesName.size()+") Does not Use Polices with names " +  m_polices +"=======");
 		for (String proxyName : proxiesName )

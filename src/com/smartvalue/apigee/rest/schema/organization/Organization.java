@@ -25,7 +25,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	@SuppressWarnings("unchecked")
 	public HashMap<String , Object> getEnvs() throws UnirestException, IOException {
 		ArrayList<String> envNames = null; 
-		HashMap<String , Object > result  = new HashMap<String , Object> () ;
+		HashMap<String , Object > result  = new HashMap<> () ;
 		String apiPath = "/v1/o/"+this.getName() +"/e" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		envNames = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
@@ -46,7 +46,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		String apiPath = "/v1/o/"+this.getName()+"/apis" ; 
 		ManagementServer ms = this.getManagmentServer() ;
 		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
-		HashMap<String , Proxy> proxies = new HashMap<String , Proxy>() ; 
+		HashMap<String , Proxy> proxies = new HashMap<>() ; 
 		for (String proxyName : proxiesName)
 		{
 			String apiPath01 = apiPath + "/" + proxyName ; 
@@ -71,7 +71,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	public HashMap < String , Object > getAllProxiesUsesTargetServer(String m_targetServerName , boolean m_deployedVersionOnly) throws UnirestException, IOException
 	{
-		HashMap < String , Object > result = new HashMap < String , Object >() ;
+		HashMap < String , Object > result = new HashMap < >() ;
 		ArrayList<String> allProxies = getAllProxiesNames(); 
 		int counter = 1;
 		System.out.println("======== Searching over " + allProxies.size()  +  "  Proxies Using Target Server "+m_targetServerName+"===" ) ;  
@@ -147,7 +147,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		ArrayList<String> apis = this.getAllProxiesNames();
 		ArrayList<Object> proxiesNotDeployed = new ArrayList<Object>();  
-		HashMap<String , String> proxiesFailed = new HashMap<String , String>();
+		HashMap<String , String> proxiesFailed = new HashMap<>();
 		int count =1 ; 
 		for (String proxyname : apis )
 		{
@@ -189,5 +189,12 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		result = ms.executeGetMgmntAPI(apiPath , Product.class ) ; 
 		return result;
 		
+	}
+
+	public Environment getEnv(String m_envName) throws UnirestException, IOException {
+		ManagementServer ms = this.getManagmentServer() ;
+		String apiPath = "/v1/o/"+this.getName() +"/e" ; 
+		Environment env = ms.executeGetMgmntAPI(apiPath +"/" + m_envName , Environment.class ) ;
+		return env;
 	}
 }

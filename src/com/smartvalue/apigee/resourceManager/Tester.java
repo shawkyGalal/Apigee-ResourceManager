@@ -45,19 +45,19 @@ public class Tester {
 		Environment env = (Environment) org.getEnvs().get(envName);
 
 		
-		//ProductsServices   productServices = ms.getProductServices(orgName) ; 
-		//ArrayList<String>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
-		//System.out.println(productsWithoutProxies); 
+		ProductsServices   productServices = ms.getProductServices(orgName) ; 
+		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
+		System.out.println(productsWithoutProxies); 
 		
-		//Proxy proxy = org.getProxy(proxyName); 
-		//HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server" , true) ; 
-		//System.out.println(xx);
+		Proxy proxy = org.getProxy(proxyName); 
+		HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server" , true) ; 
+		System.out.println(xx);
 		
 		HashMap<String, Proxy> allProxies = org.getAllProxies();
 		Renderer.hashMaptoHtmlTable(allProxies); 
 		
 		HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
-		//System.out.println(proxies);
+		System.out.println(proxies);
 		String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
 		ms.getProxyServices(orgName).getProxiesWithoutPolices(aa, true) ; 
 		HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  

@@ -9,7 +9,7 @@ public class Customer {
 	
 	private String Name ; 
 	private ArrayList<Infra> Infras ;
-	private HashMap<String , Infra> InfrasMap = new HashMap<String , Infra>();
+	private HashMap<String , Infra> InfrasMap = new HashMap<>();
 
 	public ArrayList<Infra> getInfras() {
 		return Infras;

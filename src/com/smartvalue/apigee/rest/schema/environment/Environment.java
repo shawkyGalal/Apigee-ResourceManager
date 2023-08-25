@@ -43,7 +43,7 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
 	String[] targetServersNames = null; 
 	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/targetservers" ; 
 	targetServersNames = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ; 
-	HashMap<String , TargetServer> tss = new HashMap<String , TargetServer>() ; 
+	HashMap<String , TargetServer> tss = new HashMap<>() ; 
 	for ( String  tsName : targetServersNames )
 	{
 		String targetServerApiPath = apiPath + "/"+ tsName ; 
@@ -109,14 +109,14 @@ public String[]  getAllVirtualHosts() throws UnirestException, IOException
 
 public ArrayList<String> addMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = (Organization) this.ms.getOrgs().get(this.orgName) ;
+	Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
 	ArrayList<String> result = mpServer.addToEnvironmnt(org, this); 
 	return result;
 }
 
 public ArrayList<String> removeMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = (Organization) this.ms.getOrgs().get(this.orgName) ;
+	Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
 	ArrayList<String> result = mpServer.removeFromEnvironmnt(org, this); 
 	return result;
 }

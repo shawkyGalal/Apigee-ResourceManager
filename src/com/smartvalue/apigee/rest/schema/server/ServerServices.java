@@ -3,11 +3,15 @@ package com.smartvalue.apigee.rest.schema.server;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.resourceManager.Renderer;
+import com.smartvalue.apigee.rest.schema.environment.Environment;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 
@@ -85,6 +89,27 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 		
 		return result ; 
 	}
+	
+	   public HashMap<String , HashMap< String , List<MPServer>> >  getAllEnvsMessageProcessors(String m_org) throws Exception
+	    {
+	    	Organization orgObj = (Organization) this.getMs().getOrgByName(m_org) ;
+	    	List<String> regions = this.getMs().getRegions() ;
+	    	HashMap<String , HashMap< String , List<MPServer>> > result = new HashMap<> () ; 
+	    	for (String region : regions)
+	    	{
+	    		List<String> envs =  orgObj.getEnvironments() ; 
+	    		for (String env : envs )
+	    		{
+	    			Environment envObj = orgObj.getEnv(env) ;
+	    			List<MPServer> mps = envObj.getMessageProcesors(region) ;
+	    			HashMap<String , List<MPServer>> envMps = new  HashMap<String , List<MPServer>>();
+	    			envMps.put(env , mps) ; 
+	    			result.put(region , envMps ) ; 
+	    		}
+	    	}
+	    	return result ; 
+	    	
+	    }
 
 	
 }
