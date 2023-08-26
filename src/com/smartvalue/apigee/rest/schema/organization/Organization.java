@@ -181,20 +181,24 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		return allProducts ; 
 		
 	}
-	public Product getProduct(String m_productName) throws UnirestException, IOException
+	public Product getProductByName(String m_productName) throws UnirestException, IOException
 	{
 		Product result ; 
 		String apiPath = "/v1/o/"+this.getName()+"/apiproducts/"+ m_productName ;
 		ManagementServer ms = this.getManagmentServer() ;
-		result = ms.executeGetMgmntAPI(apiPath , Product.class ) ; 
+		result = ms.executeGetMgmntAPI(apiPath , Product.class ) ;
+		result.setManagmentServer(ms);
+		result.setOrgName(this.getName()) ; 
 		return result;
 		
 	}
 
-	public Environment getEnv(String m_envName) throws UnirestException, IOException {
+	public Environment getEnvByName(String m_envName) throws UnirestException, IOException {
 		ManagementServer ms = this.getManagmentServer() ;
 		String apiPath = "/v1/o/"+this.getName() +"/e" ; 
 		Environment env = ms.executeGetMgmntAPI(apiPath +"/" + m_envName , Environment.class ) ;
+		env.setMs(ms) ;
+		env.setOrgName(this.getName()) ; 
 		return env;
 	}
 }

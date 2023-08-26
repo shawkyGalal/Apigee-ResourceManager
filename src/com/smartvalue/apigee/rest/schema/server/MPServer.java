@@ -10,9 +10,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public class MPServer extends Server {
 	
-	
-	
-	
+
 	private  ArrayList<String>  associateWithEnvironment(Organization org , Environment env , String m_operation ) throws UnirestException, IOException
 	{
 		String path = "/v1/o/"+org.getName()+"/e/"+env.getName()+"/servers" ; 
@@ -30,6 +28,11 @@ public class MPServer extends Server {
 	public ArrayList<String> addToEnvironmnt(Organization org , Environment env ) throws UnirestException, IOException
 	{
 		return associateWithEnvironment(org , env , "add" ) ; 
+	}
+	
+	public String getSimpleName()
+	{
+		return "message-processor" ; 
 	}
 	
 }

@@ -5,7 +5,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 
-public class Server extends com.smartvalue.apigee.rest.schema.server.auto.Server{
+public  class Server extends com.smartvalue.apigee.rest.schema.server.auto.Server{
 
 	public boolean healthCheck()
 	{
@@ -26,4 +26,11 @@ public class Server extends com.smartvalue.apigee.rest.schema.server.auto.Server
 		return result;
 		
 	}
+
+	public  String getSimpleName() 
+	{
+		return "general purpose Server " ; 
+	}
+
+	  
 }

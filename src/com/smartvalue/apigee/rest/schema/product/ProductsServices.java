@@ -27,7 +27,7 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 	for (String productName : all )
 	{
 		System.out.print(counter + "-Checking Product :" + productName);
-		Product product = m_org.getProduct(productName) ;
+		Product product = m_org.getProductByName(productName) ;
 		int size = product.getProxies().size() ; 
 		if (size == 0 )
 		{

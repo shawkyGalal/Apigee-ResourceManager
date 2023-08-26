@@ -200,11 +200,16 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		HttpResponse<String> response = this.getGetHttpResponse(m_apiPath) ;
 		if (Helper.isConsideredSuccess(response.getStatus()) )   
 		{
-			
 			Gson gson = new Gson();
 			result = gson.fromJson(response.getBody(),  typeOfT);
 		} 
 		else {
+			if (response.getBody().contains("Access Token expired"))
+			{
+				this.reNewAccessToken() ; 
+				executeMgmntAPI(m_apiPath, typeOfT) ; 
+			}
+			else 
 			throw new UnirestException ( response.getBody()) ; 
 		}
 		
@@ -234,6 +239,13 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	
 	
+	private void reNewAccessToken() throws UnirestException {
+		ApigeeAccessToken at = this.getAccess_token() ;
+		this.serverProfile.setBearerToken(at.getAccess_token()) ;
+		this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
+		
+	}
+
 	public ApigeeAccessToken getAccess_token() throws UnirestException
 	{
 		Unirest.setTimeouts(0, 0);
@@ -294,6 +306,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		srv.setMs(this);
 		return srv;
 		
+	}
+
+	@Override
+	public String getSimpleName() {
+		// TODO Auto-generated method stub
+		return "management-server";
 	}
 
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 
 import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -14,6 +15,7 @@ import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Postgres;
+import com.smartvalue.apigee.rest.schema.server.QupidServer;
 import com.smartvalue.apigee.rest.schema.server.Router;
 import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
@@ -28,23 +30,23 @@ public class Tester {
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		
-		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		//String orgName = "stg" ; 
-		//String envName = "cert-protected" ; 
-		//String proxyName = "oidc-core" ;
-		//String region = "dc-1" ; 
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		String orgName = "stg" ; 
+		String envName = "cert-protected" ; 
+		String proxyName = "oidc-core" ;
+		String region = "dc-1" ; 
 		
-		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 String orgName =  "smart-value"  ; // "stg" ; 
-		 String envName = "prod"  ; // "iam-protected"
-		 String proxyName = "DZIT" ;
-		 String region = "dc-1" ; 
+		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 //String orgName =  "smart-value"  ; // "stg" ; 
+		 //String envName = "prod"  ; // "iam-protected"
+		 //String proxyName = "DZIT" ;
+		 //String region = "dc-1" ; 
 
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env = (Environment) org.getEnvs().get(envName);
 
-		
+		/*
 		ProductsServices   productServices = ms.getProductServices(orgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 
@@ -81,14 +83,21 @@ public class Tester {
 		
 		result = env.removeMessageProcessor(mps) ; 
 		result = env.addMessageProcessor(mps) ;
-		
-		ServerServices ss = ms.getServerServices() ; 
-		List<Server>  gatewayServers = ss.getServers("gateway" , region) ;
+		*/
+		ServerServices ss = ms.getServerServices() ;
+		ss.getServers("gateway", region) ; 
+		List<Server>  gatewayServers = ss.getServers("gateway" , region ) ;
 		List<Server>  analyticsServers = ss.getServers("analytics" , region ) ;
-		List<Server>  centralServers = ss.getServers("central" , region) ;
-		List<MPServer> allMpServers = ss.getAllMessageProcessorServers(region); 
-		List<Router> routerServers =  ss.getAllRouterServers(region);
-		List<Postgres> potgresServers = ss.getAllPostgres(region); 
+		List<Server>  centralServers = ss.getServers("central" , region ) ;
+		
+		FilteredList<MPServer> allMpServers = ss.getMPServers(region); 
+		FilteredList<Router> routerServers =  ss.getRouterServers(region);
+		FilteredList<Postgres> potgresServers = ss.getPostgresServers(region); 
+		FilteredList<QupidServer> qupidServers =  ss.getQupidServers(region) ;
+		FilteredList<ManagementServer> mgmServer = ss.getManagementServers(region)  ; 
+		ss.getAllEnvsMessageProcessors(orgName); 
+		
+		ss.getOnlyUpMpServers(region); 
 		
 		System.out.println(gatewayServers);
 	
