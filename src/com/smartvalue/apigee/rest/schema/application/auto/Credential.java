@@ -44,7 +44,7 @@ public class Credential {
     @JsonProperty("status")
     private String status;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    private Map<String, Object> additionalProperties = new HashMap<>();
 
     @JsonProperty("apiProducts")
     public List<ApiProduct> getApiProducts() {
