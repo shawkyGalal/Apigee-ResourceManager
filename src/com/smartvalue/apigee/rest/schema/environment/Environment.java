@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -120,5 +121,19 @@ public ArrayList<String> removeMessageProcessor(MPServer mpServer ) throws Unire
 	ArrayList<String> result = mpServer.removeFromEnvironmnt(org, this); 
 	return result;
 }
+
+public void monitor(ArrayList<CondActionPair> condActionPairs ) throws Exception
+{
+	for (CondActionPair condActionPair : condActionPairs )
+	{
+		boolean conditionMet = condActionPair.getCondition().evaluate() ;
+		if (conditionMet)
+		{
+			condActionPair.getAction().run() ; 
+		}
+	}
+}
+
+
 
 }

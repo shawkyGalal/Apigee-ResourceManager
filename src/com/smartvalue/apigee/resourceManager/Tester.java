@@ -9,6 +9,11 @@ import java.util.List;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
+import com.smartvalue.apigee.environmentsMonitor.EnvironmentAction;
+import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
+import com.smartvalue.apigee.environmentsMonitor.HealthCheckAction;
+import com.smartvalue.apigee.environmentsMonitor.HealthCheckAllMPsCondition;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -110,6 +115,16 @@ public class Tester {
 		String[] allShardFlows = org.getAllShardFlow() ;
 		SharedFlow shardFlow = org.getShardFlow(allShardFlows[1]) ; 
 		System.out.println(shardFlow.toString());
+		
+		//-- Testing Environment Monitoring Framework -- 
+		ArrayList<CondActionPair> condActionPairs = new ArrayList<>() ;
+		EnvironmentCondition ec = new HealthCheckAllMPsCondition(env); 
+		EnvironmentAction ea = new HealthCheckAction(env); 
+		CondActionPair cp = new CondActionPair() ; 
+		cp.setAction(ea); cp.setCondition(ec); 
+		condActionPairs.add(cp);
+		env.monitor(condActionPairs);
+		
 		
 	}
 

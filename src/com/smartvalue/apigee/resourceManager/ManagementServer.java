@@ -21,6 +21,7 @@ import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 
@@ -312,6 +313,11 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public String getSimpleName() {
 		// TODO Auto-generated method stub
 		return "management-server";
+	}
+
+	public ArrayList<MPServer> getFreeMps() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
