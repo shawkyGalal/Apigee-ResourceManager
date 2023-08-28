@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
@@ -89,17 +89,21 @@ public class Tester {
 		result = env.removeMessageProcessor(mps) ; 
 		result = env.addMessageProcessor(mps) ;
 		*/
+		
 		ServerServices ss = ms.getServerServices() ;
 		ss.getServers("gateway", region) ; 
 		List<Server>  gatewayServers = ss.getServers("gateway" , region ) ;
 		List<Server>  analyticsServers = ss.getServers("analytics" , region ) ;
 		List<Server>  centralServers = ss.getServers("central" , region ) ;
 		
-		FilteredList<MPServer> allMpServers = ss.getMPServers(region); 
+		FilteredList<MPServer> regionAllMpServers = ss.getMPServers(region); 
 		FilteredList<Router> routerServers =  ss.getRouterServers(region);
 		FilteredList<Postgres> potgresServers = ss.getPostgresServers(region); 
 		FilteredList<QupidServer> qupidServers =  ss.getQupidServers(region) ;
 		FilteredList<ManagementServer> mgmServer = ss.getManagementServers(region)  ; 
+		List<MPServer> dcMPs= env.getMessageProcesors(region);
+		List<MPServer> drMPs= env.getMessageProcesors("dc-2");
+		
 		ss.getAllEnvsMessageProcessors(orgName); 
 		
 		ss.getOnlyUpMpServers(region); 
@@ -118,8 +122,38 @@ public class Tester {
 		
 		//-- Testing Environment Monitoring Framework -- 
 		ArrayList<CondActionPair> condActionPairs = new ArrayList<>() ;
-		EnvironmentCondition ec = new HealthCheckAllMPsCondition(env); 
-		EnvironmentAction ea = new HealthCheckAction(env); 
+		EnvironmentCondition ec = new EnvironmentCondition(env) 
+			{ 	@Override
+				public boolean evaluate() throws Exception  {
+					boolean result  = true ; 
+					ManagementServer ms = this.getEnv().getMs(); 
+					ArrayList<String> regions = ms.getRegions(); 
+					for (String region : regions)
+					{	List<MPServer> mpservers = this.getEnv().getMessageProcesors(region);
+						for (MPServer mpserver : mpservers )
+						{
+							result = result  && mpserver.healthCheck(); 
+							if (! result) 
+							{
+								break ; 
+							}
+						}
+					}
+					return result ; 
+				}
+			};
+		
+		EnvironmentAction ea = new EnvironmentAction(env) 
+			{	@Override
+				public void run() throws UnirestException, IOException {
+					// TODO Auto-generated method stub
+					// Add one of the free mp's to this env. 
+					Environment env = this.getEnv() ;
+					ArrayList<MPServer> freeMps = env.getMs().getFreeMps() ;
+					env.addMessageProcessor(freeMps.get(0)) ; 
+				}
+			} ; 
+		 
 		CondActionPair cp = new CondActionPair() ; 
 		cp.setAction(ea); cp.setCondition(ec); 
 		condActionPairs.add(cp);

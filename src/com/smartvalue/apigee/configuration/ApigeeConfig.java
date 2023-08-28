@@ -59,7 +59,7 @@ public class ApigeeConfig {
 		return partner ; 
 	}
 	
-	private HashMap<String, Infra> getCustomer(String m_partnerName , String m_customerName) throws Exception {
+	public HashMap<String, Infra> getCustomer(String m_partnerName , String m_customerName) throws Exception {
 		HashMap<String, HashMap<String, Infra>> Partner =  this.getPartner( m_partnerName);
 		HashMap<String, Infra> customer =  Partner.get(m_customerName);
 		if (customer == null)
@@ -96,6 +96,8 @@ public class ApigeeConfig {
 	public HashMap<String , HashMap<String , HashMap<String , Infra> > > getPartnersMap() {
 		return partnersMap;
 	}
+	
+
 	
 
 }
