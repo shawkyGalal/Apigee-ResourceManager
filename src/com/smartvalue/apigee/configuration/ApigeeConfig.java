@@ -24,10 +24,31 @@ public class ApigeeConfig {
 	
 	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
 
+	public ApigeeConfig (File   configFile) throws FileNotFoundException , IOException
+	{
+		parseConfigFile(configFile) ; 
+	}
+	
+	
+	public ApigeeConfig (FileInputStream inputStream) throws FileNotFoundException , IOException
+	{
+		parseConfigFileInputStream(inputStream) ; 
+	}
+	
 	public ApigeeConfig (String  m_apigeeConfigFilePath) throws FileNotFoundException , IOException
 	{
-		File configFile = new File(m_apigeeConfigFilePath) ; //("E:\\MasterWorks\\Eclipse-WS\\ResourceManager\\config.json") ;
+		File configFile = new File(m_apigeeConfigFilePath) ;
+		parseConfigFile(configFile) ; 
+		
+	}
+	
+	private void parseConfigFile(File configFile) throws IOException {
 		FileInputStream inputStream = new FileInputStream(configFile);
+		parseConfigFileInputStream(inputStream) ; 
+	}
+	
+	private void parseConfigFileInputStream(FileInputStream inputStream) throws IOException {
+		//FileInputStream inputStream = new FileInputStream(configFile);
 		fileContent = readFromInputStream(inputStream) ; 
 		Gson gson = new Gson();
 		ApigeeConfig result = null; 
@@ -41,7 +62,7 @@ public class ApigeeConfig {
 		}
 		
 	}
-	
+
 	public ArrayList<Partner> getPartners() {
 		return Partners;
 	}

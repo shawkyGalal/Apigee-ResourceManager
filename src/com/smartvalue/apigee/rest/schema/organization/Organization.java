@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.rest.schema.developer.Developer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
@@ -201,4 +202,23 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		env.setOrgName(this.getName()) ; 
 		return env;
 	}
+	
+	public ArrayList<String> getDeveloperNames() throws UnirestException, IOException {
+		
+		String apiPath = "/v1/o/"+this.getName()+"/developers/" ; 
+		ManagementServer ms = this.getManagmentServer() ;
+		@SuppressWarnings("unchecked")
+		ArrayList<String> developers  = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		return developers ; 
+	}
+	
+	public Developer  getDeveloper(String m_devEmail ) throws UnirestException, IOException {
+		
+		String apiPath = "/v1/o/"+this.getName()+"/developers/"+ m_devEmail; 
+		ManagementServer ms = this.getManagmentServer() ;
+		@SuppressWarnings("unchecked")
+		Developer dev  = ms.executeGetMgmntAPI(apiPath , Developer.class ) ;
+		return dev ; 
+	}
+	
 }
