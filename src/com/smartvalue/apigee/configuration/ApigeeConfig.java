@@ -20,6 +20,7 @@ import com.smartvalue.apigee.configuration.infra.Infra;
 public class ApigeeConfig {
 	
 	private ArrayList<Partner> Partners ;
+	private String fileContent ;  
 	
 	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
 
@@ -27,7 +28,7 @@ public class ApigeeConfig {
 	{
 		File configFile = new File(m_apigeeConfigFilePath) ; //("E:\\MasterWorks\\Eclipse-WS\\ResourceManager\\config.json") ;
 		FileInputStream inputStream = new FileInputStream(configFile);
-		String fileContent = readFromInputStream(inputStream) ; 
+		fileContent = readFromInputStream(inputStream) ; 
 		Gson gson = new Gson();
 		ApigeeConfig result = null; 
 		result = gson.fromJson(fileContent, (Type) ApigeeConfig.class);
@@ -41,7 +42,7 @@ public class ApigeeConfig {
 		
 	}
 	
-	private ArrayList<Partner> getPartners() {
+	public ArrayList<Partner> getPartners() {
 		return Partners;
 	}
 	public void setPartners(ArrayList<Partner> partners) {
@@ -95,6 +96,10 @@ public class ApigeeConfig {
 
 	public HashMap<String , HashMap<String , HashMap<String , Infra> > > getPartnersMap() {
 		return partnersMap;
+	}
+
+	public String getFileContent() {
+		return fileContent;
 	}
 	
 
