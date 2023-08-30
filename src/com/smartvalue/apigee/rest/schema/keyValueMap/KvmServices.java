@@ -17,7 +17,7 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 
 	public ArrayList <String>  getAllKvms() throws UnirestException, IOException
 	{
-		String apiPath = "v1/o/"+orgName+"/e/"+envName+"/keyvaluemaps" ; 
+		String apiPath = "/v1/o/"+orgName+"/e/"+envName+"/keyvaluemaps" ; 
 		ArrayList<String> result = this.getMs().executeGetMgmntAPI(apiPath, ArrayList.class) ; 
 		return result;
 		
@@ -25,7 +25,7 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 	
 	public KeyValueMap  getKvmDetails( String m_kvmName ) throws UnirestException, IOException
 	{
-		String apiPath = "v1/o/"+orgName+"/e/"+envName+"/keyvaluemaps/"+  m_kvmName ; 
+		String apiPath = "/v1/o/"+orgName+"/e/"+envName+"/keyvaluemaps/"+  m_kvmName ; 
 		KeyValueMap result = this.getMs().executeGetMgmntAPI(apiPath, KeyValueMap.class) ; 
 		return result;
 		
