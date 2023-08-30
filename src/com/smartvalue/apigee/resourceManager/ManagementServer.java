@@ -10,6 +10,9 @@ import java.util.HashMap;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -195,20 +198,34 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; // Primitives.wrap(classOfT).cast(result);
 	} 
 	
-	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT) throws UnirestException, IOException 
+	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT ) throws UnirestException, IOException 
+	{
+		return executeMgmntAPI( m_apiPath, typeOfT , null ) ;  
+	}
+	
+	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT , String m_rootNodeName) throws UnirestException, IOException 
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getGetHttpResponse(m_apiPath) ;
 		if (Helper.isConsideredSuccess(response.getStatus()) )   
 		{
 			Gson gson = new Gson();
-			result = gson.fromJson(response.getBody(),  typeOfT);
+			String responseBody = response.getBody() ; 
+			if (m_rootNodeName != null)
+			{
+				JsonObject convertedObject = new Gson().fromJson(responseBody, JsonObject.class);
+				JsonElement elem  = convertedObject.get(m_rootNodeName) ; 
+				responseBody  = gson.toJson(elem) ;
+				//responseBody = elem.getAsString() ;
+
+			}
+			result = gson.fromJson(responseBody  ,  typeOfT);
 		} 
 		else {
 			if (response.getBody().contains("Access Token expired"))
 			{
 				this.reNewAccessToken() ; 
-				executeMgmntAPI(m_apiPath, typeOfT) ; 
+				executeMgmntAPI(m_apiPath, typeOfT , m_rootNodeName ) ; 
 			}
 			else 
 			throw new UnirestException ( response.getBody()) ; 

@@ -1,17 +1,22 @@
 package com.smartvalue.apigee.rest.schema.organization;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.developer.Developer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
 public class Organization extends com.smartvalue.apigee.rest.schema.organization.auto.Organization {
@@ -219,6 +224,35 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		@SuppressWarnings("unchecked")
 		Developer dev  = ms.executeGetMgmntAPI(apiPath , Developer.class ) ;
 		return dev ; 
+	}
+	
+	public ArrayList<String>  getAllAppsIds() throws UnirestException, IOException {
+		
+		String apiPath = "/v1/o/"+this.getName()+"/apps/"; 
+		ManagementServer ms = this.getManagmentServer() ;
+		@SuppressWarnings("unchecked")
+		ArrayList<String> result  = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		return result ; 
+	}
+	
+	public Application  getAppByAppId(String m_appId ) throws UnirestException, IOException {
+		
+		String apiPath = "/v1/o/"+this.getName()+"/apps/"+ m_appId; 
+		ManagementServer ms = this.getManagmentServer() ;
+		@SuppressWarnings("unchecked")
+		Application app  = ms.executeGetMgmntAPI(apiPath , Application.class ) ;
+		return app ; 
+	}
+
+	public ArrayList<Application>  getAllApps() throws UnirestException, IOException {
+		
+		String apiPath = "/v1/o/"+this.getName()+"/apps?expand=true"; 
+		ManagementServer ms = this.getManagmentServer() ;
+		@SuppressWarnings("unchecked")
+		Type listType = new TypeToken<List<Application>>() {}.getType();
+		ArrayList<Application> allApps  = ms.executeMgmntAPI(apiPath , listType  , "app") ;
+
+		return allApps ; 
 	}
 	
 }

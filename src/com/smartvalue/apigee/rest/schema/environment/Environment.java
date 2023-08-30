@@ -8,9 +8,11 @@ import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
+import com.smartvalue.apigee.rest.schema.keyValueMap.KeyValueMap;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
@@ -89,15 +91,34 @@ public TargetServer  getTargetServer(String m_targetServerName) throws UnirestEx
 }
 
 @SuppressWarnings("unchecked")
-public VirtualHost  getVirtualHost(String virtualHostName ) throws UnirestException, IOException
+public VirtualHost  getVirtualHostByName(String virtualHostName ) throws UnirestException, IOException
 {
 	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/" + virtualHostName ; 
 	VirtualHost virtualHost  = this.ms.executeGetMgmntAPI(apiPath , VirtualHost.class ) ;
 	virtualHost.setOrgName(this.getName()) ; 
 	virtualHost.setManagmentServer(this.ms) ; 
-	
 	return virtualHost ; 
 }
+
+public List<String>  getAllKvmNames() throws UnirestException, IOException
+{
+	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/"  ; 
+	List<String> virtualHosts  = this.ms.executeGetMgmntAPI(apiPath , List.class ) ;
+
+	return virtualHosts ; 
+}  
+
+@SuppressWarnings("unchecked")
+public KeyValueMap  getKvm(String kvmName ) throws UnirestException, IOException
+{
+	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/" + kvmName ; 
+	KeyValueMap keyValueMap  = this.ms.executeGetMgmntAPI(apiPath , KeyValueMap.class ) ;
+	keyValueMap.setOrgName(this.getName()) ; 
+	keyValueMap.setManagmentServer(this.ms) ; 
+	
+	return keyValueMap ; 
+}
+
 
 @SuppressWarnings("unchecked")
 public String[]  getAllVirtualHosts() throws UnirestException, IOException

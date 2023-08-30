@@ -36,7 +36,7 @@ public class Credential {
     @JsonProperty("consumerSecret")
     private String consumerSecret;
     @JsonProperty("expiresAt")
-    private Integer expiresAt;
+    private String expiresAt;
     @JsonProperty("issuedAt")
     private Long issuedAt;
     @JsonProperty("scopes")
@@ -107,16 +107,16 @@ public class Credential {
     }
 
     @JsonProperty("expiresAt")
-    public Integer getExpiresAt() {
+    public String getExpiresAt() {
         return expiresAt;
     }
 
     @JsonProperty("expiresAt")
-    public void setExpiresAt(Integer expiresAt) {
+    public void setExpiresAt(String expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    public Credential withExpiresAt(Integer expiresAt) {
+    public Credential withExpiresAt(String expiresAt) {
         this.expiresAt = expiresAt;
         return this;
     }

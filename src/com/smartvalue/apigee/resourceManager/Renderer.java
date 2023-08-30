@@ -138,7 +138,7 @@ public class Renderer {
 	    }
 
 	    public static String generateArrayHtmlTable(Object array) {
-	        StringBuilder htmlTable = new StringBuilder("<table><tr><th>Index</th><th>Value</th></tr>");
+	        StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th></tr>");
 	        int length = Array.getLength(array);
 
 	        for (int i = 0; i < length; i++) {
@@ -164,7 +164,7 @@ public class Renderer {
 	    
 	    
 	    public static String arrayListToHtmlTable(List<? extends Object> array) {
-	        StringBuilder htmlTable = new StringBuilder("<table><tr><th>Index</th><th>Value</th></tr>");
+	        StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th></tr>");
 	        //int length = Array.getLength(array);
 	        int i =0 ; 
 	        for ( Object element : array )

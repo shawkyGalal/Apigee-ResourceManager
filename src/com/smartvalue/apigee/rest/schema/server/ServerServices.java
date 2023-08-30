@@ -48,7 +48,8 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	
 	public FilteredList<Router> getRouterServers( String m_region ) throws UnirestException, IOException
 	{
-		FilteredList<Router> result = getServersByTypeAndRegion(Router.class , m_region , "gateway") ; 
+		String podName = "gateway" ; 
+		FilteredList<Router> result = getServersByTypeAndRegion(Router.class , m_region , podName ) ; 
 		return result ; 
 	}
 	public FilteredList<Postgres> getPostgresServers( String m_region ) throws UnirestException, IOException

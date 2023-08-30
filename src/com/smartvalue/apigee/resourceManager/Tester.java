@@ -89,7 +89,7 @@ public class Tester {
 		result = env.removeMessageProcessor(mps) ; 
 		result = env.addMessageProcessor(mps) ;
 		*/
-		
+		org.getAllApps() ; 
 		ServerServices ss = ms.getServerServices() ;
 		ss.getServers("gateway", region) ; 
 		List<Server>  gatewayServers = ss.getServers("gateway" , region ) ;
