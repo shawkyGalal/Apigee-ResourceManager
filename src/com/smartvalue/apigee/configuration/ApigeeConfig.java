@@ -30,7 +30,7 @@ public class ApigeeConfig {
 	}
 	
 	
-	public ApigeeConfig (FileInputStream inputStream) throws FileNotFoundException , IOException
+	public ApigeeConfig (InputStream inputStream) throws FileNotFoundException , IOException
 	{
 		parseConfigFileInputStream(inputStream) ; 
 	}
@@ -47,7 +47,7 @@ public class ApigeeConfig {
 		parseConfigFileInputStream(inputStream) ; 
 	}
 	
-	private void parseConfigFileInputStream(FileInputStream inputStream) throws IOException {
+	private void parseConfigFileInputStream(InputStream inputStream) throws IOException {
 		//FileInputStream inputStream = new FileInputStream(configFile);
 		fileContent = readFromInputStream(inputStream) ; 
 		Gson gson = new Gson();
