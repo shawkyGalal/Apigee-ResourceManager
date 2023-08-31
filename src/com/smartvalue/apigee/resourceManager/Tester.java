@@ -113,7 +113,7 @@ public class Tester {
 		String[] allVirtuslHosts = env.getAllVirtualHosts() ; 
 		System.out.println(allVirtuslHosts.toString());
 		
-		VirtualHost vh = env.getVirtualHost(allVirtuslHosts[0]) ; 
+		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ; 
 		System.out.println(vh.toString());
 		
 		String[] allShardFlows = org.getAllShardFlow() ;

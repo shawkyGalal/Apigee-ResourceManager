@@ -217,9 +217,9 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		return developers ; 
 	}
 	
-	public Developer  getDeveloper(String m_devEmail ) throws UnirestException, IOException {
+	public Developer  getDeveloper(String uniqueId ) throws UnirestException, IOException {
 		
-		String apiPath = "/v1/o/"+this.getName()+"/developers/"+ m_devEmail; 
+		String apiPath = "/v1/o/"+this.getName()+"/developers/"+ uniqueId; 
 		ManagementServer ms = this.getManagmentServer() ;
 		@SuppressWarnings("unchecked")
 		Developer dev  = ms.executeGetMgmntAPI(apiPath , Developer.class ) ;

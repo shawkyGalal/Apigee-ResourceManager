@@ -162,9 +162,11 @@ public class Renderer {
 	        return htmlTable.toString();
 	    }
 	    
-	    
-	    public static String arrayListToHtmlTable(List<? extends Object> array) {
-	        StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th></tr>");
+	    public static String arrayListToHtmlTable(List<? extends Object> array ) {
+	    	return arrayListToHtmlTable( array , null) ;  
+	    }
+	    public static String arrayListToHtmlTable(List<? extends Object> array , HashMap<String , String> extraLinks) {
+	        StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th>"+((extraLinks!=null)? "<th>Extra</th>":"") +"</tr>");
 	        //int length = Array.getLength(array);
 	        int i =0 ; 
 	        for ( Object element : array )
@@ -179,9 +181,17 @@ public class Renderer {
 	            	if (element instanceof String) 
 	            	{
 	            		htmlTable.append(element) ; 
+	            		if (extraLinks != null)
+	            		{	htmlTable.append("<td>") ; 
+		            		for (String extrLink : extraLinks.keySet() )
+		            		{
+		            			htmlTable.append("<a href = " +extrLink + element + ">"+extraLinks.get(extrLink)+"</a><br>") ; 
+		            		}
+		            		htmlTable.append("</td>") ; 
+	            		}
 	            	}
 	            	else if (element.getClass().getName().equalsIgnoreCase("java.util.List")) {
-	                    htmlTable.append(arrayListToHtmlTable((List<Object>) element));
+	                    htmlTable.append(arrayListToHtmlTable((List<Object>) element, extraLinks) );
 	                } else {
 	                    htmlTable.append(objectToHtmlTable(element));
 	                }
