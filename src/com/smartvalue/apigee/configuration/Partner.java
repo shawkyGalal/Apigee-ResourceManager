@@ -44,6 +44,17 @@ public class Partner {
 		return result;
 	}
 
+	public Customer getCustomerByName(String m_name )
+	{
+		Customer result = null ; 
+		for (Customer x : this.getCustomers())
+		{
+			if (x.getName().equalsIgnoreCase(m_name) )
+			{	result = x ;break ;  }
+		}
+		
+		return result ; 
+	}
 	
 
 	

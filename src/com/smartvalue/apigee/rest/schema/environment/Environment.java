@@ -20,6 +20,8 @@ import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 public class Environment extends com.smartvalue.apigee.rest.schema.environment.auto.Environment{
 
 private String orgName ;
+private transient  ManagementServer ms ;  
+
 public String getOrgName() {
 	return orgName;
 }
@@ -36,7 +38,7 @@ public void setMs(ManagementServer ms) {
 	this.ms = ms;
 }
 
-private ManagementServer ms ; 
+
 
 
 

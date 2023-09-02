@@ -90,6 +90,12 @@ public class ManagementServer extends Server{
 	public HashMap <String , Organization>  getOrgs() throws UnirestException, IOException {
 		return this.getOrgs(false) ; 
 	}
+	public String[] getAllOrgNames() throws UnirestException, IOException
+	{
+		String apiPath = "/v1/o/" ; 
+		String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ;
+		return orgNames ;
+	}
 	public HashMap <String , Organization>  getOrgs(boolean m_refresh) throws UnirestException, IOException {
 		if (orgs.size() ==0  || m_refresh )
 		{

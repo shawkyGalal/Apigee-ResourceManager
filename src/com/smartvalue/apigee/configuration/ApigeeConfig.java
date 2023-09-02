@@ -70,7 +70,17 @@ public class ApigeeConfig {
 		this.Partners = partners;
 	}
 
-		
+	public Partner getPartnerByName(String m_name)
+	{
+		Partner result = null ; 
+		for ( Partner x : this.getPartners() ) 
+		{
+			if (x.getName().equalsIgnoreCase(m_name) )
+			{	result = x ;break ;  }
+		}
+		return result ; 
+	}
+	
 	private HashMap<String, HashMap<String, Infra>> getPartner(String m_partnerName) throws Exception 
 	{
 		HashMap<String, HashMap<String, Infra>> partner =  this.getPartnersMap().get(m_partnerName);

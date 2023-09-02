@@ -33,5 +33,16 @@ public class Customer {
 		return InfrasMap;
 	}
 
+	public Infra getInfraByName(String m_name )
+	{
+		Infra result = null ; 
+		for (Infra x : this.getInfras() )
+		{
+			if (x.getName().equalsIgnoreCase(m_name) )
+			{	result = x ;break ;  }
+		}
+		
+		return result ; 
+	}
 
 }

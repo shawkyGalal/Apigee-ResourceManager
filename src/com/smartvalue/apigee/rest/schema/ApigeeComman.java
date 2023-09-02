@@ -4,8 +4,8 @@ import com.smartvalue.apigee.resourceManager.ManagementServer;
 
 public class ApigeeComman {
 
-	private ManagementServer managmentServer;
-	private String orgName ;  
+	private transient  ManagementServer managmentServer;
+		private String orgName ;  
 
 	
 	public void setManagmentServer(ManagementServer ms) {
