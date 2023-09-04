@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
@@ -37,7 +38,7 @@ public class Tester {
 		
 		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		String orgName = "stg" ; 
-		String envName = "cert-protected" ; 
+		String envName = "iam-protected" ; 
 		String proxyName = "oidc-core" ;
 		String region = "dc-1" ; 
 		
@@ -88,7 +89,7 @@ public class Tester {
 		
 		result = env.removeMessageProcessor(mps) ; 
 		result = env.addMessageProcessor(mps) ;
-		*/
+		
 		org.getAllApps() ; 
 		ServerServices ss = ms.getServerServices() ;
 		ss.getServers("gateway", region) ; 
@@ -109,11 +110,13 @@ public class Tester {
 		ss.getOnlyUpMpServers(region); 
 		
 		System.out.println(gatewayServers);
-	
+	*/
 		String[] allVirtuslHosts = env.getAllVirtualHosts() ; 
+			
 		System.out.println(allVirtuslHosts.toString());
 		
-		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ; 
+		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ;
+		HttpResponse<String> result = vh.executeGetRequest("/test01" , null,  null) ; 
 		System.out.println(vh.toString());
 		
 		String[] allShardFlows = org.getAllShardFlow() ;
