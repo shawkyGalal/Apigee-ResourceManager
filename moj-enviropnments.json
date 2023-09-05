@@ -4,11 +4,21 @@
 	 	{
 	 			"name" : "testing" , 
 	 			"url" : "https://apis-test.moj.gov.sa/" ,
-	 			"tokenUrl" : "https://api-test.moj.gov.sa/v1/authorize/access-token", 
+	 			"tokenUrl" : "https://apis-test.moj.gov.sa/v1/authorize/access-token", 
 	 			"credential" : 
 				{
 					"clientId" :  "MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8" , 
-					"clientSecret" : "bcbt6p9TzgsQYw3G"
+					"clientSecret" : "bcbt6p9TzgsQYw3G" 
+				} , 
+				"Nafath" : 
+				{
+					"tokenUrl"          		: "https://apis-test.moj.gov.sa/oidc-core/oauth2/token" , 
+					"refreshTokenUrl"   		: "https://apis-test.moj.gov.sa/oidc-core/oauth2/token/refresh" ,
+
+					 "tokenWithPkceUrl" 		: "https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token" ,
+					 "refreshTokenWithPkceUrl"  : "https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh" ,
+					  
+					 "redirect_uri" 			: "https://apis-test.moj.gov.sa/oidc-helpers/callback-handler.html" 
 				}
 	 	}, 
 	 	
@@ -20,6 +30,17 @@
 				{
 					"clientId" :  "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
 					"clientSecret" : "UKLBn325ZIX1mulU"
+				}
+				, 
+				"Nafath" : 
+				{
+					"tokenUrl"          		: "https://apis.moj.gov.sa/oidc-core/oauth2/token" , 
+					"refreshTokenUrl"   		: "https://apis.moj.gov.sa/oidc-core/oauth2/token/refresh" ,
+
+					 "tokenWithPkceUrl" 		: "https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token" ,
+					 "refreshTokenWithPkceUrl"  : "https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh" ,
+					  
+					 "redirect_uri" 			: "https://apis.moj.gov.sa/oidc-helpers/callback-handler.html" 
 				}
 	 	}
 	 	

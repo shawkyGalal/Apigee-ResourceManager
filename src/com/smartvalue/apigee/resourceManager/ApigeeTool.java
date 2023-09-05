@@ -1,6 +1,7 @@
 package com.smartvalue.apigee.resourceManager;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
+import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class ApigeeTool 
 {
@@ -31,7 +33,11 @@ public class ApigeeTool
     	infra = argsMap.get("-infra") ;
     	org = argsMap.get("-org") ;
     	
-    	ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
+    	Type apigeeConfigType = (Type) ApigeeConfig.class ;
+		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile) ; 
+		
+    	//ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
     	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
     	ms = new ManagementServer(infraObj) ; 
 	}

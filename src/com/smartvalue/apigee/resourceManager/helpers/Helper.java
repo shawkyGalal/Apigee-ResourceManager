@@ -8,7 +8,7 @@ public class Helper {
 
 	public static boolean isConsideredSuccess(int stausCode)
 	{
-		return (stausCode == 200 || stausCode == 201 ) ; 
+		return (stausCode == 200 || stausCode == 201 || stausCode == 302 ) ; 
 	}
 	
 	

@@ -15,8 +15,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
     "name",
     "url",
-    "token_url",
-    "Credential"
+    "tokenUrl",
+    "credential",
+    "Nafath"
 })
 @Generated("jsonschema2pojo")
 public class Environment {
@@ -25,10 +26,12 @@ public class Environment {
     private String name;
     @JsonProperty("url")
     private String url;
-    @JsonProperty("token_url")
+    @JsonProperty("tokenUrl")
     private String tokenUrl;
-    @JsonProperty("Credential")
+    @JsonProperty("credential")
     private Credential credential;
+    @JsonProperty("Nafath")
+    private Nafath nafath;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -62,12 +65,12 @@ public class Environment {
         return this;
     }
 
-    @JsonProperty("token_url")
+    @JsonProperty("tokenUrl")
     public String getTokenUrl() {
         return tokenUrl;
     }
 
-    @JsonProperty("token_url")
+    @JsonProperty("tokenUrl")
     public void setTokenUrl(String tokenUrl) {
         this.tokenUrl = tokenUrl;
     }
@@ -77,18 +80,33 @@ public class Environment {
         return this;
     }
 
-    @JsonProperty("Credential")
+    @JsonProperty("credential")
     public Credential getCredential() {
         return credential;
     }
 
-    @JsonProperty("Credential")
+    @JsonProperty("credential")
     public void setCredential(Credential credential) {
         this.credential = credential;
     }
 
     public Environment withCredential(Credential credential) {
         this.credential = credential;
+        return this;
+    }
+
+    @JsonProperty("Nafath")
+    public Nafath getNafath() {
+        return nafath;
+    }
+
+    @JsonProperty("Nafath")
+    public void setNafath(Nafath nafath) {
+        this.nafath = nafath;
+    }
+
+    public Environment withNafath(Nafath nafath) {
+        this.nafath = nafath;
         return this;
     }
 
@@ -127,6 +145,10 @@ public class Environment {
         sb.append('=');
         sb.append(((this.credential == null)?"<null>":this.credential));
         sb.append(',');
+        sb.append("nafath");
+        sb.append('=');
+        sb.append(((this.nafath == null)?"<null>":this.nafath));
+        sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');
         sb.append(((this.additionalProperties == null)?"<null>":this.additionalProperties));
@@ -142,10 +164,11 @@ public class Environment {
     @Override
     public int hashCode() {
         int result = 1;
-        result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
         result = ((result* 31)+((this.tokenUrl == null)? 0 :this.tokenUrl.hashCode()));
-        result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
         result = ((result* 31)+((this.credential == null)? 0 :this.credential.hashCode()));
+        result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
+        result = ((result* 31)+((this.nafath == null)? 0 :this.nafath.hashCode()));
+        result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
         result = ((result* 31)+((this.url == null)? 0 :this.url.hashCode()));
         return result;
     }
@@ -159,7 +182,7 @@ public class Environment {
             return false;
         }
         Environment rhs = ((Environment) other);
-        return ((((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.credential == rhs.credential)||((this.credential!= null)&&this.credential.equals(rhs.credential))))&&((this.url == rhs.url)||((this.url!= null)&&this.url.equals(rhs.url))));
+        return (((((((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl)))&&((this.credential == rhs.credential)||((this.credential!= null)&&this.credential.equals(rhs.credential))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.nafath == rhs.nafath)||((this.nafath!= null)&&this.nafath.equals(rhs.nafath))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.url == rhs.url)||((this.url!= null)&&this.url.equals(rhs.url))));
     }
 
 }

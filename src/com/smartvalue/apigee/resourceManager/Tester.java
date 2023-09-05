@@ -29,23 +29,30 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
-import com.smartvalue.moj.clients.environments.Environments; 
+import com.smartvalue.moj.clients.environments.Environments;
+import com.smartvalue.moj.clients.environments.JsonParser; 
+import java.lang.reflect.Type;
 
 public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
    
-		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
-		//ApiServices as = new ApiServices ("apiServicesConfig.json") ;
-		Environments es = new Environments ("moj-enviropnments.json") ;
-		com.smartvalue.moj.clients.environments.Environment e = es.getEnvName("testing") ; 
-		ApigeeAccessToken accessToken = e.getAccessToken() ;
 		
-		//ApiService testingApiService  =as.getServiceByName("testing") ; 
-		//ApiService prodApiService  =as.getServiceByName("prod") ;
-		//prodApiService.executeRequest(null, "POST", null)
+		
+		Type envsType = (Type) Environments.class ; 
+		JsonParser envParser = new JsonParser( envsType ) ;
+		Environments clientEnvs = (Environments) envParser.getObject("moj-enviropnments.json") ;
+		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ; 
+		ApigeeAccessToken accessToken = e.getAccessToken(true) ;
+		e.executeRequest("/test01", null, "GET", "") ; 
+		
+		
 
+		Type apigeeConfigType = (Type) ApigeeConfig.class ;
+		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject("config.json") ; 
+		//ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		String orgName = "stg" ; 
 		String envName = "iam-protected" ; 
