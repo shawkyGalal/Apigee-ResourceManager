@@ -26,8 +26,10 @@ import com.smartvalue.apigee.rest.schema.server.Router;
 import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
+import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.TargetServer;
-import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost; 
+import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
+import com.smartvalue.moj.clients.environments.Environments; 
 
 public class Tester {
 
@@ -35,7 +37,15 @@ public class Tester {
 	{
    
 		ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
+		//ApiServices as = new ApiServices ("apiServicesConfig.json") ;
+		Environments es = new Environments ("moj-enviropnments.json") ;
+		com.smartvalue.moj.clients.environments.Environment e = es.getEnvName("testing") ; 
+		ApigeeAccessToken accessToken = e.getAccessToken() ;
 		
+		//ApiService testingApiService  =as.getServiceByName("testing") ; 
+		//ApiService prodApiService  =as.getServiceByName("prod") ;
+		//prodApiService.executeRequest(null, "POST", null)
+
 		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		String orgName = "stg" ; 
 		String envName = "iam-protected" ; 

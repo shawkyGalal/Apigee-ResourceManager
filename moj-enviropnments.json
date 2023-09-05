@@ -1,0 +1,27 @@
+{
+ "Environments" : 
+ 	[ 
+	 	{
+	 			"name" : "testing" , 
+	 			"url" : "https://apis-test.moj.gov.sa/" ,
+	 			"tokenUrl" : "https://api-test.moj.gov.sa/v1/authorize/access-token", 
+	 			"credential" : 
+				{
+					"clientId" :  "MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8" , 
+					"clientSecret" : "bcbt6p9TzgsQYw3G"
+				}
+	 	}, 
+	 	
+	 	{
+	 			"name" : "prod" , 
+	 			"url" : "https://apis.moj.gov.sa/" ,
+	 			"tokenUrl" : "https://api.moj.gov.sa/v1/authorize/access-token",
+				"credential" : 
+				{
+					"clientId" :  "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
+					"clientSecret" : "UKLBn325ZIX1mulU"
+				}
+	 	}
+	 	
+	 ]
+}
