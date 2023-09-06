@@ -1,13 +1,10 @@
-package com.smartvalue.apigee.rest.schema.environment;
+package com.smartvalue.moj.clients.environments;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-
-import com.smartvalue.moj.clients.environments.Environments;
-import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class ClientEnvironmentsFactory {
 

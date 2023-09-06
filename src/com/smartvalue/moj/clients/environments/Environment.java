@@ -129,7 +129,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 	public ApigeeAccessToken getAccessToken(String m_authCode) throws JsonSyntaxException, UnirestException 
 	{
 		Unirest.setTimeouts(0, 0);
-		HttpResponse<String> response = Unirest.post("https://apis-test.moj.gov.sa/oidc-core/oauth2/token")
+		HttpResponse<String> response = Unirest.post(this.getNafath().getTokenUrl())
 		  .header("Content-Type", "application/x-www-form-urlencoded")
 		  .header("Authorization", getClientBasicAuth () )
 		  .field("grant_type", "authorization_code")
