@@ -13,15 +13,19 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "authorizationUrl",
     "tokenUrl",
     "refreshTokenUrl",
     "tokenWithPkceUrl",
     "refreshTokenWithPkceUrl",
-    "redirect_uri"
+    "redirectUri",
+    "logoutUrl"
 })
 @Generated("jsonschema2pojo")
 public class Nafath {
 
+    @JsonProperty("authorizationUrl")
+    private String authorizationUrl;
     @JsonProperty("tokenUrl")
     private String tokenUrl;
     @JsonProperty("refreshTokenUrl")
@@ -30,10 +34,27 @@ public class Nafath {
     private String tokenWithPkceUrl;
     @JsonProperty("refreshTokenWithPkceUrl")
     private String refreshTokenWithPkceUrl;
-    @JsonProperty("redirect_uri")
+    @JsonProperty("redirectUri")
     private String redirectUri;
+    @JsonProperty("logoutUrl")
+    private String logoutUrl;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    @JsonProperty("authorizationUrl")
+    public String getAuthorizationUrl() {
+        return authorizationUrl;
+    }
+
+    @JsonProperty("authorizationUrl")
+    public void setAuthorizationUrl(String authorizationUrl) {
+        this.authorizationUrl = authorizationUrl;
+    }
+
+    public Nafath withAuthorizationUrl(String authorizationUrl) {
+        this.authorizationUrl = authorizationUrl;
+        return this;
+    }
 
     @JsonProperty("tokenUrl")
     public String getTokenUrl() {
@@ -95,18 +116,33 @@ public class Nafath {
         return this;
     }
 
-    @JsonProperty("redirect_uri")
+    @JsonProperty("redirectUri")
     public String getRedirectUri() {
         return redirectUri;
     }
 
-    @JsonProperty("redirect_uri")
+    @JsonProperty("redirectUri")
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
     }
 
     public Nafath withRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
+        return this;
+    }
+
+    @JsonProperty("logoutUrl")
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    @JsonProperty("logoutUrl")
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
+    }
+
+    public Nafath withLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
         return this;
     }
 
@@ -129,6 +165,10 @@ public class Nafath {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(Nafath.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("authorizationUrl");
+        sb.append('=');
+        sb.append(((this.authorizationUrl == null)?"<null>":this.authorizationUrl));
+        sb.append(',');
         sb.append("tokenUrl");
         sb.append('=');
         sb.append(((this.tokenUrl == null)?"<null>":this.tokenUrl));
@@ -149,6 +189,10 @@ public class Nafath {
         sb.append('=');
         sb.append(((this.redirectUri == null)?"<null>":this.redirectUri));
         sb.append(',');
+        sb.append("logoutUrl");
+        sb.append('=');
+        sb.append(((this.logoutUrl == null)?"<null>":this.logoutUrl));
+        sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');
         sb.append(((this.additionalProperties == null)?"<null>":this.additionalProperties));
@@ -166,7 +210,9 @@ public class Nafath {
         int result = 1;
         result = ((result* 31)+((this.redirectUri == null)? 0 :this.redirectUri.hashCode()));
         result = ((result* 31)+((this.tokenUrl == null)? 0 :this.tokenUrl.hashCode()));
+        result = ((result* 31)+((this.authorizationUrl == null)? 0 :this.authorizationUrl.hashCode()));
         result = ((result* 31)+((this.tokenWithPkceUrl == null)? 0 :this.tokenWithPkceUrl.hashCode()));
+        result = ((result* 31)+((this.logoutUrl == null)? 0 :this.logoutUrl.hashCode()));
         result = ((result* 31)+((this.refreshTokenWithPkceUrl == null)? 0 :this.refreshTokenWithPkceUrl.hashCode()));
         result = ((result* 31)+((this.refreshTokenUrl == null)? 0 :this.refreshTokenUrl.hashCode()));
         result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
@@ -182,7 +228,7 @@ public class Nafath {
             return false;
         }
         Nafath rhs = ((Nafath) other);
-        return (((((((this.redirectUri == rhs.redirectUri)||((this.redirectUri!= null)&&this.redirectUri.equals(rhs.redirectUri)))&&((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl))))&&((this.tokenWithPkceUrl == rhs.tokenWithPkceUrl)||((this.tokenWithPkceUrl!= null)&&this.tokenWithPkceUrl.equals(rhs.tokenWithPkceUrl))))&&((this.refreshTokenWithPkceUrl == rhs.refreshTokenWithPkceUrl)||((this.refreshTokenWithPkceUrl!= null)&&this.refreshTokenWithPkceUrl.equals(rhs.refreshTokenWithPkceUrl))))&&((this.refreshTokenUrl == rhs.refreshTokenUrl)||((this.refreshTokenUrl!= null)&&this.refreshTokenUrl.equals(rhs.refreshTokenUrl))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
+        return (((((((((this.redirectUri == rhs.redirectUri)||((this.redirectUri!= null)&&this.redirectUri.equals(rhs.redirectUri)))&&((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl))))&&((this.authorizationUrl == rhs.authorizationUrl)||((this.authorizationUrl!= null)&&this.authorizationUrl.equals(rhs.authorizationUrl))))&&((this.tokenWithPkceUrl == rhs.tokenWithPkceUrl)||((this.tokenWithPkceUrl!= null)&&this.tokenWithPkceUrl.equals(rhs.tokenWithPkceUrl))))&&((this.logoutUrl == rhs.logoutUrl)||((this.logoutUrl!= null)&&this.logoutUrl.equals(rhs.logoutUrl))))&&((this.refreshTokenWithPkceUrl == rhs.refreshTokenWithPkceUrl)||((this.refreshTokenWithPkceUrl!= null)&&this.refreshTokenWithPkceUrl.equals(rhs.refreshTokenWithPkceUrl))))&&((this.refreshTokenUrl == rhs.refreshTokenUrl)||((this.refreshTokenUrl!= null)&&this.refreshTokenUrl.equals(rhs.refreshTokenUrl))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
 }

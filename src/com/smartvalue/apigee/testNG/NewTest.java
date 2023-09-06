@@ -1,7 +1,7 @@
 package com.smartvalue.apigee.testNG;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +23,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
+import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class NewTest {
 	Infra infra ; 
@@ -88,14 +89,12 @@ public class NewTest {
 
 	  @BeforeClass
 	  @Test(dataProvider = "testData")
-	  public void beforeClass() throws Exception {
-		  ac = new ApigeeConfig("config.json" ) ; 
+	  public void beforeClass() throws Exception 
+	  {
+		  	Type apigeeConfigType = (Type) ApigeeConfig.class ;
+	  		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
+			ac = (ApigeeConfig) apigeeConfigParser.getObject("config.json") ;
 		  
-		  //infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		  //orgName = "stg" ; 
-		  //envName = "cert-protected" ; 
-		  //proxyName = "oidc-core" ;
-		  //region = "dc-1" ; 
 		  infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ;
 		  orgName =  "smart-value"  ; // "stg" ; 
 		  envName = "prod"  ; // "iam-protected"

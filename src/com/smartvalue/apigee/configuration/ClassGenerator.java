@@ -18,54 +18,58 @@ public class ClassGenerator {
 	public static void main (String[] args) throws Exception
 	{
    
-		String environments = "{\r\n" + 
-				" \"Environments\" : \r\n" + 
-				" 	[ \r\n" + 
-				"	 	{\r\n" + 
-				"	 			\"name\" : \"testing\" , \r\n" + 
-				"	 			\"url\" : \"https://apis-test.moj.gov.sa/\" ,\r\n" + 
-				"	 			\"tokenUrl\" : \"https://apis-test.moj.gov.sa/v1/authorize/access-token\", \r\n" + 
-				"	 			\"credential\" : \r\n" + 
-				"				{\r\n" + 
-				"					\"clientId\" :  \"MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8\" , \r\n" + 
-				"					\"clientSecret\" : \"bcbt6p9TzgsQYw3G\" \r\n" + 
-				"				} , \r\n" + 
-				"				\"Nafath\" : \r\n" + 
-				"				{\r\n" + 
-				"					\"tokenUrl\"          		: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/token\" , \r\n" + 
-				"					\"refreshTokenUrl\"   		: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/token/refresh\" ,\r\n" + 
-				"\r\n" + 
-				"					 \"tokenWithPkceUrl\" 		: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token\" ,\r\n" + 
-				"					 \"refreshTokenWithPkceUrl\"  : \"https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh\" ,\r\n" + 
-				"					  \r\n" + 
-				"					 \"redirect_uri\" 			: \"https://apis-test.moj.gov.sa/oidc-helpers/callback-handler.html\" \r\n" + 
-				"				}\r\n" + 
-				"	 	}, \r\n" + 
-				"	 	\r\n" + 
-				"	 	{\r\n" + 
-				"	 			\"name\" : \"prod\" , \r\n" + 
-				"	 			\"url\" : \"https://apis.moj.gov.sa/\" ,\r\n" + 
-				"	 			\"tokenUrl\" : \"https://api.moj.gov.sa/v1/authorize/access-token\",\r\n" + 
-				"				\"credential\" : \r\n" + 
-				"				{\r\n" + 
-				"					\"clientId\" :  \"u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP\" , \r\n" + 
-				"					\"clientSecret\" : \"UKLBn325ZIX1mulU\"\r\n" + 
-				"				}\r\n" + 
-				"				, \r\n" + 
-				"				\"Nafath\" : \r\n" + 
-				"				{\r\n" + 
-				"					\"tokenUrl\"          		: \"https://apis.moj.gov.sa/oidc-core/oauth2/token\" , \r\n" + 
-				"					\"refreshTokenUrl\"   		: \"https://apis.moj.gov.sa/oidc-core/oauth2/token/refresh\" ,\r\n" + 
-				"\r\n" + 
-				"					 \"tokenWithPkceUrl\" 		: \"https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token\" ,\r\n" + 
-				"					 \"refreshTokenWithPkceUrl\"  : \"https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh\" ,\r\n" + 
-				"					  \r\n" + 
-				"					 \"redirect_uri\" 			: \"https://apis.moj.gov.sa/oidc-helpers/callback-handler.html\" \r\n" + 
-				"				}\r\n" + 
-				"	 	}\r\n" + 
-				"	 	\r\n" + 
-				"	 ]\r\n" + 
-				"}" ; 
+		String environments = "{\r\n"
+				+ " \"Environments\" : \r\n"
+				+ " 	[ \r\n"
+				+ "	 	{\r\n"
+				+ "	 			\"name\" : \"testing\" , \r\n"
+				+ "	 			\"url\" : \"https://apis-test.moj.gov.sa/\" ,\r\n"
+				+ "	 			\"tokenUrl\" : \"https://apis-test.moj.gov.sa/v1/authorize/access-token\", \r\n"
+				+ "	 			\"credential\" : \r\n"
+				+ "				{\r\n"
+				+ "					\"clientId\" 		:  \"MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8\" , \r\n"
+				+ "					\"clientSecret\" 	: \"bcbt6p9TzgsQYw3G\" \r\n"
+				+ "				} , \r\n"
+				+ "				\"nafath\" : \r\n"
+				+ "				{\r\n"
+				+ "					\"authorizationUrl\"			: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/authorization\" , \r\n"
+				+ "					\"tokenUrl\"          		: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/token\" , \r\n"
+				+ "					\"refreshTokenUrl\"   		: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/token/refresh\" ,\r\n"
+				+ "\r\n"
+				+ "					\"tokenWithPkceUrl\" 			: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token\" ,\r\n"
+				+ "					\"refreshTokenWithPkceUrl\"  	: \"https://apis-test.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh\" ,\r\n"
+				+ "					  \r\n"
+				+ "					\"redirectUri\" 				: \"https://apis-test.moj.gov.sa/oidc-helpers/callback-handler.html\", \r\n"
+				+ "					\"logoutUrl\"					: \"https://apis-test.moj.gov.sa/oidc-core/logout/wsaml\" \r\n"
+				+ "				}\r\n"
+				+ "	 	}, \r\n"
+				+ "	 	\r\n"
+				+ "	 	{\r\n"
+				+ "	 			\"name\" : \"prod\" , \r\n"
+				+ "	 			\"url\" : \"https://apis.moj.gov.sa/\" ,\r\n"
+				+ "	 			\"tokenUrl\" : \"https://api.moj.gov.sa/v1/authorize/access-token\",\r\n"
+				+ "				\"credential\" : \r\n"
+				+ "				{\r\n"
+				+ "					\"clientId\" 		:  \"u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP\" , \r\n"
+				+ "					\"clientSecret\" 	: \"UKLBn325ZIX1mulU\"\r\n"
+				+ "				}\r\n"
+				+ "				, \r\n"
+				+ "				\"nafath\" : \r\n"
+				+ "				{\r\n"
+				+ "					\"authorizationUrl\"			: \"https://apis.moj.gov.sa/oidc-core/oauth2/authorization\" , \r\n"
+				+ "					\"tokenUrl\"          		: \"https://apis.moj.gov.sa/oidc-core/oauth2/token\" , \r\n"
+				+ "					\"refreshTokenUrl\"   		: \"https://apis.moj.gov.sa/oidc-core/oauth2/token/refresh\" ,\r\n"
+				+ "\r\n"
+				+ "					\"tokenWithPkceUrl\" 			: \"https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token\" ,\r\n"
+				+ "					\"refreshTokenWithPkceUrl\"  	: \"https://apis.moj.gov.sa/oidc-core/oauth2/pkce/token/refresh\" ,\r\n"
+				+ "					  \r\n"
+				+ "					\"redirectUri\" 				: \"https://apis.moj.gov.sa/oidc-helpers/callback-handler.html\" , \r\n"
+				+ "					\"logoutUrl\"					: \"https://apis.moj.gov.sa/oidc-core/logout/wsaml\"\r\n"
+				+ "				}\r\n"
+				+ "	 	}\r\n"
+				+ "	 	\r\n"
+				+ "	 ]\r\n"
+				+ "}" ; 
 		generateJavaClassFromJson(environments, "Environments" , "com.smartvalue.moj.clients.environments.auto");
 		
 	}

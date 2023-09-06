@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "url",
     "tokenUrl",
     "credential",
-    "Nafath"
+    "nafath"
 })
 @Generated("jsonschema2pojo")
 public class Environment {
@@ -30,7 +30,7 @@ public class Environment {
     private String tokenUrl;
     @JsonProperty("credential")
     private Credential credential;
-    @JsonProperty("Nafath")
+    @JsonProperty("nafath")
     private Nafath nafath;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
@@ -95,12 +95,12 @@ public class Environment {
         return this;
     }
 
-    @JsonProperty("Nafath")
+    @JsonProperty("nafath")
     public Nafath getNafath() {
         return nafath;
     }
 
-    @JsonProperty("Nafath")
+    @JsonProperty("nafath")
     public void setNafath(Nafath nafath) {
         this.nafath = nafath;
     }

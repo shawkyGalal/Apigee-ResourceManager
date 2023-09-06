@@ -8,6 +8,7 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
@@ -15,6 +16,7 @@ import com.smartvalue.apigee.environmentsMonitor.EnvironmentAction;
 import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
 import com.smartvalue.apigee.environmentsMonitor.HealthCheckAction;
 import com.smartvalue.apigee.environmentsMonitor.HealthCheckAllMPsCondition;
+import com.smartvalue.apigee.rest.schema.environment.ClientEnvironmentsFactory;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -37,22 +39,19 @@ public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
-   
+		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
+		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
+		String authURL = e.getUrlBuilder()
+				.withForthAuth(false)
+				.withResponseType("code")
+				.withScope("openid")
+				.buildAuthorizationURL();
 		
-		
-		Type envsType = (Type) Environments.class ; 
-		JsonParser envParser = new JsonParser( envsType ) ;
-		Environments clientEnvs = (Environments) envParser.getObject("moj-enviropnments.json") ;
-		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ; 
 		ApigeeAccessToken accessToken = e.getAccessToken(true) ;
-		e.executeRequest("/test01", null, "GET", "") ; 
+		//e.executeRequest("/test01", null, "GET", "") ; 
 		
-		
+		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json") ; 
 
-		Type apigeeConfigType = (Type) ApigeeConfig.class ;
-		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject("config.json") ; 
-		//ApigeeConfig ac = new ApigeeConfig("config.json" ) ; 
 		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		String orgName = "stg" ; 
 		String envName = "iam-protected" ; 

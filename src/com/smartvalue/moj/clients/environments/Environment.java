@@ -1,6 +1,7 @@
 package com.smartvalue.moj.clients.environments;
 
 import java.nio.charset.Charset;
+
 import java.util.HashMap;
 
 import org.springframework.security.crypto.codec.Base64;
@@ -140,7 +141,6 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		Gson gson = new Gson(); 
 		accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
 		return accessToken ; 
-
 	}
 	
 	public ApigeeAccessToken getAccessToken(String m_authCode , String codeVerifier) throws JsonSyntaxException, UnirestException 
@@ -190,17 +190,11 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ; 
 		
 	}
-	
-	private String buildAuthorizationURL()
-	{
-		// TODO Auto-generated method stub
-		return null;
 		
-	}
+	private UrlBuilder urlBuilder = new UrlBuilder(this) ; 
 
-	private ApigeeAccessToken generateAccessTokenFromAuthCode(String m_authCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public UrlBuilder getUrlBuilder() {
+		return urlBuilder;
 	}
-	
+		
 }
