@@ -63,12 +63,13 @@ public class Tester {
 		 //String envName = "prod"  ; // "iam-protected"
 		 //String proxyName = "DZIT" ;
 		 //String region = "dc-1" ; 
-
+		
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env = (Environment) org.getEnvs().get(envName);
-
+		
 		/*
+		
 		ProductsServices   productServices = ms.getProductServices(orgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 

@@ -127,19 +127,26 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		
 	}
 	public ApigeeAccessToken getAccessToken(String m_authCode) throws JsonSyntaxException, UnirestException 
-	{
-		Unirest.setTimeouts(0, 0);
-		HttpResponse<String> response = Unirest.post(this.getNafath().getTokenUrl())
-		  .header("Content-Type", "application/x-www-form-urlencoded")
-		  .header("Authorization", getClientBasicAuth () )
-		  .field("grant_type", "authorization_code")
-		  .field("code", m_authCode)
-		  .field("redirect_uri", this.getNafath().getRedirectUri())
-		  .asString();
-		
-		handleReponseError(response) ; 
-		Gson gson = new Gson(); 
-		accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
+	{	
+		//check if the provided m_authCode is the same used to generate the current accesstoken  
+		String previousAuthCode = (accessToken == null)? null : accessToken.getAuthoirizationCode() ; 
+		if ( previousAuthCode == null || ! previousAuthCode.equalsIgnoreCase(m_authCode))
+		{
+			Unirest.setTimeouts(0, 0);
+			HttpResponse<String> response = Unirest.post(this.getNafath().getTokenUrl())
+			  .header("Content-Type", "application/x-www-form-urlencoded")
+			  .header("Authorization", getClientBasicAuth () )
+			  .field("grant_type", "authorization_code")
+			  .field("code", m_authCode)
+			  .field("redirect_uri", this.getNafath().getRedirectUri())
+			  .asString();
+			
+			handleReponseError(response) ; 
+			Gson gson = new Gson(); 
+			accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
+			// Associate the generated accessToken with the provided m_authCode 
+			accessToken.setAuthoirizationCode(m_authCode) ;
+		}
 		return accessToken ; 
 	}
 	

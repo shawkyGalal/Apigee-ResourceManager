@@ -11,6 +11,7 @@ public class ApigeeAccessToken {
 	private String scope ; 
 	private String status ; 
 	private int expires_in ; 
+	private String authoirizationCode ; 
 	
 	public String getAccess_token() {
 		return access_token;
@@ -72,6 +73,13 @@ public class ApigeeAccessToken {
 	public void setExpires_in(int expires_in) {
 		this.expires_in = expires_in;
 	}
+	public String getAuthoirizationCode() {
+		return authoirizationCode;
+	}
+	public void setAuthoirizationCode(String authoirizationCode) {
+		this.authoirizationCode = authoirizationCode;
+	}
+	
 }
 
 
