@@ -22,7 +22,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 	//private ApigeeAccessToken accessToken = null ;
 	public HttpResponse<String>  executeRequest(HashMap<String , String> m_headers , String m_verb , String m_body) throws UnirestException
 	{
-		String m_url = this.getUrl() ;
+		String m_url = this.getMojServicesBaseUrl() ;
 		return executeRequest( m_url , m_headers ,  m_verb , m_body) ;  
 	}
 	
@@ -34,9 +34,9 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		{
 			request =  Unirest.get(m_url) ; 
 			request = appendHeaders (request ,  m_headers  );
-			if (! m_headers.containsKey("Authorization"))
+			if (m_headers == null || ! m_headers.containsKey("Authorization"))
 			{
-				request.header("Authorization" , "Bearer" +this.accessToken.getAccess_token()) ; 
+				request.header("Authorization" , "Bearer " +this.accessToken.getAccess_token()) ; 
 			}
 			response = request.asString();
 		}
@@ -166,6 +166,11 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		Gson gson = new Gson(); 
 		accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
 		return accessToken ; 
+	}
+	
+	public ApigeeAccessToken getAccessToken()
+	{
+		return this.accessToken ; 
 	}
 	
 	public void refreshAccessToken() throws JsonSyntaxException, UnirestException 

@@ -11,74 +11,212 @@ public class ApigeeAccessToken {
 	private String scope ; 
 	private String status ; 
 	private int expires_in ; 
-	private String authoirizationCode ; 
+	private String authoirizationCode ;
+	//---id-token attributes 
+	private String userid ; 
+	private String arabicFirstName ; 
+	private String iqamaExpiryDateHijri ; 
+	private String nationalityCode ;  
+	private String refresh_count ; 
+	private String idExpiryDateGregorian ; 
+	private String iqamaExpiryDateGregorian ; 
+	private String dobHijri ; 
+	private String id_token ; 
+	private String arabicGrandFatherName ; 
+	private String token_generator_messageId ; 
+	private String nationality ; 
+	private String idExpiryDateHijri ; 
+	private String dob ; 
+	private String arabicFamilyName ; 
+	private String englishFatherName ; 
+	private String englishName ; 
+	private String gender ; 
+	private String cardIssueDateGregorian; 
+	private String issued_at ;
+	private String idVersionNo ; 
+	private String arabicNationality ; 
+	private String arabicName ; 
+	private String refresh_token_issued_at ; 
+	private String issueLocationAr ; 
+	private String refresh_token_status ; 
+	private String cardIssueDateHijri ; 
+	private String englishFirstName ; 
+	private String issueLocationEn ; 
+	//private String developer.email ; 
+	private String englishFamilyName ; 
+	private String req_scope ; 
 	
 	public String getAccess_token() {
 		return access_token;
 	}
-	public void setAccess_token(String access_token) {
-		this.access_token = access_token;
-	}
+	
 	public String getToken_type() {
 		return token_type;
 	}
-	public void setToken_type(String token_type) {
-		this.token_type = token_type;
-	}
+	
 	public String getRefresh_token() {
 		return refresh_token;
 	}
-	public void setRefresh_token(String refresh_token) {
-		this.refresh_token = refresh_token;
-	}
 	
-	@Override
-	public String toString() {
-		return "AccessToken [access_token=" + access_token + ", token_type=" + token_type + ", refresh_token="
-				+ refresh_token + "]";
-	}
+	
+	
 	public String[] getApi_product_list_json() {
 		return api_product_list_json;
 	}
-	public void setApi_product_list_json(String[] api_product_list_json) {
-		this.api_product_list_json = api_product_list_json;
-	}
+	
 	public String getClient_id() {
 		return client_id;
 	}
-	public void setClient_id(String client_id) {
-		this.client_id = client_id;
-	}
+	
 	public String getApplication_name() {
 		return application_name;
 	}
-	public void setApplication_name(String application_name) {
-		this.application_name = application_name;
-	}
+	
 	public String getScope() {
 		return scope;
 	}
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
+	
 	public String getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	
 	public int getExpires_in() {
 		return expires_in;
 	}
-	public void setExpires_in(int expires_in) {
-		this.expires_in = expires_in;
-	}
+	
 	public String getAuthoirizationCode() {
 		return authoirizationCode;
 	}
-	public void setAuthoirizationCode(String authoirizationCode) {
-		this.authoirizationCode = authoirizationCode;
+	
+	public String getUserid() {
+		return userid;
 	}
+	
+	public String getArabicFirstName() {
+		return arabicFirstName;
+	}
+	
+	public String getIqamaExpiryDateHijri() {
+		return iqamaExpiryDateHijri;
+	}
+	
+	public String getNationalityCode() {
+		return nationalityCode;
+	}
+	
+	public String getRefresh_count() {
+		return refresh_count;
+	}
+	
+	public String getIdExpiryDateGregorian() {
+		return idExpiryDateGregorian;
+	}
+	
+	public String getIqamaExpiryDateGregorian() {
+		return iqamaExpiryDateGregorian;
+	}
+	
+	public String getDobHijri() {
+		return dobHijri;
+	}
+	
+	public String getId_token() {
+		return id_token;
+	}
+	
+	public String getArabicGrandFatherName() {
+		return arabicGrandFatherName;
+	}
+	
+	public String getToken_generator_messageId() {
+		return token_generator_messageId;
+	}
+	
+	public String getNationality() {
+		return nationality;
+	}
+	
+	public String getIdExpiryDateHijri() {
+		return idExpiryDateHijri;
+	}
+	
+	public String getDob() {
+		return dob;
+	}
+	
+	public String getArabicFamilyName() {
+		return arabicFamilyName;
+	}
+	
+	public String getEnglishFatherName() {
+		return englishFatherName;
+	}
+	
+	public String getEnglishName() {
+		return englishName;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public String getCardIssueDateGregorian() {
+		return cardIssueDateGregorian;
+	}
+	
+	public String getIssued_at() {
+		return issued_at;
+	}
+	
+	public String getIdVersionNo() {
+		return idVersionNo;
+	}
+	
+	public String getArabicNationality() {
+		return arabicNationality;
+	}
+	
+	public String getArabicName() {
+		return arabicName;
+	}
+	
+	public String getRefresh_token_issued_at() {
+		return refresh_token_issued_at;
+	}
+	
+	public String getIssueLocationAr() {
+		return issueLocationAr;
+	}
+	
+	public String getRefresh_token_status() {
+		return refresh_token_status;
+	}
+	
+	public String getCardIssueDateHijri() {
+		return cardIssueDateHijri;
+	}
+	
+	public String getEnglishFirstName() {
+		return englishFirstName;
+	}
+	
+	public String getIssueLocationEn() {
+		return issueLocationEn;
+	}
+	
+	public String getEnglishFamilyName() {
+		return englishFamilyName;
+	}
+	
+	public String getReq_scope() {
+		return req_scope;
+	}
+
+	public void setAuthoirizationCode(String m_authCode) {
+		this.authoirizationCode = m_authCode ; 
+		
+	}
+	
 	
 }
 

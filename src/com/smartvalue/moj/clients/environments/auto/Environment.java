@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "name",
-    "url",
+    "mojServicesBaseUrl",
     "tokenUrl",
     "credential",
     "nafath"
@@ -24,8 +24,8 @@ public class Environment {
 
     @JsonProperty("name")
     private String name;
-    @JsonProperty("url")
-    private String url;
+    @JsonProperty("mojServicesBaseUrl")
+    private String mojServicesBaseUrl;
     @JsonProperty("tokenUrl")
     private String tokenUrl;
     @JsonProperty("credential")
@@ -50,18 +50,18 @@ public class Environment {
         return this;
     }
 
-    @JsonProperty("url")
-    public String getUrl() {
-        return url;
+    @JsonProperty("mojServicesBaseUrl")
+    public String getMojServicesBaseUrl() {
+        return mojServicesBaseUrl;
     }
 
-    @JsonProperty("url")
-    public void setUrl(String url) {
-        this.url = url;
+    @JsonProperty("mojServicesBaseUrl")
+    public void setMojServicesBaseUrl(String mojServicesBaseUrl) {
+        this.mojServicesBaseUrl = mojServicesBaseUrl;
     }
 
-    public Environment withUrl(String url) {
-        this.url = url;
+    public Environment withMojServicesBaseUrl(String mojServicesBaseUrl) {
+        this.mojServicesBaseUrl = mojServicesBaseUrl;
         return this;
     }
 
@@ -133,9 +133,9 @@ public class Environment {
         sb.append('=');
         sb.append(((this.name == null)?"<null>":this.name));
         sb.append(',');
-        sb.append("url");
+        sb.append("mojServicesBaseUrl");
         sb.append('=');
-        sb.append(((this.url == null)?"<null>":this.url));
+        sb.append(((this.mojServicesBaseUrl == null)?"<null>":this.mojServicesBaseUrl));
         sb.append(',');
         sb.append("tokenUrl");
         sb.append('=');
@@ -164,12 +164,12 @@ public class Environment {
     @Override
     public int hashCode() {
         int result = 1;
+        result = ((result* 31)+((this.mojServicesBaseUrl == null)? 0 :this.mojServicesBaseUrl.hashCode()));
         result = ((result* 31)+((this.tokenUrl == null)? 0 :this.tokenUrl.hashCode()));
         result = ((result* 31)+((this.credential == null)? 0 :this.credential.hashCode()));
         result = ((result* 31)+((this.name == null)? 0 :this.name.hashCode()));
         result = ((result* 31)+((this.nafath == null)? 0 :this.nafath.hashCode()));
         result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
-        result = ((result* 31)+((this.url == null)? 0 :this.url.hashCode()));
         return result;
     }
 
@@ -182,7 +182,7 @@ public class Environment {
             return false;
         }
         Environment rhs = ((Environment) other);
-        return (((((((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl)))&&((this.credential == rhs.credential)||((this.credential!= null)&&this.credential.equals(rhs.credential))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.nafath == rhs.nafath)||((this.nafath!= null)&&this.nafath.equals(rhs.nafath))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.url == rhs.url)||((this.url!= null)&&this.url.equals(rhs.url))));
+        return (((((((this.mojServicesBaseUrl == rhs.mojServicesBaseUrl)||((this.mojServicesBaseUrl!= null)&&this.mojServicesBaseUrl.equals(rhs.mojServicesBaseUrl)))&&((this.tokenUrl == rhs.tokenUrl)||((this.tokenUrl!= null)&&this.tokenUrl.equals(rhs.tokenUrl))))&&((this.credential == rhs.credential)||((this.credential!= null)&&this.credential.equals(rhs.credential))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.nafath == rhs.nafath)||((this.nafath!= null)&&this.nafath.equals(rhs.nafath))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
 }

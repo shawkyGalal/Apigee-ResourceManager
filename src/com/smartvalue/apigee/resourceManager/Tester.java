@@ -39,6 +39,7 @@ public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
+		/*
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
 		String authURL = e.getUrlBuilder()
@@ -47,9 +48,9 @@ public class Tester {
 				.withScope("openid")
 				.buildAuthorizationURL();
 		
-		ApigeeAccessToken accessToken = e.getAccessToken(true) ;
-		//e.executeRequest("/test01", null, "GET", "") ; 
 		
+		//e.executeRequest("/test01", null, "GET", "") ; 
+		*/
 		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json") ; 
 
 		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;

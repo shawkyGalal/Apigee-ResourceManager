@@ -3,7 +3,7 @@ package com.smartvalue.moj.clients.environments;
 import java.security.SecureRandom;
 
 public class UrlBuilder {
-	private Environment env ; 
+	transient Environment env ; 
 	private boolean forthAuth = false; 
 	private String scope ; 
 	private String responseType ;

@@ -76,7 +76,7 @@ public class Renderer {
 	        Field[] fields = getAllFields(clazz);
 	         
 	        for (Field field : fields) {
-	        	if (!isPrivateStaticFinal(field))
+	        	if (isModifierAllowed(field))
 	        	{
 	        		Object value;
 	        		String name = field.getName();
@@ -130,11 +130,9 @@ public class Renderer {
 	        return htmlTable.toString();
 	    }
 	 
-	 private  static boolean isPrivateStaticFinal(Field field) {
+	 private  static boolean isModifierAllowed(Field field) {
 	        int modifiers = field.getModifiers();
-	        return Modifier.isPrivate(modifiers) 
-	        		//&& Modifier.isStatic(modifiers) 
-	        		&& Modifier.isFinal(modifiers);
+	        return ! ( Modifier.isFinal(modifiers) || Modifier.isTransient(modifiers) );
 	    }
 
 	    public static String generateArrayHtmlTable(Object array) {
