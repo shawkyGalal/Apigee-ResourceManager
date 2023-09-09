@@ -12,7 +12,6 @@ import org.springframework.security.crypto.codec.Base64;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -32,7 +31,8 @@ import com.smartvalue.apigee.rest.schema.server.ServerServices;
 public class ManagementServer extends Server{
 	
 	MyServerProfile serverProfile ;  
-	HashMap <String , Organization> orgs = new HashMap <String , Organization>(); 
+	HashMap <String , Organization> orgs = new HashMap <String , Organization>();
+	private String infraName ; 
 
 	public ManagementServer(Infra m_infra  ) throws UnirestException 
 	{
@@ -48,6 +48,7 @@ public class ManagementServer extends Server{
 	}
 	
 	private MyServerProfile mapConfigFileToServerProfile( Infra m_infra) {
+		this.setInfraName(m_infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
 		result.setAuthType(m_infra.getAuthType());
 		result.setCredential_user(m_infra.getSysadminCred().getUsername());
@@ -341,6 +342,14 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ArrayList<MPServer> getFreeMps() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getInfraName() {
+		return infraName;
+	}
+
+	public void setInfraName(String infraName) {
+		this.infraName = infraName;
 	}
 
 

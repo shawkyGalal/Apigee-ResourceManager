@@ -110,6 +110,14 @@ public List<String>  getAllKvmNames() throws UnirestException, IOException
 	return virtualHosts ; 
 }  
 
+public List<String>  getAllTargetServersNames() throws UnirestException, IOException
+{
+	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/targetservers/"  ; 
+	List<String> targetServers  = this.ms.executeGetMgmntAPI(apiPath , List.class ) ;
+
+	return targetServers ; 
+}  
+
 @SuppressWarnings("unchecked")
 public KeyValueMap  getKvm(String kvmName ) throws UnirestException, IOException
 {
