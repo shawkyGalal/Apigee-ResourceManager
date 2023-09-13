@@ -29,9 +29,9 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	
 	@SuppressWarnings("unchecked")
-	public HashMap<String , Object> getEnvs() throws UnirestException, IOException {
+	public HashMap<String , Environment> getEnvs() throws UnirestException, IOException {
 		ArrayList<String> envNames = null; 
-		HashMap<String , Object > result  = new HashMap<> () ;
+		HashMap<String , Environment > result  = new HashMap<> () ;
 		String apiPath = "/v1/o/"+this.getName() +"/e" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		envNames = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
@@ -149,10 +149,10 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	}
 	
 	
-	public ArrayList<Object> getUndeployedProxies() throws UnirestException, InterruptedException, IOException
+	public ArrayList<String> getUndeployedProxies() throws UnirestException, InterruptedException, IOException
 	{
 		ArrayList<String> apis = this.getAllProxiesNames();
-		ArrayList<Object> proxiesNotDeployed = new ArrayList<Object>();  
+		ArrayList<String> proxiesNotDeployed = new ArrayList<String>();  
 		HashMap<String , String> proxiesFailed = new HashMap<>();
 		int count =1 ; 
 		for (String proxyname : apis )
