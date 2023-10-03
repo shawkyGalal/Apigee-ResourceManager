@@ -8,15 +8,17 @@ public class MonitoringEnvThread extends Thread {
 	
 	private Environment env ; 
 	private String region = "dc-1" ; 
-	private int expectedMPCount ; 
+	private int expectedMPCount ;
+	final int STOP = 0 ; 
+	private int status = 1 ;    
 	
 	 public void run(){
 		 try { 
 		 	
 			
-		     while(true)
+		     while( status ==1 )
 		     {
-		    	 System.out.println("=== Processing Environment :  " + this.env.getName() + "========");
+		    	 System.out.println("=== Processing Org/Environment :  " + this.env.getOrgName() +"/"+ this.env.getName() + "========");
 		    	 sleep(5000);
 		    	 List<MPServer> currentEnvMPs= env.getMessageProcesors(region) ; 
 		    	 List<MPServer> freeMps ;
@@ -88,6 +90,9 @@ public class MonitoringEnvThread extends Thread {
 		this.env = environment ;
 		
 	}
+	public void stopThread() {
+        status = STOP; 
+    }
 
 	
 

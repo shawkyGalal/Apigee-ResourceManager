@@ -166,13 +166,24 @@ public void monitor(ArrayList<CondActionPair> condActionPairs ) throws Exception
 	}
 }
 
-public void monitor(int expectedMps) 
-{
-	MonitoringEnvThread met = new MonitoringEnvThread() ;
-	met.setEnv(this) ;
-	met.setExpectedMPCount(expectedMps);
+private transient MonitoringEnvThread met ;
+public void startMonitoring(int expectedMps) 
+{	if (met==null)
+	{
+		met = new MonitoringEnvThread() ;
+		met.setEnv(this) ;
+		met.setExpectedMPCount(expectedMps);
+	}
 	met.start() ; 
 }
+
+public void stopMonitoring() 
+{	if (met!=null )
+	{
+		met.stopThread() ;
+	}
+}
+
 
 
 
