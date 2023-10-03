@@ -140,7 +140,7 @@ public class ApigeeTool
     {
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
 		
-    	ArrayList<Object> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
+    	ArrayList<String> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
     	System.out.println("=================List Of Proxies With No Deployments ======================");
     	System.out.println(Renderer.arrayListToHtmlTable(proxiesNotDeployed));
     	System.out.println(proxiesNotDeployed); 

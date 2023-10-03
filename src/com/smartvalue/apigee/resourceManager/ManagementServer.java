@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-
+import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
@@ -339,9 +339,18 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return "management-server";
 	}
 
-	public ArrayList<MPServer> getFreeMps() {
+	public ArrayList<MPServer>  getFreeMps(String m_region ) throws UnirestException, IOException {
 		// TODO Auto-generated method stub
-		return null;
+		ArrayList<MPServer> result = new ArrayList<MPServer>(); 
+		FilteredList<MPServer> all =  this.getServerServices().getMPServers(m_region); 
+		for ( MPServer mpServer : all )
+		{
+			HashMap<String , ArrayList<String>> associatedEnvs = mpServer.getAssociatedEnvs(m_region);
+			if (associatedEnvs.size() == 0 )
+			{ result.add(mpServer) ; }
+		}
+		
+		return result;
 	}
 
 	public String getInfraName() {
