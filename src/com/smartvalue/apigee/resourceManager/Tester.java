@@ -67,7 +67,10 @@ public class Tester {
 		
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
-		Environment env = (Environment) org.getEnvs().get(envName);
+		Environment env01 = (Environment) org.getEnvs().get(envName);
+		Environment env02 = (Environment) org.getEnvs().get("cert-protected");
+		env01.monitor(2);
+		env02.monitor(2);
 		
 		/*
 		
@@ -92,21 +95,28 @@ public class Tester {
 		ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
  		
-		
-		List<MPServer> envMpServers = env.getMessageProcesors(region) ;
+		*/
+		ms.getFreeMps("dc-2") ; 
+		List<MPServer> envMpServers = env01.getMessageProcesors(region) ;
 		Renderer.arrayListToHtmlTable(envMpServers) ; 
 
-		MPServer mps = ((MPServer)envMpServers.get(0)) ;
+		MPServer mp0 = ((MPServer)envMpServers.get(0)) ;
+		HashMap<String , ArrayList<String>> aa = mp0.getAssociatedEnvs(region) ; 
 		
-		boolean healthy = mps.healthCheck() ;
-		ArrayList<String> result = mps.removeFromEnvironmnt(org , env ) ; 
+		MPServer mp1 = ((MPServer)envMpServers.get(1)) ;
+		HashMap<String , ArrayList<String>> bb = mp1.getAssociatedEnvs(region) ; 
+
+		
+		/*
+		boolean healthy = mp.healthCheck() ;
+		ArrayList<String> result = mp.removeFromEnvironmnt(org , env ) ; 
 		Renderer.arrayListToHtmlTable(result) ;
 		
-		result = mps.addToEnvironmnt(org , env ) ; 
+		result = mp.addToEnvironmnt(org , env ) ; 
 		Renderer.arrayListToHtmlTable(result) ;
 		
-		result = env.removeMessageProcessor(mps) ; 
-		result = env.addMessageProcessor(mps) ;
+		result = env.removeMessageProcessor(mp) ; 
+		result = env.addMessageProcessor(mp) ;
 		
 		org.getAllApps() ; 
 		ServerServices ss = ms.getServerServices() ;
@@ -129,11 +139,11 @@ public class Tester {
 		
 		System.out.println(gatewayServers);
 	*/
-		String[] allVirtuslHosts = env.getAllVirtualHosts() ; 
+		String[] allVirtuslHosts = env01.getAllVirtualHosts() ; 
 			
 		System.out.println(allVirtuslHosts.toString());
 		
-		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ;
+		VirtualHost vh = env01.getVirtualHostByName(allVirtuslHosts[0]) ;
 		HttpResponse<String> result = vh.executeGetRequest("/test01" , null,  null) ; 
 		System.out.println(vh.toString());
 		
@@ -143,7 +153,7 @@ public class Tester {
 		
 		//-- Testing Environment Monitoring Framework -- 
 		ArrayList<CondActionPair> condActionPairs = new ArrayList<>() ;
-		EnvironmentCondition ec = new EnvironmentCondition(env) 
+		EnvironmentCondition ec = new EnvironmentCondition(env01) 
 			{ 	@Override
 				public boolean evaluate() throws Exception  {
 					boolean result  = true ; 
@@ -164,13 +174,13 @@ public class Tester {
 				}
 			};
 		
-		EnvironmentAction ea = new EnvironmentAction(env) 
+		EnvironmentAction ea = new EnvironmentAction(env01) 
 			{	@Override
 				public void run() throws UnirestException, IOException {
 					// TODO Auto-generated method stub
 					// Add one of the free mp's to this env. 
 					Environment env = this.getEnv() ;
-					ArrayList<MPServer> freeMps = env.getMs().getFreeMps() ;
+					ArrayList<MPServer> freeMps = env.getMs().getFreeMps(region) ;
 					env.addMessageProcessor(freeMps.get(0)) ; 
 				}
 			} ; 
@@ -178,7 +188,7 @@ public class Tester {
 		CondActionPair cp = new CondActionPair() ; 
 		cp.setAction(ea); cp.setCondition(ec); 
 		condActionPairs.add(cp);
-		env.monitor(condActionPairs);
+		env01.monitor(condActionPairs);
 		
 		
 	}

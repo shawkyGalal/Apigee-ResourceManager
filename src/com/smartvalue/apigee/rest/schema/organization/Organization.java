@@ -80,22 +80,22 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		HashMap < String , Object > result = new HashMap < >() ;
 		ArrayList<String> allProxies = getAllProxiesNames(); 
 		int counter = 1;
-		System.out.println("======== Searching over " + allProxies.size()  +  "  Proxies Using Target Server "+m_targetServerName+"===" ) ;  
+		this.getPrintStream().println("======== Searching over " + allProxies.size()  +  "  Proxies Using Target Server "+m_targetServerName+"===" ) ;  
 		for (String proxyName : allProxies )
 		{
 			
 			Proxy proxy = this.getProxy(proxyName);
 			int revisionsSize = proxy.getRevision().size() ;  
-			System.out.print(counter + "- Checking Proxy <"+ proxyName + "> ("+revisionsSize+") revisions ...");
+			this.getPrintStream().print("<br>"+counter + "- Checking Proxy : "+ proxyName + " ("+revisionsSize+") revisions ...");
 			HashMap<String, ArrayList<String>> revisions = proxy.getRevisionsUsesTargetServer(m_targetServerName , m_deployedVersionOnly) ; 
 			if (revisions.size() > 0 )
 			{
 				result.put(proxyName , revisions ) ; 
-				System.out.println("\t\t\t\t Found ") ; 
+				this.getPrintStream().println("\t\t\t\t Found ") ; 
 			}
 			else 
 			{
-				System.out.println("\t\t\t\t  Not") ;
+				this.getPrintStream().println("\t\t\t\t  Not") ;
 			}
 			counter++; 
 		}

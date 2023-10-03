@@ -1,5 +1,7 @@
 package com.smartvalue.apigee.rest.schema;
 
+import java.io.PrintStream;
+
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 
 public abstract class Service {
@@ -7,6 +9,8 @@ public abstract class Service {
 	private ManagementServer ms ;
 	protected String orgName ; 
 	protected String envName ; 
+	private PrintStream printStream = System.out; 
+	
 	public ManagementServer getMs() {
 		return ms;
 	}
@@ -29,6 +33,19 @@ public abstract class Service {
 		this.ms = ms;
 		this.orgName = m_orgName ;
 		this.envName = m_envName ; 
+	}
+
+	public PrintStream getPrintStream() {
+		return printStream;
+	}
+
+	public void setPrintStream(PrintStream printStream) {
+		this.printStream = printStream;
+	}
+	
+	public Service withPrintStream(PrintStream printStream) {
+		this.printStream = printStream;
+		return this ; 
 	}
 	
 	

@@ -22,18 +22,18 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 	Organization m_org= (Organization) this.getMs().getOrgByName(this.orgName) ; 
 	ArrayList <Object> result = new ArrayList <Object> () ; 
 	ArrayList<String> all = m_org.getAllProductsNames() ; 
-	System.out.println("======== Processing "+all.size()+" Products ==========  " );
+	this.getPrintStream().println("======== Processing "+all.size()+" Products ==========  " );
 	int counter = 1 ; 
 	for (String productName : all )
 	{
-		System.out.print(counter + "-Checking Product :" + productName);
+		this.getPrintStream().print(counter + "-Checking Product :" + productName);
 		Product product = m_org.getProductByName(productName) ;
 		int size = product.getProxies().size() ; 
 		if (size == 0 )
 		{
 			result.add(productName) ; 
 		}
-		System.out.println( size ==0  ? ".....\t\t\t Risky" : ".....\t\t\t OK" ) ; 
+		this.getPrintStream().println( size ==0  ? ".....\t\t\t Risky" : ".....\t\t\t OK" ) ; 
 		counter++ ; 
 	}
 

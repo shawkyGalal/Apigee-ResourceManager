@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
+import com.smartvalue.apigee.environmentsMonitor.MonitoringEnvThread;
 import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KeyValueMap;
@@ -141,15 +142,15 @@ public String[]  getAllVirtualHosts() throws UnirestException, IOException
 
 public ArrayList<String> addMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
-	ArrayList<String> result = mpServer.addToEnvironmnt(org, this); 
+	//Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
+	ArrayList<String> result = mpServer.addToEnvironmnt(this); 
 	return result;
 }
 
 public ArrayList<String> removeMessageProcessor(MPServer mpServer ) throws UnirestException, IOException
 {
-	Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
-	ArrayList<String> result = mpServer.removeFromEnvironmnt(org, this); 
+	//Organization org = (Organization) this.ms.getOrgByName(this.orgName) ;
+	ArrayList<String> result = mpServer.removeFromEnvironmnt(this); 
 	return result;
 }
 
@@ -163,6 +164,14 @@ public void monitor(ArrayList<CondActionPair> condActionPairs ) throws Exception
 			condActionPair.getAction().run() ; 
 		}
 	}
+}
+
+public void monitor(int expectedMps) 
+{
+	MonitoringEnvThread met = new MonitoringEnvThread() ;
+	met.setEnv(this) ;
+	met.setExpectedMPCount(expectedMps);
+	met.start() ; 
 }
 
 

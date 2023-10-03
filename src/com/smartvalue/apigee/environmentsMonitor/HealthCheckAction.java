@@ -14,10 +14,12 @@ public class HealthCheckAction extends EnvironmentAction {
 		// TODO Auto-generated method stub
 		// Add one of the free mp's to this env. 
 		Environment env = this.getEnv() ;
-		ArrayList<MPServer> freeMps = env.getMs().getFreeMps() ;
+		ArrayList<MPServer> freeMps = env.getMs().getFreeMps(this.getRegion()) ;
 		env.addMessageProcessor(freeMps.get(0)) ; 
 	}
 	
+	
+
 	public HealthCheckAction (Environment m_env)
 	{
 		super(m_env); 

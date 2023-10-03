@@ -345,7 +345,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		FilteredList<MPServer> all =  this.getServerServices().getMPServers(m_region); 
 		for ( MPServer mpServer : all )
 		{
-			HashMap<String , ArrayList<String>> associatedEnvs = mpServer.getAssociatedEnvs();
+			HashMap<String , ArrayList<String>> associatedEnvs = mpServer.getAssociatedEnvs(m_region);
 			if (associatedEnvs.size() == 0 )
 			{ result.add(mpServer) ; }
 		}
