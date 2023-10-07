@@ -69,8 +69,8 @@ public class Tester {
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env01 = (Environment) org.getEnvs().get(envName);
 		Environment env02 = (Environment) org.getEnvs().get("cert-protected");
-		env01.monitor(2);
-		env02.monitor(2);
+		env01.startMonitoring(2);
+		env02.startMonitoring(2);
 		
 		/*
 		

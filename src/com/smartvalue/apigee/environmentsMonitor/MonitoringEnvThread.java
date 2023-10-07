@@ -93,6 +93,11 @@ public class MonitoringEnvThread extends Thread {
 	public void stopThread() {
         status = STOP; 
     }
+	
+	public int getStatus()
+	{
+		return status; 
+	}
 
 	
 

@@ -168,7 +168,7 @@ public void monitor(ArrayList<CondActionPair> condActionPairs ) throws Exception
 
 private transient MonitoringEnvThread met ;
 public void startMonitoring(int expectedMps) 
-{	if (met==null)
+{	//if (met==null)
 	{
 		met = new MonitoringEnvThread() ;
 		met.setEnv(this) ;
@@ -183,6 +183,13 @@ public void stopMonitoring()
 		met.stopThread() ;
 	}
 }
+
+public int getMonitoringStatus()
+{
+	
+	return (met!= null )? met.getStatus() : 0 ;  
+}
+
 
 
 
