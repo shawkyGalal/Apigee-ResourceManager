@@ -38,9 +38,9 @@ public class MonitoringEnvThread extends Thread {
 		    				 freeMps  = env.getMs().getFreeMps(region);
 			    			 if ( freeMps.size() > 0 )
 			    			 {
-			    				 System.out.println("=== Remove the affected MP :  " + mp.getInternalIP() + "From Environmernt : " + this.env.getName() + "========");
+			    				 System.out.println("=== Remove the affected MP :  " + mp.getInternalIP() + " From Environmernt : " + this.env.getName() + "========");
 			    				 mp.removeFromEnvironmnt( env) ;
-			    				 System.out.println("=== Add MP :  " + freeMps.get(0).getInternalIP() + "From Environmernt : " + this.env.getName() + "========");
+			    				 System.out.println("=== Add MP :  " + freeMps.get(0).getInternalIP() + " To Environmernt : " + this.env.getName() + "========");
 			    				 freeMps.get(0).addToEnvironmnt(env) ;
 			    			 }
 			    			 else 

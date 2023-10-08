@@ -7,6 +7,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
@@ -19,6 +21,7 @@ import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -359,6 +362,21 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 
 	public void setInfraName(String infraName) {
 		this.infraName = infraName;
+	}
+	
+	private transient HashMap<String , HashMap<String , Environment>> storedEnvs ; 
+	public HashMap<String , HashMap<String , Environment>> getStoredEnvs(boolean m_refresh) throws UnirestException, IOException
+	{
+		if (storedEnvs == null  || m_refresh )
+		{
+			storedEnvs= new HashMap<String , HashMap<String , Environment>> () ;
+			for ( String orgName : this.getAllOrgNames())
+			{
+				storedEnvs.put(orgName , this.getOrgByName(orgName).getEnvs() ) ; 
+			}
+		}
+		
+		return storedEnvs ; 
 	}
 
 

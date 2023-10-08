@@ -46,6 +46,22 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 		return result ; 
 	}
 	
+	public MPServer getMPServerByUUID( String m_region , String UUID ) throws UnirestException, IOException
+	{
+		FilteredList<MPServer> allservers = getServersByTypeAndRegion(MPServer.class , m_region , "gateway" ) ;
+		MPServer result = null ; 
+		for (MPServer server : allservers)
+		{
+			if (server.getuUID().equalsIgnoreCase(UUID))
+			{
+				result = server ; 
+				break ; 
+			}
+		}
+		return result ; 
+	}
+	
+	
 	public FilteredList<Router> getRouterServers( String m_region ) throws UnirestException, IOException
 	{
 		String podName = "gateway" ; 
@@ -86,6 +102,8 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	    }
 	    return result;
 	}
+	
+	 
 	
 	public FilteredList<MPServer>  getOnlyUpMpServers(String m_region ) throws Exception
 	{
