@@ -3,10 +3,13 @@ package com.smartvalue.apigee.resourceManager;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import com.google.gson.internal.LinkedTreeMap;
 
 public class Renderer {
 	
@@ -33,7 +36,7 @@ public class Renderer {
 		return result.toString();
 	}
 	
-	public static String hashMaptoHtmlTable(HashMap<String , ? extends Object > m_object)
+	public static String hashMaptoHtmlTable(AbstractMap<String , ? extends Object > m_object)
 	{
 		StringBuffer result = new StringBuffer() ;
 		result.append("<table border = 1>") ;
@@ -47,9 +50,9 @@ public class Renderer {
 				
 				result.append("<td>") ;
 				Object obj = m_object.get(key) ; 
-				if (obj instanceof String)
+				if (obj instanceof String || obj instanceof Double || obj instanceof Integer )
 				{result.append(obj) ;}
-				else if (obj instanceof HashMap) 
+				else if (obj instanceof AbstractMap ) 
 				{
 					result.append ( hashMaptoHtmlTable((HashMap<String, ? extends Object>) obj) ) ; 
 				}
@@ -94,8 +97,8 @@ public class Renderer {
 		            	Class<?> fieldClass = field.getType() ; 
 		                if (fieldClass.isPrimitive() || value instanceof String || value instanceof Number) {
 		                    htmlTable.append(value);
-		                } else if (fieldClass.isArray()  ) {
-		                    htmlTable.append(generateArrayHtmlTable(value));
+		                } else if ( value instanceof List  ) {
+		                    htmlTable.append(generateArrayHtmlTable((ArrayList) value));
 		                } 
 		                else if (fieldClass.getName().equalsIgnoreCase("java.util.List") || fieldClass.getName().equalsIgnoreCase("java.util.ArrayList") )
 		                {
@@ -134,20 +137,33 @@ public class Renderer {
 	        int modifiers = field.getModifiers();
 	        return ! ( Modifier.isFinal(modifiers) || Modifier.isTransient(modifiers) );
 	    }
+	 
+	 public static String generateArrayHtmlTable(ArrayList<Object> array ) {
+		 return generateArrayHtmlTable( array , null) ; 
+	 }
 
-	    public static String generateArrayHtmlTable(Object array) {
-	        StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th></tr>");
-	        int length = Array.getLength(array);
+	    public static String generateArrayHtmlTable(ArrayList<Object> array , HashMap<String , String> extraLinks) {
+	    	StringBuilder htmlTable = new StringBuilder("<table border = 1 ><tr><th>Index</th><th>Value</th>"+((extraLinks!=null)? "<th>Extra</th>":"") +"</tr>");
+	        int length = array.size() ; // Array.getLength(array);
 
 	        for (int i = 0; i < length; i++) {
-	            Object element = Array.get(array, i);
+	            Object element = array.get(i); // Array.get(array, i);
 	            htmlTable.append("<tr><td>").append(i).append("</td><td>");
 
 	            if (element != null) {
-	                if (element.getClass().isArray()) {
-	                    htmlTable.append(generateArrayHtmlTable(element));
+	                if (element instanceof List) {
+	                    htmlTable.append(generateArrayHtmlTable((ArrayList)element));
 	                } else {
-	                    htmlTable.append(element);
+	                	htmlTable.append(element);
+	                	if (extraLinks != null)
+	            		{	htmlTable.append("<td>") ; 
+		            		for (String extrLink : extraLinks.keySet() )
+		            		{
+		            			htmlTable.append("<a href = " +extrLink + element + ">"+extraLinks.get(extrLink)+"</a><br>") ; 
+		            		}
+		            		htmlTable.append("</td>") ; 
+	            		}
+	                    
 	                }
 	            } else {
 	                htmlTable.append("null");

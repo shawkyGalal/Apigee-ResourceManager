@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.springframework.security.crypto.codec.Base64;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mashape.unirest.http.HttpResponse;
@@ -20,13 +21,13 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 
 	private ApigeeAccessToken accessToken = null ; 
 	//private ApigeeAccessToken accessToken = null ;
-	public HttpResponse<String>  executeRequest(HashMap<String , String> m_headers , String m_verb , String m_body) throws UnirestException
+	public HttpResponse<String>  executeRequest(HashMap<String , String> m_headers , String m_verb , String m_body) throws UnirestException , AccessTokenNotFound
 	{
 		String m_url = this.getMojServicesBaseUrl() ;
 		return executeRequest( m_url , m_headers ,  m_verb , m_body) ;  
 	}
-	
-	public HttpResponse<String>  executeRequest( String m_url , HashMap<String , String> m_headers , String m_verb , String m_body) throws UnirestException
+	private boolean accessTokenMandatory = false ; 
+	public HttpResponse<String>  executeRequest( String m_url , HashMap<String , String> m_headers , String m_verb , String m_body) throws UnirestException , AccessTokenNotFound
 	{
 		HttpRequest request = null ; 
 		HttpResponse<String> response = null ; 
@@ -36,6 +37,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 			request = appendHeaders (request ,  m_headers  );
 			if (m_headers == null || ! m_headers.containsKey("Authorization"))
 			{
+				if (this.accessToken == null && accessTokenMandatory ) throw new AccessTokenNotFound() ; 
 				request.header("Authorization" , "Bearer " +this.accessToken.getAccess_token()) ; 
 			}
 			response = request.asString();
@@ -70,6 +72,10 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 				this.reNewAccessToken() ; 
 				response = executeRequest( m_url ,  m_headers , m_verb , m_body) ; 
 			}
+			else if (response.getStatus() == 401 &&  response.getBody().contains("steps.jwt.TokenExpired"))
+			{
+				throw new TokenExpiredException(response.getBody(), java.time.Instant.now()) ; 
+			}
 		}
 		
 		return response ; 
@@ -89,14 +95,17 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		return request ; 
 	}
 	
-	private  ApigeeAccessToken  generateCientAccessToken() throws UnirestException
+	private  ApigeeAccessToken  generateCientAccessToken() throws UnirestException 
 	{
 		ApigeeAccessToken at ; 
 		String authorization =  getClientBasicAuth() ; 
 		HashMap<String, String> headers = new HashMap<String, String>() ; 
 		headers.put("Authorization" , authorization) ; 
 		headers.put("Content-Type" , "application/x-www-form-urlencoded") ;
-		HttpResponse<String> response = executeRequest ( this.getTokenUrl(), headers , "POST" , "") ;
+		HttpResponse<String> response = null;
+		try {
+			response = executeRequest ( this.getTokenUrl(), headers , "POST" , "");
+		} catch (AccessTokenNotFound e) {	}
 		handleReponseError(response) ; 
 		Gson gson = new Gson(); 
 		at =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
@@ -207,6 +216,14 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 
 	public UrlBuilder getUrlBuilder() {
 		return urlBuilder;
+	}
+
+	public boolean isAccessTokenMandatory() {
+		return accessTokenMandatory;
+	}
+
+	public void setAccessTokenMandatory(boolean accessTokenMandatory) {
+		this.accessTokenMandatory = accessTokenMandatory;
 	}
 		
 }
