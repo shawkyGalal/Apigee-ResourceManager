@@ -136,7 +136,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		return accessToken ;  
 		
 	}
-	public ApigeeAccessToken getAccessToken(String m_authCode) throws JsonSyntaxException, UnirestException 
+	public void setAccessToken(String m_authCode) throws JsonSyntaxException, UnirestException 
 	{	
 		//check if the provided m_authCode is the same used to generate the current accesstoken  
 		String previousAuthCode = (accessToken == null)? null : accessToken.getAuthoirizationCode() ; 
@@ -157,7 +157,6 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 			// Associate the generated accessToken with the provided m_authCode 
 			accessToken.setAuthoirizationCode(m_authCode) ;
 		}
-		return accessToken ; 
 	}
 	
 	public ApigeeAccessToken getAccessToken(String m_authCode , String codeVerifier) throws JsonSyntaxException, UnirestException 
