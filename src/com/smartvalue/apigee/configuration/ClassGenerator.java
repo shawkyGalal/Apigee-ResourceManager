@@ -20,63 +20,28 @@ public class ClassGenerator {
 	public static void main (String[] args) throws Exception
 	{
    
-		String accessToken = "{\r\n" + 
-				"  \"refresh_token_expires_in\" : \"1295999\",\r\n" + 
-				"  \"arabicFatherName\" : \"محمد\",\r\n" + 
-				"  \"sessionIndex\" : \"e84efe0e-136b-4ee0-90d1-2d96d454dda1\",\r\n" + 
-				"  \"englishGrandFatherName\" : \"GALAL\",\r\n" + 
-				"  \"userid\" : \"2354900017\",\r\n" + 
-				"  \"client_id\" : \"X0sPwcBpGxJPUrpBIr1IlcHQ0bTlrCd5\",\r\n" + 
-				"  \"saml_issueInstant\" : \"2023-09-07T12:31:02.003Z\",\r\n" + 
-				"  \"arabicFirstName\" : \"شوقى\",\r\n" + 
-				"  \"iqamaExpiryDateHijri\" : \"1446/02/29\",\r\n" + 
-				"  \"nationalityCode\" : \"207\",\r\n" + 
-				"  \"application_name\" : \"efe547b7-ca33-471d-b000-55e7760ff1c8\",\r\n" + 
-				"  \"refresh_count\" : \"0\",\r\n" + 
-				"  \"idExpiryDateGregorian\" : \"Mon Sep 02 03:00:00 AST 2024\",\r\n" + 
-				"  \"iqamaExpiryDateGregorian\" : \"Mon Sep 02 03:00:00 AST 2024\",\r\n" + 
-				"  \"api_product_list\" : \"[SMSMOI, ldapProduct, NationalAddress, Deeds Inquiry, active-directory, oidc-core, EmailService, MCIProduct, ELM-Product, LDAP, ShortenURLProduct, Tahseel Biller 169, QaimResponseAPIs, Tahseel_JudicialCosts, INTEG_GSN_TAHSEEL_TO_MOJ_JudicialCosts, Tahseel_Servicese_Outgoing160, test01, Najiz-Mobile-Product, Proxy-Taqadhi_ICMS_IAM_Product, NajizACL]\",\r\n" + 
-				"  \"dobHijri\" : \"1388/06/03\",\r\n" + 
-				"  \"id_token\" : \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMzU0OTAwMDE3IiwiYmlydGhkYXRlIjoiMTM4OFwvMDZcLzAzIiwiZ2VuZGVyIjoiTWFsZSIsImxvZ2luVHlwZSI6IkluZGl2aWR1YWwiLCJhbXIiOiJleHRlcm5hbCIsImlzcyI6Imh0dHBzOlwvXC9hcGlzLm1vai5nb3Yuc2EiLCJzZXJ2aWNlU3BlY2lmaWNJbmZvIjoiYXBpZy1wLXI3Lm1vai5nb3YtMTQyNTUtMTc1MjUxMjYtMSIsInByZWZlcnJlZF91c2VybmFtZSI6Iti02YjZgtmJIiwibmF0aW9uYWxpdHlfbmFtZSI6ItmF2LXYsSIsImNsaWVudF9pZCI6Ilgwc1B3Y0JwR3hKUFVycEJJcjFJbGNIUTBiVGxyQ2Q1Iiwic2NvcGUiOiJvcGVuaWQiLCJhdXRoX3RpbWUiOiIxNjk0MDg5ODYyIiwic2Vzc2lvbl9pZGVudGlmaWVyIjoiZTg0ZWZlMGUtMTM2Yi00ZWUwLTkwZDEtMmQ5NmQ0NTRkZGExIiwiaWRwdHlwZSI6ImFwaWdlZSIsImV4cCI6MTY5NDA5MDQ2MiwiaWF0IjoxNjk0MDg5ODYyLCJqdGkiOiI1YzVhMDY4OC0yZTZjLTQ0YmUtYWNlNi0xMTI2ODc1M2RjNmQiLCJuYXRpb25hbGl0eUlkIjoiMjA3IiwidGhpcmRfbmFtZSI6Itis2YTYp9mEIiwiZ2l2ZW5fbmFtZSI6Iti02YjZgtmJINmF2K3ZhdivINis2YTYp9mEINin2KjYsdin2YfZitmFIiwibWlkZGxlX25hbWUiOiLZhdit2YXYryIsIm5vbmNlIjoidlJLUDQtMWlJLWtWYk1SNkxfNEdGUSIsImF1ZCI6Ilgwc1B3Y0JwR3hKUFVycEJJcjFJbGNIUTBiVGxyQ2Q1IiwiaWRwIjoiSUFNIiwibmF0aW9uYWxpdHkiOiJFZ3lwdCIsInVzZXJfaWQiOiJjNzIzOTdlNjM0YmRjZmM0MDQwZThmYTVjYmE5NTBjNSIsImRvYiI6Ik1vbiBBdWcgMjYgMDM6MDA6MDAgQVNUIDE5NjgiLCJpZEV4cGlyeURhdGVIaWpyaSI6IjE0NDZcLzAyXC8yOSIsIm5hbWUiOiIyMzU0OTAwMDE3IiwiZmFtaWx5X25hbWUiOiLYp9io2LHYp9mH2YrZhSIsImFnZSI6IjU1IiwidXNlcl9pZF9oYXNoZWQiOiJjNzIzOTdlNjM0YmRjZmM0MDQwZThmYTVjYmE5NTBjNSJ9.o9__gVI8lO0qbh0-ScVgamrjzP0v3iMWot0BX7ucALM\",\r\n" + 
-				"  \"organization_name\" : \"moj-prod\",\r\n" + 
-				"  \"nonce\" : \"vRKP4-1iI-kVbMR6L_4GFQ\",\r\n" + 
-				"  \"arabicGrandFatherName\" : \"جلال\",\r\n" + 
-				"  \"access_token\" : \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMzU0OTAwMDE3IiwiYmlydGhkYXRlIjoiMTM4OFwvMDZcLzAzIiwiZ2VuZGVyIjoiTWFsZSIsImxvZ2luVHlwZSI6IkluZGl2aWR1YWwiLCJhbXIiOiJleHRlcm5hbCIsImlzcyI6Imh0dHBzOlwvXC9hcGlzLm1vai5nb3Yuc2EiLCJzZXJ2aWNlU3BlY2lmaWNJbmZvIjoiYXBpZy1wLXI3Lm1vai5nb3YtMTQyNTUtMTc1MjUxMjYtMSIsInByZWZlcnJlZF91c2VybmFtZSI6Iti02YjZgtmJIiwibmF0aW9uYWxpdHlfbmFtZSI6ItmF2LXYsSIsImNsaWVudF9pZCI6Ilgwc1B3Y0JwR3hKUFVycEJJcjFJbGNIUTBiVGxyQ2Q1Iiwic2NvcGUiOiJvcGVuaWQiLCJhdXRoX3RpbWUiOiIxNjk0MDg5ODYyIiwic2Vzc2lvbl9pZGVudGlmaWVyIjoiZTg0ZWZlMGUtMTM2Yi00ZWUwLTkwZDEtMmQ5NmQ0NTRkZGExIiwiaWRwdHlwZSI6ImFwaWdlZSIsImV4cCI6MTY5NDA5MDQ2MiwiaWF0IjoxNjk0MDg5ODYyLCJqdGkiOiI1YzVhMDY4OC0yZTZjLTQ0YmUtYWNlNi0xMTI2ODc1M2RjNmQiLCJuYXRpb25hbGl0eUlkIjoiMjA3IiwidGhpcmRfbmFtZSI6Itis2YTYp9mEIiwiZ2l2ZW5fbmFtZSI6Iti02YjZgtmJINmF2K3ZhdivINis2YTYp9mEINin2KjYsdin2YfZitmFIiwibWlkZGxlX25hbWUiOiLZhdit2YXYryIsIm5vbmNlIjoidlJLUDQtMWlJLWtWYk1SNkxfNEdGUSIsImF1ZCI6Ilgwc1B3Y0JwR3hKUFVycEJJcjFJbGNIUTBiVGxyQ2Q1IiwiaWRwIjoiSUFNIiwibmF0aW9uYWxpdHkiOiJFZ3lwdCIsInVzZXJfaWQiOiJjNzIzOTdlNjM0YmRjZmM0MDQwZThmYTVjYmE5NTBjNSIsImRvYiI6Ik1vbiBBdWcgMjYgMDM6MDA6MDAgQVNUIDE5NjgiLCJpZEV4cGlyeURhdGVIaWpyaSI6IjE0NDZcLzAyXC8yOSIsIm5hbWUiOiIyMzU0OTAwMDE3IiwiZmFtaWx5X25hbWUiOiLYp9io2LHYp9mH2YrZhSIsImFnZSI6IjU1IiwidXNlcl9pZF9oYXNoZWQiOiJjNzIzOTdlNjM0YmRjZmM0MDQwZThmYTVjYmE5NTBjNSJ9.o9__gVI8lO0qbh0-ScVgamrjzP0v3iMWot0BX7ucALM\",\r\n" + 
-				"  \"refresh_token\" : \"afzFi9qXyXiPnxXMFFts1VtIhSUfVbOz\",\r\n" + 
-				"  \"token_generator_messageId\" : \"apig-p-r7.moj.gov-14255-17525249-1\",\r\n" + 
-				"  \"nationality\" : \"Egypt\",\r\n" + 
-				"  \"idExpiryDateHijri\" : \"1446/02/29\",\r\n" + 
-				"  \"dob\" : \"Mon Aug 26 03:00:00 AST 1968\",\r\n" + 
-				"  \"preferredLang\" : \"\",\r\n" + 
-				"  \"arabicFamilyName\" : \"ابراهيم\",\r\n" + 
-				"  \"status\" : \"approved\",\r\n" + 
-				"  \"englishFatherName\" : \"MOHAMED\",\r\n" + 
-				"  \"englishName\" : \"SHAWKI MOHAMED GALAL IBRAHIM\",\r\n" + 
-				"  \"gender\" : \"Male\",\r\n" + 
-				"  \"cardIssueDateGregorian\" : \"Wed Jul 08 03:00:00 AST 2015\",\r\n" + 
-				"  \"token_type\" : \"BearerToken\",\r\n" + 
-				"  \"issued_at\" : \"1694089873628\",\r\n" + 
-				"  \"idVersionNo\" : \"7\",\r\n" + 
-				"  \"arabicNationality\" : \"مصر\",\r\n" + 
-				"  \"arabicName\" : \"شوقى محمد جلال ابراهيم\",\r\n" + 
-				"  \"scope\" : \"openid\",\r\n" + 
-				"  \"refresh_token_issued_at\" : \"1694089873628\",\r\n" + 
-				"  \"lang\" : \"ar\",\r\n" + 
-				"  \"expires_in\" : \"1799\",\r\n" + 
-				"  \"issueLocationAr\" : \"جوازات الرياض\",\r\n" + 
-				"  \"refresh_token_status\" : \"approved\",\r\n" + 
-				"  \"api_product_list_json\" : [ \"SMSMOI\", \"ldapProduct\", \"NationalAddress\", \"Deeds Inquiry\", \"active-directory\", \"oidc-core\", \"EmailService\", \"MCIProduct\", \"ELM-Product\", \"LDAP\", \"ShortenURLProduct\", \"Tahseel Biller 169\", \"QaimResponseAPIs\", \"Tahseel_JudicialCosts\", \"INTEG_GSN_TAHSEEL_TO_MOJ_JudicialCosts\", \"Tahseel_Servicese_Outgoing160\", \"test01\", \"Najiz-Mobile-Product\", \"Proxy-Taqadhi_ICMS_IAM_Product\", \"NajizACL\" ],\r\n" + 
-				"  \"cardIssueDateHijri\" : \"1436/09/21\",\r\n" + 
-				"  \"englishFirstName\" : \"SHAWKI\",\r\n" + 
-				"  \"issueLocationEn\" : \"Riyadh Passports\",\r\n" + 
-				"  \"developer.email\" : \"sfoda@moj.gov.sa\",\r\n" + 
-				"  \"englishFamilyName\" : \"IBRAHIM\",\r\n" + 
-				"  \"req_scope\" : \"openid\"\r\n" + 
-				"}\r\n" + 
-				"" ; 
-		//generateJavaClassFromJson(accessToken, "ApigeeAccessToken" , "com.smartvalue.apigee.rest.schema.accessToken.auto");
+		String appointments = "{\"appointments\":[{\r\n" + 
+				"      \"siteName\": \"المحكمة العامة بالرياض\",\r\n" + 
+				"      \"endTime\": \"08:30:00\",\r\n" + 
+				"      \"serviceName\": \"أخرى\",\r\n" + 
+				"      \"categoryId\": 1,\r\n" + 
+				"      \"id\": 3271448,\r\n" + 
+				"      \"startTime\": \"08:00:00\",\r\n" + 
+				"      \"departmentId\": null,\r\n" + 
+				"      \"protectedId\": \"CfDJ8Hpf0LF32ZZEl5LBltTmiYUvMIxcKmdHvXvrnemwvGVuvUQsUPY_7SmbVok-l9BvuSlEfckrAyawaXia6TA7wqdQIqqlcMZVNcu6ZbSPG9M_HLZAJGWO-2wO13RJNLt9jg\",\r\n" + 
+				"      \"externalId\": \"ea2b0f12-93e1-4b5c-a6ad-8d8885c1e5db\",\r\n" + 
+				"      \"departmentName\": \"الدائرة القضائية\",\r\n" + 
+				"      \"date\": \"2023-10-16T00:00:00\",\r\n" + 
+				"      \"siteId\": null,\r\n" + 
+				"      \"regionName\": \"الرياض\",\r\n" + 
+				"      \"reservationDateTime\": \"2023-10-15T08:15:09.947\",\r\n" + 
+				"      \"regionId\": null,\r\n" + 
+				"      \"slotId\": 0\r\n" + 
+				"    }],\"requests\":[{\"id\":2313822,\"protectedId\":\"CfDJ8Hpf0LF32ZZEl5LBltTmiYVHaekkz-BrPVgEtCqGz1h82VIY5Rp1Vf2GW6hFJBzwULv2mv4U3H728YtxZ0wdADQ8R7BpvZkbSm2FEarKxBwESDh79_u-PZdRCV8KMvSz7g\",\"creationDateTime\":\"2023-10-16T12:39:34.457\",\"regionName\":\"الرياض\",\"siteName\":\"المحكمة العامة بالرياض\",\"departmentName\":\"الدائرة القضائية\",\"subject\":\"إستلام صك غير إلكتروني\",\"statusId\":2,\"processingDateTime\":\"2023-10-16T12:50:07.757\",\"rejectionReasons\":\"عزيزي المستفيد نسعد بخدمتكم ونأمل توضيح نوع ورقم الصك المطلوب استلامه أو تعديله\",\"categoryId\":1,\"slotId\":5,\"date\":\"2023-10-22T00:00:00\",\"startTime\":\"08:00:00\",\"endTime\":\"08:30:00\"}]}" ; 
+		//generateJavaClassFromJson(appointments, "Appointments" , "com.smartvalue.moj.najiz.services.appointments.auto");
 		Gson gson = new Gson() ; 
-		ApigeeAccessToken at = gson.fromJson(accessToken , com.smartvalue.apigee.rest.schema.ApigeeAccessToken.class) ; 
+		com.smartvalue.moj.najiz.services.appointments.auto.Appointments appouRequest = gson.fromJson(appointments , com.smartvalue.moj.najiz.services.appointments.auto.Appointments.class) ;
+		System.out.print(appouRequest);
 	}
 	
 	public static void generateJavaClassFromJson(String jsonObject , String m_ClassName , String m_packageName) throws IOException {
