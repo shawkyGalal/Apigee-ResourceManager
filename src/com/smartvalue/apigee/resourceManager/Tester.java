@@ -1,10 +1,16 @@
 package com.smartvalue.apigee.resourceManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
@@ -39,6 +45,7 @@ public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
+		
 		/*
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
@@ -53,24 +60,24 @@ public class Tester {
 		*/
 		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json") ; 
 
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		String orgName = "stg" ; 
-		String envName = "iam-protected" ; 
-		String proxyName = "oidc-core" ;
-		String region = "dc-1" ; 
+		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		//String orgName = "stg" ; 
+		//String envName = "iam-protected" ; 
+		//String proxyName = "oidc-core" ;
+		//String region = "dc-1" ; 
 		
-		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 //String orgName =  "smart-value"  ; // "stg" ; 
-		 //String envName = "prod"  ; // "iam-protected"
-		 //String proxyName = "DZIT" ;
-		 //String region = "dc-1" ; 
+		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 String orgName =  "smart-value"  ; // "stg" ; 
+		 String envName = "prod"  ; // "iam-protected"
+		 String proxyName = "DZIT" ;
+		 String region = "dc-1" ; 
 		
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env01 = (Environment) org.getEnvs().get(envName);
-		Environment env02 = (Environment) org.getEnvs().get("cert-protected");
+		//Environment env02 = (Environment) org.getEnvs().get("cert-protected");
 		env01.startMonitoring(2);
-		env02.startMonitoring(2);
+		//env02.startMonitoring(2);
 		
 		/*
 		
@@ -101,6 +108,8 @@ public class Tester {
 		Renderer.arrayListToHtmlTable(envMpServers) ; 
 
 		MPServer mp0 = ((MPServer)envMpServers.get(0)) ;
+		String[] commands = {"pwd" , "ls -ltr"} ; 
+		mp0.executeShell(commands) ; 
 		HashMap<String , ArrayList<String>> aa = mp0.getAssociatedEnvs(region) ; 
 		
 		MPServer mp1 = ((MPServer)envMpServers.get(1)) ;
@@ -224,4 +233,7 @@ public class Tester {
 	       
 	    }
 	
+	
+
+		
 }
