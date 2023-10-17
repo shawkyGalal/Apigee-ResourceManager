@@ -56,8 +56,9 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 				{	requestWithBody =  Unirest.put(m_url) ;	break; }
 			}
 			requestWithBody = (HttpRequestWithBody) appendHeaders (requestWithBody ,  m_headers  );
-			if (! m_headers.containsKey("Authorization"))
+			if (m_headers == null ||  ! m_headers.containsKey("Authorization"))
 			{
+				if (this.accessToken == null && accessTokenMandatory ) throw new AccessTokenNotFound() ; 
 				requestWithBody.header("Authorization" , "Bearer" +this.accessToken.getAccess_token()) ; 
 			}
 		
