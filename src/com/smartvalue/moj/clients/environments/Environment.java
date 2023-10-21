@@ -16,6 +16,7 @@ import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.moj.najiz.mapping.appointments.AppointmentServices;
 
 public class Environment extends com.smartvalue.moj.clients.environments.auto.Environment {
 
@@ -59,7 +60,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 			if (m_headers == null ||  ! m_headers.containsKey("Authorization"))
 			{
 				if (this.accessToken == null && accessTokenMandatory ) throw new AccessTokenNotFound() ; 
-				requestWithBody.header("Authorization" , "Bearer" +this.accessToken.getAccess_token()) ; 
+				requestWithBody.header("Authorization" , "Bearer " +this.accessToken.getAccess_token()) ; 
 			}
 		
 			requestWithBody.body(m_body);
@@ -68,7 +69,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		
 		if (! Helper.isConsideredSuccess(response.getStatus()) )
 		{
-			if (response.getBody().contains("Access Token expired"))
+			if (response.getBody() != null && response.getBody().contains("Access Token expired"))
 			{
 				this.reNewAccessToken() ; 
 				response = executeRequest( m_url ,  m_headers , m_verb , m_body) ; 
@@ -224,6 +225,16 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 
 	public void setAccessTokenMandatory(boolean accessTokenMandatory) {
 		this.accessTokenMandatory = accessTokenMandatory;
+	}
+	
+	private AppointmentServices appointmentServices = null;  
+	public AppointmentServices getAppointmentService()
+	{
+		if (appointmentServices == null)
+		{
+			this.appointmentServices = new AppointmentServices(this) ; 
+		}
+		return appointmentServices ; 
 	}
 		
 }

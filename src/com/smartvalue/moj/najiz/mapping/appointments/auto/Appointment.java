@@ -1,5 +1,5 @@
 
-package com.smartvalue.moj.najiz.services.appointments.auto;
+package com.smartvalue.moj.najiz.mapping.appointments.auto;
 
 import java.util.HashMap;
 import java.util.Map;

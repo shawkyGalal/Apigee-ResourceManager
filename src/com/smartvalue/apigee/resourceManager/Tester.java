@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.openapitools.codegen.OpenAPIGenerator;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -45,6 +47,16 @@ public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
+		
+		String[] xxx = {"generate" ,  "-i" , "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.yaml" , 
+				  "-g", "java" , 
+				  "-t" ,  "src" , 
+				  //"--additional-properties" , "artifactId=petstore-okhttp-gson,hideGenerationTimestamp:true" , 
+				  "-o" , "com/smartValue/moj/najiz/openApiGenerator" 
+				  } ;
+		String[] helpString = { "help"} ; 
+		OpenAPIGenerator.main(xxx);
+			
 		
 		/*
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
@@ -198,6 +210,7 @@ public class Tester {
 		cp.setAction(ea); cp.setCondition(ec); 
 		condActionPairs.add(cp);
 		env01.monitor(condActionPairs);
+		
 		
 		
 	}

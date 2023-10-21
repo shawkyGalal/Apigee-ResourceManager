@@ -38,10 +38,10 @@ public class ClassGenerator {
 				"      \"regionId\": null,\r\n" + 
 				"      \"slotId\": 0\r\n" + 
 				"    }],\"requests\":[{\"id\":2313822,\"protectedId\":\"CfDJ8Hpf0LF32ZZEl5LBltTmiYVHaekkz-BrPVgEtCqGz1h82VIY5Rp1Vf2GW6hFJBzwULv2mv4U3H728YtxZ0wdADQ8R7BpvZkbSm2FEarKxBwESDh79_u-PZdRCV8KMvSz7g\",\"creationDateTime\":\"2023-10-16T12:39:34.457\",\"regionName\":\"الرياض\",\"siteName\":\"المحكمة العامة بالرياض\",\"departmentName\":\"الدائرة القضائية\",\"subject\":\"إستلام صك غير إلكتروني\",\"statusId\":2,\"processingDateTime\":\"2023-10-16T12:50:07.757\",\"rejectionReasons\":\"عزيزي المستفيد نسعد بخدمتكم ونأمل توضيح نوع ورقم الصك المطلوب استلامه أو تعديله\",\"categoryId\":1,\"slotId\":5,\"date\":\"2023-10-22T00:00:00\",\"startTime\":\"08:00:00\",\"endTime\":\"08:30:00\"}]}" ; 
-		//generateJavaClassFromJson(appointments, "Appointments" , "com.smartvalue.moj.najiz.services.appointments.auto");
+		generateJavaClassFromJson(appointments, "Appointments" , "com.smartvalue.moj.najiz.mapping.appointments.auto");
 		Gson gson = new Gson() ; 
-		com.smartvalue.moj.najiz.services.appointments.auto.Appointments appouRequest = gson.fromJson(appointments , com.smartvalue.moj.najiz.services.appointments.auto.Appointments.class) ;
-		System.out.print(appouRequest);
+		//com.smartvalue.moj.najiz.services.appointments.auto.Appointments appouRequest = gson.fromJson(appointments , com.smartvalue.moj.najiz.services.appointments.auto.Appointments.class) ;
+		//System.out.print(appouRequest);
 	}
 	
 	public static void generateJavaClassFromJson(String jsonObject , String m_ClassName , String m_packageName) throws IOException {
