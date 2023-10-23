@@ -59,12 +59,11 @@ public class Tester {
 		//URL url = new URL(urlStr) ; 
  
 		CodegenConfigurator configurator = new CodegenConfigurator();
-		//JsonParser jsonParser = new JsonParser();
-		//String opanAipStr = jsonParser.readURL(url) ;
 		configurator.setInputSpec(urlStr);
 		
         configurator.setGeneratorName("java"); // Language: Java
         configurator.setOutputDir("output/java"); // Output directory
+        configurator.setValidateSpec(false); 
        
         DefaultGenerator generator = new DefaultGenerator();
         ClientOptInput coi = configurator.toClientOptInput() ;
