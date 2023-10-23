@@ -10,27 +10,25 @@ import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class ApigeeConfigFactory {
 
-	public static ApigeeConfig create(InputStream inputStream) throws FileNotFoundException, IOException
+	public static ApigeeConfig create(InputStream inputStream ) throws FileNotFoundException, IOException
 	{
-		Type apigeeConfigType = (Type) ApigeeConfig.class ;
-		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(inputStream) ;
+		JsonParser apigeeConfigParser = new JsonParser( ) ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(inputStream , ApigeeConfig.class) ;
 		return ac;
 	}
 	
-	public static ApigeeConfig create(File file) throws FileNotFoundException, IOException
+	public static ApigeeConfig create(File file , Type typeofT ) throws FileNotFoundException, IOException
 	{
-		Type apigeeConfigType = (Type) ApigeeConfig.class ;
-		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(file) ;
+		//Type apigeeConfigType = (Type) ApigeeConfig.class ;
+		JsonParser apigeeConfigParser = new JsonParser() ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(file , ApigeeConfig.class) ;
 		return ac;
 	}
 	
-	public static ApigeeConfig create(String filePath) throws FileNotFoundException, IOException
+	public static ApigeeConfig create(String filePath ,  Type typeofT) throws FileNotFoundException, IOException
 	{
-		Type apigeeConfigType = (Type) ApigeeConfig.class ;
-		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(filePath) ;
+		JsonParser apigeeConfigParser = new JsonParser( ) ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(filePath , ApigeeConfig.class) ;
 		return ac;
 	} 
 }

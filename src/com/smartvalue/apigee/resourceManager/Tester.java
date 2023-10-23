@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openapitools.codegen.OpenAPIGenerator;
+import org.openapitools.codegen.ClientOptInput;
+import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.config.CodegenConfigurator;
 
+import com.google.gson.Gson;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -40,22 +43,37 @@ import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
 import com.smartvalue.moj.clients.environments.Environments;
-import com.smartvalue.moj.clients.environments.JsonParser; 
+import com.smartvalue.moj.clients.environments.JsonParser;
+
+import io.swagger.v3.oas.models.OpenAPI;
+
 import java.lang.reflect.Type;
+import java.net.URL;
 
 public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
 		
-		String[] xxx = {"generate" ,  "-i" , "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.yaml" , 
-				  "-g", "java" , 
-				  "-t" ,  "src" , 
-				  //"--additional-properties" , "artifactId=petstore-okhttp-gson,hideGenerationTimestamp:true" , 
-				  "-o" , "com/smartValue/moj/najiz/openApiGenerator" 
-				  } ;
-		String[] helpString = { "help"} ; 
-		OpenAPIGenerator.main(xxx);
+		String urlStr = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
+		//URL url = new URL(urlStr) ; 
+ 
+		CodegenConfigurator configurator = new CodegenConfigurator();
+		//JsonParser jsonParser = new JsonParser();
+		//String opanAipStr = jsonParser.readURL(url) ;
+		configurator.setInputSpec(urlStr);
+		
+        configurator.setGeneratorName("java"); // Language: Java
+        configurator.setOutputDir("output/java"); // Output directory
+       
+        DefaultGenerator generator = new DefaultGenerator();
+        ClientOptInput coi = configurator.toClientOptInput() ;
+        // OpenAPI openApi = jsonParser.getObject(url , OpenAPI.class) ;
+        generator.opts(coi);
+
+        // Run the generator
+        generator.generate();
+		
 			
 		
 		/*
@@ -69,7 +87,7 @@ public class Tester {
 		
 		
 		//e.executeRequest("/test01", null, "GET", "") ; 
-		*/
+		
 		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json") ; 
 
 		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
@@ -114,7 +132,7 @@ public class Tester {
 		ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
  		
-		*/
+		
 		ms.getFreeMps("dc-2") ; 
 		List<MPServer> envMpServers = env01.getMessageProcesors(region) ;
 		Renderer.arrayListToHtmlTable(envMpServers) ; 
@@ -159,7 +177,7 @@ public class Tester {
 		ss.getOnlyUpMpServers(region); 
 		
 		System.out.println(gatewayServers);
-	*/
+	
 		String[] allVirtuslHosts = env01.getAllVirtualHosts() ; 
 			
 		System.out.println(allVirtuslHosts.toString());
@@ -243,7 +261,7 @@ public class Tester {
 	            // Print the exit code
 	            System.out.println("Shell script exited with code: " + exitCode);
 
-	       
+	*/       
 	    }
 	
 	

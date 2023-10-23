@@ -22,20 +22,35 @@
   
   <dependencies>
 
-
+  <dependency>
+	    <groupId>org.openapitools</groupId>
+	    <artifactId>openapi-generator</artifactId>
+	    <version>7.0.1</version>
+  </dependency>
+	<!--
+	<dependency>
+	    <groupId>org.openapitools</groupId>
+	    <artifactId>openapi-generator-cli</artifactId>
+	    <version>7.0.1</version>
+	</dependency> 
+	-->
   	<!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
 	<dependency>
 	    <groupId>com.mashape.unirest</groupId>
 	    <artifactId>unirest-java</artifactId>
 	    <version>1.4.9</version>
 	</dependency>
-
+	
+<!--
 	<dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
       <version>${javaxjson.version}</version>
       <scope>compile</scope>
-    </dependency>  
+    </dependency>
+    -->  
+
+ 
 
     <dependency>
 		<groupId>org.jsonschema2pojo</groupId>
@@ -56,17 +71,8 @@
 	    <version>0.1.55</version> 
 	</dependency>
     -->
-    <dependency>
-	    <groupId>org.openapitools</groupId>
-	    <artifactId>openapi-generator</artifactId>
-	    <version>7.0.1</version>
-	</dependency>
+ 
 	
-	<dependency>
-	    <groupId>org.openapitools</groupId>
-	    <artifactId>openapi-generator-cli</artifactId>
-	    <version>7.0.1</version>
-	</dependency> 
 	
   </dependencies>
   

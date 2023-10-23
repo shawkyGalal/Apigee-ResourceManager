@@ -33,9 +33,8 @@ public class ApigeeTool
     	infra = argsMap.get("-infra") ;
     	org = argsMap.get("-org") ;
     	
-    	Type apigeeConfigType = (Type) ApigeeConfig.class ;
-		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile) ; 
+		JsonParser apigeeConfigParser = new JsonParser(  ) ;
+		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
 		
     	//ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
     	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
