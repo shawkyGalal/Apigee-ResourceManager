@@ -46,7 +46,7 @@ public class SDKGeneratoer {
 		return outputDir;
 	}
 	public void setOutputDir(String outputDir) {
-		outputDir = outputDir;
+		this.outputDir = outputDir;
 	}
 	public boolean isValidateSpecs() {
 		return validateSpecs;
