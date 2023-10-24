@@ -8,15 +8,26 @@ public class SDKGeneratoer {
 
 	private String lang ; 
 	private String outputDir ; 
-	private boolean validateSpecs ; 
+	private boolean validateSpecs ;
+	private String packageName ; 
 	
+	public String getPackageName() {
+		return packageName;
+	}
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
 	public static void main(String[] args )
 	{
 		SDKGeneratoer sdkg = new SDKGeneratoer() ;
 		sdkg.setLang("java");
+		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
+		sdkg.generateSDK(specsUrl);
 		sdkg.setOutputDir("G:\\My Drive\\MasterWorks\\Eclipse-WS\\MOJ_SDK");
 		sdkg.setValidateSpecs(false); 
-		sdkg.generateSDK("https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json");
+		sdkg.setPackageName("org.moj.najiz.sdk");
+		
+
 	}
 	public  void generateSDK(String urlStr)
 	{
@@ -27,14 +38,15 @@ public class SDKGeneratoer {
 		configurator.setInputSpec(urlStr);
         configurator.setGeneratorName( this.getLang()); // Language: Java
         configurator.setOutputDir(this.getOutputDir()); // Output directory
-        configurator.setValidateSpec(this.isValidateSpecs()); 
+        configurator.setValidateSpec(this.isValidateSpecs());
+        
+        configurator.setPackageName(this.getPackageName()) ; 
        
         DefaultGenerator generator = new DefaultGenerator();
         ClientOptInput coi = configurator.toClientOptInput() ;
         generator.opts(coi);
         // Run the generator
         generator.generate();
-
 	}
 	public String getLang() {
 		return lang;

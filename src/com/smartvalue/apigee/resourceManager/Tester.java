@@ -44,6 +44,7 @@ import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
 import com.smartvalue.moj.clients.environments.Environments;
 import com.smartvalue.moj.clients.environments.JsonParser;
+import com.smartvalue.openapi.SDKGeneratoer;
 
 import io.swagger.v3.oas.models.OpenAPI;
 
@@ -55,23 +56,14 @@ public class Tester {
 	public static void main (String[] args) throws Exception
 	{
 		
-		String urlStr = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
-		//URL url = new URL(urlStr) ; 
- 
-		CodegenConfigurator configurator = new CodegenConfigurator();
-		configurator.setInputSpec(urlStr);
-		
-        configurator.setGeneratorName("java"); // Language: Java
-        configurator.setOutputDir("output/java"); // Output directory
-        configurator.setValidateSpec(false); 
-       
-        DefaultGenerator generator = new DefaultGenerator();
-        ClientOptInput coi = configurator.toClientOptInput() ;
-        // OpenAPI openApi = jsonParser.getObject(url , OpenAPI.class) ;
-        generator.opts(coi);
-
-        // Run the generator
-        generator.generate();
+		SDKGeneratoer sdkg = new SDKGeneratoer() ;
+		sdkg.setLang("java");
+		sdkg.setOutputDir("G:\\My Drive\\MasterWorks\\Eclipse-WS\\MOJ_SDK");
+		sdkg.setPackageName("org.moj.najiz.sdk");
+		sdkg.setValidateSpecs(false); 
+		// "https://api.moj.gov.local/realestateidentityid/openapi.json" ; //
+		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
+		sdkg.generateSDK(specsUrl);
 		
 			
 		
