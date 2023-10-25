@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 
 import java.util.HashMap;
 
+import org.checkerframework.checker.initialization.qual.Initialized;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -17,8 +18,14 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.moj.najiz.mapping.appointments.AppointmentServices;
+import com.smartvalue.moj.najiz.mapping.attornies.AttornyServices;
+import com.smartvalue.moj.najiz.mapping.xyz.XyzServices;
 
 public class Environment extends com.smartvalue.moj.clients.environments.auto.Environment {
+	
+	public void initialize() {
+		Unirest.setTimeouts(this.getConnectionTimeout(), this.getSocketTimeout());
+	}
 
 	private ApigeeAccessToken accessToken = null ; 
 	//private ApigeeAccessToken accessToken = null ;
@@ -160,9 +167,8 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		}
 	}
 	
-	public ApigeeAccessToken getAccessToken(String m_authCode , String codeVerifier) throws JsonSyntaxException, UnirestException 
+	public ApigeeAccessToken getAccessTokenWithPkce(String m_authCode , String codeVerifier) throws JsonSyntaxException, UnirestException 
 	{
-	Unirest.setTimeouts(0, 0);
 	String clientId = this.getCredential().getClientId() ; 
 	HttpResponse<String> response = Unirest.post( this.getNafath().getTokenWithPkceUrl() + "?client_id=" + clientId)
 	  .header("Content-Type", "application/x-www-form-urlencoded")
@@ -197,7 +203,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		accessToken =  gson.fromJson( response.getBody() , ApigeeAccessToken.class ) ;
 	}
 	
-	public void refreshAccessToken(String m_codeVerifier) throws JsonSyntaxException, UnirestException 
+	public void refreshAccessTokenWithPkce(String m_codeVerifier) throws JsonSyntaxException, UnirestException 
 	{
 		Unirest.setTimeouts(0, 0);
 		HttpResponse<String> response = Unirest.post(this.getNafath().getRefreshTokenWithPkceUrl() + "?client_id=MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8")
@@ -227,6 +233,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		this.accessTokenMandatory = accessTokenMandatory;
 	}
 	
+	
 	private AppointmentServices appointmentServices = null;  
 	public AppointmentServices getAppointmentService()
 	{
@@ -235,6 +242,26 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 			this.appointmentServices = new AppointmentServices(this) ; 
 		}
 		return appointmentServices ; 
+	}
+	
+	private AttornyServices attornyServices = null;  
+	public AttornyServices getAttornyServices()
+	{
+		if (attornyServices == null)
+		{
+			this.attornyServices = new AttornyServices(this) ; 
+		}
+		return attornyServices ; 
+	}
+	
+	private XyzServices xyzServices = null;  
+	public XyzServices getXyzServices()
+	{
+		if (xyzServices == null)
+		{
+			this.xyzServices = new XyzServices(this) ; 
+		}
+		return xyzServices ; 
 	}
 		
 }

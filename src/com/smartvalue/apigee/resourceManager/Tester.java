@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.openapitools.codegen.ClientOptInput;
-import org.openapitools.codegen.DefaultGenerator;
-import org.openapitools.codegen.config.CodegenConfigurator;
 
 import com.google.gson.Gson;
 import com.jcraft.jsch.Channel;
@@ -38,7 +35,6 @@ import com.smartvalue.apigee.rest.schema.server.Router;
 import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
-import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
@@ -46,10 +42,6 @@ import com.smartvalue.moj.clients.environments.Environments;
 import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
 
-import io.swagger.v3.oas.models.OpenAPI;
-
-import java.lang.reflect.Type;
-import java.net.URL;
 
 public class Tester {
 
@@ -58,16 +50,18 @@ public class Tester {
 		
 		SDKGeneratoer sdkg = new SDKGeneratoer() ;
 		sdkg.setLang("java");
+		String urlStr = "https://api.moj.gov.local/realestateidentityid/openapi.json";  
+		// "https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;  
+		// "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
 		sdkg.setOutputDir("G:\\My Drive\\MasterWorks\\Eclipse-WS\\MOJ_SDK");
 		sdkg.setPackageName("org.moj.najiz.sdk");
 		sdkg.setValidateSpecs(false); 
 		// "https://api.moj.gov.local/realestateidentityid/openapi.json" ; //
 		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
 		sdkg.generateSDK(specsUrl);
+	
 		
-			
 		
-		/*
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
 		String authURL = e.getUrlBuilder()
@@ -78,8 +72,9 @@ public class Tester {
 		
 		
 		//e.executeRequest("/test01", null, "GET", "") ; 
-		
-		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json") ; 
+		JsonParser apigeeConfigParser = new JsonParser( ) ;
+		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
+		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
 		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		//String orgName = "stg" ; 
@@ -95,12 +90,12 @@ public class Tester {
 		
 		ManagementServer ms = new ManagementServer(infra) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
-		Environment env01 = (Environment) org.getEnvs().get(envName);
+		Environment env = (Environment) org.getEnvs().get(envName);
 		//Environment env02 = (Environment) org.getEnvs().get("cert-protected");
-		env01.startMonitoring(2);
+		env.startMonitoring(2);
 		//env02.startMonitoring(2);
 		
-		/*
+		
 		
 		ProductsServices   productServices = ms.getProductServices(orgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
@@ -115,34 +110,34 @@ public class Tester {
 		
 		HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 		System.out.println(proxies);
-		String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
-		ms.getProxyServices(orgName).getProxiesWithoutPolices(aa, true) ; 
+		String[] policesNames = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
+		ms.getProxyServices(orgName).getProxiesWithoutPolices(policesNames, true) ; 
 		HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 		System.out.println(allTargetServers);
 		
-		ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
+		ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
 		System.out.println(proxiesNotDeployed.toString());
  		
 		
 		ms.getFreeMps("dc-2") ; 
-		List<MPServer> envMpServers = env01.getMessageProcesors(region) ;
+		List<MPServer> envMpServers = env.getMessageProcesors(region) ;
 		Renderer.arrayListToHtmlTable(envMpServers) ; 
 
-		MPServer mp0 = ((MPServer)envMpServers.get(0)) ;
+		MPServer mp = ((MPServer)envMpServers.get(0)) ;
 		String[] commands = {"pwd" , "ls -ltr"} ; 
-		mp0.executeShell(commands) ; 
-		HashMap<String , ArrayList<String>> aa = mp0.getAssociatedEnvs(region) ; 
+		mp.executeShell(commands) ; 
+		HashMap<String , ArrayList<String>> aa = mp.getAssociatedEnvs(region) ; 
 		
 		MPServer mp1 = ((MPServer)envMpServers.get(1)) ;
 		HashMap<String , ArrayList<String>> bb = mp1.getAssociatedEnvs(region) ; 
 
 		
-		/*
+		
 		boolean healthy = mp.healthCheck() ;
-		ArrayList<String> result = mp.removeFromEnvironmnt(org , env ) ; 
+		ArrayList<String> result = mp.removeFromEnvironmnt(env ) ; 
 		Renderer.arrayListToHtmlTable(result) ;
 		
-		result = mp.addToEnvironmnt(org , env ) ; 
+		result = mp.addToEnvironmnt( env ) ; 
 		Renderer.arrayListToHtmlTable(result) ;
 		
 		result = env.removeMessageProcessor(mp) ; 
@@ -169,12 +164,12 @@ public class Tester {
 		
 		System.out.println(gatewayServers);
 	
-		String[] allVirtuslHosts = env01.getAllVirtualHosts() ; 
+		String[] allVirtuslHosts = env.getAllVirtualHosts() ; 
 			
 		System.out.println(allVirtuslHosts.toString());
 		
-		VirtualHost vh = env01.getVirtualHostByName(allVirtuslHosts[0]) ;
-		HttpResponse<String> result = vh.executeGetRequest("/test01" , null,  null) ; 
+		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ;
+		HttpResponse<String> resultxx = vh.executeGetRequest("/test01" , null,  null) ; 
 		System.out.println(vh.toString());
 		
 		String[] allShardFlows = org.getAllShardFlow() ;
@@ -183,7 +178,7 @@ public class Tester {
 		
 		//-- Testing Environment Monitoring Framework -- 
 		ArrayList<CondActionPair> condActionPairs = new ArrayList<>() ;
-		EnvironmentCondition ec = new EnvironmentCondition(env01) 
+		EnvironmentCondition ec = new EnvironmentCondition(env) 
 			{ 	@Override
 				public boolean evaluate() throws Exception  {
 					boolean result  = true ; 
@@ -204,7 +199,7 @@ public class Tester {
 				}
 			};
 		
-		EnvironmentAction ea = new EnvironmentAction(env01) 
+		EnvironmentAction ea = new EnvironmentAction(env) 
 			{	@Override
 				public void run() throws UnirestException, IOException {
 					// TODO Auto-generated method stub
@@ -218,7 +213,7 @@ public class Tester {
 		CondActionPair cp = new CondActionPair() ; 
 		cp.setAction(ea); cp.setCondition(ec); 
 		condActionPairs.add(cp);
-		env01.monitor(condActionPairs);
+		env.monitor(condActionPairs);
 		
 		
 		
@@ -252,10 +247,8 @@ public class Tester {
 	            // Print the exit code
 	            System.out.println("Shell script exited with code: " + exitCode);
 
-	*/       
+	       
 	    }
 	
-	
-
 		
 }

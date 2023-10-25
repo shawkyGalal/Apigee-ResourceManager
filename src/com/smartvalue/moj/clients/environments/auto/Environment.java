@@ -24,6 +24,14 @@ public class Environment {
 
     @JsonProperty("name")
     private String name;
+    
+    @JsonProperty("connectionTimeout")
+    private int connectionTimeout;
+  
+    @JsonProperty("socketTimeout")
+    private int socketTimeout;
+    
+    
     @JsonProperty("mojServicesBaseUrl")
     private String mojServicesBaseUrl;
     @JsonProperty("tokenUrl")
@@ -49,6 +57,39 @@ public class Environment {
         this.name = name;
         return this;
     }
+    
+    @JsonProperty("connectionTimeout")
+    public int getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    @JsonProperty("connectionTimeout")
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public Environment withConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+        return this;
+    }
+    
+    
+    @JsonProperty("socketTimeout")
+    public int getSocketTimeout() {
+        return socketTimeout;
+    }
+
+    @JsonProperty("socketTimeout")
+    public void setSocketTimeout(int socketTimeout) {
+        this.socketTimeout = socketTimeout;
+    }
+
+    public Environment withSocketTimeout(int socketTimeout) {
+        this.socketTimeout = socketTimeout;
+        return this;
+    }
+    
+    
 
     @JsonProperty("mojServicesBaseUrl")
     public String getMojServicesBaseUrl() {
