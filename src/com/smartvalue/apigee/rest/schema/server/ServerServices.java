@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -64,7 +64,8 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	
 	public FilteredList<Router> getRouterServers( String m_region ) throws UnirestException, IOException
 	{
-		String podName = "gateway" ; 
+		String podName = this.getMs().getInfra().getRegion(m_region).getPodGateWayName() ; // (m_region.equalsIgnoreCase("dc-1"))? "gateway" : "gateway-2" ; 
+		
 		FilteredList<Router> result = getServersByTypeAndRegion(Router.class , m_region , podName ) ; 
 		return result ; 
 	}
@@ -89,13 +90,18 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	public <T extends Server> FilteredList<T> getServersByTypeAndRegion(Class<T> serverClass, String m_region , String m_pod ) throws UnirestException, IOException {
 	    String apiPath = "/v1/servers?pod="+m_pod;
 	    Type listType = TypeToken.getParameterized(FilteredList.class, serverClass).getType();
-	    FilteredList<T> servers = this.getMs().executeMgmntAPI(apiPath, listType);
+	    ManagementServer mServer = this.getMs() ;
+	    if (! mServer.getRegion().equalsIgnoreCase(m_region))
+	    {
+	    	mServer = mServer.getInfra().getManagementServer(m_region); 
+	    }
+	    FilteredList<T> servers = mServer.executeMgmntAPI(apiPath, listType);
 
 	    FilteredList<T> result = new FilteredList<>();
 
 	    for (T server : servers) {
 	    	String serverSimpleName = server.getSimpleName() ; 
-	    	server.setManagmentServer(this.getMs());
+	    	server.setManagmentServer(mServer);
 	        if (server.getRegion().contains(m_region) && server.getType().contains(serverSimpleName.toLowerCase())) {
 	            result.add(server);
 	        }

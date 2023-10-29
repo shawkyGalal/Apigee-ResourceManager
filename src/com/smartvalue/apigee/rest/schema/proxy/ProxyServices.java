@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 

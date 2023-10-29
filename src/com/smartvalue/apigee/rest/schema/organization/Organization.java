@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.developer.Developer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;

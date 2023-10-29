@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.Service {

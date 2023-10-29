@@ -9,6 +9,7 @@ import java.util.List;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -20,6 +21,7 @@ public class ApigeeTool
 {
 	private static String configFile ; 
 	private static String infra ;
+	private static String region ; 
 	private static String org ; 
 	private static String operation ;
 	private static ManagementServer ms ; 
@@ -32,13 +34,14 @@ public class ApigeeTool
 	 	configFile = argsMap.get("-configFile") ; 
     	infra = argsMap.get("-infra") ;
     	org = argsMap.get("-org") ;
+    	region = argsMap.get("-region") ;
     	
 		JsonParser apigeeConfigParser = new JsonParser(  ) ;
 		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
 		
     	//ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
     	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
-    	ms = new ManagementServer(infraObj) ; 
+    	ms = infraObj.getManagementServer(region) ;  
 	}
 
 	public static void main(String[] args) throws Exception {

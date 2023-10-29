@@ -40,11 +40,11 @@ public  class Server extends com.smartvalue.apigee.rest.schema.server.auto.Serve
 		return "general purpose Server " ; 
 	}
 	
-    public StringBuffer executeShell(String[] commands) {
+    public StringBuffer executeShell(String privateKeyPath , String[] commands) {
     	StringBuffer result = new StringBuffer(); 
         String host = this.getInternalIP();
         String user = "root";
-        String privateKeyPath = "G:\\My Drive\\SmartValue\\.ssh\\ShawkyFoda\\id_rsa";
+        
        
         try {
             JSch jsch = new JSch();

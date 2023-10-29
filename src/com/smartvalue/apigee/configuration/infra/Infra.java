@@ -2,15 +2,20 @@ package com.smartvalue.apigee.configuration.infra;
 
 import java.util.ArrayList;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.resourceManager.MyServerProfile;
+import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+
 public class Infra {
 	private String Name ; 
 	private SysAdminCred sysadminCred ; 
 	private String Ansible_hosts_file ; 
 	private DevPortal DevPortal ; 
-	private String MgmServerUrl ;
-	private String OauthMgmServerUrl ; 
+	//private String MgmServerUrl ;
+	//private String OauthMgmServerUrl ; 
+	private ArrayList<Region> regions; 
 	private String AuthType ;
-	private String tokenUrl ; 
+	//private String tokenUrl ; 
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
 	 
@@ -33,24 +38,28 @@ public class Infra {
 	public void setDevPortal(DevPortal devPortal) {
 		DevPortal = devPortal;
 	}
+	/*
 	public String getMgmServerUrl() {
 		return MgmServerUrl;
 	}
 	public void setMgmServerUrl(String mgmServerUrl) {
 		MgmServerUrl = mgmServerUrl;
 	}
+	*/
 	public String getAuthType() {
 		return AuthType;
 	}
 	public void setAuthType(String authType) {
 		AuthType = authType;
 	}
+	/*
 	public String getTokenUrl() {
 		return tokenUrl;
 	}
 	public void setTokenUrl(String tokenUrl) {
 		this.tokenUrl = tokenUrl;
 	}
+	*/
 	public String getName() {
 		return Name;
 	}
@@ -62,13 +71,14 @@ public class Infra {
 		return null;
 		
 	}
-	
+	/*
 	public String getOauthMgmServerUrl() {
 		return OauthMgmServerUrl;
 	}
 	public void setOauthMgmServerUrl(String oauthMgmServerUrl) {
 		OauthMgmServerUrl = oauthMgmServerUrl;
 	}
+	*/
 	public int getConnectionTimeout() {
 		return connectionTimeout;
 	}
@@ -81,7 +91,73 @@ public class Infra {
 	public void setSocketTimeout(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
 	}
+	public ArrayList<Region> getRegions() {
+		return regions;
+	}
+	public void setRegions(ArrayList<Region>regions) {
+		this.regions = regions;
+	}
 	
+	public Region getRegion(String regionName)
+	{
+		Region result = null ; 
+		for (Region region : this.getRegions())
+		{
+			if (region.getName().equalsIgnoreCase(regionName)) 
+			{
+				result = region ; 
+				break; 
+			}
+			 
+		}
+		return result ; 
+		
+	}
+	
+	public ManagementServer getManagementServer(String m_region) throws UnirestException
+	{
+		ManagementServer result = null ; 
+		for (ManagementServer mServer :  this.getManagementServers() )
+		{
+			if (mServer.getRegion().equalsIgnoreCase(m_region))
+			{
+				result = mServer ; 
+				break; 
+			}
+			
+		}
+		return result ; 
+	}
+	
+	ArrayList<ManagementServer> managementServers ;  
+	private ArrayList<ManagementServer> getManagementServers() throws UnirestException
+	{
+		if ( managementServers == null )
+		{
+			managementServers = new ArrayList<ManagementServer>() ; 
+			for (Region region : this.getRegions())
+			{
+				managementServers.add((this.buildManagementServer(region.getName()))); 
+			}
+		}
+		return managementServers;
+	}
 	
 
+	private ManagementServer buildManagementServer(String m_region) throws UnirestException
+	{
+		ManagementServer ms = new ManagementServer() ; 
+		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
+		ms.serverProfile = m_serverProfile; 
+		if (ms.serverProfile.getAuthType().equalsIgnoreCase("OAuth") ) 
+		{
+			ApigeeAccessToken at = ms.getAccess_token() ;
+			ms.serverProfile.setBearerToken(at.getAccess_token()) ;
+			ms.serverProfile.setRefreshToken(at.getRefresh_token()) ;
+		}
+		ms.setRegion(m_region);
+		ms.setInfra(this);
+		return ms ; 
+	}
+	
 }

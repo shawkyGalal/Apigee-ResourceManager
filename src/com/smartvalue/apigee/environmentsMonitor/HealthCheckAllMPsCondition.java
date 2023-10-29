@@ -4,7 +4,7 @@ package com.smartvalue.apigee.environmentsMonitor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 

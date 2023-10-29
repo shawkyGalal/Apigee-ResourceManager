@@ -2,7 +2,7 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.PrintStream;
 
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 
 public class ApigeeComman {
 

@@ -5,9 +5,23 @@
 			{	"Name" : "MOJ"  
 				,"Infras" : [
 					{	"Name" : "Prod", 
-						"OauthMgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
-						"MgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
-						"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+					"regions" :
+						 [
+							{ 
+								"name" : "dc-1" ,  
+								"MgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
+								"OauthMgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" ,
+								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
+								"podGateWayName" : "gateway" 
+							}, 
+							{ 	
+								"name" : "dc-2" ,  
+								"MgmServerUrl" : "http://prod_dr.apigee.moj.gov.local:9001/api-management" , 
+								"OauthMgmServerUrl" : "http://prod-dr.apigee.moj.gov.local:9001/api-management" ,
+								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
+								"podGateWayName" : "gateway-2" 
+							}
+						],
 						"AuthType" : "OAuth" , 
 						"sysadminCred" : {
 							"Username" : "devops@moj.gov.sa" , 
@@ -20,17 +34,9 @@
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod/hosts" , 
 						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 					}, 
-					{	"Name" : "Prod-DR", 
-						"MgmServerUrl" : "http://10.169.3.142:8383" , 
-						"sysadminCred" : {
-							"Username" : "devops@moj.gov.sa" , 
-							"Password" : "Moj@1357"
-						}, 
-						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/dr/hosts" , 
-						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
-					}, 
 					{	"Name" : "Dev" , 
 						"MgmServerUrl" : "http://devtest.apigee.moj.gov.local:9001/api-management" , 
+						"OauthMgmServerUrl" : "http://devtest.apigee.moj.gov.local:9001/api-management" ,
 						"tokenUrl" : "http://devtest.apigee.moj.gov.local:9001/v1/authorize/access-token" ,
 						"AuthType" : "OAuth" , 
 						"sysadminCred" : {
@@ -42,9 +48,21 @@
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/dev/hosts" 
 					}, 
 					{	"Name" : "Stage" ,
-						"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
-						"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
-						"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+						"regions" :
+						 [
+							{ "name" : "dc-1" ,  
+							"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" ,  
+							"podGateWayName" : "gateway"
+							}, 
+							{ "name" : "dc-2" ,  
+							"MgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+							"podGateWayName" : "gateway-2"
+							}
+						],
 						"AuthType" : "OAuth" , 
 						"sysadminCred" : {
 							"Username" : "devops@moj.gov.sa" , 
@@ -67,18 +85,16 @@
 						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 					}, 
 					{	"Name" : "Emergency" ,
-						"OauthMgmServerUrl" : "http://emerg.apigee.moj.gov.local:9001/api-management" ,
-						"tokenUrl" : "http://emerg.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+					    "OauthMgmServerUrl" : "http://emerg.apigee.moj.gov.local:9001/api-management" ,
+					    "tokenUrl" : "http://emerg.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
 						"MgmServerUrl" : "http://10.161.9.129:8080" , 
-							"AuthType" : "OAuth" , 
+						"AuthType" : "OAuth" , 
 						"sysadminCred" : {
 							"Username" : "devops@moj.gov.sa" , 
-							"Password" : "Moj@1357" , 
+							"Password" : "Moj@1357", 
 							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
 							"clientSecret" : "UKLBn325ZIX1mulU"
-						}, 
-						"connectionTimeout" : "0" ,
-						"socketTimeout" : "20000" , 
+							},
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod-emrg/hosts" 
 					}
 					
@@ -130,16 +146,18 @@
 						}, 
 						{	"Name" : "Dev", 
 							"MgmServerUrl" : "http://192.168.56.103:8080" , 
+							"AuthType" : "Basic" , 
 							"sysadminCred" : {
-								"Username" : "jenkins@smart-value.com" , 
-								"Password" : "Smart@123"
+								"Username" : "sfoda@master-works.net" , 
+								"Password" : "Master@123"
 							}  
 						}, 
 						{	"Name" : "Stage" , 
 							"MgmServerUrl" : "http://192.168.56.103:8080" , 
+							"AuthType" : "Basic" , 
 							"sysadminCred" : {
-								"Username" : "jenkins@smart-value.com" , 
-								"Password" : "Smart@123"
+								"Username" : "sfoda@master-works.net" , 
+								"Password" : "Master@123"
 							}  
 						}
 					]

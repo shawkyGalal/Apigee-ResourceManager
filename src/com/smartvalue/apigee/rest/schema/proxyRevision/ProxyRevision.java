@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
 

@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.resourceManager;
+package com.smartvalue.apigee.configuration.infra;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import javax.servlet.ServletContext;
 
+import org.checkerframework.checker.initialization.qual.Initialized;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
@@ -18,7 +19,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
-import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -35,22 +36,26 @@ public class ManagementServer extends Server{
 	
 	MyServerProfile serverProfile ;  
 	HashMap <String , Organization> orgs = new HashMap <String , Organization>();
+	private Infra infra ;  
 	private String infraName ; 
-
-	public ManagementServer(Infra m_infra  ) throws UnirestException 
+	
+	/*
+	public ManagementServer(Infra m_infra , String m_regionName  ) throws UnirestException 
 	{
-		MyServerProfile m_serverProfile = mapConfigFileToServerProfile(m_infra  ) ;
+		MyServerProfile m_serverProfile = mapConfigFileToServerProfile(m_infra , m_regionName ) ;
 		serverProfile = m_serverProfile; 
 		if (serverProfile.getAuthType().equalsIgnoreCase("OAuth") ) 
 		{
 			ApigeeAccessToken at = this.getAccess_token() ;
 			this.serverProfile.setBearerToken(at.getAccess_token()) ;
 			this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
-			
 		}
+		this.setRegion(m_regionName);
+		this.setInfra(m_infra);
 	}
+	*/
 	
-	private MyServerProfile mapConfigFileToServerProfile( Infra m_infra) {
+	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra , String m_regionName) {
 		this.setInfraName(m_infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
 		result.setAuthType(m_infra.getAuthType());
@@ -58,23 +63,23 @@ public class ManagementServer extends Server{
 		result.setCredential_pwd(m_infra.getSysadminCred().getPassword());
 		result.setClientId(m_infra.getSysadminCred().getClientId());
 		result.setClientSecret(m_infra.getSysadminCred().getClientSecret());
-		
-		result.setTokenUrl(m_infra.getTokenUrl());
-		result.setHostUrl(m_infra.getMgmServerUrl());
-		result.setOauthHostURL(m_infra.getOauthMgmServerUrl());
+		Region region = m_infra.getRegion(m_regionName) ; 
+		result.setTokenUrl(region.getTokenUrl());
+		result.setHostUrl(region.getMgmServerUrl());
+		result.setOauthHostURL(region.getOauthMgmServerUrl());
 		
 		result.setConnectionTimeout(m_infra.getConnectionTimeout());
 		result.setSocketTimeout(m_infra.getSocketTimeout());
 		
 		return result;
 	}
-
-	
+	/*
 	public ManagementServer(MyServerProfile m_serverProfile ) 
 	{	
 		serverProfile = m_serverProfile; 
 	}
-   
+   */
+
 	public ArrayList<String> getRegions() throws UnirestException, IOException {
 		// TODO Auto-generated method stub
 		 String apiPath = "/v1/regions/" ; 
@@ -377,6 +382,14 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		}
 		
 		return storedEnvs ; 
+	}
+
+	public Infra getInfra() {
+		return infra;
+	}
+
+	public void setInfra(Infra infra) {
+		this.infra = infra;
 	}
 
 
