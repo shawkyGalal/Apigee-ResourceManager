@@ -1,29 +1,20 @@
 package com.smartvalue.apigee.resourceManager;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
-import com.google.gson.Gson;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
-import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
 import com.smartvalue.apigee.environmentsMonitor.EnvironmentAction;
 import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
-import com.smartvalue.apigee.environmentsMonitor.HealthCheckAction;
-import com.smartvalue.apigee.environmentsMonitor.HealthCheckAllMPsCondition;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -41,6 +32,8 @@ import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
 import com.smartvalue.moj.clients.environments.Environments;
 import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
+import com.smartvalue.zip.ZipUtility;
+
 
 
 public class Tester {
@@ -48,19 +41,14 @@ public class Tester {
 	public static void main (String[] args) throws Exception
 	{
 		
-		SDKGeneratoer sdkg = new SDKGeneratoer() ;
-		sdkg.setLang("java");
-		String urlStr = "https://api.moj.gov.local/realestateidentityid/openapi.json";  
-		// "https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;  
-		// "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
-		sdkg.setOutputDir("G:\\My Drive\\MasterWorks\\Eclipse-WS\\MOJ_SDK");
-		sdkg.setPackageName("org.moj.najiz.sdk");
-		sdkg.setValidateSpecs(false); 
-		// "https://api.moj.gov.local/realestateidentityid/openapi.json" ; //
-		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
-		sdkg.generateSDK(specsUrl);
-	
-		
+		String specsUrl = "https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;   // "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;
+		String lang = "php"; 
+		String outputDirectory = "C:\\Users\\Shawky Foda\\Downloads\\MOJ_SDK_"+lang ;
+		TestSDKGenerator(specsUrl , lang , outputDirectory); 
+		File outFile = new File(outputDirectory) ; 
+		List<File> fileList = new ArrayList<File>() ; 
+		fileList.add(outFile); 
+		ZipUtility.zip(fileList, outputDirectory+".zip");
 		
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
@@ -76,19 +64,19 @@ public class Tester {
 		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
 		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
-		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		//String orgName = "stg" ; 
-		//String envName = "iam-protected" ; 
-		//String proxyName = "oidc-core" ;
-		//String region = "dc-1" ; 
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Prod") ;
+		String orgName = "stg" ; 
+		String envName = "iam-protected" ; 
+		String proxyName = "oidc-core" ;
+		String region = "dc-1" ; 
 		
-		 Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
-		 String orgName =  "smart-value"  ; // "stg" ; 
-		 String envName = "prod"  ; // "iam-protected"
-		 String proxyName = "DZIT" ;
-		 String region = "dc-1" ; 
+		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
+		 //String orgName =  "smart-value"  ; // "stg" ; 
+		 //String envName = "prod"  ; // "iam-protected"
+		 //String proxyName = "DZIT" ;
+		 //String region = "dc-1" ; 
 		
-		ManagementServer ms = new ManagementServer(infra) ; 
+		ManagementServer ms = infra.getManagementServer(region) ; 
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env = (Environment) org.getEnvs().get(envName);
 		//Environment env02 = (Environment) org.getEnvs().get("cert-protected");
@@ -125,7 +113,8 @@ public class Tester {
 
 		MPServer mp = ((MPServer)envMpServers.get(0)) ;
 		String[] commands = {"pwd" , "ls -ltr"} ; 
-		mp.executeShell(commands) ; 
+		String privateKeyPath = "C:\\Users\\sfoda\\.ssh\\id_rsa"; //"G:\\My Drive\\SmartValue\\.ssh\\ShawkyFoda\\id_rsa";
+		mp.executeShell(privateKeyPath , commands) ; 
 		HashMap<String , ArrayList<String>> aa = mp.getAssociatedEnvs(region) ; 
 		
 		MPServer mp1 = ((MPServer)envMpServers.get(1)) ;
@@ -170,7 +159,7 @@ public class Tester {
 		
 		VirtualHost vh = env.getVirtualHostByName(allVirtuslHosts[0]) ;
 		HttpResponse<String> resultxx = vh.executeGetRequest("/test01" , null,  null) ; 
-		System.out.println(vh.toString());
+		System.out.println(resultxx.toString());
 		
 		String[] allShardFlows = org.getAllShardFlow() ;
 		SharedFlow shardFlow = org.getShardFlow(allShardFlows[1]) ; 
@@ -217,38 +206,21 @@ public class Tester {
 		
 		
 		
+	
+	} 
+
+	public static void TestSDKGenerator(String specsUrl , String lang , String outputDirectory ) {
+		SDKGeneratoer sdkg = new SDKGeneratoer() ;
+		sdkg.setLang(lang);
+				
+		// "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
+		sdkg.setOutputDir(outputDirectory ) ; 
+		sdkg.setPackageName("org.moj.najiz.sdk");
+		sdkg.setValidateSpecs(false); 
+		// "https://api.moj.gov.local/realestateidentityid/openapi.json" ; //
+		  
+		sdkg.generateSDK(specsUrl);
 	}
-
-	public static void executeShellScript(ArrayList<String> m_commands) throws IOException, InterruptedException {
-	  
-				ArrayList<String> commands = new  ArrayList<String>()  ; 
-				String os = System.getProperty("os.name").toLowerCase();
-				
-				 if (os.contains("win")) 
-				 {
-					 commands.add("cmd") ;  commands.add( "-c" ) ; 
-				 }
-				 else 
-				 {
-					 commands.add("/bin/bash") ; commands.add( "-c" ) ;
-				 }
-				 
-				 commands.addAll(m_commands) ; 
-				
-	 	        // Create a ProcessBuilder instance
-	            ProcessBuilder processBuilder = new ProcessBuilder(m_commands);
-
-	            // Start the process
-	            Process process = processBuilder.start();
-
-	            // Wait for the process to complete
-	            int exitCode = process.waitFor();
-
-	            // Print the exit code
-	            System.out.println("Shell script exited with code: " + exitCode);
-
-	       
-	    }
 	
 		
 }
