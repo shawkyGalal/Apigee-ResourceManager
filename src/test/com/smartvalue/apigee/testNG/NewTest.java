@@ -1,7 +1,6 @@
 package com.smartvalue.apigee.testNG;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +13,8 @@ import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
-import com.smartvalue.apigee.resourceManager.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -32,7 +31,7 @@ public class NewTest {
 	String envName ; 
 	String proxyName ;
 	String region ; 
-	ManagementServer ms ; 
+	com.smartvalue.apigee.configuration.infra.ManagementServer ms ; 
 	Organization org  ; 
 	Environment env ; 
 	
@@ -63,7 +62,7 @@ public class NewTest {
 			HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 			System.out.println(allTargetServers);
 			
-			ArrayList<Object> proxiesNotDeployed = org.getUndeployedProxies() ; 
+			ArrayList<String> proxiesNotDeployed = org.getUndeployedProxies() ; 
 			System.out.println(proxiesNotDeployed.toString());
 	 		
 			
@@ -73,10 +72,10 @@ public class NewTest {
 			MPServer mps = ((MPServer)envMpServers.get(0)) ;
 			
 			boolean healthy = mps.healthCheck() ;
-			ArrayList<String> result = mps.removeFromEnvironmnt(org , env ) ; 
+			ArrayList<String> result = mps.removeFromEnvironmnt(env ) ; 
 			Renderer.arrayListToHtmlTable(result) ;
 			
-			result = mps.addToEnvironmnt(org , env ) ; 
+			result = mps.addToEnvironmnt(env ) ; 
 			Renderer.arrayListToHtmlTable(result) ;
 			
 			result = env.removeMessageProcessor(mps) ; 
@@ -91,17 +90,16 @@ public class NewTest {
 	  @Test(dataProvider = "testData")
 	  public void beforeClass() throws Exception 
 	  {
-		  	Type apigeeConfigType = (Type) ApigeeConfig.class ;
-	  		JsonParser apigeeConfigParser = new JsonParser( apigeeConfigType ) ;
-			ac = (ApigeeConfig) apigeeConfigParser.getObject("config.json") ;
-		  
-		  infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ;
-		  orgName =  "smart-value"  ; // "stg" ; 
-		  envName = "prod"  ; // "iam-protected"
-		  proxyName = "DZIT" ;
-		  region = "dc-1" ; 
+		  JsonParser apigeeConfigParser = new JsonParser( ) ;
+			ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
-		  ms = new ManagementServer(infra) ; 
+			infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+			region = "dc-1" ; 
+			orgName = "stg" ; 
+			envName = "iam-protected" ; 
+			proxyName = "oidc-core" ;
+	  
+		  ms = infra.getManagementServer(region); // com.smartvalue.apigee.configuration.infra.ManagementServer(infra) ; 
 		  org = (Organization) ms.getOrgByName(orgName) ;  
 		  env = (Environment) org.getEnvByName(envName);
 
