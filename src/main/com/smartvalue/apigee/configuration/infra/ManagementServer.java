@@ -305,7 +305,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ArrayList<String>  getTargetServersList01(String m_org , String m_env ) throws UnirestException, IOException
 	{
 		ArrayList<String> targetServersNames = null; 
-		String apiPath = "/v1/organizations/"+m_org+"/e/"+m_env+"/targetservers?expand=true" ; 
+		String apiPath = "/v1/organizations/"+m_org+"/environments/"+m_env+"/targetservers?expand=true" ; 
 		targetServersNames = this.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
 		return targetServersNames ; 
 	}
