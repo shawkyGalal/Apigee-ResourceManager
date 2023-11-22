@@ -23,7 +23,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		HashMap<String , Object > result = new HashMap<>() ; 
 		for (Object targetEndpoint :   this.getTargetEndpoints())
 		{
-			String path = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision() + "/targets/"+(String) targetEndpoint  ; 
+			String path = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision() + "/targets/"+(String) targetEndpoint  ; 
 			HashMap<String , Object > xx =  this.getManagmentServer().executeGetMgmntAPI(path, HashMap.class) ; 	
 			result.put((String) targetEndpoint, xx) ; 
 		}

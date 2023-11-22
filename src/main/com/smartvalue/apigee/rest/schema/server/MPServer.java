@@ -17,7 +17,7 @@ public class MPServer extends Server {
 
 	private  ArrayList<String>  associateWithEnvironment( Environment env , String m_operation ) throws UnirestException, IOException
 	{
-		String path = "/v1/o/"+env.getOrgName()+"/e/"+env.getName()+"/servers" ; 
+		String path = "/v1/organizations/"+env.getOrgName()+"/e/"+env.getName()+"/servers" ; 
 		String uuid = this.getuUID() ;
 		@SuppressWarnings("unchecked")
 		ArrayList<String>  result =  this.getManagmentServer().executePostMgmntAPI(path, ArrayList.class, "action="+m_operation+"&uuid=" + uuid , "application/x-www-form-urlencoded") ; 

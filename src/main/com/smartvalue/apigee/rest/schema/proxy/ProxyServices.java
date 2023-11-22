@@ -21,7 +21,7 @@ public class ProxyServices extends Service {
 	{
 		ArrayList<String> proxiesName = getAllProxiesNames() ; 
 		ManagementServer ms = this.getMs() ;
-		String apiPath = "/v1/o/"+orgName+"/apis" ; 
+		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
 		ArrayList<Proxy> proxies = new ArrayList<Proxy>() ; 
 		for (String proxyName : proxiesName)
 		{
@@ -39,7 +39,7 @@ public class ProxyServices extends Service {
 	public ArrayList<String>  getAllProxiesNames() throws UnirestException, IOException
 	{
 		ArrayList<String> proxiesName = null; 
-		String apiPath = "/v1/o/"+orgName+"/apis" ; 
+		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
 		ManagementServer ms = this.getMs() ; 
 		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		return proxiesName ;  

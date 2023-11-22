@@ -47,7 +47,7 @@ public void setMs(ManagementServer ms) {
 public HashMap<String , TargetServer>  getTargetServers() throws UnirestException, IOException
 {
 	String[] targetServersNames = null; 
-	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/targetservers" ; 
+	String apiPath = "/v1/organizations/"+this.orgName+"/e/"+this.getName()+"/targetservers" ; 
 	targetServersNames = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ; 
 	HashMap<String , TargetServer> tss = new HashMap<>() ; 
 	for ( String  tsName : targetServersNames )
@@ -69,7 +69,7 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
  */
 public List<MPServer> getMessageProcesors(String m_region) throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName+"/e/"+this.getName()+"/servers?expand=true" ; 
+	String apiPath = "/v1/organizations/"+this.orgName+"/e/"+this.getName()+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 
 	Type listType = new TypeToken<List<MPServer>>() {}.getType();
 	List<MPServer> serversArray = this.ms.executeMgmntAPI(apiPath , listType ) ;
@@ -96,7 +96,7 @@ public TargetServer  getTargetServer(String m_targetServerName) throws UnirestEx
 @SuppressWarnings("unchecked")
 public VirtualHost  getVirtualHostByName(String virtualHostName ) throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/" + virtualHostName ; 
+	String apiPath = "/v1/organizations/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/" + virtualHostName ; 
 	VirtualHost virtualHost  = this.ms.executeGetMgmntAPI(apiPath , VirtualHost.class ) ;
 	virtualHost.setOrgName(this.getName()) ; 
 	virtualHost.setManagmentServer(this.ms) ; 
@@ -105,7 +105,7 @@ public VirtualHost  getVirtualHostByName(String virtualHostName ) throws Unirest
 
 public List<String>  getAllKvmNames() throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/"  ; 
+	String apiPath = "/v1/organizations/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/"  ; 
 	List<String> virtualHosts  = this.ms.executeGetMgmntAPI(apiPath , List.class ) ;
 
 	return virtualHosts ; 
@@ -113,7 +113,7 @@ public List<String>  getAllKvmNames() throws UnirestException, IOException
 
 public List<String>  getAllTargetServersNames() throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/targetservers/"  ; 
+	String apiPath = "/v1/organizations/"+this.orgName +"/e/" +this.getName()+"/targetservers/"  ; 
 	List<String> targetServers  = this.ms.executeGetMgmntAPI(apiPath , List.class ) ;
 
 	return targetServers ; 
@@ -122,7 +122,7 @@ public List<String>  getAllTargetServersNames() throws UnirestException, IOExcep
 @SuppressWarnings("unchecked")
 public KeyValueMap  getKvm(String kvmName ) throws UnirestException, IOException
 {
-	String apiPath = "/v1/o/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/" + kvmName ; 
+	String apiPath = "/v1/organizations/"+this.orgName +"/e/" +this.getName()+"/keyvaluemaps/" + kvmName ; 
 	KeyValueMap keyValueMap  = this.ms.executeGetMgmntAPI(apiPath , KeyValueMap.class ) ;
 	keyValueMap.setOrgName(this.getName()) ; 
 	keyValueMap.setManagmentServer(this.ms) ; 
@@ -134,7 +134,7 @@ public KeyValueMap  getKvm(String kvmName ) throws UnirestException, IOException
 @SuppressWarnings("unchecked")
 public String[]  getAllVirtualHosts() throws UnirestException, IOException
 {
-	String apiPath =  "/v1/o/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/"  ; 
+	String apiPath =  "/v1/organizations/"+this.orgName +"/e/" +this.getName()+"/virtualhosts/"  ; 
 	String[] virtualHosts  = this.ms.executeGetMgmntAPI(apiPath , String[].class ) ;
 	
 	return virtualHosts ; 

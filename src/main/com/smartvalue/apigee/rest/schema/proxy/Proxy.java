@@ -23,7 +23,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	public ProxyDeployment  getDeployments() throws UnirestException, IOException
 	{
 		ProxyDeployment result = null; 
-		String apiPath = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/deployments" ; 
+		String apiPath = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/deployments" ; 
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
 		return result ; 
 	}	
@@ -32,7 +32,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	public ProxyRevision  getRevision(String revision ) throws UnirestException, IOException
 	{
 		ProxyRevision result = null; 
-		String apiPath = "/v1/o/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + revision ; 
+		String apiPath = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + revision ; 
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
 		result.setManagementServer(this.getManagmentServer()) ; 
 		result.setOrgName(this.getOrgName());
