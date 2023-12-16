@@ -31,6 +31,8 @@ import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 
+import bsh.This;
+
 
 public class ManagementServer extends Server{
 	
@@ -54,22 +56,34 @@ public class ManagementServer extends Server{
 		this.setInfra(m_infra);
 	}
 	*/
-	
+	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra ) { 
+		this.setInfraName(m_infra.getName());
+		MyServerProfile result = new MyServerProfile() ;
+		
+		
+		return result;
+	}
 	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra , String m_regionName) {
 		this.setInfraName(m_infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
-		result.setAuthType(m_infra.getAuthType());
-		result.setCredential_user(m_infra.getSysadminCred().getUsername());
-		result.setCredential_pwd(m_infra.getSysadminCred().getPassword());
-		result.setClientId(m_infra.getSysadminCred().getClientId());
-		result.setClientSecret(m_infra.getSysadminCred().getClientSecret());
+		
 		Region region = m_infra.getRegion(m_regionName) ; 
 		result.setTokenUrl(region.getTokenUrl());
-		result.setHostUrl(region.getMgmServerUrl());
 		result.setOauthHostURL(region.getOauthMgmServerUrl());
-		
+		result.setAuthType(m_infra.getAuthType());
 		result.setConnectionTimeout(m_infra.getConnectionTimeout());
 		result.setSocketTimeout(m_infra.getSocketTimeout());
+		
+		Boolean isGoogleCloud = m_infra.getGooglecloud() ; 
+		if  ( !(isGoogleCloud != null && isGoogleCloud) ) 
+		{
+			result.setHostUrl(region.getMgmServerUrl());
+			result.setCredential_user(m_infra.getSysadminCred().getUsername());
+			result.setCredential_pwd(m_infra.getSysadminCred().getPassword());
+			result.setClientId(m_infra.getSysadminCred().getClientId());
+			result.setClientSecret(m_infra.getSysadminCred().getClientSecret());
+			
+		}
 		
 		return result;
 	}
@@ -282,17 +296,31 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ApigeeAccessToken getAccess_token() throws UnirestException
 	{
 		Unirest.setTimeouts(0, 0);
-		HttpResponse<String> response = Unirest.post(this.serverProfile.getTokenUrl())
-		  .header("Content-Type", "application/x-www-form-urlencoded")
-		  .header("grant_type", "client_credentials")
-		  .header("Authorization", "Basic "+ new String(Base64.encode((this.serverProfile.getClientId() + ":" + this.serverProfile.getClientSecret()).getBytes()), Charset.forName("UTF-8")))
-		  .field("grant_type", "client_credentials")
-		  .asString();
-		ApigeeAccessToken token = null ; 
+		ApigeeAccessToken token = null ;
+		HttpResponse<String> response = null ; 
+		Gson gson = new Gson();
+		Boolean isGoogleCloudBoolean = this.infra.getGooglecloud() ; 
+		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
+		{
+			 response = Unirest.post(this.serverProfile.getTokenUrl())
+					  .header("Content-Type", "application/json")
+					  .body(gson.toJson(this.infra.getGoogleServiceAccount()))
+					  .asString();
+		}
+		else 
+		{
+		  response = Unirest.post(this.serverProfile.getTokenUrl())
+			  .header("Content-Type", "application/x-www-form-urlencoded")
+			  .header("grant_type", "client_credentials")
+			  .header("Authorization", "Basic "+ new String(Base64.encode((this.serverProfile.getClientId() + ":" + this.serverProfile.getClientSecret()).getBytes()), Charset.forName("UTF-8")))
+			  .field("grant_type", "client_credentials")
+			  .asString();
+		}
+		 
 		if (Helper.isConsideredSuccess(response.getStatus()) )   
 		{
 			token = new ApigeeAccessToken();
-			Gson gson = new Gson();
+			
 			token = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
 		} 
 		else {

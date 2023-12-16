@@ -2,7 +2,9 @@ package com.smartvalue.apigee.configuration.infra;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 
@@ -16,6 +18,12 @@ public class Infra {
 	private ArrayList<Region> regions; 
 	private String AuthType ;
 	//private String tokenUrl ; 
+	
+	private Boolean googleCloud;
+	
+	@JsonProperty("googleServiceAccount")
+	private GoogleServiceAccount googleServiceAccount ;  // if the infra is a Google Cloud infra
+	
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
 	 
@@ -132,12 +140,16 @@ public class Infra {
 	ArrayList<ManagementServer> managementServers ;  
 	private ArrayList<ManagementServer> getManagementServers() throws UnirestException
 	{
+		
 		if ( managementServers == null )
 		{
 			managementServers = new ArrayList<ManagementServer>() ; 
-			for (Region region : this.getRegions())
+			
 			{
-				managementServers.add((this.buildManagementServer(region.getName()))); 
+				for (Region region : this.getRegions())
+				{
+					managementServers.add((this.buildManagementServer(region.getName()))); 
+				}
 			}
 		}
 		return managementServers;
@@ -149,15 +161,28 @@ public class Infra {
 		ManagementServer ms = new ManagementServer() ; 
 		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
 		ms.serverProfile = m_serverProfile; 
-		if (ms.serverProfile.getAuthType().equalsIgnoreCase("OAuth") ) 
+		ms.setInfra(this);
+		boolean oauthType = ms.serverProfile.getAuthType() != null && ms.serverProfile.getAuthType().equalsIgnoreCase("OAuth") ; 
+		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
+		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType)
 		{
 			ApigeeAccessToken at = ms.getAccess_token() ;
 			ms.serverProfile.setBearerToken(at.getAccess_token()) ;
 			ms.serverProfile.setRefreshToken(at.getRefresh_token()) ;
 		}
 		ms.setRegion(m_region);
-		ms.setInfra(this);
+		
 		return ms ; 
 	}
+
+	
+	public GoogleServiceAccount getGoogleServiceAccount() {
+		return googleServiceAccount;
+	}
+
+	public Boolean getGooglecloud() {
+		return googleCloud;
+	}
+
 	
 }

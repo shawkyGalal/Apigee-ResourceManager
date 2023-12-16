@@ -40,8 +40,10 @@ public class SDKGeneratoer {
         configurator.setOutputDir(this.getOutputDir()); // Output directory
         configurator.setValidateSpec(this.isValidateSpecs());
         
-        configurator.setPackageName(this.getPackageName()) ; 
-       
+        //configurator.setPackageName(this.getPackageName()) ; 
+        configurator.setInvokerPackage(this.getPackageName()) ; 
+        configurator.setApiPackage(this.getPackageName()+".api") ;
+        configurator.setModelPackage(this.getPackageName()+".model") ;
         DefaultGenerator generator = new DefaultGenerator();
         ClientOptInput coi = configurator.toClientOptInput() ;
         generator.opts(coi);
