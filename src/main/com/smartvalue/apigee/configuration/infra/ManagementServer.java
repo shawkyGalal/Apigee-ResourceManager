@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.configuration.infra;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
@@ -7,9 +8,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.servlet.ServletContext;
 
-import org.checkerframework.checker.initialization.qual.Initialized;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
@@ -18,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
@@ -30,8 +30,6 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
-
-import bsh.This;
 
 
 public class ManagementServer extends Server{
@@ -160,6 +158,17 @@ public class ManagementServer extends Server{
 		{hostUrl = this.serverProfile.getHostUrl() ;}
 		else {hostUrl = this.serverProfile.getOauthHostURL() ; }
 		return hostUrl ; 
+	}
+	public HttpResponse<String> getPostFileHttpResponse(String m_apiPath ,  String postFileName ) throws UnirestException, IOException  {
+		//Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
+		Unirest.setTimeouts(0, 0);
+		String hostUrl = getHostUrl () ; 
+		String authorization = getAuthorizationHeader() ; 
+		HttpRequestWithBody request = Unirest.post(hostUrl + m_apiPath)
+				.header("Authorization", authorization ) ; 
+		request.field("file", new File(postFileName)); 
+		HttpResponse<String> response = request.asString();
+		return response ;  
 	}
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
 		//Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());

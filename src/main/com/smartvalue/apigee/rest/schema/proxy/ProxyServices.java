@@ -1,14 +1,18 @@
 package com.smartvalue.apigee.rest.schema.proxy;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
+import com.sun.net.httpserver.Authenticator.Result;
 
 public class ProxyServices extends Service {
 
@@ -45,6 +49,15 @@ public class ProxyServices extends Service {
 		return proxiesName ;  
 	}
 	
+	public <T> T  getAllProxiesList( Class<T> classOfT ) throws UnirestException, IOException
+	{
+		T proxiesList = null; 
+		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
+		ManagementServer ms = this.getMs() ; 
+		proxiesList = ms.executeGetMgmntAPI(apiPath , classOfT ) ;
+		return proxiesList ;  
+	}
+	
 	/**
 	 * REturn a MashMap with proxyname and revision numbers that Does uses the given polices  
 	 * @param m_polices
@@ -77,5 +90,62 @@ public class ProxyServices extends Service {
 		
 	}
 	
+	public HttpResponse<String> uploadPundle(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = "/v1/organizations/"+orgName+"/apis?action=import&name="+m_proxyName+"&validate=true" ; 
+		ManagementServer ms = this.getMs() ; 
+		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
+		return result ; 
+	}
+	
+	
+	
+	public  ArrayList<HttpResponse<String>> uploadFolder(String folderPath) throws UnirestException, IOException
+	{
+		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		File folder = new File(folderPath); 
+		for (File zipfile : folder.listFiles())
+		{
+			int dotIndex = zipfile.getName().indexOf("."); 
+			String proxyName= zipfile.getName().substring(0, dotIndex ) ; 
+			System.out.println( proxyName + ":" +zipfile.getAbsolutePath()  );
+			HttpResponse<String> result = uploadPundle(zipfile.getAbsolutePath() , proxyName);
+			int status = result.getStatus() ; 
+			if (status != 200)
+			{
+				failedResult.add(result) ; 
+			}
+		}
+		return failedResult;
+	}
 
+	public HttpResponse<String> deleteProxy( String m_proxyName) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = "/v1/organizations/"+orgName+"/apis/"+m_proxyName ; 
+		ManagementServer ms = this.getMs() ; 
+		result = ms.getDeleteHttpResponse(apiPath ) ;
+		return result ; 
+	}
+	
+	public  ArrayList<HttpResponse<String>> deleteAllProxies(GoogleProxiesList proxiesList) throws UnirestException, IOException
+	{
+		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		 
+		for (com.smartvalue.apigee.rest.schema.proxy.google.auto.Proxy proxy : proxiesList.getProxies())
+		{
+			String proxyName = proxy.getName() ; 
+			System.out.println( "proxyName :" + proxyName );
+			HttpResponse<String> result = deleteProxy(proxyName) ; 
+			int status = result.getStatus() ; 
+			if (status != 200)
+			{
+				failedResult.add(result) ; 
+			}
+		}
+		return failedResult;
+	}
+	
+	
 }
