@@ -113,10 +113,13 @@ public class ProxyServices extends Service {
 			HttpResponse<String> result = uploadPundle(zipfile.getAbsolutePath() , proxyName);
 			int status = result.getStatus() ; 
 			if (status != 200)
-			{
+			{	
+				System.out.println("Error Uploading Proxy " + proxyName);
+				System.out.println("Error Details " + result.getBody());
 				failedResult.add(result) ; 
 			}
 		}
+		System.out.println(failedResult.toString()); 
 		return failedResult;
 	}
 

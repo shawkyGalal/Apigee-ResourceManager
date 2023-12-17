@@ -40,7 +40,7 @@ import com.smartvalue.apigee.rest.schema.server.ServerServices;
 
 public class ManagementServer extends Server{
 	
-	MyServerProfile serverProfile ;  
+	private MyServerProfile serverProfile ;  
 	HashMap <String , Organization> orgs = new HashMap <String , Organization>();
 	private Infra infra ;  
 	private String infraName ; 
@@ -145,11 +145,11 @@ public class ManagementServer extends Server{
 	private String  getAuthorizationHeader()
 	{
 		String authorization = null ; 
-		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
+		if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
 		{
-			authorization = "Basic "+ new String(Base64.encode((this.serverProfile.getCredential_user() + ":" + this.serverProfile.getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
+			authorization = "Basic "+ new String(Base64.encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
 		}
-		else if (this.serverProfile.getAuthType().equalsIgnoreCase("OAuth"))
+		else if (this.getServerProfile().getAuthType().equalsIgnoreCase("OAuth"))
 		{
 			String accessToken  = this.getAccessToken().getAccess_token() ;
 			 authorization = "Bearer "+ accessToken ; 
@@ -160,14 +160,12 @@ public class ManagementServer extends Server{
 	private String getHostUrl()
 	{
 		String hostUrl ; 
-		if (this.serverProfile.getAuthType().equalsIgnoreCase("Basic"))
-		{hostUrl = this.serverProfile.getHostUrl() ;}
-		else {hostUrl = this.serverProfile.getOauthHostURL() ; }
+		if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
+		{hostUrl = this.getServerProfile().getHostUrl() ;}
+		else {hostUrl = this.getServerProfile().getOauthHostURL() ; }
 		return hostUrl ; 
 	}
 	public HttpResponse<String> getPostFileHttpResponse(String m_apiPath ,  String postFileName ) throws UnirestException, IOException  {
-		//Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
-		Unirest.setTimeouts(0, 0);
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
 		HttpRequestWithBody request = Unirest.post(hostUrl + m_apiPath)
@@ -177,8 +175,6 @@ public class ManagementServer extends Server{
 		return response ;  
 	}
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
-		//Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
-		Unirest.setTimeouts(0, 0);
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
 		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath)
@@ -188,7 +184,6 @@ public class ManagementServer extends Server{
 		return response ;  
 	}
 	public HttpResponse<String> getGetHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
-		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
 		HttpResponse<String> response  = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
@@ -197,7 +192,6 @@ public class ManagementServer extends Server{
 	}
 	
 	public HttpResponse<String> getDeleteHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
-		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
 		HttpResponse<String> response  = Unirest.delete(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
@@ -205,7 +199,6 @@ public class ManagementServer extends Server{
 	}
 	
 	public HttpResponse<String> getPutHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
-		Unirest.setTimeouts(this.serverProfile.getConnectionTimeout(), this.serverProfile.getSocketTimeout());
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
 		HttpResponse<String> response  = Unirest.put(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
@@ -348,10 +341,10 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		}
 		else 
 		{
-		  response = Unirest.post(this.serverProfile.getTokenUrl())
+		  response = Unirest.post(this.getServerProfile().getTokenUrl())
 			  .header("Content-Type", "application/x-www-form-urlencoded")
 			  .header("grant_type", "client_credentials")
-			  .header("Authorization", "Basic "+ new String(Base64.encode((this.serverProfile.getClientId() + ":" + this.serverProfile.getClientSecret()).getBytes()), Charset.forName("UTF-8")))
+			  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
 			  .field("grant_type", "client_credentials")
 			  .asString();
 		  if (Helper.isConsideredSuccess(response.getStatus()) )   
@@ -486,6 +479,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 			// TODO Auto-generated catch block
 			throw e;
 		}
+	}
+	public MyServerProfile getServerProfile() {
+		return serverProfile;
+	}
+	public void setServerProfile(MyServerProfile serverProfile) {
+		this.serverProfile = serverProfile;
 	}
 
 

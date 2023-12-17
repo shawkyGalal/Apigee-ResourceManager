@@ -1,19 +1,20 @@
 package com.smartvalue.apigee.resourceManager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.moj.clients.environments.JsonParser;
 
@@ -21,27 +22,26 @@ public class ApigeeTool
 {
 	private static String configFile ; 
 	private static String infra ;
-	private static String region ; 
 	private static String org ; 
 	private static String operation ;
+	private static Infra infraObject; 
 	private static ManagementServer ms ; 
 	
 	private static void initialize(String[] args) throws Exception
 	{
+		
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
 		System.out.println(argsMap );
 		operation = getMandatoryArg ( argsMap , "-operation") ; 
 	 	configFile = argsMap.get("-configFile") ; 
     	infra = argsMap.get("-infra") ;
-    	org = argsMap.get("-org") ;
-    	region = argsMap.get("-region") ;
     	
 		JsonParser apigeeConfigParser = new JsonParser(  ) ;
 		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
-		
-    	//ApigeeConfig ac = new ApigeeConfig(configFile ) ; 
-    	Infra infraObj = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
-    	ms = infraObj.getManagementServer(region) ;  
+
+		infraObject = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
+    	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
+    	Unirest.setTimeouts(ms.getServerProfile().getConnectionTimeout(), ms.getServerProfile().getSocketTimeout());
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -49,21 +49,12 @@ public class ApigeeTool
     	if (operation != null)
     	{
         switch (operation) {
-            case "listProxiesUsingTargetServer":
-            	listProxiesUsingTargetServer(args);
-                break;
-            case "listProxiesNotDeployed":
-                listProxiesNotDeployed(args);
-                break;
-            case "productsWithoutProxies":
-            	productsWithoutProxies(args);
-                break;
-            case "ProxiesWithoutPolices":
-            	ProxiesWithoutPolices(args);
-                break;
-            case "listAllEnvsMessageProcessors":
-            	listAllEnvsMessageProcessors(args);
-                break;  
+            case "listProxiesUsingTargetServer": 	listProxiesUsingTargetServer(args);   break;
+            case "listProxiesNotDeployed": 			listProxiesNotDeployed(args);         break;
+            case "productsWithoutProxies":       	productsWithoutProxies(args);         break;
+            case "ProxiesWithoutPolices":         	ProxiesWithoutPolices(args);          break;
+            case "listAllEnvsMessageProcessors":   	listAllEnvsMessageProcessors(args);   break;  
+            case "migrate":			            	migrate(args);			              break;  
             default:
                 System.out.println("Unknown operation: " + operation);
                 printUsage();
@@ -72,6 +63,8 @@ public class ApigeeTool
     	}
     	else { printUsage();  } 
     }
+
+	
 
 	private static String getMandatoryArg( HashMap<String , String>  args , String arg)
 	 { 
@@ -118,6 +111,7 @@ public class ApigeeTool
 	{
 	 HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
  	 String policesName = getMandatoryArg(argsMap, "-policesName"); //argsMap.get("-targetServer") ;
+ 	 org = getMandatoryArg(argsMap, "-org");
  	 String[]  policesNameArray =  policesName.split(",") ; 
  	 String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
  	
@@ -169,4 +163,183 @@ public class ApigeeTool
     	System.out.println("=================List Of Regions/Env Message Processors  ======================");
 		System.out.println(Renderer.hashMaptoHtmlTable(result));
     }
+    
+    private static void migrate(String[] args) throws Exception {
+    	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+    	String importAll = argsMap.get("-importAll") ;
+    	String exportAll =  argsMap.get("-exportAll") ;
+    	String deleteAll =  argsMap.get("-deleteAll") ;
+    	if (importAll != null)
+    	{
+        switch (importAll) {
+            case "proxies": 		importAllProxies(args);       	break;
+            case "sharedFlows": 	importAllSharedFlows(args);    	break;
+            case "products":   		importAllProducts(args);		break;
+            case "apps":       		importAllApps(args);           	break;
+            case "developers": 		importAllDevelopers(args);     	break;  
+            case "kvms":       		importAllKvms(args);           	break;
+            case "targetServers":   importTargetServers(args);     	break; 
+            default: System.out.println("Unknown import argument:  " + importAll);
+                printImportUsage();
+                break;
+        	}
+    	}
+    	else if (exportAll != null)
+    	{
+    		
+    		switch (exportAll) {
+            case "proxies": 		exportAllProxies(args);       	break;
+            case "sharedFlows": 	exportAllSharedFlows(args);   	break;
+            case "products":   		exportAllProducts(args);		break;
+            case "apps":       		exportAllApps(args);           	break;
+            case "developers": 		exportAllDevelopers(args);     	break;  
+            case "kvms":       		exportAllKvms(args);           	break; 
+            case "targetServers":   exportAllTargetServers(args); 	break;
+            default: System.out.println("Unknown exportAll argument : " + exportAll);
+                printExportUsage();
+                break;
+        	}
+    	}
+    	else if (deleteAll != null)
+    	{
+    		
+    		switch (deleteAll) {
+            case "proxies": 		deleteAllProxies(args);       	break;
+            case "sharedFlows": 	deleteAlltSharedFlows(args);    break;
+            case "products":   		deleteAllProxies(args);			break;
+            case "apps":       		deleteAllApps(args);           	break;
+            case "developers": 		deleteAllDevelopers(args);     	break;  
+            case "kvms":       		deleteAllKvms(args);           	break; 
+            case "targetServers":	deleteAllTargetServers(args);   break;
+            default: System.out.println("Unknown deleteAll argument : " + deleteAll);
+                printExportUsage();
+                break;
+        	}
+    	}
+    	else { printUsage();  } 
+    	
+		
+	}
+
+	private static void deleteAllTargetServers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void deleteAllKvms(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void deleteAllDevelopers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void deleteAllApps(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void deleteAlltSharedFlows(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void deleteAllProxies(String[] args) throws FileNotFoundException, IOException, UnirestException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		org = getMandatoryArg(argsMap, "-org"); 
+		ProxyServices proxiesServices = ms.getProxyServices(org); 
+		GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
+		proxiesServices.deleteAllProxies(proxiesList) ;
+		
+	}
+
+	private static void exportAllTargetServers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importTargetServers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllKvms(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllDevelopers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllApps(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllProducts(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllSharedFlows(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void exportAllProxies(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void printExportUsage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void printImportUsage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllKvms(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllDevelopers(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllApps(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllProducts(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllSharedFlows(String[] args) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void importAllProxies(String[] args) throws FileNotFoundException, IOException, UnirestException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+    	String proxiesFolderPath = getMandatoryArg(argsMap, "-folderPath") + "/proxies" ;
+    	org = getMandatoryArg(argsMap, "-org");
+    	ProxyServices proxiesServices = ms.getProxyServices(org); 
+		proxiesServices.uploadFolder(proxiesFolderPath) ;
+		
+	}
+
+	
+    
+    
 }

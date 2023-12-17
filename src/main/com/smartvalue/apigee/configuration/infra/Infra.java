@@ -159,9 +159,9 @@ public class Infra {
 	{
 		ManagementServer ms = new ManagementServer() ; 
 		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
-		ms.serverProfile = m_serverProfile; 
+		ms.setServerProfile(m_serverProfile); 
 		ms.setInfra(this);
-		boolean oauthType = ms.serverProfile.getAuthType() != null && ms.serverProfile.getAuthType().equalsIgnoreCase("OAuth") ; 
+		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
 		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType)
 		{
