@@ -244,7 +244,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		return app ; 
 	}
 
-	public ArrayList<Application>  getAllApps() throws UnirestException, IOException {
+	public ArrayList<Application>  getAllApps() throws Exception {
 		
 		String apiPath = "/v1/organizations/"+this.getName()+"/apps?expand=true"; 
 		ManagementServer ms = this.getManagmentServer() ;

@@ -1,6 +1,5 @@
 package com.smartvalue.moj.najiz.mapping.appointments;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

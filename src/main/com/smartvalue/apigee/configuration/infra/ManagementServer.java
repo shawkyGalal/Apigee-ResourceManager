@@ -1,16 +1,21 @@
 package com.smartvalue.apigee.configuration.infra;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-
 
 import org.springframework.security.crypto.codec.Base64;
 
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +24,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
+import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
@@ -145,7 +151,7 @@ public class ManagementServer extends Server{
 		}
 		else if (this.serverProfile.getAuthType().equalsIgnoreCase("OAuth"))
 		{
-			String accessToken  = this.serverProfile.getBearerToken() ;
+			String accessToken  = this.getAccessToken().getAccess_token() ;
 			 authorization = "Bearer "+ accessToken ; 
 		}
 		return authorization ; 
@@ -236,12 +242,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; // Primitives.wrap(classOfT).cast(result);
 	} 
 	
-	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT ) throws UnirestException, IOException 
+	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT ) throws Exception 
 	{
 		return executeMgmntAPI( m_apiPath, typeOfT , null ) ;  
 	}
 	
-	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT , String m_rootNodeName) throws UnirestException, IOException 
+	public <T> T executeMgmntAPI(String m_apiPath, Type typeOfT , String m_rootNodeName) throws Exception 
 	{
 		T result = null ; 
 		HttpResponse<String> response = this.getGetHttpResponse(m_apiPath) ;
@@ -295,26 +301,50 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	
 	
-	private void reNewAccessToken() throws UnirestException {
-		ApigeeAccessToken at = this.getAccess_token() ;
-		this.serverProfile.setBearerToken(at.getAccess_token()) ;
-		this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
+	private void reNewAccessToken() throws Exception {
+		 this.getAccess_token(true) ;
+		//this.serverProfile.setBearerToken(at.getAccess_token()) ;
+		//this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
 		
 	}
 
-	public ApigeeAccessToken getAccess_token() throws UnirestException
+	private ApigeeAccessToken accessToken; 
+	public ApigeeAccessToken getAccess_token(boolean regenerate ) throws Exception 
 	{
+		if(accessToken == null || regenerate)
+		{
 		Unirest.setTimeouts(0, 0);
-		ApigeeAccessToken token = null ;
+		accessToken = new ApigeeAccessToken();
 		HttpResponse<String> response = null ; 
 		Gson gson = new Gson();
-		Boolean isGoogleCloudBoolean = this.infra.getGooglecloud() ; 
+		Boolean isGoogleCloudBoolean = this.infra.getGooglecloud() ;
+		
+		
 		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
 		{
-			 response = Unirest.post(this.serverProfile.getTokenUrl())
+			GoogleServiceAccount googleServiceAccount = this.infra.getGoogleServiceAccount() ; 
+			AccessToken googleAccessToken = getGoogleAccessToken(googleServiceAccount.toJson()) ;
+			accessToken = new ApigeeAccessToken (); 
+			accessToken.setAccess_token(googleAccessToken.getTokenValue());
+			int expiresIn = googleAccessToken.getExpirationTime().compareTo(new Date())/1000; 
+			accessToken.setExpires_in(expiresIn); 
+			
+			//--- by Calling api end point --
+			/*
+			response = Unirest.post(this.serverProfile.getTokenUrl())
 					  .header("Content-Type", "application/json")
 					  .body(gson.toJson(this.infra.getGoogleServiceAccount()))
 					  .asString();
+			if (Helper.isConsideredSuccess(response.getStatus()) )   
+			{
+				accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
+			}
+			else 
+			{
+				throw new UnirestException ( response.getBody()) ; 
+			}
+			*/
+			
 		}
 		else 
 		{
@@ -324,18 +354,19 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 			  .header("Authorization", "Basic "+ new String(Base64.encode((this.serverProfile.getClientId() + ":" + this.serverProfile.getClientSecret()).getBytes()), Charset.forName("UTF-8")))
 			  .field("grant_type", "client_credentials")
 			  .asString();
-		}
-		 
-		if (Helper.isConsideredSuccess(response.getStatus()) )   
-		{
-			token = new ApigeeAccessToken();
-			
-			token = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
-		} 
-		else {
+		  if (Helper.isConsideredSuccess(response.getStatus()) )   
+		  {
+			  accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
+		  }
+		  else 
+		  {
 			throw new UnirestException ( response.getBody()) ; 
+		  }
 		}
-		return token ; 
+	}
+		
+		
+		return accessToken ; 
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -384,7 +415,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return "management-server";
 	}
 
-	public ArrayList<MPServer>  getFreeMps(String m_region ) throws UnirestException, IOException {
+	public ArrayList<MPServer>  getFreeMps(String m_region ) throws Exception {
 		// TODO Auto-generated method stub
 		ArrayList<MPServer> result = new ArrayList<MPServer>(); 
 		FilteredList<MPServer> all =  this.getServerServices().getMPServers(m_region); 
@@ -427,6 +458,34 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 
 	public void setInfra(Infra infra) {
 		this.infra = infra;
+	}
+	public ApigeeAccessToken getAccessToken() {
+		return accessToken;
+	}
+	public void setAccessToken(ApigeeAccessToken accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public static com.google.auth.oauth2.AccessToken getGoogleAccessToken(String serviceAccountString) throws Exception {
+		GoogleCredentials credentials;
+		try {
+			byte[] bytes = serviceAccountString.getBytes(StandardCharsets.UTF_8);
+
+	        // Create an InputStream from the byte array
+	        InputStream xx  = new java.io.ByteArrayInputStream(bytes);
+	        
+			credentials = GoogleCredentials.fromStream(xx) //new FileInputStream(serviceAccountJSON)
+					.createScoped("https://www.googleapis.com/auth/cloud-platform");
+			credentials.refreshIfExpired();
+			com.google.auth.oauth2.AccessToken token = credentials.getAccessToken();
+			return token;
+		}catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			throw e;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			throw e;
+		}
 	}
 
 

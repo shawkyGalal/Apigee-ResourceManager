@@ -1,16 +1,14 @@
 package com.smartvalue.apigee.environmentsMonitor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 
 public class HealthCheckAction extends EnvironmentAction {
 
 	@Override
-	public void run() throws UnirestException, IOException {
+	public void run() throws Exception {
 		// TODO Auto-generated method stub
 		// Add one of the free mp's to this env. 
 		Environment env = this.getEnv() ;

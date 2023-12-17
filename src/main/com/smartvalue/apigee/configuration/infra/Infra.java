@@ -3,7 +3,6 @@ package com.smartvalue.apigee.configuration.infra;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
@@ -122,7 +121,7 @@ public class Infra {
 		
 	}
 	
-	public ManagementServer getManagementServer(String m_region) throws UnirestException
+	public ManagementServer getManagementServer(String m_region) throws Exception
 	{
 		ManagementServer result = null ; 
 		for (ManagementServer mServer :  this.getManagementServers() )
@@ -138,7 +137,7 @@ public class Infra {
 	}
 	
 	ArrayList<ManagementServer> managementServers ;  
-	private ArrayList<ManagementServer> getManagementServers() throws UnirestException
+	private ArrayList<ManagementServer> getManagementServers() throws Exception
 	{
 		
 		if ( managementServers == null )
@@ -156,7 +155,7 @@ public class Infra {
 	}
 	
 
-	private ManagementServer buildManagementServer(String m_region) throws UnirestException
+	private ManagementServer buildManagementServer(String m_region) throws Exception
 	{
 		ManagementServer ms = new ManagementServer() ; 
 		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
@@ -166,9 +165,9 @@ public class Infra {
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
 		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType)
 		{
-			ApigeeAccessToken at = ms.getAccess_token() ;
-			ms.serverProfile.setBearerToken(at.getAccess_token()) ;
-			ms.serverProfile.setRefreshToken(at.getRefresh_token()) ;
+			ApigeeAccessToken at = ms.getAccess_token(true) ;
+			//ms.serverProfile.setBearerToken(at.getAccess_token()) ;
+			//ms.serverProfile.setRefreshToken(at.getRefresh_token()) ;
 		}
 		ms.setRegion(m_region);
 		

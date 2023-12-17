@@ -64,10 +64,9 @@ public HashMap<String , TargetServer>  getTargetServers() throws UnirestExceptio
  * 
  * @param m_region  use null value to return all MP's 
  * @return
- * @throws UnirestException
- * @throws IOException
+ * @throws Exception 
  */
-public List<MPServer> getMessageProcesors(String m_region) throws UnirestException, IOException
+public List<MPServer> getMessageProcesors(String m_region) throws Exception
 {
 	String apiPath = "/v1/organizations/"+this.orgName+"/environments/"+this.getName()+"/servers?expand=true" ; 
 	// === Thanks To ChatGPT 

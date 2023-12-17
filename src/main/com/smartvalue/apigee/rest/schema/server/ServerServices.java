@@ -1,13 +1,11 @@
 package com.smartvalue.apigee.rest.schema.server;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -22,7 +20,7 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> List<Server>  getServers(String m_pod , String m_region ) throws UnirestException, IOException
+	public <T> List<Server>  getServers(String m_pod , String m_region ) throws Exception
 	{
 		String apiPath = "/v1/servers?pod="+m_pod ; 
 		// === Thanks To ChatGPT 
@@ -40,13 +38,13 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 		}
 		return servers ; 
 	}
-	public FilteredList<MPServer> getMPServers( String m_region ) throws UnirestException, IOException
+	public FilteredList<MPServer> getMPServers( String m_region ) throws Exception
 	{
 		FilteredList<MPServer> result = getServersByTypeAndRegion(MPServer.class , m_region , "gateway" ) ; 
 		return result ; 
 	}
 	
-	public MPServer getMPServerByUUID( String m_region , String UUID ) throws UnirestException, IOException
+	public MPServer getMPServerByUUID( String m_region , String UUID ) throws Exception
 	{
 		FilteredList<MPServer> allservers = getServersByTypeAndRegion(MPServer.class , m_region , "gateway" ) ;
 		MPServer result = null ; 
@@ -62,32 +60,32 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	}
 	
 	
-	public FilteredList<Router> getRouterServers( String m_region ) throws UnirestException, IOException
+	public FilteredList<Router> getRouterServers( String m_region ) throws Exception
 	{
 		String podName = this.getMs().getInfra().getRegion(m_region).getPodGateWayName() ; // (m_region.equalsIgnoreCase("dc-1"))? "gateway" : "gateway-2" ; 
 		
 		FilteredList<Router> result = getServersByTypeAndRegion(Router.class , m_region , podName ) ; 
 		return result ; 
 	}
-	public FilteredList<Postgres> getPostgresServers( String m_region ) throws UnirestException, IOException
+	public FilteredList<Postgres> getPostgresServers( String m_region ) throws Exception
 	{
 		FilteredList<Postgres> result = getServersByTypeAndRegion(Postgres.class , m_region , "analytics") ; 
 		return result ; 
 	}
 	
-	public FilteredList<QupidServer> getQupidServers( String m_region ) throws UnirestException, IOException
+	public FilteredList<QupidServer> getQupidServers( String m_region ) throws Exception
 	{
 		FilteredList<QupidServer> result = getServersByTypeAndRegion(QupidServer.class , m_region , "central") ; 
 		return result ; 
 	}
 	
-	public FilteredList<ManagementServer> getManagementServers( String m_region ) throws UnirestException, IOException
+	public FilteredList<ManagementServer> getManagementServers( String m_region ) throws Exception
 	{
 		FilteredList<ManagementServer> result = getServersByTypeAndRegion(ManagementServer.class , m_region , "central") ; 
 		return result ; 
 	}
 	
-	public <T extends Server> FilteredList<T> getServersByTypeAndRegion(Class<T> serverClass, String m_region , String m_pod ) throws UnirestException, IOException {
+	public <T extends Server> FilteredList<T> getServersByTypeAndRegion(Class<T> serverClass, String m_region , String m_pod ) throws Exception {
 	    String apiPath = "/v1/servers?pod="+m_pod;
 	    Type listType = TypeToken.getParameterized(FilteredList.class, serverClass).getType();
 	    ManagementServer mServer = this.getMs() ;

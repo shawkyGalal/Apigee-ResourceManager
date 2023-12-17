@@ -81,9 +81,9 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 				this.reNewAccessToken() ; 
 				response = executeRequest( m_url ,  m_headers , m_verb , m_body) ; 
 			}
-			else if (response.getStatus() == 401 &&  response.getBody().contains("steps.jwt.TokenExpired"))
-			{
-				throw new TokenExpiredException(response.getBody(), java.time.Instant.now()) ; 
+			else if (response.getStatus() == 401 &&  response.getBody() != null && response.getBody().contains("steps.jwt.TokenExpired"))
+			{ 
+				throw new UnirestException(response.getBody()) ; 
 			}
 		}
 		

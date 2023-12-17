@@ -39,7 +39,7 @@ public class MPServer extends Server {
 		return "message-processor" ; 
 	}
 
-	public HashMap<String , ArrayList<String>>  getAssociatedEnvs(String m_region ) throws UnirestException, IOException {
+	public HashMap<String , ArrayList<String>>  getAssociatedEnvs(String m_region ) throws Exception {
 		ManagementServer ms = this.getManagmentServer(); 
 		HashMap<String , ArrayList<String>> result = new HashMap<String , ArrayList<String>>() ; 
 		for (String orgName : ms.getAllOrgNames() )

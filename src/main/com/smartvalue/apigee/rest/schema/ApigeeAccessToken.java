@@ -46,6 +46,10 @@ public class ApigeeAccessToken {
 	private String englishFamilyName ; 
 	private String req_scope ; 
 	
+	public void setAccess_token(String m_accessToken) {
+		access_token = m_accessToken;
+	}
+	
 	public String getAccess_token() {
 		return access_token;
 	}
@@ -215,6 +219,10 @@ public class ApigeeAccessToken {
 	public void setAuthoirizationCode(String m_authCode) {
 		this.authoirizationCode = m_authCode ; 
 		
+	}
+
+	public void setExpires_in(int m_expires_in) {
+		expires_in = m_expires_in; 
 	}
 	
 	

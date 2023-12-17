@@ -240,6 +240,7 @@ public class GoogleServiceAccount {
         sb.append("type");
         sb.append('=');
         sb.append(((this.type == null)?"<null>":this.type));
+
         sb.append(',');
         sb.append("projectId");
         sb.append('=');
@@ -290,6 +291,58 @@ public class GoogleServiceAccount {
         } else {
             sb.append(']');
         }
+        return sb.toString();
+    }
+    
+    public String toJson() {
+        StringBuilder sb = new StringBuilder();
+        //sb.append(GoogleServiceAccount.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("{");
+        sb.append("\"type\"");
+        sb.append(':');
+        sb.append(((this.type == null)?"<null>":"\""+this.type+"\""));
+        sb.append(',');
+        sb.append("\"project_id\"");
+        sb.append(':');
+        sb.append(((this.project_id == null)?"<null>":"\""+this.project_id+"\""));
+        sb.append(',');
+        sb.append("\"private_key_id\"");
+        sb.append(':');
+        sb.append(((this.private_key_id == null)?"<null>":"\""+this.private_key_id+"\""));
+        sb.append(',');
+        sb.append("\"private_key\"");
+        sb.append(':');
+        sb.append("\"").append(this.private_key.replaceAll("\n", "\\\\n")).append("\"");
+        sb.append(',');
+        sb.append("\"client_email\"");
+        sb.append(':');
+        sb.append(((this.client_email == null)?"<null>":"\""+this.client_email+"\""));
+        sb.append(',');
+        sb.append("\"client_id\"");
+        sb.append(':');
+        sb.append(((this.client_id == null)?"<null>":"\""+this.client_id+"\""));
+        sb.append(',');
+        sb.append("\"auth_uri\"");
+        sb.append(':');
+        sb.append(((this.auth_uri == null)?"<null>":"\""+this.auth_uri+"\""));
+        sb.append(',');
+        sb.append("\"token_uri\"");
+        sb.append(':');
+        sb.append(((this.token_uri == null)?"<null>":"\""+this.token_uri+"\""));
+        sb.append(',');
+        sb.append("\"auth_provider_x509_cert_url\"");
+        sb.append(':');
+        sb.append(((this.auth_provider_x509_cert_url == null)?"<null>":"\""+this.auth_provider_x509_cert_url+"\""));
+        sb.append(',');
+        sb.append("\"client_x509_cert_url\"");
+        sb.append(':');
+        sb.append(((this.client_x509_cert_url == null)?"<null>":"\""+this.client_x509_cert_url+"\""));
+        sb.append(',');
+        sb.append("\"universe_domain\"");
+        sb.append(':');
+        sb.append(((this.universe_domain == null)?"<null>":"\""+this.universe_domain+"\""));
+        
+        sb.append("}");
         return sb.toString();
     }
 
