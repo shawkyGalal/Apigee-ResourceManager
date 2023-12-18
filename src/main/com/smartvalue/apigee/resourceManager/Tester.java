@@ -23,6 +23,8 @@ import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Postgres;
 import com.smartvalue.apigee.rest.schema.server.QupidServer;
@@ -44,6 +46,7 @@ public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
+		/*
 		File f = new File("googleServiceAccout.json"); 
 		String serviceAccountCred = "{\r\n"
 				+ "  \"type\": \"service_account\",\r\n"
@@ -77,17 +80,17 @@ public class Tester {
 				.withScope("openid")
 				.buildAuthorizationURL();
 		
-		
+*/		
 		//e.executeRequest("/test01", null, "GET", "") ; 
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
 		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
 		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Prod") ;
-		String orgName = "stg" ; 
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
+		String orgName = "moj-apigee" ; 
 		String envName = "iam-protected" ; 
 		String proxyName = "oidc-core" ;
-		String region = "dc-1" ; 
+		String region ; 
 		
 		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
 		 //String orgName =  "smart-value"  ; // "stg" ; 
@@ -95,7 +98,16 @@ public class Tester {
 		 //String proxyName = "DZIT" ;
 		 //String region = "dc-1" ; 
 		
-		ManagementServer ms = infra.getManagementServer(region) ; 
+		ManagementServer ms = infra.getManagementServer(infra.getRegions().get(0).getName()) ;
+		region = ms.getRegions().get(0); 
+		String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
+		String FolderName = "G:\\My Drive\\MasterWorks\\Apigee\\Customers\\MOJ\\10.162.3.3.etc.apigee\\apigee-migrate-tool\\data_history\\MOJ\\Prod\\moj-prod\\iam-protected\\2023-11-19-03-33\\proxies" ;
+		//ms.getProxyServices(orgName).uploadPundle(pundleFileName , "xxxyyy") ;
+		ProxyServices proxiesServices = ms.getProxyServices(orgName); 
+		GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
+		proxiesServices.deleteAllProxies(proxiesList) ;
+		proxiesServices.uploadFolder(FolderName) ;
+		
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env = (Environment) org.getEnvs().get(envName);
 		//Environment env02 = (Environment) org.getEnvs().get("cert-protected");

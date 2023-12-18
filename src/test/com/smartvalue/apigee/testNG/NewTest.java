@@ -51,7 +51,7 @@ public class NewTest {
 	  }
 	  
 	  @Test
-	  public void testOtherServices() throws UnirestException, IOException, InterruptedException {
+	  public void testOtherServices() throws Exception {
 		  HashMap<String, Proxy> allProxies = org.getAllProxies();
 			Renderer.hashMaptoHtmlTable(allProxies); 
 			
@@ -90,9 +90,7 @@ public class NewTest {
 	  @Test(dataProvider = "testData")
 	  public void beforeClass() throws Exception 
 	  {
-		  JsonParser apigeeConfigParser = new JsonParser( ) ;
 			ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
-
 			infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 			region = "dc-1" ; 
 			orgName = "stg" ; 
@@ -100,8 +98,8 @@ public class NewTest {
 			proxyName = "oidc-core" ;
 	  
 		  ms = infra.getManagementServer(region); // com.smartvalue.apigee.configuration.infra.ManagementServer(infra) ; 
-		  org = (Organization) ms.getOrgByName(orgName) ;  
-		  env = (Environment) org.getEnvByName(envName);
+		  org =  ms.getOrgByName(orgName) ;  
+		  env =  org.getEnvByName(envName);
 
 	  }
 
