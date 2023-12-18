@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "apiProxyType"
 })
 @Generated("jsonschema2pojo")
-public class Proxy {
+public class GoogleProxy {
 
     @JsonProperty("name")
     private String name;
@@ -36,7 +36,7 @@ public class Proxy {
         this.name = name;
     }
 
-    public Proxy withName(String name) {
+    public GoogleProxy withName(String name) {
         this.name = name;
         return this;
     }
@@ -51,7 +51,7 @@ public class Proxy {
         this.apiProxyType = apiProxyType;
     }
 
-    public Proxy withApiProxyType(String apiProxyType) {
+    public GoogleProxy withApiProxyType(String apiProxyType) {
         this.apiProxyType = apiProxyType;
         return this;
     }
@@ -66,7 +66,7 @@ public class Proxy {
         this.additionalProperties.put(name, value);
     }
 
-    public Proxy withAdditionalProperty(String name, Object value) {
+    public GoogleProxy withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -74,7 +74,7 @@ public class Proxy {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Proxy.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(GoogleProxy.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("name");
         sb.append('=');
         sb.append(((this.name == null)?"<null>":this.name));
@@ -109,10 +109,10 @@ public class Proxy {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Proxy) == false) {
+        if ((other instanceof GoogleProxy) == false) {
             return false;
         }
-        Proxy rhs = ((Proxy) other);
+        GoogleProxy rhs = ((GoogleProxy) other);
         return ((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.apiProxyType == rhs.apiProxyType)||((this.apiProxyType!= null)&&this.apiProxyType.equals(rhs.apiProxyType))));
     }
 

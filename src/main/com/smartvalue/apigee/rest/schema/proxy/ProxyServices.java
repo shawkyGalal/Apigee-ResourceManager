@@ -2,6 +2,7 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,12 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
+import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.sun.net.httpserver.Authenticator.Result;
+
+import bsh.This;
 
 public class ProxyServices extends Service {
 
@@ -132,11 +138,16 @@ public class ProxyServices extends Service {
 		return result ; 
 	}
 	
+	public  ArrayList<HttpResponse<String>> deleteAllProxies() throws UnirestException, IOException
+	{
+		GoogleProxiesList proxiesList = this.getMs().getProxyServices(this.orgName).getAllProxiesList(GoogleProxiesList.class);
+		return deleteAllProxies(proxiesList); 
+	}
+	
 	public  ArrayList<HttpResponse<String>> deleteAllProxies(GoogleProxiesList proxiesList) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
-		 
-		for (com.smartvalue.apigee.rest.schema.proxy.google.auto.Proxy proxy : proxiesList.getProxies())
+		for (com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy proxy : proxiesList.getProxies())
 		{
 			String proxyName = proxy.getName() ; 
 			System.out.println( "proxyName :" + proxyName );
@@ -149,6 +160,44 @@ public class ProxyServices extends Service {
 		}
 		return failedResult;
 	}
+	
+
+	
+	public  HashMap<String , HashMap<Integer , Exception>> exportAllProxies(String folderDest) throws UnirestException, IOException
+	{
+		ArrayList<String> allProxies ; 
+		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
+		if (isGoogleCloud != null && isGoogleCloud)
+		{
+			GoogleProxiesList proxiesList = this.getMs().getProxyServices(this.orgName).getAllProxiesList(GoogleProxiesList.class);
+			allProxies = new ArrayList<String>();
+			for (GoogleProxy googleproxy : proxiesList.getProxies())
+			{
+				allProxies.add(googleproxy.getName()) ;  
+			}
+		}
+		else {
+			allProxies =  this.getOrganization().getAllProxiesNames();
+		}
+		return exportAllProxies(allProxies , folderDest ); 
+	}
+	
+	public  HashMap<String , HashMap<Integer , Exception>> exportAllProxies( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+	{
+		
+		HashMap<String , HashMap<Integer , Exception>> failedResult = new HashMap<String , HashMap<Integer , Exception>>();  
+		{
+			for (String proxyName : proxiesList)
+			{
+				System.out.println( "Start Exporting Proxy :" + proxyName );
+				Proxy proxy = this.getOrganization().getProxy(proxyName); 
+				HashMap<Integer , Exception> xx = proxy.exportAllDeployedRevisions(folderDest) ;
+				failedResult.put(proxyName, xx); 
+			}
+		}
+		return failedResult;
+	}
+	
 	
 	
 }

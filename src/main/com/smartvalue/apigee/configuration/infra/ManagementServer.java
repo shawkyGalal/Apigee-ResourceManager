@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
@@ -183,10 +184,22 @@ public class ManagementServer extends Server{
 				.body(m_body).asString();
 		return response ;  
 	}
-	public HttpResponse<String> getGetHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
+	public HttpResponse<InputStream> getGetHttpBinResponse(String m_apiPath  ) throws UnirestException, IOException  {
+		
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
-		HttpResponse<String> response  = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
+		GetRequest gr = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ) ; 
+		HttpResponse<InputStream> response =  gr.asBinary() ; 
+		
+		return response ;
+		
+	}
+	public HttpResponse<String> getGetHttpResponse(String m_apiPath   ) throws UnirestException, IOException  {
+		String hostUrl = getHostUrl() ;
+		String authorization = getAuthorizationHeader() ; 
+		GetRequest gr = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ) ; 
+		HttpResponse<String> response =  gr.asString() ; 
+		
 		return response ;
 		
 	}

@@ -21,21 +21,21 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GoogleProxiesList {
 
     @JsonProperty("proxies")
-    private List<Proxy> proxies = new ArrayList<Proxy>();
+    private List<GoogleProxy> proxies = new ArrayList<GoogleProxy>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
     @JsonProperty("proxies")
-    public List<Proxy> getProxies() {
+    public List<GoogleProxy> getProxies() {
         return proxies;
     }
 
     @JsonProperty("proxies")
-    public void setProxies(List<Proxy> proxies) {
+    public void setProxies(List<GoogleProxy> proxies) {
         this.proxies = proxies;
     }
 
-    public GoogleProxiesList withProxies(List<Proxy> proxies) {
+    public GoogleProxiesList withProxies(List<GoogleProxy> proxies) {
         this.proxies = proxies;
         return this;
     }

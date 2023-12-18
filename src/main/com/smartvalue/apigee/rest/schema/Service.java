@@ -1,8 +1,11 @@
 package com.smartvalue.apigee.rest.schema;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public abstract class Service {
 
@@ -10,6 +13,7 @@ public abstract class Service {
 	protected String orgName ; 
 	protected String envName ; 
 	private PrintStream printStream = System.out; 
+	private Organization organization ; 
 	
 	public ManagementServer getMs() {
 		return ms;
@@ -47,6 +51,17 @@ public abstract class Service {
 		this.printStream = printStream;
 		return this ; 
 	}
+
+	
+	public Organization getOrganization() throws UnirestException, IOException {
+		if (organization == null)
+		{
+			organization = this.getMs().getOrgByName(this.orgName); 
+		}
+		return organization;
+	}
+
+	
 	
 	
 	

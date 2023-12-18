@@ -250,8 +250,7 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		ProxyServices proxiesServices = ms.getProxyServices(org); 
-		GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
-		proxiesServices.deleteAllProxies(proxiesList) ;
+		proxiesServices.deleteAllProxies() ;
 		
 	}
 
@@ -290,8 +289,12 @@ public class ApigeeTool
 		
 	}
 
-	private static void exportAllProxies(String[] args) {
-		// TODO Auto-generated method stub
+	private static void exportAllProxies(String[] args) throws UnirestException, IOException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		org = getMandatoryArg(argsMap, "-org"); 
+		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
+		ProxyServices proxiesServices = ms.getProxyServices(org);
+		proxiesServices.exportAllProxies(folderDest);
 		
 	}
 
