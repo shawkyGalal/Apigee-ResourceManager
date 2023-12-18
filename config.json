@@ -96,62 +96,7 @@
 							"clientSecret" : "UKLBn325ZIX1mulU"
 							},
 						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod-emrg/hosts" 
-					}, 
-					{	"Name" : "Gcloud(sfoda@moj.gov.sa)" ,
-						"connectionTimeout" : "0" ,
-						"socketTimeout" : "20000" ,
-						 "googleCloud" : "true",
-						 "googleServiceAccount" : {
-							  "type": "service_account",
-							  "project_id": "staging-405608",
-							  "private_key_id": "8d65ee9c90fd70eb142211f64b424bdccdf8fae9",
-							    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQCc6gwknF9EfMCO\nwgYmcs39bV5kZOdhHdEThPElnBo2v49StWBUrZNurFeUZylh5j8bpTKQhy+vq2Da\n8sHW9+8Q6dIP7QI86gzBv9IbgB44qVek8zCgRJmYSBaaQg9/xzrgYVlOaiMJy0Xz\nceg9toDL6+7hjpaTkMVul0ANHF9BnKZxbmISD4UapfF/ML9C9gdj+P7VkHJvVfsV\nFVDp3piDUFoJ7/oOsTTR+u9Zo8iUKvUkwaan1/DuMqSxepdQfsyj1PjJ9xar2yvm\npiQzapOcXoQMV1s2D4AsuOtB3pQ7MzCdgRcCVRmanuZYZfbRfd5rAbeMb2LcyCSF\nao1nqRe3AgMBAAECgf80qnOYpmnvh+b2qDWgpP1+bzTDqN2gp3TVbPKqWEvpP6e2\nUSXfEem6SunqiCH5+NIBlex2TCp++Ty606W99CKq8I61pvvnaQ8o0XO17khHzaRr\nMATe26VWrYBMZIBRaV+cxJZRJamlohAF8ZtaXFWhmeeaKDa0UKy7AwBKnqWFhHRH\nmpwwIqZ/XeGmdekJWlZJTnoxmaxhvx9F4wft+7MLAWL39HEzqvH0jxbeyFhV6u63\noTWojZCo0BTfEFmKjb8FEaGRvlVU/o/pdUO74mO3PYoO2NKEYc49GO/nmv0AVV2F\nz+h84HGS2LYxlopd2aIcz/P4RVSBkjtjRa4fVu0CgYEA0G2uivXpXoa1QcHaUaGi\na8VjTHCbnCFO7PdywBsM/ZCK/BSLdIWgs3JaaLSi5eemiX46ixZKEVAJJ11J2yec\nvy0pVk6W8R6oMnkFBJeCfSYhY4l0weEMdBugC4tnLzCpEZt/ZZ10fZvy/GW6wHLL\nuk1frZrQT16LEJ8RWBYHiY0CgYEAwLpt+6JF1wa4ys54/ZVh5ZAkx8EPl9D0gq7K\nSSR4xgVZnKdXLaGU+nriRIa7kQuHfB1XU7jxa8yBHjj3y83R0dVmgfQWByD2/rTl\nzh0kV8ksb1VfLkbx+ghlvQodrOkCegep9N/zbBGNPqO7IORPuIO5uqeOOacINCn6\nbEWUO1MCgYA37DXYswJaimo3qnuZS3T41Y0/BTe7PHSgwAPZ52gk4JNp71k7el8T\nxqrbTRwn82+LlILArspQuti55x3Z31b/NG7S6WM2brNSV4YxJTWtvn1W55qcKnXc\n8UyPzGdzEetK/h3Ade67hQw9DE5/NE3VPs1dFxytLwDBBOzyZXbAQQKBgGs1SYj4\ns7DxZEosoNEvD84LaOpVUr841Ur8wDn/t88vmrGxxKT1hVHwmX1VFXGR4EQCbll8\nP4+fqxOMzQrp6xW2h9cyWC6O/9af+lW1kEnk9nrYGqI7hM95bF7ECc3tsBsBuGEn\nUtmCyfdWTPn3BwG1BNP38P3RFJcv4sXnzpVRAoGABmHkqug4yySdi5uR7hKd7hqW\nRM3T9tWPKkzCAFfQW1o5aKeu3I0RA4XiaG0fn0kcZmcIlsqIbPlTem+YVPBLie0G\n7ze/fn2FGTfhNXw0O3V9SUOnYvr7WDjKt9cuYchfGOmSWP9vr6WhahJwqnedJpp4\nyCwTU5dkBabOakxu9/U=\n-----END PRIVATE KEY-----\n",
-							  "client_email": "postman@staging-405608.iam.gserviceaccount.com",
-							  "client_id": "109793984680879526166",
-							  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-							  "token_uri": "https://oauth2.googleapis.com/token",
-							  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-							  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/postman%40staging-405608.iam.gserviceaccount.com",
-							  "universe_domain": "googleapis.com"
-						}, 
-						
-						"regions" :
-						 [
-							{ "name" : "xxxxxx" ,  
-							"OauthMgmServerUrl" : "https://apigee.googleapis.com/" ,
-							"tokenUrl" : "http://10.162.3.3:9001/gcloudaccesstokengenerator"   
-							}
-						]
-					}, 
-					{	 "Name" : "Gcloud(shawky.foda@gmail.com)" ,
-						"connectionTimeout" : "0" ,
-						"socketTimeout" : "20000" ,
-						 "AuthType" : "OAuth" , 
-						 "googleCloud" : "true",
-						 "googleServiceAccount" : {
-							  "type": "service_account",
-							  "project_id": "moj-apigee",
-							  "private_key_id": "2a3181478c530f62f1ac9f9bdbbc25de6963e4fe",
-							  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCky3J+Mi0hH4xj\npDM17OD2Q+WIYeWG3vVrurohvVrFh1T9UhoVaLfG63SZA00YanVqbElLHjgmXlua\nETzxZVkoxowsXBhXEpQJN0mpaKGArHPR9bzyTEeGrCTbuELukM/CEAVXgVp2cqoq\nx+W3I49dGLcNlFMGvrHLuEZXLTQxNG1GJUeBCE4hFp76i5n+NSERrPchMVywOaJZ\nsCbyGU1BvONL9cKkxEijhyDc8GWHnPQBASEAa/qkwZtxWB0OLaOqiCCCsPZRDOv/\n0k/gIYRueMGjqm2SUcKJ11hfx5EMmZXEoUqZmeJDKyJpjGANSQRMcoSBEgbBC8d7\nvzfrtyrlAgMBAAECggEAUk3n714pCveCOsup5f9aNbSgYVafd5ZIVZcrWimDuc7G\n5EQKkfG8g4VaNQegjBazcMUHcBR2L7eFoXOFj/yxpHtRS+BtKaO2OsoZqJoAu06m\nA9FrHkp5mKnGONSU3SiHEuHEgTkyEKFhGr++m5KPigwLdKVFOEOqcdgljWmevQmo\nRk5WZflilR+Y1Wnjdc5/z7WRDOrFBzfXj3kPd0GMffU4zeG7zZ2A8NNDgiIKWIC6\nktCF+4NpDjlf5dF8G657U/q4pOQmnMs6A+zvT7FFOQlBieh6up5OI0cui2+0is4H\nk6Wq0sAjk8P5Po4j3gwqbeh5IYF53BllmXDAJk7xWwKBgQDWP4/jIGy078tG/duX\nFqTNvcq3z/rKKyLkn50dgzcW/XRZ6tPjgHUj1nNCEwtz8Z/LVsXUqpbQZBaKs7Lr\n85kPaHAN8J8BGCLgWUAm7SW/lljM+vfcUAnckVqWMVHoiCz7d39NO4k+RvInt6F+\n5McIOcx+0/2xcQNeIegH6yQtwwKBgQDE6L2oc2VjnwBEqigIYbw+nY+AM7+HrwX1\nYlDFKMgxWd5DjQNPDoZRbCTR9HD6j3YmA2OHNox1YdKoyZ3XJ5kciAfqt3sJLbcs\nhqQnm1idfUoYhpjOo5aT5OqJ1yhDfZiDDybTzmC+K+F3uIL9sEShn7Vw/rlmptOl\n6G8mJ6XyNwKBgQCtsrioLqiThPnsY3H9q4kPmLjaj47HC3PtoQ5TWAd45yHGqKED\nCClwVbP6NNCLPrELvR0Ezw0YhJzV9NyxeTx1hnmag6OV0oisFQ/yvz9kdbMm9K2w\n+18TaPDlZbT/bi/x7C7UYdliGUjINJOE+lv26k1F4f8DNhnB3oFsshIR2wKBgQDD\n2HTieTvLlNZwdQjyJTtUz+NtcIq8CjGT+WA6aLCMnUS6zSMQW3Luwu/wPv6rx0qM\nzmwMjQ2wpkYfCMDLwR/BR+8P3cQqweRhDd1xY0oFAhtTP3P2erCGknVP+cabMe0h\n1U0Z9zczjnNnXwYyCkKIuk99fmyqk50Ic6ExQtgDiwKBgHkjuSmgM+jLqfHAkTsg\nWf9foqW1n3r/Hi+n8Cv3Xlzfh3KuR73sOBwuv+0l7oB/B3gFFjRUfDAC3VL5ePXK\ndkNMqRUohu0KpEfdY8VTuQ2PD4TxDIZ9Toe78cjpMjTctrtiRbAQkS6A/Hmlb1hi\nUwTQRSzfPiO7dw+rL8V3l1pA\n-----END PRIVATE KEY-----\n",
-							  "client_email": "apigeeamin-java@moj-apigee.iam.gserviceaccount.com",
-							  "client_id": "100161588649150357715",
-							  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-							  "token_uri": "https://oauth2.googleapis.com/token",
-							  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-							  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/apigeeamin-java%40moj-apigee.iam.gserviceaccount.com",
-							  "universe_domain": "googleapis.com"
-							}
-						 
-						 , 
-						"regions" :
-						 [
-							{ "name" : "xxxxxx" ,  
-							"OauthMgmServerUrl" : "https://apigee.googleapis.com/" ,
-							"tokenUrl" : "http://10.162.3.3:9001/gcloudaccesstokengenerator"   
-							}
-						]
-					}
-					
+					} 
 				]
 			} ,
 			{	"Name" : "LEAN"  
