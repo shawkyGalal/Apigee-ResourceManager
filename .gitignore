@@ -36,3 +36,4 @@ target/classes/META-INF/MANIFEST.MF
 .settings/org.eclipse.wst.common.component
 .settings/org.eclipse.jdt.core.prefs
 test-output/*
+config.json

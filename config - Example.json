@@ -1,0 +1,171 @@
+{
+	"Partners":[		
+	{	"Name" : "MasterWorks" , 
+		"Customers" : [
+			{	"Name" : "MOJ"  
+				,"Infras" : [
+					{	"Name" : "Prod", 
+					"regions" :
+						 [
+							{ 
+								"name" : "dc-1" ,  
+								"MgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
+								"OauthMgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" ,
+								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
+								"podGateWayName" : "gateway" 
+							}, 
+							{ 	
+								"name" : "dc-2" ,  
+								"MgmServerUrl" : "http://prod_dr.apigee.moj.gov.local:9001/api-management" , 
+								"OauthMgmServerUrl" : "http://prod-dr.apigee.moj.gov.local:9001/api-management" ,
+								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
+								"podGateWayName" : "gateway-2" 
+							}
+						],
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "*******" , 
+							"clientId" : "********" , 
+							"clientSecret" : "*******"
+						}, 
+						"connectionTimeout" : "0" ,
+						"socketTimeout" : "20000" , 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod/hosts" , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Dev" , 
+						"MgmServerUrl" : "http://devtest.apigee.moj.gov.local:9001/api-management" , 
+						"OauthMgmServerUrl" : "http://devtest.apigee.moj.gov.local:9001/api-management" ,
+						"tokenUrl" : "http://devtest.apigee.moj.gov.local:9001/v1/authorize/access-token" ,
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "********",
+							"clientId" : "************" , 
+							"clientSecret" : "************"
+					},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/dev/hosts" 
+					}, 
+					{	"Name" : "Stage" ,
+						"regions" :
+						 [
+							{ "name" : "dc-1" ,  
+							"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" ,  
+							"podGateWayName" : "gateway"
+							}, 
+							{ "name" : "dc-2" ,  
+							"MgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+							"podGateWayName" : "gateway-2"
+							}
+						],
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "*********" , 
+							"clientId" : "********************" , 
+							"clientSecret" : "**********"
+						}, 
+						"connectionTimeout" : "0" ,
+						"socketTimeout" : "20000" , 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Stage-DR" ,
+						"MgmServerUrl" : "https://10.184.43.1:8443" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "Moj@13579"
+						},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage_dr_only/hosts"  , 
+						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+					}, 
+					{	"Name" : "Emergency" ,
+					    "OauthMgmServerUrl" : "http://emerg.apigee.moj.gov.local:9001/api-management" ,
+					    "tokenUrl" : "http://emerg.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+						"MgmServerUrl" : "http://10.161.9.129:8080" , 
+						"AuthType" : "OAuth" , 
+						"sysadminCred" : {
+							"Username" : "devops@moj.gov.sa" , 
+							"Password" : "******************", 
+							"clientId" : "*******************" , 
+							"clientSecret" : "******************"
+							},
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod-emrg/hosts" 
+					}, 
+
+					{	 "Name" : "Gcloud(shawky.foda@gmail.com)" ,
+						"connectionTimeout" : "0" ,
+						"socketTimeout" : "20000" ,
+						 "AuthType" : "OAuth" , 
+						 "googleCloud" : "true",
+						 "googleServiceAccount" : {
+							  "type": "service_account",
+							  "project_id": "moj-apigee",
+							  "private_key_id": "2a3181478c530f62f1ac9f9bdbbc25de6963e4fe",
+							  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCky3J+Mi0hH4xj\npDM17OD2Q+WIYeWG3vVrurohvVrFh1T9UhoVaLfG63SZA00YanVqbElLHjgmXlua\nETzxZVkoxowsXBhXEpQJN0mpaKGArHPR9bzyTEeGrCTbuELukM/CEAVXgVp2cqoq\nx+W3I49dGLcNlFMGvrHLuEZXLTQxNG1GJUeBCE4hFp76i5n+NSERrPchMVywOaJZ\nsCbyGU1BvONL9cKkxEijhyDc8GWHnPQBASEAa/qkwZtxWB0OLaOqiCCCsPZRDOv/\n0k/gIYRueMGjqm2SUcKJ11hfx5EMmZXEoUqZmeJDKyJpjGANSQRMcoSBEgbBC8d7\nvzfrtyrlAgMBAAECggEAUk3n714pCveCOsup5f9aNbSgYVafd5ZIVZcrWimDuc7G\n5EQKkfG8g4VaNQegjBazcMUHcBR2L7eFoXOFj/yxpHtRS+BtKaO2OsoZqJoAu06m\nA9FrHkp5mKnGONSU3SiHEuHEgTkyEKFhGr++m5KPigwLdKVFOEOqcdgljWmevQmo\nRk5WZflilR+Y1Wnjdc5/z7WRDOrFBzfXj3kPd0GMffU4zeG7zZ2A8NNDgiIKWIC6\nktCF+4NpDjlf5dF8G657U/q4pOQmnMs6A+zvT7FFOQlBieh6up5OI0cui2+0is4H\nk6Wq0sAjk8P5Po4j3gwqbeh5IYF53BllmXDAJk7xWwKBgQDWP4/jIGy078tG/duX\nFqTNvcq3z/rKKyLkn50dgzcW/XRZ6tPjgHUj1nNCEwtz8Z/LVsXUqpbQZBaKs7Lr\n85kPaHAN8J8BGCLgWUAm7SW/lljM+vfcUAnckVqWMVHoiCz7d39NO4k+RvInt6F+\n5McIOcx+0/2xcQNeIegH6yQtwwKBgQDE6L2oc2VjnwBEqigIYbw+nY+AM7+HrwX1\nYlDFKMgxWd5DjQNPDoZRbCTR9HD6j3YmA2OHNox1YdKoyZ3XJ5kciAfqt3sJLbcs\nhqQnm1idfUoYhpjOo5aT5OqJ1yhDfZiDDybTzmC+K+F3uIL9sEShn7Vw/rlmptOl\n6G8mJ6XyNwKBgQCtsrioLqiThPnsY3H9q4kPmLjaj47HC3PtoQ5TWAd45yHGqKED\nCClwVbP6NNCLPrELvR0Ezw0YhJzV9NyxeTx1hnmag6OV0oisFQ/yvz9kdbMm9K2w\n+18TaPDlZbT/bi/x7C7UYdliGUjINJOE+lv26k1F4f8DNhnB3oFsshIR2wKBgQDD\n2HTieTvLlNZwdQjyJTtUz+NtcIq8CjGT+WA6aLCMnUS6zSMQW3Luwu/wPv6rx0qM\nzmwMjQ2wpkYfCMDLwR/BR+8P3cQqweRhDd1xY0oFAhtTP3P2erCGknVP+cabMe0h\n1U0Z9zczjnNnXwYyCkKIuk99fmyqk50Ic6ExQtgDiwKBgHkjuSmgM+jLqfHAkTsg\nWf9foqW1n3r/Hi+n8Cv3Xlzfh3KuR73sOBwuv+0l7oB/B3gFFjRUfDAC3VL5ePXK\ndkNMqRUohu0KpEfdY8VTuQ2PD4TxDIZ9Toe78cjpMjTctrtiRbAQkS6A/Hmlb1hi\nUwTQRSzfPiO7dw+rL8V3l1pA\n-----END PRIVATE KEY-----\n",
+							  "client_email": "apigeeamin-java@moj-apigee.iam.gserviceaccount.com",
+							  "client_id": "100161588649150357715",
+							  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+							  "token_uri": "https://oauth2.googleapis.com/token",
+							  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+							  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/apigeeamin-java%40moj-apigee.iam.gserviceaccount.com",
+							  "universe_domain": "googleapis.com"
+							}
+						 
+						 , 
+						"regions" :
+						 [
+							{ "name" : "xxxxxx" ,  
+							"OauthMgmServerUrl" : "https://apigee.googleapis.com/" ,
+							"tokenUrl" : "http://10.162.3.3:9001/gcloudaccesstokengenerator"   
+							}
+						]
+					}
+					
+				]
+			} 			
+		]
+	}, 
+	{	"Name" : "CloudyPedia" , 
+			"Customers" : [
+				{	"Name" : "Najm" , 
+					"Infras" : [
+						{	"Name" : "Dev" ,
+							"MgmServerUrl" : "http://192.168.0.150:8080" , 
+							"sysadminCred" : {
+								"Username" : "jenkins@najm.sa", 
+								"Password" :"Najm@123"
+							}  
+						},
+						{	"Name" : "Prod" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}
+					]
+				} ,
+				{	"Name" : "Sdaia" , 
+					"Infras" : [
+						{
+							"Name" : "Prod" , 
+							"MgmServerUrl" : "" , 
+							"sysadminCred" : {
+								"Username" : "" , 
+								"Password" :""
+							}  
+						}
+					]
+				}			
+			]
+			
+		} 
+		
+	]
+}
