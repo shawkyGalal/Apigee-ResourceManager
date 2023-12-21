@@ -2,7 +2,6 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +14,20 @@ import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
-import com.sun.net.httpserver.Authenticator.Result;
 
-import bsh.This;
 
 public class ProxyServices extends Service {
+
+	ArrayList<BundleUploadTransformer> bundleUploadTranformers = new ArrayList<BundleUploadTransformer>();
+	
+	public ArrayList<BundleUploadTransformer> getBundleUploadTranformers() {
+		return bundleUploadTranformers;
+	}
+
+	public void setBundleUploadTranformers(ArrayList<BundleUploadTransformer> bundleUploadTranformers) {
+		this.bundleUploadTranformers = bundleUploadTranformers;
+	}
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
@@ -108,27 +113,17 @@ public class ProxyServices extends Service {
 		HttpResponse<String> result = null; 
 		String apiPath = "/v1/organizations/"+orgName+"/apis?action=import&name="+m_proxyName+"&validate=true" ; 
 		ManagementServer ms = this.getMs() ;
+		String proxyAfterTransformation = pundleZipFileName ; 
+		for (BundleUploadTransformer but : this.getBundleUploadTranformers())
+		{
+		 proxyAfterTransformation = but.trasform(pundleZipFileName);
+		 pundleZipFileName = proxyAfterTransformation ; 
+		}
 		
-		File proxyAfterCommanStandard = applyCommanStandards(new File (pundleZipFileName));
-		File proxyAftercomplyWithGoogleX = adjustForApigeeX( proxyAfterCommanStandard);
-		
-		result = ms.getPostFileHttpResponse(apiPath , proxyAftercomplyWithGoogleX.getAbsolutePath() ) ;
+		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
 		return result ; 
 	}
 	
-	
-	
-	
-
-	private File adjustForApigeeX(File file) {
-		// TODO Auto-generated method stub
-		return file;
-	}
-
-	private File applyCommanStandards(File file) {
-		// TODO Auto-generated method stub
-		return file;
-	}
 
 	public  ArrayList<HttpResponse<String>> uploadFolder(String folderPath, boolean m_deploy) throws UnirestException, IOException
 	{

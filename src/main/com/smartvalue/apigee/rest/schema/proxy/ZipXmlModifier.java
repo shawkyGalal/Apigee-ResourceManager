@@ -19,7 +19,12 @@ import org.xml.sax.InputSource;
 
 public class ZipXmlModifier {
 
-	private static void modifyXmlElement(String inputZipFilePath, String fileName, String xpath, Element newElement, String outputZipFile) throws Exception {
+	public static void modifyXmlElement(String inputZipFilePath, String fileName, String xpath, String newElementStr, String outputZipFile) throws Exception {
+	
+		modifyXmlElement(inputZipFilePath, fileName, xpath, convertStringToElement(newElementStr) , outputZipFile); 
+	}
+	
+	public static void modifyXmlElement(String inputZipFilePath, String fileName, String xpath, Element newElement, String outputZipFile) throws Exception {
 	    try (
 	        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
 	        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
@@ -50,6 +55,10 @@ public class ZipXmlModifier {
 	    }
 	}
 
+	private static String processXml(ZipInputStream zipInputStream, String xpath, String newElementStr) throws Exception {
+		
+		return processXml( zipInputStream,  xpath,  convertStringToElement(newElementStr)) ; 
+	}
 	private static String processXml(ZipInputStream zipInputStream, String xpath, Element newElement) throws Exception {
 	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder builder = factory.newDocumentBuilder();
