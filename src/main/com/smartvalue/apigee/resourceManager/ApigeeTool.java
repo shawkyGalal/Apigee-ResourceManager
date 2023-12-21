@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.resourceManager;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
-import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.moj.clients.environments.JsonParser;
 
@@ -93,6 +93,13 @@ public class ApigeeTool
 	        System.out.println("  		Search for Apigee Proxies do not use any of the given policy names");
 	        System.out.println("  listAllEnvsMessageProcessors -orgName <orgName>");
 	        System.out.println("  		List Of Regions/Env Message Processors ");
+	        System.out.println("  migrate -exportAll <ApigeeObjectType> -orgName <orgName> -folderDest <Dest. Folder Path>");
+	        System.out.println("  		Export All <ApigeeObjectType> of the given org name to the given folder ");
+	        System.out.println("  		Avialable Apigee Objects Type to Export : proxies, developers , apps , products , kvms , targetServers ");
+	        System.out.println("  migrate exportAll -orgName <orgName> -folderDest <Dest. Folder Path>");
+	        System.out.println("  		Import All <ApigeeObjectType> of the given org name to the given folder ");
+	        System.out.println("  		Avialable Apigee Objects Type to Export : proxies, developers , apps , products , kvms , targetServers ");
+
     }
 	    
 	private static HashMap<String , String> convertArgsToHashMap(String[] args )
@@ -114,10 +121,8 @@ public class ApigeeTool
  	 org = getMandatoryArg(argsMap, "-org");
  	 String[]  policesNameArray =  policesName.split(",") ; 
  	 String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
- 	
 	 ProxyServices ps = ms.getProxyServices(org) ;
 	 HashMap<String,List<Object>>  result  = ps.getProxiesWithoutPolices(policesNameArray, deployedRevisionOnly.equalsIgnoreCase("true")) ;
-
 	 System.out.println("=================List Of Proxies Do not Use the following policies "+policesName+" ======================");
 	 System.out.println(Renderer.hashMapWithArraylisttoHtmlTable(result));
 	 return result ; 	
@@ -135,7 +140,6 @@ public class ApigeeTool
     private static void listProxiesNotDeployed(String[] args ) throws Exception 
     {
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
-		
     	ArrayList<String> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
     	System.out.println("=================List Of Proxies With No Deployments ======================");
     	System.out.println(Renderer.arrayListToHtmlTable(proxiesNotDeployed));
@@ -147,7 +151,6 @@ public class ApigeeTool
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
     	String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
-    	
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
 		HashMap<String, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer , deployedRevisionOnly.equals("true")); 
 		System.out.println("=================List Of Proxies Using a Target Server : "+ targetServer +" ======================");
@@ -167,18 +170,19 @@ public class ApigeeTool
     private static void migrate(String[] args) throws Exception {
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String importAll = argsMap.get("-importAll") ;
-    	String exportAll =  argsMap.get("-exportAll") ;
-    	String deleteAll =  argsMap.get("-deleteAll") ;
+    	String exportAll = argsMap.get("-exportAll") ;
+    	String deleteAll = argsMap.get("-deleteAll") ;
     	if (importAll != null)
     	{
         switch (importAll) {
-            case "proxies": 		importAllProxies(args);       	break;
-            case "sharedFlows": 	importAllSharedFlows(args);    	break;
-            case "products":   		importAllProducts(args);		break;
-            case "apps":       		importAllApps(args);           	break;
-            case "developers": 		importAllDevelopers(args);     	break;  
-            case "kvms":       		importAllKvms(args);           	break;
-            case "targetServers":   importTargetServers(args);     	break; 
+            case "proxies": 			importAllProxies(args);       	break;
+            case "sharedFlows": 		importAllSharedFlows(args);    	break;
+            case "products":   			importAllProducts(args);		break;
+            case "apps":       			importAllApps(args);           	break;
+            case "developers": 			importAllDevelopers(args);     	break;  
+            case "kvms":       			importAllKvms(args);           	break;
+            case "targetServers":   	importTargetServers(args);     	break;
+            case "--help":   			printImportUsage();     		break; 
             default: System.out.println("Unknown import argument:  " + importAll);
                 printImportUsage();
                 break;
@@ -186,7 +190,6 @@ public class ApigeeTool
     	}
     	else if (exportAll != null)
     	{
-    		
     		switch (exportAll) {
             case "proxies": 		exportAllProxies(args);       	break;
             case "sharedFlows": 	exportAllSharedFlows(args);   	break;
@@ -195,6 +198,7 @@ public class ApigeeTool
             case "developers": 		exportAllDevelopers(args);     	break;  
             case "kvms":       		exportAllKvms(args);           	break; 
             case "targetServers":   exportAllTargetServers(args); 	break;
+            case "--help":   		printExportUsage();     		break; 
             default: System.out.println("Unknown exportAll argument : " + exportAll);
                 printExportUsage();
                 break;
@@ -202,7 +206,6 @@ public class ApigeeTool
     	}
     	else if (deleteAll != null)
     	{
-    		
     		switch (deleteAll) {
             case "proxies": 		deleteAllProxies(args);       	break;
             case "sharedFlows": 	deleteAlltSharedFlows(args);    break;
@@ -211,13 +214,19 @@ public class ApigeeTool
             case "developers": 		deleteAllDevelopers(args);     	break;  
             case "kvms":       		deleteAllKvms(args);           	break; 
             case "targetServers":	deleteAllTargetServers(args);   break;
+            case "--help":   		printDeleteUsage();     		break; 
             default: System.out.println("Unknown deleteAll argument : " + deleteAll);
-                printExportUsage();
+                printDeleteUsage();
                 break;
         	}
     	}
     	else { printUsage();  } 
     	
+		
+	}
+
+	private static void printDeleteUsage() {
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -335,11 +344,12 @@ public class ApigeeTool
 
 	private static void importAllProxies(String[] args) throws FileNotFoundException, IOException, UnirestException {
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
-    	String proxiesFolderPath = getMandatoryArg(argsMap, "-folderPath") + "/proxies" ;
-    	org = getMandatoryArg(argsMap, "-org");
+		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
+		org = getMandatoryArg(argsMap, "-org");
+		String deploy = argsMap.get("-deploy"); 
     	ProxyServices proxiesServices = ms.getProxyServices(org); 
-		proxiesServices.uploadFolder(proxiesFolderPath) ;
-		
+		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
+		proxiesServices.uploadFolder(sourceFolder , isdeploy) ;
 	}
 
 	

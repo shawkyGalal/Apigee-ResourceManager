@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -16,6 +17,7 @@ import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 import com.sun.net.httpserver.Authenticator.Result;
 
 import bsh.This;
@@ -96,36 +98,91 @@ public class ProxyServices extends Service {
 		
 	}
 	
+	public HttpResponse<String> uploadPundle(String pundleZipFileName ) throws UnirestException, IOException
+	{
+		return uploadPundle (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
+	}
+	
 	public HttpResponse<String> uploadPundle(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
 		String apiPath = "/v1/organizations/"+orgName+"/apis?action=import&name="+m_proxyName+"&validate=true" ; 
-		ManagementServer ms = this.getMs() ; 
-		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
+		ManagementServer ms = this.getMs() ;
+		
+		File proxyAfterCommanStandard = applyCommanStandards(new File (pundleZipFileName));
+		File proxyAftercomplyWithGoogleX = adjustForApigeeX( proxyAfterCommanStandard);
+		
+		result = ms.getPostFileHttpResponse(apiPath , proxyAftercomplyWithGoogleX.getAbsolutePath() ) ;
 		return result ; 
 	}
 	
 	
 	
-	public  ArrayList<HttpResponse<String>> uploadFolder(String folderPath) throws UnirestException, IOException
+	
+
+	private File adjustForApigeeX(File file) {
+		// TODO Auto-generated method stub
+		return file;
+	}
+
+	private File applyCommanStandards(File file) {
+		// TODO Auto-generated method stub
+		return file;
+	}
+
+	public  ArrayList<HttpResponse<String>> uploadFolder(String folderPath, boolean m_deploy) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		String envName ;
 		File folder = new File(folderPath); 
-		for (File zipfile : folder.listFiles())
+		
+		for (File envFolder : folder.listFiles() )
 		{
-			int dotIndex = zipfile.getName().indexOf("."); 
-			String proxyName= zipfile.getName().substring(0, dotIndex ) ; 
-			System.out.println( proxyName + ":" +zipfile.getAbsolutePath()  );
-			HttpResponse<String> result = uploadPundle(zipfile.getAbsolutePath() , proxyName);
-			int status = result.getStatus() ; 
-			if (status != 200)
-			{	
-				System.out.println("Error Uploading Proxy " + proxyName);
-				System.out.println("Error Details " + result.getBody());
-				failedResult.add(result) ; 
+			int envProxiesCount = 0 ; 
+			envName = envFolder.getName(); 
+			System.out.println("================Importing Proxies Deplyed TO Environment  " + envName +"==============");
+			for (File proxyFolder : envFolder.listFiles() )
+			{
+				envProxiesCount++; 
+				for (File revisionFolder : proxyFolder.listFiles() )
+				{
+				
+					for (File zipfile : revisionFolder.listFiles())
+					{
+						int dotIndex = zipfile.getName().indexOf("."); 
+						String proxyName= zipfile.getName().substring(0, dotIndex ) ; 
+						System.out.println( proxyName + ":" +zipfile.getAbsolutePath()  );
+						HttpResponse<String> result = uploadPundle(zipfile.getAbsolutePath() , proxyName);
+						int status = result.getStatus() ; 
+						if (status != 201)
+						{	
+							System.out.println("Error Uploading Proxy " + proxyName);
+							System.out.println("Error Details " + result.getBody());
+							failedResult.add(result) ; 
+						}
+						if (m_deploy)
+						{
+							Gson json = new Gson(); 
+							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
+							//--- Started Deploying the proxy revision to environment 
+							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
+							HttpResponse<String> deployresult = this.deployProxyRevision(proxyName, envName , newRevesion) ;
+							status = deployresult.getStatus() ;
+							if (status != 200)
+							{	
+								System.out.println("Error Deplying Proxy " + proxyName);
+								System.out.println("Error Details " + deployresult.getBody());
+								failedResult.add(deployresult) ; 
+							}
+						}
+					}
+			
+				}
+				
 			}
+			System.out.println("==== End of Importing Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
 		}
-		System.out.println(failedResult.toString()); 
+		System.out.println("Errors:  \n" + failedResult.toString()); 
 		return failedResult;
 	}
 
@@ -135,6 +192,15 @@ public class ProxyServices extends Service {
 		String apiPath = "/v1/organizations/"+orgName+"/apis/"+m_proxyName ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getDeleteHttpResponse(apiPath ) ;
+		return result ; 
+	}
+	
+	public HttpResponse<String> deployProxyRevision(String m_proxyName , String m_envName , int revision ) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/apis/"+m_proxyName +"/revisions/"+revision+"/deployments" ; 
+		ManagementServer ms = this.getMs() ; 
+		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
 		return result ; 
 	}
 	
