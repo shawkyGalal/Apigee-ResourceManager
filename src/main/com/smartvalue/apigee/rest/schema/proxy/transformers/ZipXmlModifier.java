@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxy.transformers;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,11 +24,18 @@ public class ZipXmlModifier {
 		modifyXmlElement(inputZipFilePath, fileName, xpath, convertStringToElement(newElementStr) , outputZipFile); 
 	}
 	
-	public static void modifyXmlElement(String inputZipFilePath, String fileName, String xpath, Element newElement, String outputZipFile) throws Exception {
-	    try (
+	public static void modifyXmlElement(String inputZipFilePath, String fileName, String xpath, Element newElement, String outputZipFolder) throws Exception {
+		String  inputzipfile = new File(inputZipFilePath).getName(); 
+		java.io.File file = new File(outputZipFolder);
+		if (!file.exists()) { file.mkdirs(); }
+		String outputFilePath  = outputZipFolder + File.separatorChar+  inputzipfile ; 
+		File  outputFile = new File (outputFilePath ) ;  
+		outputFile.createNewFile(); 
+		try (
 	        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
 	        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
-	        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputZipFile))
+			
+	        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputFilePath))
 	    ) {
 	        ZipEntry entry;
 	        while ((entry = zipInputStream.getNextEntry()) != null) {

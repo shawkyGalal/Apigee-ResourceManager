@@ -128,11 +128,11 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	
 	@SuppressWarnings("unchecked")
-	public String[]  getAllShardFlow() throws UnirestException, IOException
+	public ArrayList<String>  getAllShardFlow() throws UnirestException, IOException
 	{
 		String apiPath = "/v1/organizations/"+this.getName()+"/sharedflows/"  ; 
 		ManagementServer ms = this.getManagmentServer() ;
-		String[] sharedFlows  = ms.executeGetMgmntAPI(apiPath , String[].class ) ;
+		ArrayList<String> sharedFlows  = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		return sharedFlows ; 
 	}
 	

@@ -349,7 +349,7 @@ public class ApigeeTool
 		String deploy = argsMap.get("-deploy"); 
     	ProxyServices proxiesServices = ms.getProxyServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
-		proxiesServices.uploadFolder(sourceFolder , isdeploy) ;
+		proxiesServices.importAllProxies(sourceFolder , isdeploy) ;
 	}
 
 	

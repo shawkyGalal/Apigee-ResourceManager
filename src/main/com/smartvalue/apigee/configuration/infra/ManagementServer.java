@@ -37,6 +37,7 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
 
 public class ManagementServer extends Server{
@@ -413,6 +414,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		srv.setMs(this);
 		return srv;
 		
+	}
+	public SharedFlowServices getSharedFlowServices(String m_orgName )
+	{
+		SharedFlowServices  sfrv = new SharedFlowServices(this , m_orgName) ; 
+		sfrv.setMs(this);
+		return sfrv;
 	}
 
 	@Override
