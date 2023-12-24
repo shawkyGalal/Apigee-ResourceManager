@@ -16,6 +16,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class ApigeeTool 
@@ -250,8 +251,11 @@ public class ApigeeTool
 		
 	}
 
-	private static void deleteAlltSharedFlows(String[] args) {
-		// TODO Auto-generated method stub
+	private static void deleteAlltSharedFlows(String[] args) throws UnirestException, IOException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		org = getMandatoryArg(argsMap, "-org"); 
+		SharedFlowServices sfs = ms.getSharedFlowServices(org); 
+		sfs.deleteAll() ;
 		
 	}
 
@@ -259,7 +263,7 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		ProxyServices proxiesServices = ms.getProxyServices(org); 
-		proxiesServices.deleteAllProxies() ;
+		proxiesServices.deleteAll() ;
 		
 	}
 
@@ -293,8 +297,12 @@ public class ApigeeTool
 		
 	}
 
-	private static void exportAllSharedFlows(String[] args) {
-		// TODO Auto-generated method stub
+	private static void exportAllSharedFlows(String[] args) throws UnirestException, IOException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		org = getMandatoryArg(argsMap, "-org"); 
+		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
+		SharedFlowServices sfs = ms.getSharedFlowServices(org);
+		sfs.exportAll(folderDest);
 		
 	}
 
@@ -302,8 +310,8 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
-		ProxyServices proxiesServices = ms.getProxyServices(org);
-		proxiesServices.exportAllProxies(folderDest);
+		ProxyServices ps = ms.getProxyServices(org);
+		ps.exportAll(folderDest);
 		
 	}
 
@@ -337,8 +345,14 @@ public class ApigeeTool
 		
 	}
 
-	private static void importAllSharedFlows(String[] args) {
-		// TODO Auto-generated method stub
+	private static void importAllSharedFlows(String[] args) throws UnirestException, IOException {
+		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
+		org = getMandatoryArg(argsMap, "-org");
+		String deploy = argsMap.get("-deploy"); 
+    	SharedFlowServices sharedFlowServices = ms.getSharedFlowServices(org); 
+		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
+		sharedFlowServices.importAll(sourceFolder , isdeploy) ;
 		
 	}
 
@@ -349,7 +363,7 @@ public class ApigeeTool
 		String deploy = argsMap.get("-deploy"); 
     	ProxyServices proxiesServices = ms.getProxyServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
-		proxiesServices.importAllProxies(sourceFolder , isdeploy) ;
+		proxiesServices.importAll(sourceFolder , isdeploy) ;
 	}
 
 	

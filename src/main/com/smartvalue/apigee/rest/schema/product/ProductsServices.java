@@ -2,7 +2,9 @@ package com.smartvalue.apigee.rest.schema.product;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -38,6 +40,26 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 	}
 
 	return result;
+}
+
+@Override
+public ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy)
+		throws UnirestException, IOException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public HashMap<String, HashMap<Integer, Exception>> exportAll(String folderDest)
+		throws UnirestException, IOException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+	// TODO Auto-generated method stub
+	return null;
 }
 
 }

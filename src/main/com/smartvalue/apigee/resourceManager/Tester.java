@@ -22,8 +22,11 @@ import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.BundleUploadTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Postgres;
@@ -40,38 +43,21 @@ import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
 import com.smartvalue.zip.ZipUtility;
 
-
-
 public class Tester {
 
 	public static void main (String[] args) throws Exception
 	{
-		/*
-		File f = new File("googleServiceAccout.json"); 
-		String serviceAccountCred = "{\r\n"
-				+ "  \"type\": \"service_account\",\r\n"
-				+ "  \"project_id\": \"moj-apigee\",\r\n"
-				+ "  \"private_key_id\": \"23273ebd6bd286d95b1b97ebd4b9932e6f796751\",\r\n"
-				+ "  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCu13O9mYa9UQ1v\\nJm5q2k5MewiqrXG0wCwoG0KKbcdxtlBhDS27hJH+dy3OIum/6NgrcEAS6bfEoT0g\\nknuFVYyje4eIc4z+2uIvU9aMX2Tc57tI1ovQfFk9j12M2Ma9bq4qtUVnfITgA2T3\\nhkmODEFwr7OUNBxgZIto6sOCE9SSh6acX0fKTOmtKzCUafxSBOT/DuNtgYAUyB9X\\n4sWhbr1L0CFKumoEiYCWti8a79NV9nfe5Ha7Rq5TkATQYk6r04p8TpAmS3NA53jw\\neqGtvbPa5Gprl13iPdNdZ3m21mCdD7wavxQh5y6t6TBnEK/pfxAxrsvyebuiuzRI\\ntT82kLlFAgMBAAECggEARcdH8m3w1+KevXL1k2CP6jcaJN/25t/hX5pNiqi4dfoA\\nh1M2osWMbKXM2p2Vc5lumJuCfunXBTsihbrgYDzd1asp0rvnFBlwNto7YKd7viwf\\n0ziI8UqHZSmv+NPVMWoYSYQx8FTCRRMluyHVfkMG5P3Cak4H2zKVbuhu4Z2fc2DW\\nEUc7OFOVunctvvW+UahEVOYManLMX+Qzprsb7SSi7eAfA+4nT77ZAU/4hHgaGEKa\\n01vC0fAjGCs07nFefav70hk1nCdiB616B+dBHe7teDXrcNyvbxbZ7DMYsEbYKPhO\\n94Zv8PYqWT4v1xy/gisIjj6pILuH19UxzvpRdHh7ewKBgQDbl5nKKAuBL9XeDbOT\\nH7KyrY3jgvFUocxLwcYZo0oAWGu03rd0uoOUTZT1bRwe66/y80vEFpOn8ijPgLSJ\\nxL+WgH/o5cBNZgUW2x0kYehFphdCkwOSQH6lUPjPiyoaY89OwP+rKOGBL55fkvN2\\nMYVsgBdwPNW6hPdt2IVpO5XdlwKBgQDL1HOzV8ELBHFE0nvFRQd+IHHUp6/q5yHx\\np5NQ19WLuAtpPs5IovdvU1pqgA8UqHqMoh/4gWLR6nYKV5bRXeUcDucPxUD//vTd\\ncV7ylZP8jlWufxK/aghrpXxnGimeut/Qb+hlYbWgbEDZ45PmLWHRDn0AXh5EAFP/\\nyr7bqgbzgwKBgHkW6RRD7swnP6z6KzsG8Lh84dBChaegrRJdYUsD8yurloEfi1SQ\\nATzHZ0vLBgW6+8RiCzavKG8lJwH9vBB4cRmh9GbOQrOrfUT0QOauIrI9e3gXr5F3\\nhR7OPtXbrLTuswN/g7yzh16AjrmvRBe6CRQiskoPEeCPsA1fp3m3BNYzAoGAHdHz\\nK2XHREleGOeCXBYBRp6QiMAPqJowCR6vGsC46Tv/z2H05AOTl6HmNHaPvkH3y+Nc\\nMgsb3gIjStgNpIvMHRLBEzmUjN9MC6mubmcbw3M/bcwBfieRG86WKK9XL3W/kMsO\\ngOaOn+22fyogVSiGiwNHnmomm2RA5cdPrOtvIOkCgYB8NhxHjBmF79JEzsKmLaXW\\n4cHBhCGKr1t5gxdLYz5fM2rj55U2p3vT706OP+Y7CrtWZfD9dupFRyom8Rs8E7VB\\nhHlC8wdA5A1T80++NMwQtRpV3GT82++c3pHKgKAufdBlx7eL1Tw9ypsv76IvWQq0\\npOgtIiP6ZOD5BNAqZXWioA==\\n-----END PRIVATE KEY-----\\n\",\r\n"
-				+ "  \"client_email\": \"postman@moj-apigee.iam.gserviceaccount.com\",\r\n"
-				+ "  \"client_id\": \"109918179197281334425\",\r\n"
-				+ "  \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\r\n"
-				+ "  \"token_uri\": \"https://oauth2.googleapis.com/token\",\r\n"
-				+ "  \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\r\n"
-				+ "  \"client_x509_cert_url\": \"https://www.googleapis.com/robot/v1/metadata/x509/postman%40moj-apigee.iam.gserviceaccount.com\",\r\n"
-				+ "  \"universe_domain\": \"googleapis.com\"\r\n"
-				+ "}" ; 
-		Tester.getGoogleAccessToken(serviceAccountCred);
 		
-		String specsUrl = "https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;   // "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;
-		String lang = "php"; 
+
+		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ; //"https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;
+		String lang = "java"; 
 		String outputDirectory = "C:\\Users\\Shawky Foda\\Downloads\\MOJ_SDK_"+lang ;
 		TestSDKGenerator(specsUrl , lang , outputDirectory); 
 		File outFile = new File(outputDirectory) ; 
 		List<File> fileList = new ArrayList<File>() ; 
 		fileList.add(outFile); 
 		ZipUtility.zip(fileList, outputDirectory+".zip");
-		
+		/*
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
 		String authURL = e.getUrlBuilder()
@@ -80,17 +66,24 @@ public class Tester {
 				.withScope("openid")
 				.buildAuthorizationURL();
 		
-*/		
+
+		*/
+
 		//e.executeRequest("/test01", null, "GET", "") ; 
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
 		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
 		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
-		String orgName = "moj-apigee" ; 
-		String envName = "iam-protected" ; 
-		String proxyName = "oidc-core" ;
-		String region ; 
+
+		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
+		//String orgName = "moj-apigee" ; 
+
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Dev") ;
+		String orgName = "training01" ; 
+
+		//String envName = "iam-protected" ; 
+		//String proxyName = "oidc-core" ;
+		//String region ; 
 		
 		 //Infra infra = ac.getInfra("SmartValue" , "Demo" , "Prod") ; 
 		 //String orgName =  "smart-value"  ; // "stg" ; 
@@ -99,15 +92,23 @@ public class Tester {
 		 //String region = "dc-1" ; 
 		
 		ManagementServer ms = infra.getManagementServer(infra.getRegions().get(0).getName()) ;
-		region = ms.getRegions().get(0); 
-		String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
-		String FolderName = "G:\\My Drive\\MasterWorks\\Apigee\\Customers\\MOJ\\10.162.3.3.etc.apigee\\apigee-migrate-tool\\data_history\\MOJ\\Prod\\moj-prod\\iam-protected\\2023-11-19-03-33\\proxies" ;
+		//region = ms.getRegions().get(0); 
+		//String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
+		String FolderName = "C:\\temp\\proxies" ;
 		//ms.getProxyServices(orgName).uploadPundle(pundleFileName , "xxxyyy") ;
 		ProxyServices proxiesServices = ms.getProxyServices(orgName); 
-		GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
-		proxiesServices.deleteAllProxies(proxiesList) ;
-		proxiesServices.uploadFolder(FolderName) ;
+		//GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
+		//proxiesServices.deleteAllProxies(proxiesList) ;
+		ArrayList<BundleUploadTransformer> tranformers = new ArrayList<BundleUploadTransformer>(); 
+		tranformers.add(new TargetServerTransformer() );
+		tranformers.add(new NullTransformer() );
+		proxiesServices.setBundleUploadTranformers(tranformers);
+		proxiesServices.importAll(FolderName , false) ;
 		
+
+		/* 
+		ms.getProxyServices(orgName).exportAllProxies("C:\\tmp"); 
+
 		Organization org = (Organization) ms.getOrgs().get(orgName) ;  
 		Environment env = (Environment) org.getEnvs().get(envName);
 		//Environment env02 = (Environment) org.getEnvs().get("cert-protected");
@@ -235,7 +236,7 @@ public class Tester {
 		condActionPairs.add(cp);
 		env.monitor(condActionPairs);
 		
-		
+		*/
 		
 	
 	} 

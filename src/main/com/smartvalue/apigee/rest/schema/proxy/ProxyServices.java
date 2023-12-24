@@ -172,7 +172,7 @@ public class ProxyServices extends Service {
 
 	}
 
-	public  ArrayList<HttpResponse<String>> importAllProxies(String folderPath, boolean m_deploy) throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
 		String envName ;
@@ -253,13 +253,13 @@ public class ProxyServices extends Service {
 		return result ; 
 	}
 	
-	public  ArrayList<HttpResponse<String>> deleteAllProxies() throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException
 	{
 		GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class);
-		return deleteAllProxies(proxiesList); 
+		return deleteAll(proxiesList); 
 	}
 	
-	public  ArrayList<HttpResponse<String>> deleteAllProxies(GoogleProxiesList proxiesList) throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> deleteAll(GoogleProxiesList proxiesList) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
 		for (com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy proxy : proxiesList.getProxies())
@@ -276,9 +276,7 @@ public class ProxyServices extends Service {
 		return failedResult;
 	}
 	
-
-	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAllProxies(String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<Integer , Exception>> exportAll(String folderDest) throws UnirestException, IOException
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
@@ -294,10 +292,10 @@ public class ProxyServices extends Service {
 		else {
 			allProxies =  this.getOrganization().getAllProxiesNames();
 		}
-		return exportAllProxies(allProxies , folderDest ); 
+		return exportAll(allProxies , folderDest ); 
 	}
 	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAllProxies( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<Integer , Exception>> exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
 	{
 		
 		HashMap<String , HashMap<Integer , Exception>> failedResult = new HashMap<String , HashMap<Integer , Exception>>();  

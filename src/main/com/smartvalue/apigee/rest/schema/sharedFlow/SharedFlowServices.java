@@ -74,7 +74,7 @@ public class SharedFlowServices extends Service {
 	
 	
 	
-	public HttpResponse<String> importProxy(String pundleZipFileName ) throws UnirestException, IOException
+	public HttpResponse<String> importSharedFlow(String pundleZipFileName ) throws UnirestException, IOException
 	{
 		return importShareFlow (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
 	}
@@ -142,7 +142,7 @@ public class SharedFlowServices extends Service {
 
 	}
 
-	public  ArrayList<HttpResponse<String>> importAllSharedflows(String folderPath, boolean m_deploy) throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
 		String envName ;

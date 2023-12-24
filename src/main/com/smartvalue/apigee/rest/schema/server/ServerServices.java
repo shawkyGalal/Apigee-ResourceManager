@@ -1,11 +1,14 @@
 package com.smartvalue.apigee.rest.schema.server;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -137,6 +140,24 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
     	}
     	return result ; 
     }
+
+@Override
+public ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy) {
+	// 	Not Applicable
+	return null;
+}
+
+@Override
+public HashMap<String, HashMap<Integer, Exception>> exportAll(String folderDest) throws UnirestException, IOException {
+	// Not Applicable 
+	return null;
+}
+
+@Override
+public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+	// Not Applicable
+	return null;
+}
 
 	
 }
