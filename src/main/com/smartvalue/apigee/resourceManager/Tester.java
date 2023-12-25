@@ -48,7 +48,7 @@ public class Tester {
 	public static void main (String[] args) throws Exception
 	{
 		
-
+		/*
 		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ; //"https://api.moj.gov.local/v1/najiz-services/portal/openapi.json" ;
 		String lang = "java"; 
 		String outputDirectory = "C:\\Users\\Shawky Foda\\Downloads\\MOJ_SDK_"+lang ;
@@ -57,7 +57,7 @@ public class Tester {
 		List<File> fileList = new ArrayList<File>() ; 
 		fileList.add(outFile); 
 		ZipUtility.zip(fileList, outputDirectory+".zip");
-		/*
+		
 		Environments clientEnvs = ClientEnvironmentsFactory.create("moj-enviropnments.json") ; 
 		com.smartvalue.moj.clients.environments.Environment e  =clientEnvs.getEnvByName("testing") ;
 		String authURL = e.getUrlBuilder()
@@ -78,8 +78,8 @@ public class Tester {
 		//Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
 		//String orgName = "moj-apigee" ; 
 
-		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Dev") ;
-		String orgName = "training01" ; 
+		Infra infra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		String orgName = "stg" ; 
 
 		//String envName = "iam-protected" ; 
 		//String proxyName = "oidc-core" ;
@@ -96,14 +96,20 @@ public class Tester {
 		//String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
 		String FolderName = "C:\\temp\\proxies" ;
 		//ms.getProxyServices(orgName).uploadPundle(pundleFileName , "xxxyyy") ;
-		ProxyServices proxiesServices = ms.getProxyServices(orgName); 
+		//ProxyServices proxiesServices = ms.getProxyServices(orgName);
+		HashMap<String, HashMap<String, Exception>> productsFaults = ms.getProductServices(orgName).exportAll("C:\\temp\\products") ; 
+		HashMap<String, HashMap<String, Exception>> appsFaults = ms.getApplicationServices(orgName).exportAll("C:\\temp\\apps") ;
+		HashMap<String, HashMap<String, Exception>> proxiesFaults =  ms.getProxyServices(orgName).exportAll("C:\\temp\\proxies") ;
+		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  ms.getSharedFlowServices(orgName).exportAll("C:\\temp\\sharedflows") ;
+		HashMap<String, HashMap<String, Exception>> devsFaults =  ms.getDevelopersServices(orgName).exportAll("C:\\temp\\developers") ;
+		HashMap<String, HashMap<String, Exception>> kvmsFaults =  ms.getKeyValueMapServices(orgName).exportAll("C:\\temp\\kvms") ;
 		//GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
 		//proxiesServices.deleteAllProxies(proxiesList) ;
 		ArrayList<BundleUploadTransformer> tranformers = new ArrayList<BundleUploadTransformer>(); 
 		tranformers.add(new TargetServerTransformer() );
 		tranformers.add(new NullTransformer() );
-		proxiesServices.setBundleUploadTranformers(tranformers);
-		proxiesServices.importAll(FolderName , false) ;
+		//proxiesServices.setBundleUploadTranformers(tranformers);
+		//proxiesServices.importAll(FolderName , false) ;
 		
 
 		/* 

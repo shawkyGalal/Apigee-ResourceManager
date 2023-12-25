@@ -19,7 +19,7 @@ import com.smartvalue.apigee.rest.schema.ApigeeComman;
     "status"
 })
 @Generated("jsonschema2pojo")
-public class ApiProduct extends ApigeeComman{
+public  class ApiProduct {
 
     
 	@JsonProperty("apiproduct")

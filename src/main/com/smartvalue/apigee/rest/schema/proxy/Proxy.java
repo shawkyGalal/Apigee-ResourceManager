@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	public ProxyDeployment  getDeployments() throws UnirestException, IOException
 	{
 		ProxyDeployment result = null; 
-		String apiPath = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/deployments" ; 
+		String apiPath = getResourcePath()+"/deployments" ; 
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
 		return result ; 
 	}	
@@ -39,7 +40,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	public ProxyRevision  getRevision(String revision ) throws UnirestException, IOException
 	{
 		ProxyRevision result = null; 
-		String apiPath = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + revision ; 
+		String apiPath = getResourcePath()+"/revisions/" + revision ; 
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
 		result.setManagementServer(this.getManagmentServer()) ; 
 		result.setOrgName(this.getOrgName());
@@ -171,18 +172,18 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	public void export(int revision , String folderDest) throws UnirestException, IOException
 	{
 		HttpResponse<InputStream> result = null; 
-		String apiPath = "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/"+revision+"?format=bundle" ; 
+		String apiPath = getResourcePath()+"/revisions/"+revision+"?format=bundle" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		result = ms.getGetHttpBinResponse(apiPath ) ;
 		
-		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip"));
+		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip") , java.nio.file.StandardCopyOption.REPLACE_EXISTING );
 
 	}
 
 	
-	public HashMap<Integer , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
+	public HashMap<String , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		HashMap<Integer , Exception> failedResult = new HashMap<Integer , Exception>();  
+		HashMap<String , Exception> failedResult = new HashMap<String , Exception>();  
 		
 		for ( String  DeployedEnvName :  this.getDeployedRevisions().keySet()) 
 		{
@@ -192,21 +193,23 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 				int revision = Integer.parseInt(revisionString);
 				try {
 					String path = folderDest+"\\" + DeployedEnvName + "\\"+ this.getName()+"\\" + revision+"\\" ; 
-					File file = new File(path);
-					if (!file.exists()) {
-					    file.mkdirs();
-					}
+					Path pathObj = Paths.get(path);
+			        Files.createDirectories(pathObj);
 					export(revision , path) ;
 					System.out.println("Proxy " + this.getName() + " Revision " +  revision + " Imported Successfully");
 				}
 				catch (Exception e) {
-					failedResult.put(revision, e); 
+					failedResult.put(revisionString, e); 
 				}
 			}
 				
 		}
 		
 		return failedResult ; 
+	}
+
+	public String getResourcePath() {
+			return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName();
 	}
 
 	

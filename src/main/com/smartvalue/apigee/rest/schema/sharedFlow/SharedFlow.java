@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,9 +18,9 @@ import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 
 public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.auto.SharedFlow {
 
-	public HashMap<Integer , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
+	public HashMap<String , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		HashMap<Integer , Exception> failedResult = new HashMap<Integer , Exception>();  
+		HashMap<String , Exception> failedResult = new HashMap<String , Exception>();  
 		
 		for ( String  DeployedEnvName :  this.getDeployedRevisions().keySet()) 
 		{
@@ -29,15 +30,13 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 				int revision = Integer.parseInt(revisionString);
 				try {
 					String path = folderDest+"\\" + DeployedEnvName + "\\"+ this.getName()+"\\" + revision+"\\" ; 
-					File file = new File(path);
-					if (!file.exists()) {
-					    file.mkdirs();
-					}
+					Path pathObj = Paths.get(path);
+			        Files.createDirectories(pathObj);
 					export(revision , path) ;
 					System.out.println("SharedFlow " + this.getName() + " Revision " +  revision + " Deplyed to Env "+DeployedEnvName+" Imported Successfully");
 				}
 				catch (Exception e) {
-					failedResult.put(revision, e); 
+					failedResult.put(revisionString, e); 
 				}
 			}
 				
@@ -79,7 +78,7 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 	public ProxyDeployment  getDeployments() throws UnirestException, IOException
 	{
 		ProxyDeployment result = null; 
-		String apiPath = "/v1/organizations/"+this.getOrgName()+"/sharedflows/"+this.getName()+"/deployments" ; 
+		String apiPath = getResourcePath()+"/deployments" ; 
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
 		return result ; 
 	}	
@@ -87,11 +86,16 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 	public void export(int revision , String folderDest) throws UnirestException, IOException
 	{
 		HttpResponse<InputStream> result = null; 
-		String apiPath = "/v1/organizations/"+this.getOrgName()+"/sharedflows/"+this.getName()+"/revisions/"+revision+"?format=bundle" ; 
+		String apiPath = getResourcePath()+"/revisions/"+revision+"?format=bundle" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		result = ms.getGetHttpBinResponse(apiPath ) ;
 		
 		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip"));
 
+	}
+
+	public String getResourcePath() {
+		// TODO Auto-generated method stub
+		return "/v1/organizations/"+this.getOrgName()+"/sharedflows/"+this.getName();
 	}
 }

@@ -228,7 +228,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	public ArrayList<String>  getAllAppsIds() throws UnirestException, IOException {
 		
-		String apiPath = "/v1/organizations/"+this.getName()+"/apps/"; 
+		String apiPath = this.getResourcePath()+"/apps/"; 
 		ManagementServer ms = this.getManagmentServer() ;
 		@SuppressWarnings("unchecked")
 		ArrayList<String> result  = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
@@ -237,7 +237,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	
 	public Application  getAppByAppId(String m_appId ) throws UnirestException, IOException {
 		
-		String apiPath = "/v1/organizations/"+this.getName()+"/apps/"+ m_appId; 
+		String apiPath = this.getResourcePath()+"/apps/"+ m_appId; 
 		ManagementServer ms = this.getManagmentServer() ;
 		@SuppressWarnings("unchecked")
 		Application app  = ms.executeGetMgmntAPI(apiPath , Application.class ) ;
@@ -246,7 +246,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 
 	public ArrayList<Application>  getAllApps() throws Exception {
 		
-		String apiPath = "/v1/organizations/"+this.getName()+"/apps?expand=true"; 
+		String apiPath = this.getResourcePath()+"/apps?expand=true"; 
 		ManagementServer ms = this.getManagmentServer() ;
 		@SuppressWarnings("unchecked")
 		Type listType = new TypeToken<List<Application>>() {}.getType();
@@ -254,5 +254,10 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 
 		return allApps ; 
 	}
+
+	public String getResourcePath() {
+		return "/v1/organizations/"+this.getName();
+	}
+
 	
 }

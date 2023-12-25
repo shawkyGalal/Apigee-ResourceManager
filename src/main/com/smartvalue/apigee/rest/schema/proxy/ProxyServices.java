@@ -37,38 +37,20 @@ public class ProxyServices extends Service {
 	@SuppressWarnings("unchecked")
 	public ArrayList<Proxy>  getAllProxies() throws UnirestException, IOException
 	{
-		ArrayList<String> proxiesName = getAllProxiesNames() ; 
-		ManagementServer ms = this.getMs() ;
-		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
-		ArrayList<Proxy> proxies = new ArrayList<Proxy>() ; 
-		for (String proxyName : proxiesName)
-		{
-			String apiPath01 = apiPath + "/" + proxyName ; 
-			@SuppressWarnings("deprecation")
-			Proxy proxy = ms.executeGetMgmntAPI(apiPath01 , Proxy.class ) ;
-			proxy.setOrgName(this.orgName) ; 
-			proxy.setManagmentServer(ms) ; 
-			proxies.add (proxy) ; 
-		}
-		return proxies ; 
+		return this.getAllResourcesList(Proxy.class) ; 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllProxiesNames() throws UnirestException, IOException
+	public ArrayList<String>  getAllProxiesList() throws UnirestException, IOException
 	{
-		ArrayList<String> proxiesName = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
-		ManagementServer ms = this.getMs() ; 
-		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
-		return proxiesName ;  
+		ArrayList<String> proxiesList = this.getAllResources(ArrayList.class) ;  
+		return proxiesList ;  
 	}
 	
 	public <T> T  getAllProxiesList( Class<T> classOfT ) throws UnirestException, IOException
 	{
-		T proxiesList = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
-		ManagementServer ms = this.getMs() ; 
-		proxiesList = ms.executeGetMgmntAPI(apiPath , classOfT ) ;
+		
+		T proxiesList = this.getAllResources(classOfT) ;  
 		return proxiesList ;  
 	}
 	
@@ -83,7 +65,7 @@ public class ProxyServices extends Service {
 	public HashMap<String, List<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws UnirestException, IOException
 	{
 		HashMap<String, List<Object>> result = new HashMap<>() ; 
-		ArrayList<String> proxiesName = getAllProxiesNames() ; 
+		ArrayList<String> proxiesName = getAllProxiesList() ; 
 		ManagementServer ms = this.getMs() ;
 		Organization org = (Organization) ms.getOrgByName(this.orgName) ;
 		int count = 0 ; 
@@ -238,7 +220,7 @@ public class ProxyServices extends Service {
 	public HttpResponse<String> deleteProxy( String m_proxyName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/apis/"+m_proxyName ; 
+		String apiPath = getResourcePath()+m_proxyName ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getDeleteHttpResponse(apiPath ) ;
 		return result ; 
@@ -276,7 +258,7 @@ public class ProxyServices extends Service {
 		return failedResult;
 	}
 	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAll(String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws UnirestException, IOException
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
@@ -290,21 +272,21 @@ public class ProxyServices extends Service {
 			}
 		}
 		else {
-			allProxies =  this.getOrganization().getAllProxiesNames();
+			allProxies =  this.getAllProxiesList();
 		}
 		return exportAll(allProxies , folderDest ); 
 	}
 	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
 	{
 		
-		HashMap<String , HashMap<Integer , Exception>> failedResult = new HashMap<String , HashMap<Integer , Exception>>();  
+		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();  
 		{
 			for (String proxyName : proxiesList)
 			{
 				System.out.println( "Start Exporting Proxy :" + proxyName );
 				Proxy proxy = this.getOrganization().getProxy(proxyName); 
-				HashMap<Integer , Exception> xx = proxy.exportAllDeployedRevisions(folderDest) ;
+				HashMap<String , Exception> xx = proxy.exportAllDeployedRevisions(folderDest) ;
 				failedResult.put(proxyName, xx); 
 			}
 		}
@@ -317,6 +299,12 @@ public class ProxyServices extends Service {
 
 	public void setProxyFilter(ProxyFilter proxyFilter) {
 		this.proxyFilter = proxyFilter;
+	}
+
+	@Override
+	public String getResourcePath() {
+		// TODO Auto-generated method stub
+		return "/v1/organizations/"+orgName+"/apis";
 	}
 	
 	

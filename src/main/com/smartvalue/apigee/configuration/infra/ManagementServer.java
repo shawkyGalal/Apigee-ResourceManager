@@ -29,6 +29,9 @@ import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.Googl
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
+import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -400,9 +403,9 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return srv;
 	}
 	
-	public KvmServices getKeyValueMapServices(String m_orgName, String m_envName )
+	public KvmServices getKeyValueMapServices(String m_orgName)
 	{
-		KvmServices  srv = new KvmServices(this , m_orgName, m_envName) ; 
+		KvmServices  srv = new KvmServices(this , m_orgName ) ; 
 		srv.setMs(this);
 		return srv;
 		
@@ -417,9 +420,21 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 	public SharedFlowServices getSharedFlowServices(String m_orgName )
 	{
-		SharedFlowServices  sfrv = new SharedFlowServices(this , m_orgName) ; 
+		SharedFlowServices  sfrv = new SharedFlowServices(this , m_orgName ) ; 
 		sfrv.setMs(this);
 		return sfrv;
+	}
+	
+	public ApplicationServices getApplicationServices(String m_orgName )
+	{
+		ApplicationServices  appServices = new ApplicationServices(this , m_orgName ) ; 
+		appServices.setMs(this);
+		return appServices;
+	}
+	public DeveloperServices getDevelopersServices(String m_orgName) {
+		DeveloperServices  developersServices = new DeveloperServices(this , m_orgName ) ; 
+		developersServices.setMs(this);
+		return developersServices;
 	}
 
 	@Override
@@ -506,6 +521,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public void setServerProfile(MyServerProfile serverProfile) {
 		this.serverProfile = serverProfile;
 	}
+	
 
 
 }

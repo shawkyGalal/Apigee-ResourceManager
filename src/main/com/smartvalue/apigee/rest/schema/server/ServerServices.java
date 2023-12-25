@@ -141,14 +141,9 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
     	return result ; 
     }
 
-@Override
-public ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy) {
-	// 	Not Applicable
-	return null;
-}
 
 @Override
-public HashMap<String, HashMap<Integer, Exception>> exportAll(String folderDest) throws UnirestException, IOException {
+public HashMap<String, HashMap<String, Exception>> exportAll(String folderDest) throws UnirestException, IOException {
 	// Not Applicable 
 	return null;
 }
@@ -156,6 +151,12 @@ public HashMap<String, HashMap<Integer, Exception>> exportAll(String folderDest)
 @Override
 public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
 	// Not Applicable
+	return null;
+}
+
+@Override
+public String getResourcePath() {
+	// TODO Auto-generated method stub
 	return null;
 }
 

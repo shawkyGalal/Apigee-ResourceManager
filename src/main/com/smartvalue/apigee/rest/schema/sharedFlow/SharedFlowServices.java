@@ -30,45 +30,40 @@ public class SharedFlowServices extends Service {
 		this.bundleUploadTranformers = bundleUploadTranformers;
 	}
 
-	public SharedFlowServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
+	public SharedFlowServices(ManagementServer ms, String m_orgName  ) {
+		super(ms, m_orgName );
 	}
 	
-	@SuppressWarnings("unchecked")
+	public SharedFlow  getSharedFlows(String sharedFlowName) throws UnirestException, IOException
+	{
+		return this.getResource(sharedFlowName, SharedFlow.class) ; 
+	}
+	
 	public ArrayList<SharedFlow>  getAllSharedFlows() throws UnirestException, IOException
 	{
-		ArrayList<String> proxiesName = getAllSharedFlowsNames() ; 
+		ArrayList<String> sharedflowsNames = getAllSharedFlowsList() ; 
 		ManagementServer ms = this.getMs() ;
-		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
-		ArrayList<SharedFlow> proxies = new ArrayList<SharedFlow>() ; 
-		for (String proxyName : proxiesName)
+		ArrayList<SharedFlow> AllSharedflows = new ArrayList<SharedFlow>() ; 
+		for (String sharedflowName : sharedflowsNames)
 		{
-			String apiPath01 = apiPath + "/" + proxyName ; 
-			@SuppressWarnings("deprecation")
-			SharedFlow proxy = ms.executeGetMgmntAPI(apiPath01 , SharedFlow.class ) ;
-			proxy.setOrgName(this.orgName) ; 
-			proxy.setManagmentServer(ms) ; 
-			proxies.add (proxy) ; 
+			SharedFlow sharedflow = getSharedFlows(sharedflowName) ; //ms.executeGetMgmntAPI(apiPath01 , SharedFlow.class ) ;
+			sharedflow.setOrgName(this.orgName) ; 
+			sharedflow.setManagmentServer(ms) ; 
+			AllSharedflows.add (sharedflow) ; 
 		}
-		return proxies ; 
+		return AllSharedflows ; 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllSharedFlowsNames() throws UnirestException, IOException
+	public ArrayList<String>  getAllSharedFlowsList() throws UnirestException, IOException
 	{
-		ArrayList<String> proxiesName = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/sharedflows" ; 
-		ManagementServer ms = this.getMs() ; 
-		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
+		ArrayList<String> proxiesName = this.getAllResources(ArrayList.class); 
 		return proxiesName ;  
 	}
 	
 	public <T> T  getAllSharedFlowsList( Class<T> classOfT ) throws UnirestException, IOException
 	{
-		T proxiesList = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/apis" ; 
-		ManagementServer ms = this.getMs() ; 
-		proxiesList = ms.executeGetMgmntAPI(apiPath , classOfT ) ;
+		T proxiesList  = this.getAllResources(classOfT) ; 
 		return proxiesList ;  
 	}
 	
@@ -96,7 +91,7 @@ public class SharedFlowServices extends Service {
 	public HttpResponse<String> importShareFlow(String pundleZipFileName , String m_sharedflowName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/sharedflows?action=import&name="+m_sharedflowName+"&validate=true" ; 
+		String apiPath = this.getResourcePath()+"?action=import&name="+m_sharedflowName+"&validate=true" ; 
 		ManagementServer ms = this.getMs() ;
 		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
 		return result ; 
@@ -202,16 +197,16 @@ public class SharedFlowServices extends Service {
 	public HttpResponse<String> deleteSharedFlow( String m_sharedFlow) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/sharedflows/"+m_sharedFlow ; 
+		String apiPath = this.getResourcePath()+m_sharedFlow ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getDeleteHttpResponse(apiPath ) ;
 		return result ; 
 	}
 	
-	public HttpResponse<String> deploySharedFlowRevision(String m_proxyName , String m_envName , int revision ) throws UnirestException, IOException
+	public HttpResponse<String> deploySharedFlowRevision(String m_sharedflowName , String m_envName , int revision ) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/sharedflows/"+m_proxyName +"/revisions/"+revision+"/deployments" ; 
+		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/sharedflows/"+m_sharedflowName +"/revisions/"+revision+"/deployments" ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
 		return result ; 
@@ -242,7 +237,7 @@ public class SharedFlowServices extends Service {
 	
 
 	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAll(String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws UnirestException, IOException
 	{
 		ArrayList<String> allSharedflows ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
@@ -263,20 +258,26 @@ public class SharedFlowServices extends Service {
 		return exportAll(allSharedflows , folderDest ); 
 	}
 	
-	public  HashMap<String , HashMap<Integer , Exception>> exportAll( ArrayList<String> sharedFlowList , String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll( ArrayList<String> sharedFlowList , String folderDest) throws UnirestException, IOException
 	{
 		
-		HashMap<String , HashMap<Integer , Exception>> failedResult = new HashMap<String , HashMap<Integer , Exception>>();  
+		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();  
 		{
 			for (String sharedFlowStr : sharedFlowList)
 			{
 				System.out.println( "Start Exporting SharedFlow :" + sharedFlowStr );
 				SharedFlow sharedFlow = this.getOrganization().getShardFlow(sharedFlowStr); 
-				HashMap<Integer , Exception> xx = sharedFlow.exportAllDeployedRevisions(folderDest) ;
+				HashMap<String , Exception> xx = sharedFlow.exportAllDeployedRevisions(folderDest) ;
 				failedResult.put(sharedFlowStr, xx); 
 			}
 		}
 		return failedResult;
+	}
+
+	@Override
+	public String getResourcePath() {
+		
+		return "/v1/organizations/"+orgName+"/sharedflows/";
 	}
 
 	
