@@ -91,28 +91,26 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 		{
 			int envKvmsCount = 0 ; 
 			envName = envFolder.getName(); 
+			this.setEnvName(envName);
 			System.out.println("================Importing KVM's Of Environment  " + envName +"==============");
-			for (File kvmFolder : envFolder.listFiles() )
+			for (File kvmfile : envFolder.listFiles())
 			{
 				envKvmsCount++; 
-					for (File kvmfile : kvmFolder.listFiles())
-					{
-						int dotIndex = kvmfile.getName().indexOf(".");
+				int dotIndex = kvmfile.getName().indexOf(".");
+					
+				String kvmName= kvmfile.getName().substring(0, dotIndex ) ; 
+				System.out.println( kvmName + ":" +kvmfile.getAbsolutePath()  );
+				HttpResponse<String> result = importResource(kvmfile);
+				int status = result.getStatus() ; 
+				if (! (status == 200 || status == 201) )
+				{	
+					System.out.println("Error Uploading KVM " + kvmName);
+					System.out.println("Error Details " + result.getBody());
+					failedResult.add(result) ; 
+				}
 						
-						String kvmName= kvmfile.getName().substring(0, dotIndex ) ; 
-						System.out.println( kvmName + ":" +kvmfile.getAbsolutePath()  );
-						HttpResponse<String> result = importResource(kvmfile);
-						int status = result.getStatus() ; 
-						if (! (status == 200 || status == 201) )
-						{	
-							System.out.println("Error Uploading KVM " + kvmName);
-							System.out.println("Error Details " + result.getBody());
-							failedResult.add(result) ; 
-						}
-						
-					}
-				
 			}
+				
 			System.out.println("==== End of Importing KVM's for Environment " + envName +"==("+envKvmsCount+") KVM's =====\n\n\n");
 			
 		}

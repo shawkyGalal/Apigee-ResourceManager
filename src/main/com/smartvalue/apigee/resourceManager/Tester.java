@@ -95,28 +95,30 @@ public class Tester {
 		ManagementServer cloudMs = cloudInfra.getManagementServer(cloudInfra.getRegions().get(0).getName()) ;
 		//region = ms.getRegions().get(0); 
 		//String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
-		String FolderName = "C:\\temp\\proxies" ;
+		String FolderName = "C:\\temp\\MOJ\\Stage" ;
 		//ms.getProxyServices(orgName).uploadPundle(pundleFileName , "xxxyyy") ;
 		//ProxyServices proxiesServices = ms.getProxyServices(orgName);
 		//==================Export All ===========================
-		/*
-		HashMap<String, HashMap<String, Exception>> targetServerFaults =  mojStageMs.getTargetServersServices(orgName).exportAll("C:\\temp\\targetservers") ;
-		HashMap<String, HashMap<String, Exception>> productsFaults = mojStageMs.getProductServices(orgName).exportAll("C:\\temp\\products") ; 
-		HashMap<String, HashMap<String, Exception>> appsFaults = mojStageMs.getApplicationServices(orgName).exportAll("C:\\temp\\apps") ;
-		HashMap<String, HashMap<String, Exception>> proxiesFaults =  mojStageMs.getProxyServices(orgName).exportAll("C:\\temp\\proxies") ;
-		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  mojStageMs.getSharedFlowServices(orgName).exportAll("C:\\temp\\sharedflows") ;
-		HashMap<String, HashMap<String, Exception>> devsFaults =  mojStageMs.getDevelopersServices(orgName).exportAll("C:\\temp\\developers") ;
-		HashMap<String, HashMap<String, Exception>> kvmsFaults =  mojStageMs.getKeyValueMapServices(orgName).exportAll("C:\\temp\\kvms") ;
-		*/
+		
+		
+		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  mojStageMs.getTargetServersServices(orgName).exportAll(FolderName +"targetservers") ;
+		
+		//HashMap<String, HashMap<String, Exception>> productsFaults = mojStageMs.getProductServices(orgName).exportAll(FolderName +"\\products") ; 
+		//HashMap<String, HashMap<String, Exception>> appsFaults = mojStageMs.getApplicationServices(orgName).exportAll(FolderName +"\\apps") ;
+		//HashMap<String, HashMap<String, Exception>> proxiesFaults =  mojStageMs.getProxyServices(orgName).exportAll(FolderName +"\\proxies") ;
+		//HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  mojStageMs.getSharedFlowServices(orgName).exportAll(FolderName +"\\sharedflows") ;
+		//HashMap<String, HashMap<String, Exception>> devsFaults =  mojStageMs.getDevelopersServices(orgName).exportAll(FolderName +"\\developers") ;
+		//HashMap<String, HashMap<String, Exception>> kvmsFaults =  mojStageMs.getKeyValueMapServices(orgName).exportAll(FolderName +"\\kvms") ;
+		
+		orgName = "apigee-moj-stage" ; 
 		//==================Import All Sequence is Important ===========================
-		ArrayList<HttpResponse<String>> importTargetServersFaults =  cloudMs.getTargetServersServices(orgName).importAll("C:\\temp\\targetservers") ;
-		ArrayList<HttpResponse<String>> importSharedflowsFaults =  cloudMs.getSharedFlowServices(orgName).importAll("C:\\temp\\sharedflows") ;
-		ArrayList<HttpResponse<String>> importKvmsFaults =  cloudMs.getKeyValueMapServices(orgName).importAll("C:\\temp\\kvms") ;
-		ArrayList<HttpResponse<String>> importProxiesFaults =  cloudMs.getProxyServices(orgName).importAll("C:\\temp\\proxies") ;
-
-		ArrayList<HttpResponse<String>> importProductsFaults = cloudMs.getProductServices(orgName).importAll("C:\\temp\\products") ; 
-		ArrayList<HttpResponse<String>> importDevsFaults =  cloudMs.getDevelopersServices(orgName).importAll("C:\\temp\\developers") ;
-		ArrayList<HttpResponse<String>> importAppsFaults = cloudMs.getApplicationServices(orgName).importAll("C:\\temp\\apps") ;
+		//ArrayList<HttpResponse<String>> importTargetServersFaults =  cloudMs.getTargetServersServices(orgName).importAll(FolderName +"\\targetservers") ;
+		//ArrayList<HttpResponse<String>> importSharedflowsFaults =  cloudMs.getSharedFlowServices(orgName).importAll(FolderName +"\\sharedflows") ;
+		ArrayList<HttpResponse<String>> importKvmsFaults =  cloudMs.getKeyValueMapServices(orgName).importAll(FolderName +"\\kvms") ;
+		//ArrayList<HttpResponse<String>> importProxiesFaults =  cloudMs.getProxyServices(orgName).importAll(FolderName +"\\proxies") ;
+		//ArrayList<HttpResponse<String>> importProductsFaults = cloudMs.getProductServices(orgName).importAll(FolderName +"\\products") ; 
+		//ArrayList<HttpResponse<String>> importDevsFaults =  cloudMs.getDevelopersServices(orgName).importAll(FolderName +"\\developers") ;
+		//ArrayList<HttpResponse<String>> importAppsFaults = cloudMs.getApplicationServices(orgName).importAll(FolderName +"\\apps") ;
 	
 		
 		//GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 

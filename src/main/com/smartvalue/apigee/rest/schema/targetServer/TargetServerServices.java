@@ -66,7 +66,8 @@ public class TargetServerServices  extends Service {
 		for (File envFolder : folder.listFiles() )
 		{
 			int envTargetCount = 0 ; 
-			envName = envFolder.getName(); 
+			envName = envFolder.getName();
+			this.setEnvName(envName);
 			System.out.println("================Importing TargetServers Of Environment  " + envName +"==============");
 			for (File targetServerFile : envFolder.listFiles() )
 			{
