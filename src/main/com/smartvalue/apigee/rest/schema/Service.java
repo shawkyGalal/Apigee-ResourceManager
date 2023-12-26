@@ -100,14 +100,7 @@ public abstract class Service {
 	{
 		Path path = Paths.get(destFolder);
         Files.createDirectories(path);
-        //System.out.println("Directory "+destFolder+" created successfully!");
-            
-		//File f = new File(destFolder); 
-		//if (!f.exists())
-		//{
-		//	f.mkdir(); 
-		//}
-		String responseBody = this.getMs().getGetHttpResponse(getResourcePath()+"/" + resourceId).getBody() ;
+ 		String responseBody = this.getMs().getGetHttpResponse(getResourcePath()+"/" + resourceId).getBody() ;
 		try(  FileWriter myWriter = new FileWriter(destFolder +File.separatorChar + resourceId+".json" ) )
 		{
 			myWriter.write(responseBody);
@@ -115,7 +108,7 @@ public abstract class Service {
 		}
 	}
 	
-	public ArrayList<HttpResponse<String>> importAll(String sourceFolder)
+	public ArrayList<HttpResponse<String>> importAll(String sourceFolder) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> result = new ArrayList<HttpResponse<String>> () ; 
 		File source = new File(sourceFolder); 
@@ -133,7 +126,7 @@ public abstract class Service {
 	}
 	
 	
-	private HttpResponse<String>  importResource(File resourceFile) throws IOException, UnirestException  {
+	protected HttpResponse<String>  importResource(File resourceFile) throws IOException, UnirestException  {
 		Path path = Paths.get(resourceFile.getAbsolutePath()); 
 		String body = new String(Files.readAllBytes(path));
 		String apiPath = this.getResourcePath() ; 

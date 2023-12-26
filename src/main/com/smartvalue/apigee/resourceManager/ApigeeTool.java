@@ -351,8 +351,9 @@ public class ApigeeTool
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
     	SharedFlowServices sharedFlowServices = ms.getSharedFlowServices(org); 
-		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
-		sharedFlowServices.importAll(sourceFolder , isdeploy) ;
+		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
+		sharedFlowServices.setDeployUponUpload(isdeploy);
+		sharedFlowServices.importAll(sourceFolder) ;
 		
 	}
 
@@ -362,8 +363,9 @@ public class ApigeeTool
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
     	ProxyServices proxiesServices = ms.getProxyServices(org); 
-		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ; 
-		proxiesServices.importAll(sourceFolder , isdeploy) ;
+		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
+		proxiesServices.setDeployUponUpload(isdeploy);
+		proxiesServices.importAll(sourceFolder) ;
 	}
 
 	

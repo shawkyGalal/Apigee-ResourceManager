@@ -41,7 +41,7 @@ import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
-
+import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
 
 public class ManagementServer extends Server{
 	
@@ -431,15 +431,21 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		appServices.setMs(this);
 		return appServices;
 	}
+	
 	public DeveloperServices getDevelopersServices(String m_orgName) {
 		DeveloperServices  developersServices = new DeveloperServices(this , m_orgName ) ; 
 		developersServices.setMs(this);
 		return developersServices;
 	}
+	
+	public TargetServerServices getTargetServersServices(String m_orgName) {
+		TargetServerServices  targetServerServices = new TargetServerServices(this , m_orgName ) ; 
+		return targetServerServices;
+	}
+	
 
 	@Override
 	public String getSimpleName() {
-		// TODO Auto-generated method stub
 		return "management-server";
 	}
 
@@ -521,6 +527,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public void setServerProfile(MyServerProfile serverProfile) {
 		this.serverProfile = serverProfile;
 	}
+
 	
 
 

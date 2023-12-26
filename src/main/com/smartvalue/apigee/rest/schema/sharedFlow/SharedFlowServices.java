@@ -21,6 +21,7 @@ import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse
 public class SharedFlowServices extends Service {
 
 	ArrayList<BundleUploadTransformer> bundleUploadTranformers = new ArrayList<BundleUploadTransformer>();
+	private boolean deployUponUpload = false ; 
 	
 	public ArrayList<BundleUploadTransformer> getBundleUploadTranformers() {
 		return bundleUploadTranformers;
@@ -137,7 +138,7 @@ public class SharedFlowServices extends Service {
 
 	}
 
-	public  ArrayList<HttpResponse<String>> importAll(String folderPath, boolean m_deploy) throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> importAll(String folderPath ) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
 		String envName ;
@@ -167,7 +168,7 @@ public class SharedFlowServices extends Service {
 							System.out.println("Error Details " + result.getBody());
 							failedResult.add(result) ; 
 						}
-						if (m_deploy)
+						if (isDeployUponUpload())
 						{
 							Gson json = new Gson(); 
 							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
@@ -278,6 +279,14 @@ public class SharedFlowServices extends Service {
 	public String getResourcePath() {
 		
 		return "/v1/organizations/"+orgName+"/sharedflows/";
+	}
+
+	public boolean isDeployUponUpload() {
+		return deployUponUpload;
+	}
+
+	public void setDeployUponUpload(boolean deployUponUpload) {
+		this.deployUponUpload = deployUponUpload;
 	}
 
 	
