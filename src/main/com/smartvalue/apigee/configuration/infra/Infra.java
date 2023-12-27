@@ -3,25 +3,30 @@ package com.smartvalue.apigee.configuration.infra;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
+import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
+import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
-import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.apigee.rest.schema.AccessToken;
 
 public class Infra {
 	private String Name ; 
 	private SysAdminCred sysadminCred ; 
 	private String Ansible_hosts_file ; 
 	private DevPortal DevPortal ; 
-	//private String MgmServerUrl ;
-	//private String OauthMgmServerUrl ; 
 	private ArrayList<Region> regions; 
 	private String AuthType ;
-	//private String tokenUrl ; 
 	
 	private Boolean googleCloud;
 	
 	@JsonProperty("googleServiceAccount")
 	private GoogleServiceAccount googleServiceAccount ;  // if the infra is a Google Cloud infra
+	
+	private String accessTokenSource ;   // Valid Values :  "googleServiceAccount" , "googleWebAppCredential"  
+	public static final String GoogleServiceAccount = "googleServiceAccount" ; 
+	public static final String GoogleWebAppCredential = "googleWebAppCredential" ;
+	
+	@JsonProperty("googleWebAppCredential")
+	private GoogleWebAppCredential googleWebAppCredential ; 
 	
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
@@ -163,11 +168,11 @@ public class Infra {
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
-		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType)
+		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(Infra.GoogleWebAppCredential) ;
+		boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
+		if ( cloudInfra && ! webLogin)
 		{
-			ApigeeAccessToken at = ms.getAccess_token(true) ;
-			//ms.serverProfile.setBearerToken(at.getAccess_token()) ;
-			//ms.serverProfile.setRefreshToken(at.getRefresh_token()) ;
+			AccessToken at = ms.getAccess_token(true) ;
 		}
 		ms.setRegion(m_region);
 		
@@ -182,6 +187,12 @@ public class Infra {
 	public Boolean getGooglecloud() {
 		return googleCloud;
 	}
-
+	public GoogleWebAppCredential getGoogleWebAppCredential() {
+		return googleWebAppCredential;
+	}
+	public String getAccessTokenSource() {
+		return accessTokenSource;
+	}
 	
+		
 }

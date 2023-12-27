@@ -1,21 +1,17 @@
 package com.smartvalue.apigee.configuration.infra;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.security.crypto.codec.Base64;
 
-import com.google.auth.oauth2.AccessToken;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,11 +21,12 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
-import com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount;
+import com.smartvalue.apigee.configuration.infra.googleAccessToken.auto.GoogleAccessToken;
+import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
-import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -288,38 +285,16 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result; //Primitives.wrap(listType).cast(result);
 	}
 	
-
-	
-	
-	/*		
-	public <T> T executeMgmntAPIUsingJaxJson(String m_apiPath , Class<T> classOfT ,  String m_verb ) throws UnirestException, IOException
-	{
-		T result = null ; 
-		HttpResponse<String> response = this.getApiHttpResponse(m_apiPath, m_verb) ; 
-		
-		if (Helper.isConsideredSuccess(response.getStatus()) )  
-		{
-			 result = JavaxJson.fromJson(response.getBody(), classOfT);
-		} 
-		else {
-			throw new UnirestException ( response.getBody() + "\n Response Status Code = " + response.getStatus() ) ; 
-		}
-		return result ; // Primitives.wrap(classOfT).cast(result);
-		
-	}
-	*/
-	
 	
 	
 	private void reNewAccessToken() throws Exception {
 		 this.getAccess_token(true) ;
-		//this.serverProfile.setBearerToken(at.getAccess_token()) ;
 		//this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
 		
 	}
 
-	private ApigeeAccessToken accessToken; 
-	public ApigeeAccessToken getAccess_token(boolean regenerate ) throws Exception 
+	private AccessToken accessToken; 
+	public AccessToken getAccess_token(boolean regenerate ) throws Exception 
 	{
 		if(accessToken == null || regenerate)
 		{
@@ -328,33 +303,17 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		HttpResponse<String> response = null ; 
 		Gson gson = new Gson();
 		Boolean isGoogleCloudBoolean = this.infra.getGooglecloud() ;
-		
-		
 		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
 		{
 			GoogleServiceAccount googleServiceAccount = this.infra.getGoogleServiceAccount() ; 
-			AccessToken googleAccessToken = getGoogleAccessToken(googleServiceAccount.toJson()) ;
-			accessToken = new ApigeeAccessToken (); 
+			com.google.auth.oauth2.AccessToken googleAccessToken = googleServiceAccount.getGoogleCredentials().getAccessToken() ; // getGoogleAccessToken(googleServiceAccount.toJson()) ;
+			 
+			accessToken = new ApigeeAccessToken(); 
+			//-- Start map Google Object atts to My Object atts 
 			accessToken.setAccess_token(googleAccessToken.getTokenValue());
 			int expiresIn = googleAccessToken.getExpirationTime().compareTo(new Date())/1000; 
 			accessToken.setExpires_in(expiresIn); 
-			
-			//--- by Calling api end point --
-			/*
-			response = Unirest.post(this.serverProfile.getTokenUrl())
-					  .header("Content-Type", "application/json")
-					  .body(gson.toJson(this.infra.getGoogleServiceAccount()))
-					  .asString();
-			if (Helper.isConsideredSuccess(response.getStatus()) )   
-			{
-				accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
-			}
-			else 
-			{
-				throw new UnirestException ( response.getBody()) ; 
-			}
-			*/
-			
+			accessToken.setScopes(googleAccessToken.getScopes()); 
 		}
 		else 
 		{
@@ -493,39 +452,32 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public void setInfra(Infra infra) {
 		this.infra = infra;
 	}
-	public ApigeeAccessToken getAccessToken() {
+	public AccessToken getAccessToken() {
 		return accessToken;
 	}
 	public void setAccessToken(ApigeeAccessToken accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public static com.google.auth.oauth2.AccessToken getGoogleAccessToken(String serviceAccountString) throws Exception {
-		GoogleCredentials credentials;
-		try {
-			byte[] bytes = serviceAccountString.getBytes(StandardCharsets.UTF_8);
 
-	        // Create an InputStream from the byte array
-	        InputStream xx  = new java.io.ByteArrayInputStream(bytes);
-	        
-			credentials = GoogleCredentials.fromStream(xx) //new FileInputStream(serviceAccountJSON)
-					.createScoped("https://www.googleapis.com/auth/cloud-platform");
-			credentials.refreshIfExpired();
-			com.google.auth.oauth2.AccessToken token = credentials.getAccessToken();
-			return token;
-		}catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			throw e;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			throw e;
-		}
-	}
 	public MyServerProfile getServerProfile() {
 		return serverProfile;
 	}
 	public void setServerProfile(MyServerProfile serverProfile) {
 		this.serverProfile = serverProfile;
+	}
+	
+	public HttpResponse<String>  getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
+	{
+		return  this.getInfra().getGoogleWebAppCredential().getAccessTokenByAuthCode(authCode, redirectUri); 
+	}
+	
+	public void webLogin(String authCode , String redirectUri ) throws UnirestException
+	{
+		Gson json = new Gson(); 
+		GoogleAccessToken webLoginAccessToken = json.fromJson( getAccessTokenByAuthCode(authCode, redirectUri).getBody() , GoogleAccessToken.class ) ;
+		this.accessToken = webLoginAccessToken ; 
+		
 	}
 
 	

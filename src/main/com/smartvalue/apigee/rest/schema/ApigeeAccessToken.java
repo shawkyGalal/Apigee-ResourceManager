@@ -1,6 +1,6 @@
 package com.smartvalue.apigee.rest.schema;
 
-public class ApigeeAccessToken {
+public class ApigeeAccessToken extends AccessToken {
 
 	private String access_token;
 	private String token_type;
