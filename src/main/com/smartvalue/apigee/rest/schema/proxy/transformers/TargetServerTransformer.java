@@ -1,9 +1,9 @@
 package com.smartvalue.apigee.rest.schema.proxy.transformers;
 
-public class TargetServerTransformer implements BundleUploadTransformer {
+public class TargetServerTransformer implements ApigeeObjectTransformer {
 
 	@Override
-	public String  trasform(String  bundleZipFileName , String outputZipFile) {
+	public  void trasform(String  bundleZipFileName , String outputZipFile) {
 
 		String fileName = "apiproxy/targets/default.xml";
         String xpath = "/TargetEndpoint/HTTPTargetConnection";
@@ -24,9 +24,6 @@ public class TargetServerTransformer implements BundleUploadTransformer {
         } catch (Exception e) {
             e.printStackTrace();
         }
-		
-		return outputZipFile; 
-
 	}
 
 	@Override

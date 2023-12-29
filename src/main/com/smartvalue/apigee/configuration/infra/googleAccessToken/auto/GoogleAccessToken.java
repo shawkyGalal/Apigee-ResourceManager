@@ -26,63 +26,63 @@ import com.smartvalue.apigee.rest.schema.AccessToken;
 @Generated("jsonschema2pojo")
 public class GoogleAccessToken  extends AccessToken {
 
-    @JsonProperty("access_token")
-    private String accessToken;
-    @JsonProperty("expires_in")
-    private int expiresIn;
-    @JsonProperty("refresh_token")
-    private String refreshToken;
-    @JsonProperty("scope")
+    //@JsonProperty("access_token")
+    private String access_token;
+    //@JsonProperty("expires_in")
+    private int expires_in;
+    //@JsonProperty("refresh_token")
+    private String refresh_token;
+    //@JsonProperty("scope")
     private String scope;
-    @JsonProperty("token_type")
-    private String tokenType;
-    @JsonProperty("id_token")
-    private String idToken;
+    //@JsonProperty("token_type")
+    private String token_type;
+    //@JsonProperty("id_token")
+    private String id_token;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
     @JsonProperty("access_token")
     public String getAccess_token() {
-        return accessToken;
+        return access_token;
     }
 
     @JsonProperty("access_token")
     public void setAccess_token(String accessToken) {
-        this.accessToken = accessToken;
+        this.access_token = accessToken;
     }
 
     public GoogleAccessToken withAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+        this.access_token = accessToken;
         return this;
     }
 
     @JsonProperty("expires_in")
     public int getExpires_in() {
-        return expiresIn;
+        return expires_in;
     }
 
     @JsonProperty("expires_in")
     public void setExpires_in(int expiresIn) {
-        this.expiresIn = expiresIn;
+        this.expires_in = expiresIn;
     }
 
     public GoogleAccessToken withExpiresIn(Integer expiresIn) {
-        this.expiresIn = expiresIn;
+        this.expires_in = expiresIn;
         return this;
     }
 
     @JsonProperty("refresh_token")
     public String getRefreshToken() {
-        return refreshToken;
+        return refresh_token;
     }
 
     @JsonProperty("refresh_token")
     public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+        this.refresh_token = refreshToken;
     }
 
     public GoogleAccessToken withRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+        this.refresh_token = refreshToken;
         return this;
     }
 
@@ -103,31 +103,31 @@ public class GoogleAccessToken  extends AccessToken {
 
     @JsonProperty("token_type")
     public String getTokenType() {
-        return tokenType;
+        return token_type;
     }
 
     @JsonProperty("token_type")
     public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
+        this.token_type = tokenType;
     }
 
     public GoogleAccessToken withTokenType(String tokenType) {
-        this.tokenType = tokenType;
+        this.token_type = tokenType;
         return this;
     }
 
     @JsonProperty("id_token")
     public String getIdToken() {
-        return idToken;
+        return id_token;
     }
 
     @JsonProperty("id_token")
     public void setIdToken(String idToken) {
-        this.idToken = idToken;
+        this.id_token = idToken;
     }
 
     public GoogleAccessToken withIdToken(String idToken) {
-        this.idToken = idToken;
+        this.id_token = idToken;
         return this;
     }
 
@@ -152,15 +152,15 @@ public class GoogleAccessToken  extends AccessToken {
         sb.append(GoogleAccessToken.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("accessToken");
         sb.append('=');
-        sb.append(((this.accessToken == null)?"<null>":this.accessToken));
+        sb.append(((this.access_token == null)?"<null>":this.access_token));
         sb.append(',');
         sb.append("expiresIn");
         sb.append('=');
-        sb.append(this.expiresIn);
+        sb.append(this.expires_in);
         sb.append(',');
         sb.append("refreshToken");
         sb.append('=');
-        sb.append(((this.refreshToken == null)?"<null>":this.refreshToken));
+        sb.append(((this.refresh_token == null)?"<null>":this.refresh_token));
         sb.append(',');
         sb.append("scope");
         sb.append('=');
@@ -168,11 +168,11 @@ public class GoogleAccessToken  extends AccessToken {
         sb.append(',');
         sb.append("tokenType");
         sb.append('=');
-        sb.append(((this.tokenType == null)?"<null>":this.tokenType));
+        sb.append(((this.token_type == null)?"<null>":this.token_type));
         sb.append(',');
         sb.append("idToken");
         sb.append('=');
-        sb.append(((this.idToken == null)?"<null>":this.idToken));
+        sb.append(((this.id_token == null)?"<null>":this.id_token));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');
@@ -189,13 +189,13 @@ public class GoogleAccessToken  extends AccessToken {
     @Override
     public int hashCode() {
         int result = 1;
-        result = ((result* 31)+( this.expiresIn));
+        result = ((result* 31)+( this.expires_in));
         result = ((result* 31)+((this.scope == null)? 0 :this.scope.hashCode()));
-        result = ((result* 31)+((this.idToken == null)? 0 :this.idToken.hashCode()));
+        result = ((result* 31)+((this.id_token == null)? 0 :this.id_token.hashCode()));
         result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
-        result = ((result* 31)+((this.accessToken == null)? 0 :this.accessToken.hashCode()));
-        result = ((result* 31)+((this.tokenType == null)? 0 :this.tokenType.hashCode()));
-        result = ((result* 31)+((this.refreshToken == null)? 0 :this.refreshToken.hashCode()));
+        result = ((result* 31)+((this.access_token == null)? 0 :this.access_token.hashCode()));
+        result = ((result* 31)+((this.token_type == null)? 0 :this.token_type.hashCode()));
+        result = ((result* 31)+((this.refresh_token == null)? 0 :this.refresh_token.hashCode()));
         return result;
     }
 

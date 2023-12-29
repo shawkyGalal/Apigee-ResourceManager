@@ -14,20 +14,20 @@ import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.BundleUploadTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
 public class ProxyServices extends Service {
 
-	ArrayList<BundleUploadTransformer> bundleUploadTranformers = new ArrayList<BundleUploadTransformer>();
+	ArrayList<ApigeeObjectTransformer> bundleUploadTranformers = new ArrayList<ApigeeObjectTransformer>();
 	private boolean deployUponUpload = false ; 
 	
-	public ArrayList<BundleUploadTransformer> getBundleUploadTranformers() {
+	public ArrayList<ApigeeObjectTransformer> getBundleUploadTranformers() {
 		return bundleUploadTranformers;
 	}
 
-	public void setBundleUploadTranformers(ArrayList<BundleUploadTransformer> bundleUploadTranformers) {
+	public void setBundleUploadTranformers(ArrayList<ApigeeObjectTransformer> bundleUploadTranformers) {
 		this.bundleUploadTranformers = bundleUploadTranformers;
 	}
 
@@ -92,19 +92,21 @@ public class ProxyServices extends Service {
 		return importProxy (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
 	}
 	
-	public String transformPundle(String pundleZipFileName , String newFilePath)
+	public void transformPundle(String pundleZipFileName , String newFilePath)
 	{
-		String proxyAfterTransformation = pundleZipFileName ; 
-		for (BundleUploadTransformer but : this.getBundleUploadTranformers())
+		int count=0; 
+		int transformersSize = this.getBundleUploadTranformers().size();
+		String sourceFile = pundleZipFileName ;
+		for (ApigeeObjectTransformer aot : this.getBundleUploadTranformers())
 		{
-		 if(but.filter(pundleZipFileName))
+			count++; 
+			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_Tranform_"+count;
+			if(aot.filter(pundleZipFileName))
 			{
-			 proxyAfterTransformation = but.trasform(pundleZipFileName , newFilePath);
-			 pundleZipFileName = proxyAfterTransformation ;
+			 aot.trasform(sourceFile , tranformedFile);
+			 sourceFile = tranformedFile + File.separator + new File(pundleZipFileName).getName() ;
 			}
 		}
-		
-		return proxyAfterTransformation ;
 	}
 	public HttpResponse<String> importProxy(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
 	{
@@ -115,11 +117,11 @@ public class ProxyServices extends Service {
 		return result ; 
 	}
 	
-	public void  transformAllProxies(String inputFolderPath , String outputFolderPath)
+	public void  transformAll(String inputFolderPath , String outputFolderPath)
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<BundleUploadTransformer>  put = this.getBundleUploadTranformers(); 
+		ArrayList<ApigeeObjectTransformer>  put = this.getBundleUploadTranformers(); 
 		for (File envFolder : folder.listFiles() )
 		{
 			int envProxiesCount = 0 ; 
@@ -133,7 +135,11 @@ public class ProxyServices extends Service {
 					String revision = revisionFolder.getName(); 
 					for (File proxyBundlefile : revisionFolder.listFiles())
 					{
-						for (BundleUploadTransformer trasnformer : put)
+						String zipFileName= proxyBundlefile.getName();  
+						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
+						this.transformPundle(proxyBundlefile.getAbsolutePath(), outputFolderPath + File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar);
+						/*
+						for (ApigeeObjectTransformer trasnformer : put)
 						{
 							String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
 							
@@ -142,10 +148,11 @@ public class ProxyServices extends Service {
 							{	String zipFileName= proxyBundlefile.getName();  
 								String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 								String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ; 
-								trasnformer.trasform(pundleZipFileName , newBundleFolderPath);
+								trasnformer.trasform(pundleZipFileName, newBundleFolderPath);
 								System.out.println("=======Proxy "+ proxyBundlefile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}
+						*/
 					}
 				}
 			}

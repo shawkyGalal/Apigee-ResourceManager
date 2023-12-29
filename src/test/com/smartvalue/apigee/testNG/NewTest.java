@@ -15,6 +15,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -35,6 +36,25 @@ public class NewTest {
 	Organization org  ; 
 	Environment env ; 
 	
+	 @Test
+	  public void testExportAll() throws Exception {
+		//==================Export All ===========================
+		JsonParser apigeeConfigParser = new JsonParser( ) ;
+		ApigeeConfig ac = apigeeConfigParser.getObject("config_Example.json" , ApigeeConfig.class) ; 
+		Infra mojStageinfra = ac.getInfra("YourCompanyName" , "Customer01" , "dev_onpremise") ;
+		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
+		String exportFolderName = "C:\\temp\\Stage" ;
+		String sourceOrgName = "stg" ; 
+		HashMap<String, HashMap<String, Exception>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(exportFolderName +"targetservers") ;
+		HashMap<String, HashMap<String, Exception>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).exportAll(exportFolderName +"\\products") ; 
+		HashMap<String, HashMap<String, Exception>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).exportAll(exportFolderName +"\\apps") ;
+		HashMap<String, HashMap<String, Exception>> proxiesFaults =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(exportFolderName +"\\proxies") ;
+		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices(sourceOrgName).exportAll(exportFolderName +"\\sharedflows") ;
+		HashMap<String, HashMap<String, Exception>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).exportAll(exportFolderName +"\\developers") ;
+		HashMap<String, HashMap<String, Exception>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(exportFolderName +"\\kvms") ;
+		
+	  }
+	 
 	  @Test
 	  public void testProductsWithoutProxies() throws UnirestException, IOException {
 		ProductsServices   productServices = ms.getProductServices(orgName) ; 

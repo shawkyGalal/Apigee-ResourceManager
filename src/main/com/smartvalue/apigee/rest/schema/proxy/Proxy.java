@@ -196,7 +196,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;
-					System.out.println("Proxy " + this.getName() + " Revision " +  revision + " Imported Successfully");
+					System.out.println("Proxy " + this.getName() + " Revision " +  revision + " Exported Successfully");
 				}
 				catch (Exception e) {
 					failedResult.put(revisionString, e); 

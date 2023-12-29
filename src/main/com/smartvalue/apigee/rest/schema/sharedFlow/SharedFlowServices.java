@@ -14,20 +14,20 @@ import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.BundleUploadTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
 public class SharedFlowServices extends Service {
 
-	ArrayList<BundleUploadTransformer> bundleUploadTranformers = new ArrayList<BundleUploadTransformer>();
+	ArrayList<ApigeeObjectTransformer> bundleUploadTranformers = new ArrayList<ApigeeObjectTransformer>();
 	private boolean deployUponUpload = false ; 
 	
-	public ArrayList<BundleUploadTransformer> getBundleUploadTranformers() {
+	public ArrayList<ApigeeObjectTransformer> getBundleUploadTranformers() {
 		return bundleUploadTranformers;
 	}
 
-	public void setBundleUploadTranformers(ArrayList<BundleUploadTransformer> bundleUploadTranformers) {
+	public void setBundleUploadTranformers(ArrayList<ApigeeObjectTransformer> bundleUploadTranformers) {
 		this.bundleUploadTranformers = bundleUploadTranformers;
 	}
 
@@ -75,20 +75,23 @@ public class SharedFlowServices extends Service {
 		return importShareFlow (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
 	}
 	
-	public String transformPundle(String pundleZipFileName , String newFilePath)
+	public void transformPundle(String pundleZipFileName , String newFilePath)
 	{
-		String proxyAfterTransformation = pundleZipFileName ; 
-		for (BundleUploadTransformer but : this.getBundleUploadTranformers())
+		int count=0; 
+		int transformersSize = this.getBundleUploadTranformers().size();
+		String sourceFile = pundleZipFileName ;
+		for (ApigeeObjectTransformer aot : this.getBundleUploadTranformers())
 		{
-		 if(but.filter(pundleZipFileName))
+			count++; 
+			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_"+count;
+			if(aot.filter(pundleZipFileName))
 			{
-			 proxyAfterTransformation = but.trasform(pundleZipFileName , newFilePath);
-			 pundleZipFileName = proxyAfterTransformation ;
+			 aot.trasform(sourceFile , tranformedFile);
+			 sourceFile = tranformedFile ;
 			}
 		}
-		
-		return proxyAfterTransformation ;
 	}
+	
 	public HttpResponse<String> importShareFlow(String pundleZipFileName , String m_sharedflowName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
@@ -98,11 +101,11 @@ public class SharedFlowServices extends Service {
 		return result ; 
 	}
 	
-	public void  transformAllProxies(String inputFolderPath , String outputFolderPath)
+	public void  transformAll(String inputFolderPath , String outputFolderPath)
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<BundleUploadTransformer>  put = this.getBundleUploadTranformers(); 
+		ArrayList<ApigeeObjectTransformer>  put = this.getBundleUploadTranformers(); 
 		for (File envFolder : folder.listFiles() )
 		{
 			int envProxiesCount = 0 ; 
@@ -116,7 +119,7 @@ public class SharedFlowServices extends Service {
 					String revision = revisionFolder.getName(); 
 					for (File proxyBundlefile : revisionFolder.listFiles())
 					{
-						for (BundleUploadTransformer trasnformer : put)
+						for (ApigeeObjectTransformer trasnformer : put)
 						{
 							String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
 							

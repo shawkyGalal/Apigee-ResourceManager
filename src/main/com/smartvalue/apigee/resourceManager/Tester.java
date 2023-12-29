@@ -22,7 +22,7 @@ import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.BundleUploadTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
@@ -35,6 +35,7 @@ import com.smartvalue.apigee.rest.schema.server.Router;
 import com.smartvalue.apigee.rest.schema.server.Server;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
@@ -75,11 +76,10 @@ public class Tester {
 		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
 
-		Infra cloudInfra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
+		
 		//String orgName = "moj-apigee" ; 
 
 		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
-		String orgName = "stg" ; 
 
 		//String envName = "iam-protected" ; 
 		//String proxyName = "oidc-core" ;
@@ -91,43 +91,48 @@ public class Tester {
 		 //String proxyName = "DZIT" ;
 		 //String region = "dc-1" ; 
 		
-		ManagementServer mojStageMs = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
-		ManagementServer cloudMs = cloudInfra.getManagementServer(cloudInfra.getRegions().get(0).getName()) ;
+		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
+
 		//region = ms.getRegions().get(0); 
 		//String pundleFileName = "//E://MasterWorks//Apigee//Customers//MOJ/10.162.3.3.etc.apigee//apigee-migrate-tool//data_history//MOJ//Prod//moj-prod//moj-internal-clients//2023-11-19-03-06//proxies//AccessCaseFile.zip" ;
-		String FolderName = "C:\\temp\\MOJ\\Stage" ;
-		//ms.getProxyServices(orgName).uploadPundle(pundleFileName , "xxxyyy") ;
-		//ProxyServices proxiesServices = ms.getProxyServices(orgName);
+		String exportFolderName = "C:\\temp\\MOJ\\Stage" ;
 		//==================Export All ===========================
+		String sourceOrgName = "stg" ; 
+		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(exportFolderName +"targetservers") ;
+		//HashMap<String, HashMap<String, Exception>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).exportAll(exportFolderName +"\\products") ; 
+		//HashMap<String, HashMap<String, Exception>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).exportAll(exportFolderName +"\\apps") ;
+		//HashMap<String, HashMap<String, Exception>> proxiesFaults =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(exportFolderName +"\\proxies") ;
+		//HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices(sourceOrgName).exportAll(exportFolderName +"\\sharedflows") ;
+		//HashMap<String, HashMap<String, Exception>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).exportAll(exportFolderName +"\\developers") ;
+		//HashMap<String, HashMap<String, Exception>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(exportFolderName +"\\kvms") ;
 		
 		
-		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  mojStageMs.getTargetServersServices(orgName).exportAll(FolderName +"targetservers") ;
+		String transFolder = "C:\\temp\\MOJ\\Stage_tranformed" ;
+		//==================Transform All  ===========================
+		ProxyServices ps = sourceMngServer.getProxyServices(sourceOrgName); 
+		ps.getBundleUploadTranformers().add(new NullTransformer()) ;
+		ps.getBundleUploadTranformers().add(new TargetServerTransformer()) ;
+		ps.getBundleUploadTranformers().add(new NullTransformer()) ;
+		ps.transformAll(exportFolderName+"\\proxies", transFolder+"\\proxies");
 		
-		//HashMap<String, HashMap<String, Exception>> productsFaults = mojStageMs.getProductServices(orgName).exportAll(FolderName +"\\products") ; 
-		//HashMap<String, HashMap<String, Exception>> appsFaults = mojStageMs.getApplicationServices(orgName).exportAll(FolderName +"\\apps") ;
-		//HashMap<String, HashMap<String, Exception>> proxiesFaults =  mojStageMs.getProxyServices(orgName).exportAll(FolderName +"\\proxies") ;
-		//HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  mojStageMs.getSharedFlowServices(orgName).exportAll(FolderName +"\\sharedflows") ;
-		//HashMap<String, HashMap<String, Exception>> devsFaults =  mojStageMs.getDevelopersServices(orgName).exportAll(FolderName +"\\developers") ;
-		//HashMap<String, HashMap<String, Exception>> kvmsFaults =  mojStageMs.getKeyValueMapServices(orgName).exportAll(FolderName +"\\kvms") ;
+		SharedFlowServices sfs = sourceMngServer.getSharedFlowServices(sourceOrgName); 
+		sfs.getBundleUploadTranformers().add(new TargetServerTransformer()) ; 
+		sfs.getBundleUploadTranformers().add(new NullTransformer()) ;
+		sfs.transformAll(exportFolderName + "\\sharedflows", transFolder + "\\sharedflows");
 		
-		orgName = "apigee-moj-stage" ; 
 		//==================Import All Sequence is Important ===========================
-		//ArrayList<HttpResponse<String>> importTargetServersFaults =  cloudMs.getTargetServersServices(orgName).importAll(FolderName +"\\targetservers") ;
-		ArrayList<HttpResponse<String>> importSharedflowsFaults =  cloudMs.getSharedFlowServices(orgName).importAll(FolderName +"\\sharedflows") ;
-		//ArrayList<HttpResponse<String>> importKvmsFaults =  cloudMs.getKeyValueMapServices(orgName).importAll(FolderName +"\\kvms") ;
-		//ArrayList<HttpResponse<String>> importProxiesFaults =  cloudMs.getProxyServices(orgName).importAll(FolderName +"\\proxies") ;
-		//ArrayList<HttpResponse<String>> importProductsFaults = cloudMs.getProductServices(orgName).importAll(FolderName +"\\products") ; 
-		//ArrayList<HttpResponse<String>> importDevsFaults =  cloudMs.getDevelopersServices(orgName).importAll(FolderName +"\\developers") ;
-		//ArrayList<HttpResponse<String>> importAppsFaults = cloudMs.getApplicationServices(orgName).importAll(FolderName +"\\apps") ;
+		 
+		Infra destInfra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
+		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
+		String destOrgName = "apigee-moj-stage" ;
+		ArrayList<HttpResponse<String>> importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
+		ArrayList<HttpResponse<String>> importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
+		ArrayList<HttpResponse<String>> importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;
+		ArrayList<HttpResponse<String>> importProxiesFaults =  destMngServer.getProxyServices(destOrgName).importAll(transFolder +"\\proxies") ;
+		ArrayList<HttpResponse<String>> importProductsFaults = destMngServer.getProductServices(destOrgName).importAll(transFolder +"\\products") ; 
+		ArrayList<HttpResponse<String>> importDevsFaults =  destMngServer.getDevelopersServices(destOrgName).importAll(transFolder +"\\developers") ;
+		ArrayList<HttpResponse<String>> importAppsFaults = destMngServer.getApplicationServices(destOrgName).importAll(transFolder +"\\apps") ;
 	
-		
-		//GoogleProxiesList proxiesList= proxiesServices.getAllProxiesList(GoogleProxiesList.class); 
-		//proxiesServices.deleteAllProxies(proxiesList) ;
-		ArrayList<BundleUploadTransformer> tranformers = new ArrayList<BundleUploadTransformer>(); 
-		tranformers.add(new TargetServerTransformer() );
-		tranformers.add(new NullTransformer() );
-		//proxiesServices.setBundleUploadTranformers(tranformers);
-		//proxiesServices.importAll(FolderName , false) ;
 		
 
 		/* 

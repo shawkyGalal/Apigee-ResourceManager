@@ -12,11 +12,17 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
+import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
+import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
+import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class ApigeeTool 
@@ -28,10 +34,27 @@ public class ApigeeTool
 	private static Infra infraObject; 
 	private static ManagementServer ms ; 
 	
+	private static HashMap<String , String> convertArgsToHashMap(String[] args )
+    {
+	    	HashMap<String , String> result = new HashMap<>() ; 
+	    	for (int i = 0; i < args.length - 1; i += 2) {
+	    		result.put ( args[i] , args[i+1] ) ; 
+	    	}
+			return result;
+    }
+	
+	public static HashMap<String , String> getArgsHashMap() {
+		return argsHashMap;
+	}
+
+	public static void setArgsHashMap(String[] args) {
+		argsHashMap = ApigeeTool.convertArgsToHashMap(args);
+	}
+	
 	private static void initialize(String[] args) throws Exception
 	{
-		
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+		setArgsHashMap(args); 
+		HashMap<String , String> argsMap = getArgsHashMap() ; //convertArgsToHashMap(args) ;
 		System.out.println(argsMap );
 		operation = getMandatoryArg ( argsMap , "-operation") ; 
 	 	configFile = argsMap.get("-configFile") ; 
@@ -102,18 +125,9 @@ public class ApigeeTool
 	        System.out.println("  		Avialable Apigee Objects Type to Export : proxies, developers , apps , products , kvms , targetServers ");
 
     }
-	    
-	private static HashMap<String , String> convertArgsToHashMap(String[] args )
-    {
-	    	HashMap<String , String> result = new HashMap<>() ; 
-	    	for (int i = 0; i < args.length - 1; i += 2) {
-	    		result.put ( args[i] , args[i+1] ) ; 
-	    	}
-			return result;
-    }
-	    
 	
-	
+	private static HashMap<String , String> argsHashMap ; 
+
 	
 	private static HashMap<String, List<Object>>  ProxiesWithoutPolices(String[] args) throws UnirestException, IOException 
 	{
@@ -169,20 +183,21 @@ public class ApigeeTool
     }
     
     private static void migrate(String[] args) throws Exception {
-    	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
-    	String importAll = argsMap.get("-importAll") ;
-    	String exportAll = argsMap.get("-exportAll") ;
-    	String deleteAll = argsMap.get("-deleteAll") ;
+    	HashMap<String , String> argsMap = getArgsHashMap() ;
+    	String importAll 	= argsMap.get("-importAll") ;
+    	String exportAll 	= argsMap.get("-exportAll") ;
+    	String deleteAll 	= argsMap.get("-deleteAll") ;
+    	String transformAll = argsMap.get("-transformAll") ;
     	if (importAll != null)
     	{
         switch (importAll) {
-            case "proxies": 			importAllProxies(args);       	break;
-            case "sharedFlows": 		importAllSharedFlows(args);    	break;
-            case "products":   			importAllProducts(args);		break;
-            case "apps":       			importAllApps(args);           	break;
-            case "developers": 			importAllDevelopers(args);     	break;  
-            case "kvms":       			importAllKvms(args);           	break;
-            case "targetServers":   	importTargetServers(args);     	break;
+            case "proxies": 			importAllProxies();       	break;
+            case "sharedFlows": 		importAllSharedFlows();    	break;
+            case "products":   			importAllProducts();		break;
+            case "apps":       			importAllApps();           	break;
+            case "developers": 			importAllDevelopers();     	break;  
+            case "kvms":       			importAllKvms();           	break;
+            case "targetServers":   	importTargetServers();     	break;
             case "--help":   			printImportUsage();     		break; 
             default: System.out.println("Unknown import argument:  " + importAll);
                 printImportUsage();
@@ -192,30 +207,46 @@ public class ApigeeTool
     	else if (exportAll != null)
     	{
     		switch (exportAll) {
-            case "proxies": 		exportAllProxies(args);       	break;
-            case "sharedFlows": 	exportAllSharedFlows(args);   	break;
-            case "products":   		exportAllProducts(args);		break;
-            case "apps":       		exportAllApps(args);           	break;
-            case "developers": 		exportAllDevelopers(args);     	break;  
-            case "kvms":       		exportAllKvms(args);           	break; 
-            case "targetServers":   exportAllTargetServers(args); 	break;
+            case "proxies": 		exportAllProxies();       	break;
+            case "sharedFlows": 	exportAllSharedFlows();   	break;
+            case "products":   		exportAllProducts();		break;
+            case "apps":       		exportAllApps();           	break;
+            case "developers": 		exportAllDevelopers();     	break;  
+            case "kvms":       		exportAllKvms();           	break; 
+            case "targetServers":   exportAllTargetServers(); 	break;
             case "--help":   		printExportUsage();     		break; 
             default: System.out.println("Unknown exportAll argument : " + exportAll);
                 printExportUsage();
                 break;
         	}
     	}
+    	else if (transformAll !=null)
+    	{
+    		switch (transformAll) {
+            case "proxies": 		transformAllProxies();       		break;
+            case "sharedFlows": 	transformAlltSharedFlows();    	break;
+            case "products":   		transformAllProducts();			break;
+            case "apps":       		transformAllApps();           	break;
+            case "developers": 		transformAllDevelopers();     	break;  
+            case "kvms":       		transformAllKvms();           	break; 
+            case "targetServers":	transformAllTargetServers();	break;
+            case "--help":   		transformUsage();     		break; 
+            default: System.out.println("Unknown deleteAll argument : " + deleteAll);
+                printDeleteUsage();
+                break;
+        	}
+    	}
     	else if (deleteAll != null)
     	{
     		switch (deleteAll) {
-            case "proxies": 		deleteAllProxies(args);       	break;
-            case "sharedFlows": 	deleteAlltSharedFlows(args);    break;
-            case "products":   		deleteAllProxies(args);			break;
-            case "apps":       		deleteAllApps(args);           	break;
-            case "developers": 		deleteAllDevelopers(args);     	break;  
-            case "kvms":       		deleteAllKvms(args);           	break; 
-            case "targetServers":	deleteAllTargetServers(args);   break;
-            case "--help":   		printDeleteUsage();     		break; 
+            case "proxies": 		deleteAllProxies();       	break;
+            case "sharedFlows": 	deleteAlltSharedFlows();    break;
+            case "products":   		deleteAllProducts();		break;
+            case "apps":       		deleteAllApps();           	break;
+            case "developers": 		deleteAllDevelopers();     	break;  
+            case "kvms":       		deleteAllKvms();           	break; 
+            case "targetServers":	deleteAllTargetServers();   break;
+            case "--help":   		printDeleteUsage();    		break; 
             default: System.out.println("Unknown deleteAll argument : " + deleteAll);
                 printDeleteUsage();
                 break;
@@ -226,79 +257,136 @@ public class ApigeeTool
 		
 	}
 
+
+  //---------------TranformAll Operations --------------
+	private static void transformUsage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllTargetServers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllKvms() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllDevelopers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllApps() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllProducts() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAlltSharedFlows() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void transformAllProxies() {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		String sourceFolder = getMandatoryArg(getArgsHashMap(), "-sourceFolder");
+		String destFolder = getMandatoryArg(getArgsHashMap(), "-destFolder");
+		ProxyServices ps = ms.getProxyServices(org); 
+		ps.getBundleUploadTranformers().add(new TargetServerTransformer()) ; 
+		ps.getBundleUploadTranformers().add(new NullTransformer()) ;
+		ps.transformAll(sourceFolder, destFolder);
+	}
+
+	//---------------DeleteAll Operations --------------
 	private static void printDeleteUsage() {
 		// TODO Auto-generated method stub
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+	}
+
+	private static void deleteAllProducts() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		ProductsServices service = ms.getProductServices(org); 
+		service.deleteAll(); 
+	}
+	private static void deleteAllTargetServers() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		TargetServerServices service = ms.getTargetServersServices(org);
+		service.deleteAll(); 
 		
 	}
 
-	private static void deleteAllTargetServers(String[] args) {
-		// TODO Auto-generated method stub
+	private static void deleteAllKvms() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		KvmServices service = ms.getKeyValueMapServices(org);
+		service.deleteAll(); 
 		
 	}
 
-	private static void deleteAllKvms(String[] args) {
-		// TODO Auto-generated method stub
-		
+	private static void deleteAllDevelopers() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		DeveloperServices service = ms.getDevelopersServices(org);
+		service.deleteAll(); 
 	}
 
-	private static void deleteAllDevelopers(String[] args) {
-		// TODO Auto-generated method stub
-		
+	private static void deleteAllApps() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		ApplicationServices service = ms.getApplicationServices(org);
+		service.deleteAll(); 
 	}
 
-	private static void deleteAllApps(String[] args) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private static void deleteAlltSharedFlows(String[] args) throws UnirestException, IOException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
-		org = getMandatoryArg(argsMap, "-org"); 
+	private static void deleteAlltSharedFlows() throws UnirestException, IOException {
+		org = getMandatoryArg(getArgsHashMap(), "-org"); 
 		SharedFlowServices sfs = ms.getSharedFlowServices(org); 
 		sfs.deleteAll() ;
-		
 	}
 
-	private static void deleteAllProxies(String[] args) throws FileNotFoundException, IOException, UnirestException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+	private static void deleteAllProxies() throws FileNotFoundException, IOException, UnirestException {
+		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		ProxyServices proxiesServices = ms.getProxyServices(org); 
 		proxiesServices.deleteAll() ;
 		
 	}
 
-	private static void exportAllTargetServers(String[] args) {
+	private static void exportAllTargetServers() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void importTargetServers(String[] args) {
+	private static void importTargetServers() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void exportAllKvms(String[] args) {
+	private static void exportAllKvms() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void exportAllDevelopers(String[] args) {
+	private static void exportAllDevelopers() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void exportAllApps(String[] args) {
+	private static void exportAllApps() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void exportAllProducts(String[] args) {
+	private static void exportAllProducts() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void exportAllSharedFlows(String[] args) throws UnirestException, IOException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+	private static void exportAllSharedFlows() throws UnirestException, IOException {
+		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
 		SharedFlowServices sfs = ms.getSharedFlowServices(org);
@@ -306,8 +394,8 @@ public class ApigeeTool
 		
 	}
 
-	private static void exportAllProxies(String[] args) throws UnirestException, IOException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+	private static void exportAllProxies() throws UnirestException, IOException {
+		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
 		ProxyServices ps = ms.getProxyServices(org);
@@ -325,28 +413,28 @@ public class ApigeeTool
 		
 	}
 
-	private static void importAllKvms(String[] args) {
+	private static void importAllKvms() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void importAllDevelopers(String[] args) {
+	private static void importAllDevelopers() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void importAllApps(String[] args) {
+	private static void importAllApps() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void importAllProducts(String[] args) {
+	private static void importAllProducts() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void importAllSharedFlows(String[] args) throws UnirestException, IOException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+	private static void importAllSharedFlows() throws UnirestException, IOException {
+		HashMap<String , String> argsMap = getArgsHashMap() ;
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
@@ -357,8 +445,8 @@ public class ApigeeTool
 		
 	}
 
-	private static void importAllProxies(String[] args) throws FileNotFoundException, IOException, UnirestException {
-		HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+	private static void importAllProxies() throws FileNotFoundException, IOException, UnirestException {
+		HashMap<String , String> argsMap = getArgsHashMap() ;
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
@@ -367,6 +455,8 @@ public class ApigeeTool
 		proxiesServices.setDeployUponUpload(isdeploy);
 		proxiesServices.importAll(sourceFolder) ;
 	}
+
+
 
 	
     
