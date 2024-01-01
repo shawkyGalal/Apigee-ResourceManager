@@ -53,6 +53,16 @@ public class ApplicationServices extends Service {
 		return this.getAllResourcesList(Application.class) ; 
 		
 	}
+
+
+
+
+
+	@Override
+	public String getApigeeObjectType() {
+		// TODO Auto-generated method stub
+		return "Application";
+	}
 	
 
 }

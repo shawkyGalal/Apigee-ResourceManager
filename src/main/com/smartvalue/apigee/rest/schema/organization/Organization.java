@@ -201,7 +201,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 
 	public Environment getEnvByName(String m_envName) throws UnirestException, IOException {
 		ManagementServer ms = this.getManagmentServer() ;
-		String apiPath = "/v1/organizations/"+this.getName() +"/e" ; 
+		String apiPath = "/v1/organizations/"+this.getName() +"/environments" ; 
 		Environment env = ms.executeGetMgmntAPI(apiPath +"/" + m_envName , Environment.class ) ;
 		env.setMs(ms) ;
 		env.setOrgName(this.getName()) ; 

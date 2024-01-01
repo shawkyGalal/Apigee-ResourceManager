@@ -160,5 +160,10 @@ public String getResourcePath() {
 	return null;
 }
 
+@Override
+public String getApigeeObjectType() {
+	return "Server";
+}
+
 	
 }

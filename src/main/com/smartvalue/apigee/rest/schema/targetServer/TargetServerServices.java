@@ -90,4 +90,9 @@ public class TargetServerServices  extends Service {
 		return failedResult ; 
 	}
 
+	@Override
+	public String getApigeeObjectType() {
+		return "TargetServr";
+	}
+
 }

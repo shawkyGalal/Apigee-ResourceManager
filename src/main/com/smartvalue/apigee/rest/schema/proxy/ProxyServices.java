@@ -111,7 +111,8 @@ public class ProxyServices extends Service {
 	public HttpResponse<String> importProxy(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/apis?action=import&name="+m_proxyName+"&validate=true" ; 
+		
+		String apiPath = this.getResourcePath()+"?action=import&name="+m_proxyName+"&validate=true" ; 
 		ManagementServer ms = this.getMs() ;
 		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
 		return result ; 
@@ -321,6 +322,11 @@ public class ProxyServices extends Service {
 
 	public void setDeployUponUpload(boolean deployUponUpload) {
 		this.deployUponUpload = deployUponUpload;
+	}
+
+	@Override
+	public String getApigeeObjectType() {
+		return "Proxy";
 	}
 	
 	

@@ -45,7 +45,7 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 		return null;
 	}
 
-	private String resourcePath = "/v1/organizations/"+orgName+"/environments/"+envName+"/keyvaluemaps/"; 
+	private String resourcePath = "/v1/organizations/"+orgName+"/environments/"+envName+"/keyvaluemaps"; 
 	
 	@Override
 	public String getResourcePath() {
@@ -55,7 +55,7 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 	protected void setEnvName(String m_envName)
 	{
 		this.envName = m_envName ; 
-		this.resourcePath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/keyvaluemaps/";
+		this.resourcePath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/keyvaluemaps";
 	}
 	
 	public HashMap<String , HashMap<String , Exception>> exportAll(String destFolder) throws UnirestException, IOException
@@ -115,5 +115,11 @@ public class KvmServices extends com.smartvalue.apigee.rest.schema.Service {
 			
 		}
 		return failedResult ; 
+	}
+
+	@Override
+	public String getApigeeObjectType() {
+		// TODO Auto-generated method stub
+		return "KVM";
 	}
 }

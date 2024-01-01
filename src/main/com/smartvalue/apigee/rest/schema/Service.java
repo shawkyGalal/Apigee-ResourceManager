@@ -114,6 +114,7 @@ public abstract class Service {
 		File source = new File(sourceFolder); 
 		for (File resourceFile : source.listFiles() )
 		{
+			System.out.println("Importing "+this.getApigeeObjectType()+" : "  + resourceFile );
 			try {
 				result.add(importResource(resourceFile)) ;
 			}
@@ -141,6 +142,7 @@ public abstract class Service {
 		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();
 		for (String resourceId : getAllResources() )
 		{
+			System.out.println("Exporting "+this.getApigeeObjectType()+" : "  + resourceId );
 			try {
 			exportResource(resourceId , destFolder) ;
 			}
@@ -155,7 +157,7 @@ public abstract class Service {
 		
 	}
 	
-	
+	public abstract String getApigeeObjectType() ; 
 	public <T> ArrayList<T>  getAllResourcesList( Class<T> classOfT ) throws UnirestException, IOException
 	{
 		ArrayList<String> allResourcesNames = getAllResources() ; 

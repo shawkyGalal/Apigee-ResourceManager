@@ -74,5 +74,10 @@ public <T> T  getAllProducsList( Class<T> classOfT ) throws UnirestException, IO
 	return proxiesList ;  
 }
 
+@Override
+public String getApigeeObjectType() {
+	return "Product";
+}
+
 
 }

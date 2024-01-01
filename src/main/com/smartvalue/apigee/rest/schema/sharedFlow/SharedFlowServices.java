@@ -281,7 +281,7 @@ public class SharedFlowServices extends Service {
 	@Override
 	public String getResourcePath() {
 		
-		return "/v1/organizations/"+orgName+"/sharedflows/";
+		return "/v1/organizations/"+orgName+"/sharedflows";
 	}
 
 	public boolean isDeployUponUpload() {
@@ -290,6 +290,11 @@ public class SharedFlowServices extends Service {
 
 	public void setDeployUponUpload(boolean deployUponUpload) {
 		this.deployUponUpload = deployUponUpload;
+	}
+
+	@Override
+	public String getApigeeObjectType() {
+		return "SharedFlow";
 	}
 
 	

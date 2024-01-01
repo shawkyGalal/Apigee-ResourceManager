@@ -24,7 +24,7 @@ public class DeveloperServices extends Service {
 
 	@Override
 	public String getResourcePath() {
-		return "/v1/organizations/"+orgName+"/developers/";
+		return "/v1/organizations/"+orgName+"/developers";
 	}
 	
 	public Developer getDeveloperById(String developerId) throws UnirestException, IOException
@@ -44,6 +44,12 @@ public class DeveloperServices extends Service {
 		
 		return this.getAllResourcesList(Developer.class) ; 
 		
+	}
+
+	@Override
+	public String getApigeeObjectType() {
+		// TODO Auto-generated method stub
+		return "Developer";
 	}
 
 
