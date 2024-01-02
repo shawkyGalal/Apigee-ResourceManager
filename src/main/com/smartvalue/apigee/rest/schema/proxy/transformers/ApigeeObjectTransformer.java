@@ -9,6 +9,6 @@ public interface  ApigeeObjectTransformer {
 	 * @param newBundlePath 
 	 * @return
 	 */
-	public void trasform(  String apigeeObjectFile, String newBundlePath);
+	public TransformResult  trasform(  String apigeeObjectFile, String newBundlePath);
 	public boolean filter(String bundleZipFileNam) ; 
 }

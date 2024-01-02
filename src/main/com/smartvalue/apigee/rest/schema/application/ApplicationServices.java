@@ -10,6 +10,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public class ApplicationServices extends Service {
 
@@ -18,9 +19,6 @@ public class ApplicationServices extends Service {
 		
 	}
 
-	
-
-	
 
 	@Override
 	public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
@@ -31,23 +29,23 @@ public class ApplicationServices extends Service {
 	@Override
 	public String getResourcePath() {
 		
-		return "/v1/organizations/"+orgName+"/apps/";
+		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType()+"/";
 	}
 	
 	
-	public Application getAppByName(String appName) throws UnirestException, IOException
+	public Application getAppByName(String appName) throws Exception
 	{
 		return this.getResource(appName, Application.class) ; 
 	}
 
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllAppsNamesList() throws UnirestException, IOException
+	public ArrayList<String>  getAllAppsNamesList() throws Exception
 	{
 		ArrayList<String> appssList = this.getAllResources(ArrayList.class); 
 		return appssList ;  
 	}
 
-	public ArrayList<Application> getAllAppsList() throws UnirestException, IOException
+	public ArrayList<Application> getAllAppsList() throws Exception
 	{
 		
 		return this.getAllResourcesList(Application.class) ; 
@@ -55,13 +53,9 @@ public class ApplicationServices extends Service {
 	}
 
 
-
-
-
 	@Override
 	public String getApigeeObjectType() {
-		// TODO Auto-generated method stub
-		return "Application";
+		return "apps";
 	}
 	
 

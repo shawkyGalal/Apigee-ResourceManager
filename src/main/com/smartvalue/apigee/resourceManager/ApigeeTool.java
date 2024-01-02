@@ -129,7 +129,7 @@ public class ApigeeTool
 	private static HashMap<String , String> argsHashMap ; 
 
 	
-	private static HashMap<String, List<Object>>  ProxiesWithoutPolices(String[] args) throws UnirestException, IOException 
+	private static HashMap<String, List<Object>>  ProxiesWithoutPolices(String[] args) throws Exception 
 	{
 	 HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
  	 String policesName = getMandatoryArg(argsMap, "-policesName"); //argsMap.get("-targetServer") ;
@@ -299,8 +299,8 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(getArgsHashMap(), "-sourceFolder");
 		String destFolder = getMandatoryArg(getArgsHashMap(), "-destFolder");
 		ProxyServices ps = ms.getProxyServices(org); 
-		ps.getBundleUploadTranformers().add(new TargetServerTransformer()) ; 
-		ps.getBundleUploadTranformers().add(new NullTransformer()) ;
+		ps.getTransformers().add(new TargetServerTransformer()) ; 
+		ps.getTransformers().add(new NullTransformer()) ;
 		ps.transformAll(sourceFolder, destFolder);
 	}
 
@@ -341,13 +341,13 @@ public class ApigeeTool
 		service.deleteAll(); 
 	}
 
-	private static void deleteAlltSharedFlows() throws UnirestException, IOException {
+	private static void deleteAlltSharedFlows() throws Exception {
 		org = getMandatoryArg(getArgsHashMap(), "-org"); 
 		SharedFlowServices sfs = ms.getSharedFlowServices(org); 
 		sfs.deleteAll() ;
 	}
 
-	private static void deleteAllProxies() throws FileNotFoundException, IOException, UnirestException {
+	private static void deleteAllProxies() throws Exception {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		ProxyServices proxiesServices = ms.getProxyServices(org); 
@@ -385,7 +385,7 @@ public class ApigeeTool
 		
 	}
 
-	private static void exportAllSharedFlows() throws UnirestException, IOException {
+	private static void exportAllSharedFlows() throws Exception {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
@@ -394,7 +394,7 @@ public class ApigeeTool
 		
 	}
 
-	private static void exportAllProxies() throws UnirestException, IOException {
+	private static void exportAllProxies() throws Exception {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 

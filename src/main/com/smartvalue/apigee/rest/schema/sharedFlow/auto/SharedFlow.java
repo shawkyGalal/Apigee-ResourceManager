@@ -1,6 +1,7 @@
 
 package com.smartvalue.apigee.rest.schema.sharedFlow.auto;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.ApigeeComman;
+import com.smartvalue.apigee.rest.schema.Deployable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -141,5 +146,7 @@ public class SharedFlow extends ApigeeComman {
         SharedFlow rhs = ((SharedFlow) other);
         return (((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.metaData == rhs.metaData)||((this.metaData!= null)&&this.metaData.equals(rhs.metaData))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.revision == rhs.revision)||((this.revision!= null)&&this.revision.equals(rhs.revision))));
     }
+
+
 
 }

@@ -15,6 +15,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
 	
@@ -156,13 +157,17 @@ public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOEx
 
 @Override
 public String getResourcePath() {
-	// TODO Auto-generated method stub
 	return null;
 }
 
 @Override
 public String getApigeeObjectType() {
 	return "Server";
+}
+
+@Override
+public ArrayList<TransformResult> transformAll(String inputFolderPath, String outputFolderPath) {
+	return null;
 }
 
 	

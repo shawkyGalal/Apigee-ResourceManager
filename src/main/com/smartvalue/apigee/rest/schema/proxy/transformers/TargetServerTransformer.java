@@ -3,8 +3,9 @@ package com.smartvalue.apigee.rest.schema.proxy.transformers;
 public class TargetServerTransformer implements ApigeeObjectTransformer {
 
 	@Override
-	public  void trasform(String  bundleZipFileName , String outputZipFile) {
+	public  TransformResult  trasform(String  bundleZipFileName , String outputZipFile) {
 
+		TransformResult result = new TransformResult() ; 
 		String fileName = "apiproxy/targets/default.xml";
         String xpath = "/TargetEndpoint/HTTPTargetConnection";
         
@@ -22,8 +23,13 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
             System.out.println("New Updated Proxy Pundle " + outputZipFile + "Is Created"); 
              
         } catch (Exception e) {
+        	result.withError(e.getMessage())
+        		  .withStatus("Failed")
+        		  .withSource(bundleZipFileName)
+        		  .withDestination(outputZipFile); 
             e.printStackTrace();
         }
+		return result ; 
 	}
 
 	@Override

@@ -10,45 +10,39 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
-public class ProxyServices extends Service {
+public class ProxyServices extends Service implements Deployable {
 
-	ArrayList<ApigeeObjectTransformer> bundleUploadTranformers = new ArrayList<ApigeeObjectTransformer>();
 	private boolean deployUponUpload = false ; 
-	
-	public ArrayList<ApigeeObjectTransformer> getBundleUploadTranformers() {
-		return bundleUploadTranformers;
-	}
-
-	public void setBundleUploadTranformers(ArrayList<ApigeeObjectTransformer> bundleUploadTranformers) {
-		this.bundleUploadTranformers = bundleUploadTranformers;
-	}
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<Proxy>  getAllProxies() throws UnirestException, IOException
+	public ArrayList<Proxy>  getAllProxies() throws Exception
 	{
 		return this.getAllResourcesList(Proxy.class) ; 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllProxiesList() throws UnirestException, IOException
+	public ArrayList<String>  getAllProxiesList() throws Exception
 	{
 		ArrayList<String> proxiesList = this.getAllResources(ArrayList.class) ;  
 		return proxiesList ;  
 	}
 	
-	public <T> T  getAllProxiesList( Class<T> classOfT ) throws UnirestException, IOException
+	public <T> T  getAllProxiesList( Class<T> classOfT ) throws Exception
 	{
 		
 		T proxiesList = this.getAllResources(classOfT) ;  
@@ -60,10 +54,9 @@ public class ProxyServices extends Service {
 	 * @param m_polices
 	 * @param m_deployedVersionOnly
 	 * @return
-	 * @throws UnirestException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public HashMap<String, List<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws UnirestException, IOException
+	public HashMap<String, List<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws Exception
 	{
 		HashMap<String, List<Object>> result = new HashMap<>() ; 
 		ArrayList<String> proxiesName = getAllProxiesList() ; 
@@ -92,21 +85,24 @@ public class ProxyServices extends Service {
 		return importProxy (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
 	}
 	
-	public void transformPundle(String pundleZipFileName , String newFilePath)
+	public ArrayList<TransformResult> transformPundle(String pundleZipFileName , String newFilePath)
 	{
 		int count=0; 
-		int transformersSize = this.getBundleUploadTranformers().size();
+		int transformersSize = this.getTransformers().size();
 		String sourceFile = pundleZipFileName ;
-		for (ApigeeObjectTransformer aot : this.getBundleUploadTranformers())
+		ArrayList<TransformResult> result = new ArrayList<TransformResult>() ; 
+		for (ApigeeObjectTransformer aot : this.getTransformers())
 		{
 			count++; 
 			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_Tranform_"+count;
 			if(aot.filter(pundleZipFileName))
 			{
-			 aot.trasform(sourceFile , tranformedFile);
+			 result.add( aot.trasform(sourceFile , tranformedFile));
 			 sourceFile = tranformedFile + File.separator + new File(pundleZipFileName).getName() ;
 			}
 		}
+		
+		return result; 
 	}
 	public HttpResponse<String> importProxy(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
 	{
@@ -118,11 +114,13 @@ public class ProxyServices extends Service {
 		return result ; 
 	}
 	
-	public void  transformAll(String inputFolderPath , String outputFolderPath)
+	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
 	{
+		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  put = this.getBundleUploadTranformers(); 
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers(); 
+	
 		for (File envFolder : folder.listFiles() )
 		{
 			int envProxiesCount = 0 ; 
@@ -136,30 +134,28 @@ public class ProxyServices extends Service {
 					String revision = revisionFolder.getName(); 
 					for (File proxyBundlefile : revisionFolder.listFiles())
 					{
-						String zipFileName= proxyBundlefile.getName();  
+						String zipFileName= proxyBundlefile.getName(); 
 						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
-						this.transformPundle(proxyBundlefile.getAbsolutePath(), outputFolderPath + File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar);
-						/*
-						for (ApigeeObjectTransformer trasnformer : put)
+						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
+						String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
+						
+						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
-							String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
-							
 							boolean transform = trasnformer.filter(pundleZipFileName) ;
 							if (transform)
-							{	String zipFileName= proxyBundlefile.getName();  
-								String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
-								String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ; 
-								trasnformer.trasform(pundleZipFileName, newBundleFolderPath);
+							{	 
+								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
 								System.out.println("=======Proxy "+ proxyBundlefile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}
-						*/
 					}
 				}
 			}
-			System.out.println("==== End of Tranforming Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
-		}
 
+			System.out.println("==== End of Tranforming Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
+			
+		}
+		return transformResults ; 
 
 	}
 
@@ -204,7 +200,7 @@ public class ProxyServices extends Service {
 							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
-							HttpResponse<String> deployresult = this.deployProxyRevision(proxyName, envName , newRevesion) ;
+							HttpResponse<String> deployresult = this.deployRevision(proxyName, envName , newRevesion) ;
 							status = deployresult.getStatus() ;
 							if (status != 200)
 							{	
@@ -235,16 +231,16 @@ public class ProxyServices extends Service {
 		return result ; 
 	}
 	
-	public HttpResponse<String> deployProxyRevision(String m_proxyName , String m_envName , int revision ) throws UnirestException, IOException
+	public HttpResponse<String> deployRevision(String m_proxyName , String m_envName , int revision ) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
 		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/apis/"+m_proxyName +"/revisions/"+revision+"/deployments" ; 
 		ManagementServer ms = this.getMs() ; 
-		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
+		result = ms.getPostHttpResponse(apiPath, null, null ) ;
 		return result ; 
 	}
 	
-	public  ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
 	{
 		GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class);
 		return deleteAll(proxiesList); 
@@ -267,7 +263,7 @@ public class ProxyServices extends Service {
 		return failedResult;
 	}
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
@@ -326,7 +322,12 @@ public class ProxyServices extends Service {
 
 	@Override
 	public String getApigeeObjectType() {
-		return "Proxy";
+		return "apis";
+	}
+
+	public ProxyServices withDeployUponUpload(boolean m_deployUponUpload) {
+		this.deployUponUpload = m_deployUponUpload;
+		return this;
 	}
 	
 	

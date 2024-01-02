@@ -2,6 +2,8 @@ package com.smartvalue.apigee.rest.schema.sharedFlow;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,37 +12,31 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.Service;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
-public class SharedFlowServices extends Service {
+public class SharedFlowServices extends Service implements Deployable{
 
-	ArrayList<ApigeeObjectTransformer> bundleUploadTranformers = new ArrayList<ApigeeObjectTransformer>();
 	private boolean deployUponUpload = false ; 
-	
-	public ArrayList<ApigeeObjectTransformer> getBundleUploadTranformers() {
-		return bundleUploadTranformers;
-	}
-
-	public void setBundleUploadTranformers(ArrayList<ApigeeObjectTransformer> bundleUploadTranformers) {
-		this.bundleUploadTranformers = bundleUploadTranformers;
-	}
 
 	public SharedFlowServices(ManagementServer ms, String m_orgName  ) {
 		super(ms, m_orgName );
 	}
 	
-	public SharedFlow  getSharedFlows(String sharedFlowName) throws UnirestException, IOException
+	public SharedFlow  getSharedFlows(String sharedFlowName) throws Exception
 	{
 		return this.getResource(sharedFlowName, SharedFlow.class) ; 
 	}
 	
-	public ArrayList<SharedFlow>  getAllSharedFlows() throws UnirestException, IOException
+	public ArrayList<SharedFlow>  getAllSharedFlows() throws Exception
 	{
 		ArrayList<String> sharedflowsNames = getAllSharedFlowsList() ; 
 		ManagementServer ms = this.getMs() ;
@@ -56,13 +52,13 @@ public class SharedFlowServices extends Service {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllSharedFlowsList() throws UnirestException, IOException
+	public ArrayList<String>  getAllSharedFlowsList() throws Exception
 	{
 		ArrayList<String> proxiesName = this.getAllResources(ArrayList.class); 
 		return proxiesName ;  
 	}
 	
-	public <T> T  getAllSharedFlowsList( Class<T> classOfT ) throws UnirestException, IOException
+	public <T> T  getAllSharedFlowsList( Class<T> classOfT ) throws Exception
 	{
 		T proxiesList  = this.getAllResources(classOfT) ; 
 		return proxiesList ;  
@@ -78,9 +74,9 @@ public class SharedFlowServices extends Service {
 	public void transformPundle(String pundleZipFileName , String newFilePath)
 	{
 		int count=0; 
-		int transformersSize = this.getBundleUploadTranformers().size();
+		int transformersSize = this.getTransformers().size();
 		String sourceFile = pundleZipFileName ;
-		for (ApigeeObjectTransformer aot : this.getBundleUploadTranformers())
+		for (ApigeeObjectTransformer aot : this.getTransformers())
 		{
 			count++; 
 			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_"+count;
@@ -101,43 +97,48 @@ public class SharedFlowServices extends Service {
 		return result ; 
 	}
 	
-	public void  transformAll(String inputFolderPath , String outputFolderPath)
+	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  put = this.getBundleUploadTranformers(); 
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers();
+		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
+		
 		for (File envFolder : folder.listFiles() )
 		{
 			int envProxiesCount = 0 ; 
 			envName = envFolder.getName();
-			System.out.println("================Tranforming Proxies Deplyed TO Environment  " + envName + " ==============");
+			System.out.println("================Tranforming SharedFlows Deplyed TO Environment  " + envName + " ==============");
 			for (File proxyFolder : envFolder.listFiles() )
 			{
 				envProxiesCount++; 
 				for (File revisionFolder : proxyFolder.listFiles() )
 				{
 					String revision = revisionFolder.getName(); 
-					for (File proxyBundlefile : revisionFolder.listFiles())
+					for (File sharedFlowPundleFile : revisionFolder.listFiles())
 					{
-						for (ApigeeObjectTransformer trasnformer : put)
+						String zipFileName= sharedFlowPundleFile.getName(); 
+						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
+						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
+						String pundleZipFileName = sharedFlowPundleFile.getAbsolutePath() ; 
+						
+						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
-							String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
-							
 							boolean transform = trasnformer.filter(pundleZipFileName) ;
 							if (transform)
-							{	String zipFileName= proxyBundlefile.getName();  
-								String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
-								String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ; 
-								trasnformer.trasform(pundleZipFileName , newBundleFolderPath);
-								System.out.println("=======Proxy "+ proxyBundlefile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
+							{	 
+								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
+								System.out.println("=======ShawredFlow "+ sharedFlowPundleFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}
+
 					}
 				}
 			}
 			System.out.println("==== End of Tranforming Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
+			
 		}
-
+		return transformResults ; 
 
 	}
 
@@ -177,7 +178,7 @@ public class SharedFlowServices extends Service {
 							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
-							HttpResponse<String> deployresult = this.deploySharedFlowRevision(sharedflowName, envName , newRevesion) ;
+							HttpResponse<String> deployresult = this.deployRevision(sharedflowName, envName , newRevesion) ;
 							status = deployresult.getStatus() ;
 							if (status != 200)
 							{	
@@ -207,16 +208,8 @@ public class SharedFlowServices extends Service {
 		return result ; 
 	}
 	
-	public HttpResponse<String> deploySharedFlowRevision(String m_sharedflowName , String m_envName , int revision ) throws UnirestException, IOException
-	{
-		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/sharedflows/"+m_sharedflowName +"/revisions/"+revision+"/deployments" ; 
-		ManagementServer ms = this.getMs() ; 
-		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
-		return result ; 
-	}
 	
-	public  ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException
+	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
 	{
 		GoogleSharedflowList proxiesList = this.getAllSharedFlowsList(GoogleSharedflowList.class);
 		return deleteAll(proxiesList); 
@@ -241,7 +234,7 @@ public class SharedFlowServices extends Service {
 	
 
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws UnirestException, IOException
+	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
 	{
 		ArrayList<String> allSharedflows ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
@@ -298,7 +291,15 @@ public class SharedFlowServices extends Service {
 	}
 
 	
-	
+	@Override
+	public HttpResponse<String> deployRevision(String m_sharedFlowName, String m_envName, int revision) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = "/v1/organizations/"+this.orgName+"/environments/"+m_envName+"/apis/"+m_sharedFlowName +"/revisions/"+revision+"/deployments" ; 
+		ManagementServer ms = this.getMs(); 
+		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
+		return result ; 
+	}
 	
 	
 	

@@ -8,6 +8,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.Service {
@@ -46,29 +47,27 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 
 @Override
 public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
-	// TODO Auto-generated method stub
 	return null;
 }
 
 @Override
 public String getResourcePath() {
-	// TODO Auto-generated method stub
 	return "/v1/organizations/"+this.orgName+"/apiproducts";
 }
 
-public Product getProductByName(String productName) throws UnirestException, IOException
+public Product getProductByName(String productName) throws Exception
 {
 	return this.getResource(productName, Product.class) ; 
 }
 
 @SuppressWarnings("unchecked")
-public ArrayList<String>  getAllProducsList() throws UnirestException, IOException
+public ArrayList<String>  getAllProducsList() throws Exception
 {
 	ArrayList<String> producsList = this.getAllResources(ArrayList.class); 
 	return producsList ;  
 }
 
-public <T> T  getAllProducsList( Class<T> classOfT ) throws UnirestException, IOException
+public <T> T  getAllProducsList( Class<T> classOfT ) throws Exception
 {
 	T proxiesList  = this.getAllResources(classOfT) ; 
 	return proxiesList ;  
@@ -76,8 +75,9 @@ public <T> T  getAllProducsList( Class<T> classOfT ) throws UnirestException, IO
 
 @Override
 public String getApigeeObjectType() {
-	return "Product";
+	return "apiproducts";
 }
+
 
 
 }

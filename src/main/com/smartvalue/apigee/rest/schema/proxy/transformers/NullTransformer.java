@@ -9,7 +9,8 @@ import java.nio.file.StandardCopyOption;
 public class NullTransformer implements ApigeeObjectTransformer {
 
 	@Override
-	public void trasform(String bundleZipFileName , String newBundlePath) {
+	public TransformResult trasform(String bundleZipFileName , String newBundlePath) {
+		TransformResult result = new TransformResult() ; 
 		String  fileName  = new File (bundleZipFileName).getName() ; 
         Path sourcePath = Path.of(bundleZipFileName);
         Path destinationPath = Path.of(newBundlePath + File.separatorChar + fileName);
@@ -20,8 +21,13 @@ public class NullTransformer implements ApigeeObjectTransformer {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("File copied successfully!");
         } catch (IOException e) {
-            e.printStackTrace();
+        	result.withError(e.getMessage())
+  		  	.withStatus("Failed")
+  		  	.withSource(bundleZipFileName)
+  		  	.withDestination(newBundlePath); 
+        	e.printStackTrace();
         }
+        return result ; 
 	}
 
 	@Override

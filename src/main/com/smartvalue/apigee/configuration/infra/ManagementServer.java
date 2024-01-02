@@ -179,10 +179,15 @@ public class ManagementServer extends Server{
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
-		HttpResponse<String> response = Unirest.post(hostUrl + m_apiPath)
-				.header("Authorization", authorization )
-				.header("Content-Type", m_contentType )
-				.body(m_body).asString();
+		HttpRequestWithBody  xx = Unirest.post(hostUrl + m_apiPath)
+								.header("Authorization", authorization ); 
+		if (m_contentType != null) {
+			xx.header("Content-Type", m_contentType ) ; 
+		}
+		if (m_body != null) {
+			xx.body(m_body);  
+		}
+		HttpResponse<String> response = xx.asString();
 		return response ;  
 	}
 	public HttpResponse<InputStream> getGetHttpBinResponse(String m_apiPath  ) throws UnirestException, IOException  {
@@ -364,7 +369,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public KvmServices getKeyValueMapServices(String m_orgName)
 	{
-		KvmServices  srv = new KvmServices(this , m_orgName ) ; 
+		KvmServices  srv = new KvmServices(this , m_orgName) ; 
 		srv.setMs(this);
 		return srv;
 		
@@ -398,7 +403,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 	
 	public TargetServerServices getTargetServersServices(String m_orgName) {
-		TargetServerServices  targetServerServices = new TargetServerServices(this , m_orgName ) ; 
+		TargetServerServices  targetServerServices = new TargetServerServices(this , m_orgName) ; 
 		return targetServerServices;
 	}
 	
