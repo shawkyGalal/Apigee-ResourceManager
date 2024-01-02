@@ -1,37 +1,35 @@
 {
 	"Partners":[		
-	{	"Name" : "MasterWorks" , 
+	{	"Name" : "YourCompanyName" , 
 		"Customers" : [
-			{	"Name" : "MOJ"  
+			{	"Name" : "Customer01"  
 				,"Infras" : [
-					{	"Name" : "Prod", 
+					{	"Name" : "Stage" ,
 						"regions" :
 						 [
-							{ 
-								"name" : "dc-1" ,  
-								"MgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" , 
-								"OauthMgmServerUrl" : "http://prod.apigee.moj.gov.local:9001/api-management" ,
-								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
-								"podGateWayName" : "gateway" 
+							{ "name" : "dc-1" ,  
+							"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" ,  
+							"podGateWayName" : "gateway"
 							}, 
-							{ 	
-								"name" : "dc-2" ,  
-								"MgmServerUrl" : "http://prod_dr.apigee.moj.gov.local:9001/api-management" , 
-								"OauthMgmServerUrl" : "http://prod-dr.apigee.moj.gov.local:9001/api-management" ,
-								"tokenUrl" : "http://prod.apigee.moj.gov.local:9001/v1/authorize/access-token", 
-								"podGateWayName" : "gateway-2" 
+							{ "name" : "dc-2" ,  
+							"MgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" , 
+							"OauthMgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" ,
+							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
+							"podGateWayName" : "gateway-2"
 							}
 						],
 						"AuthType" : "OAuth" , 
 						"sysadminCred" : {
 							"Username" : "devops@moj.gov.sa" , 
-							"Password" : "*******" , 
-							"clientId" : "********" , 
-							"clientSecret" : "*******"
+							"Password" : "Moj@1357" , 
+							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
+							"clientSecret" : "UKLBn325ZIX1mulU"
 						}, 
 						"connectionTimeout" : "0" ,
 						"socketTimeout" : "20000" , 
-						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/prod/hosts" , 
+						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
 						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 					}, 
 					
@@ -42,10 +40,10 @@
 						 "googleCloud" : "true",
 						 "googleServiceAccount" : {
 							  "type": "service_account",
-							  "project_id": "moj-apigee",
+							  "project_id": "********",
 							  "private_key_id": "*************************",
 							  "private_key": "-----BEGIN PRIVATE KEY-----****************************\n-----END PRIVATE KEY-----\n",
-							  "client_email": "apigeeamin-java@moj-apigee.iam.gserviceaccount.com",
+							  "client_email": "********@******.iam.gserviceaccount.com",
 							  "client_id": "100161588649150357715",
 							  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
 							  "token_uri": "https://oauth2.googleapis.com/token",
