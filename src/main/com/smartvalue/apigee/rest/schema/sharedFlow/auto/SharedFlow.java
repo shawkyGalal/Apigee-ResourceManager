@@ -26,7 +26,7 @@ import com.smartvalue.apigee.rest.schema.Deployable;
     "revision"
 })
 @Generated("jsonschema2pojo")
-public class SharedFlow extends ApigeeComman {
+public abstract class SharedFlow extends RevisionedObject {
 
     @JsonProperty("metaData")
     private MetaData metaData;

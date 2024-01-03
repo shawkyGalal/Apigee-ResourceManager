@@ -1,9 +1,7 @@
 package com.smartvalue.apigee.rest.schema.proxy;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,8 +12,6 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
-import com.smartvalue.apigee.configuration.filteredList.FilteredList;
-import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
@@ -24,8 +20,6 @@ import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 
 public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
-
-	
 	
 	@SuppressWarnings("unchecked")
 	public ProxyDeployment  getDeployments() throws UnirestException, IOException
@@ -169,18 +163,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 		
 	}
 	
-	public void export(int revision , String folderDest) throws UnirestException, IOException
-	{
-		HttpResponse<InputStream> result = null; 
-		String apiPath = getResourcePath()+"/revisions/"+revision+"?format=bundle" ; 
-		ManagementServer ms = this.getManagmentServer() ; 
-		result = ms.getGetHttpBinResponse(apiPath ) ;
-		
-		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip") , java.nio.file.StandardCopyOption.REPLACE_EXISTING );
 
-	}
-
-	
 	public HashMap<String , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
 		HashMap<String , Exception> failedResult = new HashMap<String , Exception>();  
@@ -196,7 +179,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;
-					System.out.println("Proxy " + this.getName() + " Revision " +  revision + " Exported Successfully");
+					System.out.println("Proxy " + this.getName() + " Revision " +  revision + "Deplyed to Env" + DeployedEnvName +" Exported Successfully");
 				}
 				catch (Exception e) {
 					failedResult.put(revisionString, e); 

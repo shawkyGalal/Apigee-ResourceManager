@@ -1,17 +1,13 @@
 package com.smartvalue.apigee.rest.schema.sharedFlow;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
@@ -33,7 +29,7 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;
-					System.out.println("SharedFlow " + this.getName() + " Revision " +  revision + " Deplyed to Env "+DeployedEnvName+" Imported Successfully");
+					System.out.println("SharedFlow " + this.getName() + " Revision " +  revision + " Deplyed to Env" + DeployedEnvName +" Exported Successfully");
 				}
 				catch (Exception e) {
 					failedResult.put(revisionString, e); 
@@ -82,17 +78,7 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
 		return result ; 
 	}	
-	
-	public void export(int revision , String folderDest) throws UnirestException, IOException
-	{
-		HttpResponse<InputStream> result = null; 
-		String apiPath = getResourcePath()+"/revisions/"+revision+"?format=bundle" ; 
-		ManagementServer ms = this.getManagmentServer() ; 
-		result = ms.getGetHttpBinResponse(apiPath ) ;
-		
-		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip"));
 
-	}
 
 	public String getResourcePath() {
 		// TODO Auto-generated method stub

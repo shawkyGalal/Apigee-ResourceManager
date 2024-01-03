@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.ApigeeComman;
+import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -22,7 +23,7 @@ import com.smartvalue.apigee.rest.schema.ApigeeComman;
     "revision"
 })
 @Generated("jsonschema2pojo")
-public class Proxy extends ApigeeComman{
+public abstract class Proxy extends RevisionedObject{
 
     
 	@JsonProperty("metaData")
