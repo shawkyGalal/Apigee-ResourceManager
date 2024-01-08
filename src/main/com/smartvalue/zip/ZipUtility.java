@@ -63,7 +63,7 @@ public static void zip(String[] files, String destZipFile) throws FileNotFoundEx
 
 /**
 * Adds a directory to the current zip output stream
-* @param folder the directory to be  added
+* @param folder the directory to be added
 * @param parentFolder the path of parent directory
 * @param zos the current zip output stream
 * @throws FileNotFoundException
@@ -95,7 +95,7 @@ private static void zipDirectory(File folder, String parentFolder, ZipOutputStre
 * @param zos the current zip output stream
 * @throws FileNotFoundException
 * @throws IOException
- */
+*/
 	private static void zipFile(File file, ZipOutputStream zos) throws FileNotFoundException, IOException 
 	{
 		zos.putNextEntry(new ZipEntry(file.getName()));

@@ -4,12 +4,11 @@ import java.io.PrintStream;
 
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 
-public class ApigeeComman {
+public abstract class ApigeeComman {
 
 	private transient PrintStream printStream = System.out; 
 	private transient  ManagementServer managmentServer;
-		private String orgName ;  
-
+	private String orgName ;
 	
 	public void setManagmentServer(ManagementServer ms) {
 		this.managmentServer = ms;
@@ -34,7 +33,5 @@ public class ApigeeComman {
 	public void setPrintStream(PrintStream printStream) {
 		this.printStream = printStream;
 	}
-	
-
 	
 }
