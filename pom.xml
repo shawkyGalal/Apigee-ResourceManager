@@ -22,11 +22,11 @@
   
   <dependencies>
 
-  <dependency>
+  	<dependency>
 	    <groupId>org.openapitools</groupId>
 	    <artifactId>openapi-generator</artifactId>
 	    <version>7.0.1</version>
-  </dependency>
+  	</dependency>
 
   	<!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
 	<dependency>
@@ -35,17 +35,6 @@
 	    <version>1.4.9</version>
 	</dependency>
 	
-<!--
-	<dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
-      <version>${javaxjson.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    -->  
-
- 
-
     <dependency>
 		<groupId>org.jsonschema2pojo</groupId>
 		<artifactId>jsonschema2pojo-core</artifactId>
@@ -58,27 +47,14 @@
 	    <version>2.4.0</version>
 	    <type>maven-plugin</type>
 	</dependency>
-	<!--
+	 
 	<dependency>
-	    <groupId>com.jcraft</groupId>
-	    <artifactId>jsch</artifactId>
-	    <version>0.1.55</version> 
-	</dependency>
-    -->
- 
-	<dependency>
-	    <groupId>org.testng</groupId>
-	    <artifactId>testng</artifactId>
-	    <version>7.8.0</version>
-	    <!-- <scope>test</scope>  -->
-	</dependency>
-
-	<dependency>
-	    <groupId>com.oracle.database.jdbc</groupId>
-	    <artifactId>ojdbc10</artifactId>
-	    <version>19.3.0.0</version>
-	</dependency>
-
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>7.5.1</version> <!-- Use the latest version available -->
+        <!-- <scope>test</scope> -->  
+    </dependency>
+	
   </dependencies>
   
   <dependencyManagement>

@@ -29,7 +29,7 @@ public class Test01 {
 			ZipUtility.zip(fileList, outputDirectory+".zip");
 			
 			
-		assert true : "Product With No Proxies not Found!";
+		assert true;
 	  }
 	 
 	 @BeforeMethod
