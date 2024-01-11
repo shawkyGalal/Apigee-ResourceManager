@@ -144,7 +144,7 @@ public class ManagementServer extends Server{
 	{
 		return (Organization) this.getOrgs().get(m_org) ; 
 	}
-	private String  getAuthorizationHeader()
+	private String  getAuthorizationHeader() throws IOException, UnirestException
 	{
 		String authorization = null ; 
 		if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
@@ -299,7 +299,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 
 	private AccessToken accessToken; 
-	public AccessToken getAccess_token(boolean regenerate ) throws Exception 
+	public AccessToken getAccess_token(boolean regenerate ) throws IOException, UnirestException 
 	{
 		if(accessToken == null || regenerate)
 		{
@@ -457,7 +457,11 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public void setInfra(Infra infra) {
 		this.infra = infra;
 	}
-	public AccessToken getAccessToken() {
+	public AccessToken getAccessToken() throws IOException, UnirestException {
+		if (accessToken == null)
+		{
+			accessToken = this.getAccess_token(true); 
+		}
 		return accessToken;
 	}
 	public void setAccessToken(ApigeeAccessToken accessToken) {

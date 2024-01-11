@@ -8,19 +8,14 @@ import com.google.auth.oauth2.GoogleCredentials;
 
 public class GoogleServiceAccount extends com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount{
 
-	public com.google.auth.oauth2.GoogleCredentials getGoogleCredentials() throws Exception {
+	public com.google.auth.oauth2.GoogleCredentials getGoogleCredentials() throws IOException {
 		GoogleCredentials credentials;
-		try {
-			 ; 
 			byte[] bytes = this.toJson().getBytes(StandardCharsets.UTF_8);
 	        InputStream inputStream  = new java.io.ByteArrayInputStream(bytes);
 			credentials = GoogleCredentials.fromStream(inputStream).createScoped("https://www.googleapis.com/auth/cloud-platform");
 			credentials.refreshIfExpired();
 			//com.google.auth.oauth2.AccessToken token = credentials.getAccessToken();
 			return credentials;
-		} catch (IOException e) {
-			throw e;
-		}
 	}
 	
 	  public String toJson() {

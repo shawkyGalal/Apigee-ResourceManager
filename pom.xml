@@ -2,9 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.smartValue.apigee.resourceManager</groupId>
   <artifactId>ResourceManager</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <properties>
   	<javaxjson.version>1.1.4</javaxjson.version>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <packaging>jar</packaging>
   <build>
@@ -17,6 +18,30 @@
           <release>17</release>
         </configuration>
       </plugin>
+      
+     <plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <configuration>
+        <archive>
+          <manifest>
+            <mainClass>com.smartvalue.apigee.resourceManager.ApigeeTool</mainClass>
+          </manifest>
+        </archive>
+        <descriptorRefs>
+          <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+      </configuration>
+      <executions>
+        <execution>
+          <id>make-assembly</id>
+          <phase>package</phase>
+          <goals>
+            <goal>single</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+    
     </plugins>
   </build>
   

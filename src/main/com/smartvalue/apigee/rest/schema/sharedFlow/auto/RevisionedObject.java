@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.rest.schema.sharedFlow.auto;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -105,9 +106,10 @@ public abstract class RevisionedObject extends ApigeeComman {
 			ArrayList<String > envRevisions = this.getDeployedRevisions().get(DeployedEnvName) ;
 			for (String revisionString : envRevisions  )
 			{
+ 
 				int revision = Integer.parseInt(revisionString);
 				try {
-					String path = folderDest+"\\" + DeployedEnvName + "\\"+ this.getName()+"\\" + revision+"\\" ; 
+					String path = folderDest+ File.separatorChar + DeployedEnvName + File.separatorChar + this.getName()+ File.separatorChar + revision+ File.separatorChar ; 
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;

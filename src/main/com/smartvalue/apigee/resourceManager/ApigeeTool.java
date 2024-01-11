@@ -455,7 +455,7 @@ public class ApigeeTool
 
 	private static void importAllSharedFlows() throws UnirestException, IOException {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
-		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
+		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
     	SharedFlowServices sharedFlowServices = ms.getSharedFlowServices(org); 
@@ -467,7 +467,7 @@ public class ApigeeTool
 
 	private static void importAllProxies() throws FileNotFoundException, IOException, UnirestException {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
-		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder") + File.separator +  "proxies" ;
+		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
     	ProxyServices proxiesServices = ms.getProxyServices(org); 
