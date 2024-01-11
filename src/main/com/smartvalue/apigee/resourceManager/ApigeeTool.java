@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
@@ -232,7 +233,7 @@ public class ApigeeTool
             case "targetServers":	transformAllTargetServers();	break;
             case "--help":   		transformUsage();     		break; 
             default: System.out.println("Unknown deleteAll argument : " + deleteAll);
-                printDeleteUsage();
+                printTransformUsage();
                 break;
         	}
     	}
@@ -246,6 +247,8 @@ public class ApigeeTool
             case "developers": 		deleteAllDevelopers();     	break;  
             case "kvms":       		deleteAllKvms();           	break; 
             case "targetServers":	deleteAllTargetServers();   break;
+            case "all":				deleteAll();   				break;
+            
             case "--help":   		printDeleteUsage();    		break; 
             default: System.out.println("Unknown deleteAll argument : " + deleteAll);
                 printDeleteUsage();
@@ -258,7 +261,12 @@ public class ApigeeTool
 	}
 
 
-  //---------------TranformAll Operations --------------
+  private static void printTransformUsage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+//---------------TranformAll Operations --------------
 	private static void transformUsage() {
 		// TODO Auto-generated method stub
 		
@@ -310,6 +318,18 @@ public class ApigeeTool
 		org = getMandatoryArg(getArgsHashMap(), "-org");
 	}
 
+	private static void deleteAll() throws Exception {
+		org = getMandatoryArg(getArgsHashMap(), "-org");
+		ArrayList<HttpResponse<String>> appResults  = ms.getApplicationServices(org).deleteAll();
+		ArrayList<HttpResponse<String>> devResults  = ms.getDevelopersServices(org).deleteAll();
+		ArrayList<HttpResponse<String>> podResults  = ms.getProductServices(org).deleteAll(); 
+		ArrayList<HttpResponse<String>> sfResults   = ms.getSharedFlowServices(org).deleteAll(); 
+		ArrayList<HttpResponse<String>> proResults  = ms.getProxyServices(org).deleteAll();
+		ArrayList<HttpResponse<String>> kvmResults  = ms.getKeyValueMapServices(org).deleteAll();
+		ArrayList<HttpResponse<String>> tarResults  = ms.getTargetServersServices(org).deleteAll();		
+		
+	}
+	
 	private static void deleteAllProducts() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
 		ProductsServices service = ms.getProductServices(org); 
