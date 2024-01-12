@@ -14,6 +14,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
+import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
@@ -23,7 +24,7 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
-public class SharedFlowServices extends ApigeeService implements Deployable{
+public class SharedFlowServices extends BundleObjectService implements Deployable{
 
 	private boolean deployUponUpload = false ; 
 
@@ -95,51 +96,6 @@ public class SharedFlowServices extends ApigeeService implements Deployable{
 		ManagementServer ms = this.getMs() ;
 		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
 		return result ; 
-	}
-	
-	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
-	{
-		String envName ;
-		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers();
-		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
-		
-		for (File envFolder : folder.listFiles() )
-		{
-			int envProxiesCount = 0 ; 
-			envName = envFolder.getName();
-			System.out.println("================Tranforming SharedFlows Deplyed TO Environment  " + envName + " ==============");
-			for (File proxyFolder : envFolder.listFiles() )
-			{
-				envProxiesCount++; 
-				for (File revisionFolder : proxyFolder.listFiles() )
-				{
-					String revision = revisionFolder.getName(); 
-					for (File pundleZipFile : revisionFolder.listFiles())
-					{
-						String zipFileName= pundleZipFile.getName(); 
-						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
-						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
-						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
-						
-						for (ApigeeObjectTransformer trasnformer : transformers)
-						{
-							boolean transform = trasnformer.filter(pundleZipFileName) ;
-							if (transform)
-							{	 
-								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
-								System.out.println("=======ShawredFlow "+ pundleZipFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
-							}
-						}
-
-					}
-				}
-			}
-			System.out.println("==== End of Tranforming Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
-			
-		}
-		return transformResults ; 
-
 	}
 
 	public  ArrayList<HttpResponse<String>> importAll(String folderPath ) throws UnirestException, IOException

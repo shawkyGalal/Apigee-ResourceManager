@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,9 +27,12 @@ import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
 import com.smartvalue.moj.clients.environments.Environments;
 import com.smartvalue.moj.clients.environments.JsonParser;
@@ -79,10 +83,24 @@ public class NewTest {
 		String sourceOrgName = "training01" ; 
 		//ArrayList<TransformResult> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).transformAll(sourceFolderName +"\\targetservers" , transformFolderName +"\\targetservers") ;
 		//ArrayList<TransformResult> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).transformAll(sourceFolderName +"\\kvms" , transformFolderName +"\\kvms" ) ;
-		//ArrayList<TransformResult> sharedflowsFaults =  sourceMngServer.getSharedFlowServices(sourceOrgName).transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
-		ApigeeService serv =  sourceMngServer.getProxyServices(sourceOrgName); 
-		serv.getTransformers().add(new TargetServerTransformer()) ; 
-		ArrayList<TransformResult> proxiesFaults =  serv.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
+		
+		
+		//-- Build Transformers ----
+		ArrayList<ApigeeObjectTransformer> transformers = new ArrayList<ApigeeObjectTransformer>(); 
+		//transformers.add(new TargetServerTransformer()) ; 
+		List<String> searchFor = Arrays.asList("<Pattern/>"	);
+	    List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
+		transformers.add(zfet) ; 
+		//----End of building transformers 
+		
+		SharedFlowServices sfs = sourceMngServer.getSharedFlowServices(sourceOrgName);
+		sfs.setTranformers(transformers); 
+		ArrayList<TransformResult> sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
+		
+		ApigeeService proxyServ =  sourceMngServer.getProxyServices(sourceOrgName); 
+		proxyServ.setTranformers(transformers); 
+		ArrayList<TransformResult> proxiesFaults =  proxyServ.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
 		//ArrayList<TransformResult> productsFaults = sourceMngServer.getProductServices(sourceOrgName).transformAll(sourceFolderName +"\\products" , transformFolderName +"\\products") ; 
 		//ArrayList<TransformResult> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).transformAll(sourceFolderName +"\\developers" , transformFolderName +"\\developers" ) ;
 		//ArrayList<TransformResult> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).transformAll(sourceFolderName +"\\apps" , transformFolderName +"\\apps" ) ;
