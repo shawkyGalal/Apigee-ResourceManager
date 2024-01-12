@@ -17,7 +17,7 @@ import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
-public class ServerServices extends com.smartvalue.apigee.rest.schema.Service{
+public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeService{
 	
 	public ServerServices(ManagementServer ms) {
 		super(ms);

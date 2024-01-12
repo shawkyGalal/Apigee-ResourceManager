@@ -13,7 +13,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Deployable;
-import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
@@ -23,7 +23,7 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
-public class SharedFlowServices extends Service implements Deployable{
+public class SharedFlowServices extends ApigeeService implements Deployable{
 
 	private boolean deployUponUpload = false ; 
 
@@ -115,12 +115,12 @@ public class SharedFlowServices extends Service implements Deployable{
 				for (File revisionFolder : proxyFolder.listFiles() )
 				{
 					String revision = revisionFolder.getName(); 
-					for (File sharedFlowPundleFile : revisionFolder.listFiles())
+					for (File pundleZipFile : revisionFolder.listFiles())
 					{
-						String zipFileName= sharedFlowPundleFile.getName(); 
+						String zipFileName= pundleZipFile.getName(); 
 						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
-						String pundleZipFileName = sharedFlowPundleFile.getAbsolutePath() ; 
+						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
 						
 						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
@@ -128,7 +128,7 @@ public class SharedFlowServices extends Service implements Deployable{
 							if (transform)
 							{	 
 								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
-								System.out.println("=======ShawredFlow "+ sharedFlowPundleFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
+								System.out.println("=======ShawredFlow "+ pundleZipFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}
 

@@ -7,12 +7,12 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
-public class ApplicationServices extends Service {
+public class ApplicationServices extends ApigeeService {
 
 	public ApplicationServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);

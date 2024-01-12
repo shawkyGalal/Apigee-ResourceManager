@@ -18,7 +18,7 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransfor
 import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
-public abstract class Service {
+public abstract class ApigeeService {
 
 	private ManagementServer ms ;
 	protected String orgName ; 
@@ -55,16 +55,16 @@ public abstract class Service {
 	}
 	
 	//----3 Types of constructors -------
-	public  Service(ManagementServer ms ) {
+	public  ApigeeService(ManagementServer ms ) {
 		this.ms = ms ;
 	}
 	
-	public  Service(ManagementServer ms , String m_orgName) {
+	public  ApigeeService(ManagementServer ms , String m_orgName) {
 		this.ms = ms ;
 		this.orgName = m_orgName ;
 	}
 	
-	public  Service(ManagementServer ms , String m_orgName, String m_envName) {
+	public  ApigeeService(ManagementServer ms , String m_orgName, String m_envName) {
 		this.ms = ms;
 		this.orgName = m_orgName ;
 		this.envName = m_envName ; 
@@ -78,7 +78,7 @@ public abstract class Service {
 		this.printStream = printStream;
 	}
 	
-	public Service withPrintStream(PrintStream printStream) {
+	public ApigeeService withPrintStream(PrintStream printStream) {
 		this.printStream = printStream;
 		return this ; 
 	}

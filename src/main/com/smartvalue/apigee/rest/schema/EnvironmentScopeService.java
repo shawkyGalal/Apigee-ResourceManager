@@ -11,7 +11,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
-public abstract class EnvironmentScopeService extends Service {
+public abstract class EnvironmentScopeService extends ApigeeService {
 
 
 	@Override

@@ -11,7 +11,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
-public class ProductsServices extends com.smartvalue.apigee.rest.schema.Service {
+public class ProductsServices extends com.smartvalue.apigee.rest.schema.ApigeeService {
 
 
 

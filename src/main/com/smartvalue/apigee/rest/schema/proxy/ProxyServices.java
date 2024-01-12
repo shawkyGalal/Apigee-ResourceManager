@@ -11,7 +11,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Deployable;
-import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
@@ -21,7 +21,7 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
-public class ProxyServices extends Service implements Deployable {
+public class ProxyServices extends ApigeeService implements Deployable {
 
 	private boolean deployUponUpload = false ; 
 
@@ -132,12 +132,12 @@ public class ProxyServices extends Service implements Deployable {
 				for (File revisionFolder : proxyFolder.listFiles() )
 				{
 					String revision = revisionFolder.getName(); 
-					for (File proxyBundlefile : revisionFolder.listFiles())
+					for (File pundleZipFile : revisionFolder.listFiles())
 					{
-						String zipFileName= proxyBundlefile.getName(); 
+						String zipFileName= pundleZipFile.getName(); 
 						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
-						String pundleZipFileName = proxyBundlefile.getAbsolutePath() ; 
+						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
 						
 						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
@@ -145,7 +145,7 @@ public class ProxyServices extends Service implements Deployable {
 							if (transform)
 							{	 
 								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
-								System.out.println("=======Proxy "+ proxyBundlefile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
+								System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}
 					}

@@ -20,7 +20,7 @@ import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
-import com.smartvalue.apigee.rest.schema.Service;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -80,7 +80,7 @@ public class NewTest {
 		//ArrayList<TransformResult> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).transformAll(sourceFolderName +"\\targetservers" , transformFolderName +"\\targetservers") ;
 		//ArrayList<TransformResult> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).transformAll(sourceFolderName +"\\kvms" , transformFolderName +"\\kvms" ) ;
 		//ArrayList<TransformResult> sharedflowsFaults =  sourceMngServer.getSharedFlowServices(sourceOrgName).transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
-		Service serv =  sourceMngServer.getProxyServices(sourceOrgName); 
+		ApigeeService serv =  sourceMngServer.getProxyServices(sourceOrgName); 
 		serv.getTransformers().add(new TargetServerTransformer()) ; 
 		ArrayList<TransformResult> proxiesFaults =  serv.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
 		//ArrayList<TransformResult> productsFaults = sourceMngServer.getProductServices(sourceOrgName).transformAll(sourceFolderName +"\\products" , transformFolderName +"\\products") ; 
