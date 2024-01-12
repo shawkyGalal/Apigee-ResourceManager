@@ -24,7 +24,7 @@ import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse
 
 public class ProxyServices extends BundleObjectService implements Deployable {
 
-	private boolean deployUponUpload = false ; 
+	
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
@@ -80,12 +80,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return result;
 		
 	}
-	
-	public HttpResponse<String> importProxy(String pundleZipFileName ) throws UnirestException, IOException
-	{
-		return importProxy (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
-	}
-	
+
 	public ArrayList<TransformResult> transformPundle(String pundleZipFileName , String newFilePath)
 	{
 		int count=0; 
@@ -105,96 +100,21 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		
 		return result; 
 	}
-	public HttpResponse<String> importProxy(String pundleZipFileName , String m_proxyName) throws UnirestException, IOException
-	{
-		HttpResponse<String> result = null; 
-		
-		String apiPath = this.getResourcePath()+"?action=import&name="+m_proxyName+"&validate=true" ; 
-		ManagementServer ms = this.getMs() ;
-		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
-		return result ; 
-	}
+
 	
-	public  ArrayList<HttpResponse<String>> importAll(String folderPath) throws UnirestException, IOException 
-	{
-		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
-		String envName ;
-		File folder = new File(folderPath); 
-		
-		for (File envFolder : folder.listFiles() )
-		{
-			int envProxiesCount = 0 ; 
-			envName = envFolder.getName(); 
-			System.out.println("================Importing Proxies Deplyed TO Environment  " + envName +"==============");
-			for (File proxyFolder : envFolder.listFiles() )
-			{
-				envProxiesCount++; 
-				for (File revisionFolder : proxyFolder.listFiles() )
-				{
-				
-					for (File zipfile : revisionFolder.listFiles())
-					{
-						int dotIndex = zipfile.getName().indexOf(".");
-						if ( this.getProxyFilter() != null && !this.getProxyFilter().filter(zipfile))
-						{
-							System.out.println("=======Proxy "+ zipfile + " Is Scaped ==========") ; 
-							break;
-						}
-						String proxyName= zipfile.getName().substring(0, dotIndex ) ; 
-						System.out.println( proxyName + ":" +zipfile.getAbsolutePath()  );
-						HttpResponse<String> result = importProxy(zipfile.getAbsolutePath() , proxyName);
-						int status = result.getStatus() ; 
-						if (! (status == 200 || status == 201) )
-						{	
-							System.out.println("Error Uploading Proxy " + proxyName);
-							System.out.println("Error Details " + result.getBody());
-							failedResult.add(result) ; 
-						}
-						if (this.isDeployUponUpload())
-						{
-							Gson json = new Gson(); 
-							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
-							//--- Started Deploying the proxy revision to environment 
-							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
-							HttpResponse<String> deployresult = this.deployRevision(proxyName, envName , newRevesion) ;
-							status = deployresult.getStatus() ;
-							if (status != 200)
-							{	
-								System.out.println("Error Deplying Proxy " + proxyName);
-								System.out.println("Error Details " + deployresult.getBody());
-								failedResult.add(deployresult) ; 
-							}
-						}
-					}
-			
-				}
-				
-			}
-			System.out.println("==== End of Importing Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
-		}
-		System.out.println("Errors:  \n" + failedResult.toString()); 
-		return failedResult;
-	}
-	private ProxyFilter proxyFilter ; 
+
 	
 
 	public HttpResponse<String> deleteProxy( String m_proxyName) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = getResourcePath()+m_proxyName ; 
+		String apiPath = getResourcePath()+"/"+m_proxyName ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getDeleteHttpResponse(apiPath ) ;
 		return result ; 
 	}
 	
-	public HttpResponse<String> deployRevision(String m_proxyName , String m_envName , int revision ) throws UnirestException, IOException
-	{
-		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/apis/"+m_proxyName +"/revisions/"+revision+"/deployments" ; 
-		ManagementServer ms = this.getMs() ; 
-		result = ms.getPostHttpResponse(apiPath, null, null ) ;
-		return result ; 
-	}
+	
 	
 	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
 	{
@@ -254,26 +174,10 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return failedResult;
 	}
 
-	public ProxyFilter getProxyFilter() {
-		return proxyFilter;
-	}
-
-	public void setProxyFilter(ProxyFilter proxyFilter) {
-		this.proxyFilter = proxyFilter;
-	}
-
 	@Override
 	public String getResourcePath() {
 		// TODO Auto-generated method stub
 		return "/v1/organizations/"+orgName+"/apis";
-	}
-
-	public boolean isDeployUponUpload() {
-		return deployUponUpload;
-	}
-
-	public void setDeployUponUpload(boolean deployUponUpload) {
-		this.deployUponUpload = deployUponUpload;
 	}
 
 	@Override
@@ -281,10 +185,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return "apis";
 	}
 
-	public ProxyServices withDeployUponUpload(boolean m_deployUponUpload) {
-		this.deployUponUpload = m_deployUponUpload;
-		return this;
-	}
+	
 	
 	
 	

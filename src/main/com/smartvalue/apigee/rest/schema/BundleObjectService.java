@@ -2,18 +2,38 @@ package com.smartvalue.apigee.rest.schema;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
+import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 public abstract class BundleObjectService extends ApigeeService {
 
+	protected boolean deployUponUpload = false ; 
+	
 	public BundleObjectService(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
 	}
 
+	public boolean isDeployUponUpload() {
+		return deployUponUpload;
+	}
+
+	public BundleObjectService withDeployUponUpload(boolean m_deployUponUpload) {
+		this.deployUponUpload = m_deployUponUpload;
+		return this;
+	}
+	
+	public void setDeployUponUpload(boolean deployUponUpload) {
+		this.deployUponUpload = deployUponUpload;
+	}
+	
 	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
 	{
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
@@ -58,6 +78,89 @@ public abstract class BundleObjectService extends ApigeeService {
 		return transformResults ; 
 
 	}
+	
+	public  ArrayList<HttpResponse<String>> importAll(String folderPath) throws UnirestException, IOException 
+	{
+		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		String envName ;
+		File folder = new File(folderPath); 
+		
+		for (File envFolder : folder.listFiles() )
+		{
+			int envProxiesCount = 0 ; 
+			envName = envFolder.getName(); 
+			System.out.println("================Importing "+this.getApigeeObjectType()+" Deplyed TO Environment  " + envName +"==============");
+			for (File objectFolder : envFolder.listFiles() )
+			{
+				envProxiesCount++; 
+				for (File revisionFolder : objectFolder.listFiles() )
+				{
+				
+					for (File zipfile : revisionFolder.listFiles())
+					{
+						int dotIndex = zipfile.getName().indexOf(".");
+						/*
+						if ( this.getProxyFilter() != null && !this.getProxyFilter().filter(zipfile))
+						{
+							System.out.println("=======Proxy "+ zipfile + " Is Scaped ==========") ; 
+							break;
+						}
+						*/
+						String objectName= zipfile.getName().substring(0, dotIndex ) ; 
+						System.out.println( objectName + ":" +zipfile.getAbsolutePath()  );
+						HttpResponse<String> result = importObject(zipfile.getAbsolutePath() , objectName);
+						int status = result.getStatus() ; 
+						if (! (status == 200 || status == 201) )
+						{	
+							System.out.println("Error Uploading Bundle " + objectName);
+							System.out.println("Error Details " + result.getBody());
+							failedResult.add(result) ; 
+						}
+						if (this.isDeployUponUpload())
+						{
+							Gson json = new Gson(); 
+							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
+							//--- Started Deploying the proxy revision to environment 
+							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
+							HttpResponse<String> deployresult = this.deployRevision(objectName, envName , newRevesion) ;
+							status = deployresult.getStatus() ;
+							if (status != 200)
+							{	
+								System.out.println("Error Deplying Proxy " + objectName);
+								System.out.println("Error Details " + deployresult.getBody());
+								failedResult.add(deployresult) ; 
+							}
+						}
+					}
+			
+				}
+				
+			}
+			System.out.println("==== End of Importing Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
+		}
+		System.out.println("Errors:  \n" + failedResult.toString()); 
+		return failedResult;
+	}
 
+	public HttpResponse<String> importObject(String pundleZipFileName , String objectName ) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = this.getResourcePath()+"?action=import&name="+objectName+"&validate=true" ; 
+		ManagementServer ms = this.getMs() ;
+		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
+		return result ; 
+	}	
+	
+	
+	public HttpResponse<String> deployRevision(String m_objectName , String m_envName , int revision ) throws UnirestException, IOException
+	{
+		HttpResponse<String> result = null; 
+		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
+		ManagementServer ms = this.getMs() ; 
+		result = ms.getPostHttpResponse(apiPath, null, null ) ;
+		return result ; 
+	}
+	
+	
 
 }

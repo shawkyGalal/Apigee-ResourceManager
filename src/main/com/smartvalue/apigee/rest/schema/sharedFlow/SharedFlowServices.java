@@ -2,25 +2,18 @@ package com.smartvalue.apigee.rest.schema.sharedFlow;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Deployable;
-import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
-import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
-import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
@@ -65,12 +58,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return proxiesList ;  
 	}
 	
-	
-	
-	public HttpResponse<String> importSharedFlow(String pundleZipFileName ) throws UnirestException, IOException
-	{
-		return importShareFlow (pundleZipFileName , new File(pundleZipFileName).getName() ) ; 
-	}
+
 	
 	public void transformPundle(String pundleZipFileName , String newFilePath)
 	{
@@ -89,15 +77,6 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		}
 	}
 	
-	public HttpResponse<String> importShareFlow(String pundleZipFileName , String m_sharedflowName) throws UnirestException, IOException
-	{
-		HttpResponse<String> result = null; 
-		String apiPath = this.getResourcePath()+"?action=import&name="+m_sharedflowName+"&validate=true" ; 
-		ManagementServer ms = this.getMs() ;
-		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
-		return result ; 
-	}
-
 	public  ArrayList<HttpResponse<String>> importAll(String folderPath ) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
@@ -120,7 +99,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 						int dotIndex = zipfile.getName().indexOf(".");
 						String sharedflowName= zipfile.getName().substring(0, dotIndex ) ; 
 						System.out.println( sharedflowName + ":" +zipfile.getAbsolutePath()  );
-						HttpResponse<String> result = importShareFlow(zipfile.getAbsolutePath() , sharedflowName);
+						HttpResponse<String> result = importObject(zipfile.getAbsolutePath() , sharedflowName);
 						int status = result.getStatus() ; 
 						if (! (status == 200 || status == 201) )
 						{	
@@ -158,7 +137,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	public HttpResponse<String> deleteSharedFlow( String m_sharedFlow) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
-		String apiPath = this.getResourcePath()+m_sharedFlow ; 
+		String apiPath = this.getResourcePath()+"/"+ m_sharedFlow ; 
 		ManagementServer ms = this.getMs() ; 
 		result = ms.getDeleteHttpResponse(apiPath ) ;
 		return result ; 
@@ -230,7 +209,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	@Override
 	public String getResourcePath() {
 		
-		return "/v1/organizations/"+orgName+"/sharedflows";
+		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType();
 	}
 
 	public boolean isDeployUponUpload() {
@@ -243,19 +222,17 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 
 	@Override
 	public String getApigeeObjectType() {
-		return "SharedFlow";
+		return "sharedflows";
 	}
 
 	
-	@Override
-	public HttpResponse<String> deployRevision(String m_sharedFlowName, String m_envName, int revision) throws UnirestException, IOException
-	{
-		HttpResponse<String> result = null; 
-		String apiPath = "/v1/organizations/"+this.orgName+"/environments/"+m_envName+"/apis/"+m_sharedFlowName +"/revisions/"+revision+"/deployments" ; 
-		ManagementServer ms = this.getMs(); 
-		result = ms.getPostHttpResponse(apiPath, "", "" ) ;
-		return result ; 
-	}
+	
+
+	
+
+	
+	
+
 	
 	
 	

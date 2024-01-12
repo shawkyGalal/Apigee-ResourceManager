@@ -15,11 +15,11 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 
 
 	@Override
-	public String getResourcePath() throws Exception {
-		if (envName == null)
-		{
-			throw new Exception("Environment Name is null, this is Environment Scoped Service ") ; 
-		}
+	public String getResourcePath() {
+		//if (envName == null)
+		//{
+		//	throw new Exception("Environment Name is null, this is Environment Scoped Service ") ; 
+		//}
 		return resourcePath ; 
 	}
 	

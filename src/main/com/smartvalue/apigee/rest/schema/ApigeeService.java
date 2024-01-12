@@ -95,7 +95,7 @@ public abstract class ApigeeService {
 	
 	public abstract ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException, Exception ; 
 	
-	public abstract String  getResourcePath() throws Exception ;
+	public abstract String  getResourcePath()  ;
 	public  ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) 
 	{
 		// Default Simple Implementation 
