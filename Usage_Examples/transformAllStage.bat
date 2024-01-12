@@ -1,0 +1,1 @@
+java -jar ..\target\ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile ..\config.json  -infra  Stage  -org stg  -operation migrate -transformAll proxies -sourceFolder "c:\temp\Stage\proxies" -destFolder "c:\temp\transform\Stage\proxies"

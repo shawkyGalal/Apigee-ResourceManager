@@ -1,9 +1,9 @@
 package com.smartvalue.apigee.resourceManager;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,6 +21,7 @@ import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
@@ -309,6 +310,10 @@ public class ApigeeTool
 		ProxyServices ps = ms.getProxyServices(org); 
 		ps.getTransformers().add(new TargetServerTransformer()) ; 
 		ps.getTransformers().add(new NullTransformer()) ;
+		List<String> searchFor = Arrays.asList("<Pattern/>"	);
+	    List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
+		ps.getTransformers().add(zfet) ; 
 		ps.transformAll(sourceFolder, destFolder);
 	}
 
