@@ -49,7 +49,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 		 try{ Files.createDirectories(Paths.get(outputZipFile));}
 		 catch (IOException e) {
 	        	result.withError(e.getMessage())
-	      		  	  .withStatus("Failed")
+	        		  .withFailed(true) 
 	      		  	  .withSource(bundleZipFileName)
 	      		  	  .withDestination(outputZipFile); 
 	        	e.printStackTrace();
@@ -78,7 +78,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 
 	        } catch (IOException e) {
 	        	result.withError(e.getMessage())
-	      		  	  .withStatus("Failed")
+	      		  	  .withFailed(true) 
 	      		  	  .withSource(bundleZipFileName)
 	      		  	  .withDestination(outputZipFile); 
 	        	e.printStackTrace();

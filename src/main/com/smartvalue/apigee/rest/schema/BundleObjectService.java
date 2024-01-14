@@ -63,8 +63,11 @@ public abstract class BundleObjectService extends ApigeeService {
 						{
 							boolean transform = trasnformer.filter(pundleZipFileName) ;
 							if (transform)
-							{	 
-								transformResults.add(trasnformer.trasform(pundleZipFileName , newBundleFolderPath));
+							{	
+								TransformResult  tr = trasnformer.trasform( pundleZipFileName , newBundleFolderPath);
+								if (tr.isFailed())	
+								{transformResults.add(tr);}
+							
 								System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
 							}
 						}

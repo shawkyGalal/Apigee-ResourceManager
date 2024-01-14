@@ -22,7 +22,7 @@ public class NullTransformer implements ApigeeObjectTransformer {
             System.out.println("File copied successfully!");
         } catch (IOException e) {
         	result.withError(e.getMessage())
-  		  	.withStatus("Failed")
+        	.withFailed(true)
   		  	.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath); 
         	e.printStackTrace();

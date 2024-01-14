@@ -33,7 +33,7 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
              
         } catch (Exception e) {
         	result.withError(e.getMessage())
-        		  .withStatus("Failed")
+        		  .withFailed(true) 
         		  .withSource(bundleZipFileName)
         		  .withDestination(outputZipFile); 
             e.printStackTrace();

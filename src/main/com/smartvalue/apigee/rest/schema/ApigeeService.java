@@ -116,7 +116,9 @@ public abstract class ApigeeService {
 				boolean transform = trasnformer.filter(apigeeObjectFile.getAbsolutePath()) ;
 				if (transform)
 				{	String filePath = apigeeObjectFile.getAbsolutePath() ; 
-					transformResults.add(trasnformer.trasform( filePath , outputFolderPath));
+					TransformResult  tr = trasnformer.trasform( filePath , outputFolderPath);
+					if (tr.isFailed())	
+					{transformResults.add(tr);}
 					System.out.println("=======ShawredFlow "+ filePath + " Is Tranformed To : "+outputFolderPath+" ==========") ;
 				}
 			}
