@@ -87,6 +87,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		
 		for (File envFolder : folder.listFiles() )
 		{
+			failedResult = new ArrayList<HttpResponse<String>>();  
 			int envProxiesCount = 0 ; 
 			envName = envFolder.getName(); 
 			System.out.println("================Importing "+this.getApigeeObjectType()+" Deplyed TO Environment  " + envName +"==============");
