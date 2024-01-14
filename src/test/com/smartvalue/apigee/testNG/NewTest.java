@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -51,7 +53,7 @@ public class NewTest {
 	String envName ; 
 	String proxyName ;
 	String region ; 
-	com.smartvalue.apigee.configuration.infra.ManagementServer ms ; 
+	
 	Organization org  ; 
 	Environment env ; 
 	
@@ -106,12 +108,12 @@ public class NewTest {
 		//ArrayList<TransformResult> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).transformAll(sourceFolderName +"\\apps" , transformFolderName +"\\apps" ) ;
 	  }
 	 
+	  private static final Logger svlogger = LogManager.getLogger(NewTest.class);
+
 	 
 	 @Test
 	  public void testImportAll() throws Exception {
-		//==================Import All ===========================
-		
-		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
+    	//==================Import All ===========================
 		String sourceFolderName = transformFolderName ; // "C:\\temp\\Stage" ;
 		//String destOrgName = "apigee-moj-stage" ; 
 		//ArrayList<HttpResponse<String>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).importAll(sourceFolderName +"\\targetservers") ;
@@ -121,24 +123,64 @@ public class NewTest {
 		//ArrayList<HttpResponse<String>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).importAll(sourceFolderName +"\\products") ; 
 		//ArrayList<HttpResponse<String>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).importAll(sourceFolderName +"\\developers") ;
 		//ArrayList<HttpResponse<String>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).importAll(sourceFolderName +"\\apps") ;
+
+		
 	  }
+	 
+	 @Test(groups = "deleteAll")
+	  public void testDeleteAllProxies() throws Exception {
+		//==================Import All ===========================
+		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ; 
+		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices(destOrgName).deleteAll() ;
+	  }
+
+	 
+	 @Test()
+	  public void testDeleteAll() throws Exception {
+		testDeleteAllApplications();
+		testDeleteAllDevelopers();
+		testDeleteAllProducts();
+		testDeleteAllTargetservers();
+		testDeleteAllKvms();
+		testDeleteAllsharedflows();
+		testDeleteAllProxies();
+	 }
+	 
+	 @Test(groups = "deleteAll")
+	  public void testDeleteAllsharedflows() throws Exception {
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).deleteAll() ;
+	 }
+	 
+	 @Test(groups = "deleteAll")
+	  public void testDeleteAllTargetservers() throws Exception {
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getTargetServersServices(destOrgName).deleteAll() ;
+	 }
+
+	 @Test(groups = "deleteAll")
+	 public void testDeleteAllKvms() throws Exception {
+		 ArrayList<HttpResponse<String>> kvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).deleteAll() ;	 
+	 }
+
+	 @Test(groups = "deleteAll")
+	 public void testDeleteAllProducts() throws Exception {
+		 ArrayList<HttpResponse<String>> productsFaults = destMngServer.getProductServices(destOrgName).deleteAll() ; 	 
+	 }
+	 
+	 @Test(groups = "deleteAll")
+	 public void testDeleteAllDevelopers() throws Exception {
+			ArrayList<HttpResponse<String>> devsFaults =  destMngServer.getDevelopersServices(destOrgName).deleteAll() ;
+	 }
+	 
+	 @Test(groups = "deleteAll")
+	 public void testDeleteAllApplications() throws Exception {
+			ArrayList<HttpResponse<String>> appsFaults = destMngServer.getApplicationServices(destOrgName).deleteAll() ;
+	 }
+	 
+
 	 
 	 @Test
-	  public void testDeleteAll() throws Exception {
-		//==================Import All ===========================
-		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ; 
-		ArrayList<HttpResponse<String>> targetServerFaults =  destMngServer.getTargetServersServices(destOrgName).deleteAll() ;
-		ArrayList<HttpResponse<String>> kvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).deleteAll() ;
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).deleteAll() ;
-		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices(destOrgName).deleteAll() ;
-		ArrayList<HttpResponse<String>> productsFaults = destMngServer.getProductServices(destOrgName).deleteAll() ; 
-		ArrayList<HttpResponse<String>> devsFaults =  destMngServer.getDevelopersServices(destOrgName).deleteAll() ;
-		ArrayList<HttpResponse<String>> appsFaults = destMngServer.getApplicationServices(destOrgName).deleteAll() ;
-	  }
-	 
-	  @Test
 	  public void testProductsWithoutProxies() throws UnirestException, IOException {
-		ProductsServices   productServices = ms.getProductServices(sourceOrgName) ; 
+		ProductsServices   productServices = destMngServer.getProductServices(sourceOrgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 
 		assert productsWithoutProxies.size() == 0 : "Product With No Proxies not Found!";
@@ -186,7 +228,7 @@ public class NewTest {
 			HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 			System.out.println(proxies);
 			String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
-			ms.getProxyServices(sourceOrgName).getProxiesWithoutPolices(aa, true) ; 
+			destMngServer.getProxyServices(sourceOrgName).getProxiesWithoutPolices(aa, true) ; 
 			HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 			System.out.println(allTargetServers);
 			
@@ -215,21 +257,19 @@ public class NewTest {
 	  }
 
 	  @BeforeClass
-	  @Test(dataProvider = "testData")
+	  @Test(dataProvider = "testData" , groups = "deleteAll")
 	  public void beforeClass() throws Exception 
 	  {
 		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
-		sourceInfra = ac.getInfra("MasterWorks" , "MOJ" , sourceInfraName) ;
-		
+			
 		destInfra = ac.getInfra("MasterWorks" , "Moj" , destInfraName) ;
-		region = "dc-1" ; 
-		sourceOrgName = "stg" ; 
-		envName = "iam-protected" ; 
-		proxyName = "oidc-core" ;
-	  
-		ms = sourceInfra.getManagementServer(region); // com.smartvalue.apigee.configuration.infra.ManagementServer(infra) ; 
-		org =  ms.getOrgByName(sourceOrgName) ;  
-		env =  org.getEnvByName(envName);
+		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
+		
+
+		sourceInfra = ac.getInfra("MasterWorks" , "MOJ" , sourceInfraName) ;
+		//sourceMngServer = sourceInfra.getManagementServer(region); // com.smartvalue.apigee.configuration.infra.ManagementServer(infra) ;
+		//org =  sourceMngServer.getOrgByName(sourceOrgName) ;  
+		//env =  org.getEnvByName(envName);
 
 	  }
 

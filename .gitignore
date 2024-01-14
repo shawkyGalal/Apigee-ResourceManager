@@ -38,3 +38,4 @@ target/classes/META-INF/MANIFEST.MF
 test-output/*
 config.json
 /bin/
+logs/*

@@ -115,6 +115,7 @@ public abstract class BundleObjectService extends ApigeeService {
 							System.out.println("Error Uploading Bundle " + objectName);
 							System.out.println("Error Details " + result.getBody());
 							failedResult.add(result) ; 
+							logger.error("Error Importing (" + this.getApigeeObjectType() +") Name : " + objectName +", Response_Body : "+ result.getBody());
 						}
 						if (this.isDeployUponUpload())
 						{
@@ -128,7 +129,8 @@ public abstract class BundleObjectService extends ApigeeService {
 							{	
 								System.out.println("Error Deplying Proxy " + objectName);
 								System.out.println("Error Details " + deployresult.getBody());
-								failedResult.add(deployresult) ; 
+								failedResult.add(deployresult) ;
+								logger.error("Error Deploying (" + this.getApigeeObjectType() +") Name : " + objectName +"Response Body : "+ deployresult.getBody());
 							}
 						}
 					}
@@ -137,8 +139,14 @@ public abstract class BundleObjectService extends ApigeeService {
 				
 			}
 			System.out.println("==== End of Importing Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
+			
+			if (failedResult.size() > 0 )
+			{
+				System.out.println(" Import Errors " + failedResult.size() + ", For More Details check log file /logs/system.log" );
+			}
 		}
-		System.out.println("Errors:  \n" + failedResult.toString()); 
+		
+		//System.out.println("Errors:  \n" + failedResult.toString()); 
 		return failedResult;
 	}
 

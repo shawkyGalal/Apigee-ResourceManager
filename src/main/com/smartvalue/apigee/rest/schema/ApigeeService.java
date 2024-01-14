@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -20,6 +23,7 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public abstract class ApigeeService {
 
+	protected static final Logger logger = LogManager.getLogger(ApigeeService.class);
 	private ManagementServer ms ;
 	protected String orgName ; 
 	protected String envName ; 

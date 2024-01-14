@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <File name="File" fileName="logs/system.log">
+         
+        <File name="ThirdParties" fileName="logs/thirdParties/system.log">
             <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
         </File>
+        
+        <RollingFile name="RollingFile" fileName="logs/system.log"
+                     filePattern="logs/system-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- Rollover based on time (daily) -->
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
+        
     </Appenders>
     <Loggers>
-        <Root level="debug">
-            <AppenderRef ref="File"/>
+    	<!-- Restrict logs to specific packages or classes -->
+        <Logger name="com.smartvalue" level="debug" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+        
+        <Root level="info">
+            <AppenderRef ref="ThirdParties"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -35,4 +35,7 @@ target/classes/META-INF/MANIFEST.MF
 .settings/org.eclipse.wst.common.project.facet.core.xml
 .settings/org.eclipse.wst.common.component
 .settings/org.eclipse.jdt.core.prefs
-test-output/bullet_point.png
+test-output/*
+config.json
+/bin/
+logs/app-01-13-2024-1.log.gz

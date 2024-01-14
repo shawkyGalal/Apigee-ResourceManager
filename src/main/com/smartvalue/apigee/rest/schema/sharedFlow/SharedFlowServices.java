@@ -76,7 +76,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 			}
 		}
 	}
-	
+	/*
 	public  ArrayList<HttpResponse<String>> importAll(String folderPath ) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
@@ -133,7 +133,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return failedResult;
 	}
 	
-
+*/
 	public HttpResponse<String> deleteSharedFlow( String m_sharedFlow) throws UnirestException, IOException
 	{
 		HttpResponse<String> result = null; 
