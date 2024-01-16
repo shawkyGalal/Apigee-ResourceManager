@@ -13,6 +13,10 @@ public class ApigeeTest {
 	protected static final String SharedflowsSubFolder = "\\sharedflows" ;
 	protected static final String PrtoductsSubFolder = "\\products" ;
 	protected static final String DevelopersSubFolder = "\\developers" ;
+	protected static final String appsSubFolder = "\\apps" ;
+	protected static final String kvmsSubFolder = "\\kvms" ;
+	protected static final String targetserversSubFolder = "\\targetservers" ; 
+	
 	protected static ApigeeConfig ac ; 
 	protected static String sourceInfraName = "Stage";
 	protected String sourceOrgName = "stg"; 

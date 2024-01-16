@@ -199,8 +199,11 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 			{
 				System.out.println( "Start Exporting SharedFlow :" + sharedFlowStr );
 				SharedFlow sharedFlow = this.getOrganization().getShardFlow(sharedFlowStr); 
-				HashMap<String , Exception> xx = sharedFlow.exportAllDeployedRevisions(folderDest) ;
-				failedResult.put(sharedFlowStr, xx); 
+				HashMap<String , Exception> exportFailures = sharedFlow.exportAllDeployedRevisions(folderDest) ;
+				if (exportFailures != null)
+				{
+					failedResult.put(sharedFlowStr, exportFailures); 
+				}
 			}
 		}
 		return failedResult;

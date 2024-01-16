@@ -2,12 +2,16 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.PrintStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 
 public abstract class ApigeeComman {
 
 	private transient PrintStream printStream = System.out; 
 	private transient  ManagementServer managmentServer;
+	protected static final Logger logger = LogManager.getLogger(ApigeeComman.class);
 	private String orgName ;
 	
 	public void setManagmentServer(ManagementServer ms) {

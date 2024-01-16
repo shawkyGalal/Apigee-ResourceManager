@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.jcraft.jsch.Logger;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -99,7 +100,7 @@ public abstract class RevisionedObject extends ApigeeComman {
 	
 	public HashMap<String , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		HashMap<String , Exception> failedResult = new HashMap<String , Exception>();  
+		HashMap<String , Exception> failedResult = null ;   
 		
 		for ( String  DeployedEnvName :  this.getDeployedRevisions().keySet()) 
 		{
@@ -116,7 +117,9 @@ public abstract class RevisionedObject extends ApigeeComman {
 					System.out.println(this.getClass().getName() +" : " + this.getName() + " Revision " +  revision + " Deplyed to Env " + DeployedEnvName +" Exported Successfully");
 				}
 				catch (Exception e) {
+					failedResult = new HashMap<String , Exception>(); 
 					failedResult.put(revisionString, e); 
+					logger.error("Failed to Export" + this.getClass().getName() +", Name : " + this.getName() +" revision # " +revision + " Due To : "+ e.getMessage()); 
 				}
 			}
 				

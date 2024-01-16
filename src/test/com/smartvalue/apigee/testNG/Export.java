@@ -42,20 +42,20 @@ public class Export extends ApigeeTest{
 	 @Test
 	 public void exportAllTargetServers() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName +"\\targetservers") ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName + targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void exportAllKvms() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(destFolderName +"\\kvms") ;		
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(destFolderName + kvmsSubFolder) ;		
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 @Test
 	 public void exportApps() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices(sourceOrgName).exportAll(destFolderName +"\\apps") ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices(sourceOrgName).exportAll(destFolderName + appsSubFolder) ;
 		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 

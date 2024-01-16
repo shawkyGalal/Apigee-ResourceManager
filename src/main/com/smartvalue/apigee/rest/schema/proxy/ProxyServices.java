@@ -167,8 +167,11 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 			{
 				System.out.println( "Start Exporting Proxy :" + proxyName );
 				Proxy proxy = this.getOrganization().getProxy(proxyName); 
-				HashMap<String , Exception> xx = proxy.exportAllDeployedRevisions(folderDest) ;
-				failedResult.put(proxyName, xx); 
+				HashMap<String , Exception> failures = proxy.exportAllDeployedRevisions(folderDest) ;
+				if (failures != null)
+				{
+					failedResult.put(proxyName, failures);
+				}
 			}
 		}
 		return failedResult;
