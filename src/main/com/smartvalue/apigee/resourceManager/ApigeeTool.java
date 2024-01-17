@@ -11,6 +11,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
@@ -25,16 +26,19 @@ import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTr
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
-import com.smartvalue.moj.clients.environments.JsonParser;
+
 
 public class ApigeeTool 
 {
-	private static String configFile ; 
+	private static String configFile = "config.json" ; 
 	private static String infra ;
 	private static String org ; 
 	private static String operation ;
 	private static Infra infraObject; 
 	private static ManagementServer ms ; 
+	private static String partner = "MasterWorks" ;
+	private static String customer = "MOJ" ;
+	
 	
 	private static HashMap<String , String> convertArgsToHashMap(String[] args )
     {
@@ -59,13 +63,14 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = getArgsHashMap() ; //convertArgsToHashMap(args) ;
 		System.out.println(argsMap );
 		operation = getMandatoryArg ( argsMap , "-operation") ; 
-	 	configFile = argsMap.get("-configFile") ; 
-    	infra = argsMap.get("-infra") ;
+	 	configFile = argsMap.get("-configFile") ;
+	 	try {  partner  = getMandatoryArg (argsMap , "-partner") ;} catch (Exception e) { /* -- Use the Defaults -- */ 	}
+	 	try {  customer = getMandatoryArg (argsMap , "-customer") ; } catch (Exception e) { /* -- Use the Defaults -- */ 	}
+    	infra = getMandatoryArg(argsMap, "-infra") ;
     	
-		JsonParser apigeeConfigParser = new JsonParser(  ) ;
-		ApigeeConfig ac = (ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
+		ApigeeConfig ac = ApigeeConfigFactory.create( configFile , ApigeeConfig.class) ;  //(ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
 
-		infraObject = ac.getInfra("MasterWorks" , "MOJ" , infra) ;
+		infraObject = ac.getInfra(partner , customer , infra) ;
     	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
     	Unirest.setTimeouts(ms.getServerProfile().getConnectionTimeout(), ms.getServerProfile().getSocketTimeout());
 	}

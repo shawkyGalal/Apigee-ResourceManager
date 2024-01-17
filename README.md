@@ -4,6 +4,8 @@ Apigee on perimis API management gateway
 
 Project Objective 
 This Project is intended to build a set of Google Apigee related utilities : 
+![ Migration Methodology Diagram ](./MigrationMethodology.png "a title") 
+
 1- Apigee Migration Tool especially from Apigee onpremise to Apigee Cloud - using Google Service Account Key for authorization 
 
 •	Install gcloud Google Command Line Tool 
