@@ -2,6 +2,7 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,12 +61,20 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	
 	/**
 	 * Environmental Based Objects transform ( targetServers , KVMs ) export 
+	 * @throws NoSuchFieldException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
 	 */
-	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
+	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers();
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
 		
 		for (File envFolder : folder.listFiles() )

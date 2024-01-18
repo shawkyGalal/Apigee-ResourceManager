@@ -2,6 +2,7 @@ package com.smartvalue.apigee.resourceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -280,82 +281,78 @@ public class ApigeeTool
 	}
 
 	
-	private static void transformAllTargetServers() {
+	private static void transformAllTargetServers() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getTargetServersServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
 		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
-	private static void transformAllKvms() {
+	private static void transformAllKvms() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getKeyValueMapServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
 		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
-	private static void transformAllDevelopers() {
+	private static void transformAllDevelopers() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getDevelopersServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
 		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
-	private static void transformAllApps() {
+	private static void transformAllApps() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getApplicationServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
 		service.transformAll(sourceFolder, destFolder);
 	}
 
-	private static void transformAllProducts() {
+	private static void transformAllProducts() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getProductServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
+		
 		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
-	private static void transformAlltSharedFlows() {
+	private static void transformAlltSharedFlows() throws Exception {
 		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
 		org = getMandatoryArg(argsAsHashMap, "-org");
 		ApigeeService service = ms.getSharedFlowServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.getTransformers().add(new NullTransformer()) ;
+		//service.getTransformers().add(new NullTransformer()) ;
 		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
-	private static void transformAllProxies() {
+	private static void transformAllProxies() throws Exception {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
 		String sourceFolder = getMandatoryArg(getArgsHashMap(), "-sourceFolder");
 		String destFolder = getMandatoryArg(getArgsHashMap(), "-destFolder");
 		ProxyServices ps = (ProxyServices) ms.getProxyServices(org); 
-		ps.getTransformers().add(new TargetServerTransformer()) ; 
-		ps.getTransformers().add(new NullTransformer()) ;
-		List<String> searchFor = Arrays.asList("<Pattern/>"	);
-	    List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
-		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
-		ps.getTransformers().add(zfet) ; 
+		//ps.getTransformers().add(new TargetServerTransformer()) ; 
+		//ps.getTransformers().add(new NullTransformer()) ;
+		//List<String> searchFor = Arrays.asList("<Pattern/>"	);
+	    //List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+		//ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
+		//ps.getTransformers().add(zfet) ; 
 		ps.transformAll(sourceFolder, destFolder);
 	}
 

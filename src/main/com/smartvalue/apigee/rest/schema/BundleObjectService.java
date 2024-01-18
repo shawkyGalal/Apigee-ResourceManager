@@ -3,6 +3,7 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
@@ -33,12 +34,13 @@ public abstract class BundleObjectService extends ApigeeService {
 		this.deployUponUpload = deployUponUpload;
 	}
 	
-	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath)
+	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
 	{
+		
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers(); 
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers() ;   
 	
 		for (File envFolder : folder.listFiles() )
 		{

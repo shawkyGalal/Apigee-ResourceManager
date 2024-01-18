@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +31,7 @@ public abstract class ApigeeService {
 	private Organization organization ; 
 	protected String resourcePath ; 
 	
+	/*
 	ArrayList<ApigeeObjectTransformer> transformers = new ArrayList<ApigeeObjectTransformer>();
 	
 	public ArrayList<ApigeeObjectTransformer> getTransformers() {
@@ -48,7 +50,7 @@ public abstract class ApigeeService {
 		this.transformers = bundleUploadTranformers;
 	}
 	
-	
+	*/
 	public ManagementServer getMs() {
 		return ms;
 	}
@@ -99,11 +101,11 @@ public abstract class ApigeeService {
 	public abstract ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException, Exception ; 
 	
 	public abstract String  getResourcePath()  ;
-	public  ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) 
+	public  ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception 
 	{
 		// Default Simple Implementation 
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getTransformers();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers();
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
 		
 		for (File apigeeObjectFile : folder.listFiles() )

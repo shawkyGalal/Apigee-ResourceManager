@@ -98,11 +98,11 @@ public class NewTest {
 		//----End of building transformers 
 		
 		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices(sourceOrgName);
-		sfs.setTranformers(transformers); 
+		//sfs.setTranformers(transformers); 
 		ArrayList<TransformResult> sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
 		
 		ApigeeService proxyServ =  sourceMngServer.getProxyServices(sourceOrgName); 
-		proxyServ.setTranformers(transformers); 
+		//proxyServ.setTranformers(transformers); 
 		ArrayList<TransformResult> proxiesFaults =  proxyServ.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
 		//ArrayList<TransformResult> productsFaults = sourceMngServer.getProductServices(sourceOrgName).transformAll(sourceFolderName +"\\products" , transformFolderName +"\\products") ; 
 		//ArrayList<TransformResult> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).transformAll(sourceFolderName +"\\developers" , transformFolderName +"\\developers" ) ;

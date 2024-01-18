@@ -2,6 +2,7 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,13 +82,15 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		
 	}
 
-	public ArrayList<TransformResult> transformPundle(String pundleZipFileName , String newFilePath)
+	public ArrayList<TransformResult> transformPundle(String pundleZipFileName , String newFilePath) throws Exception
 	{
 		int count=0; 
-		int transformersSize = this.getTransformers().size();
+		ArrayList<ApigeeObjectTransformer> transformers  = this.getMs().getInfra().buildTransformers() ;
+		
+		int transformersSize = transformers.size();
 		String sourceFile = pundleZipFileName ;
 		ArrayList<TransformResult> result = new ArrayList<TransformResult>() ; 
-		for (ApigeeObjectTransformer aot : this.getTransformers())
+		for (ApigeeObjectTransformer aot : transformers)
 		{
 			count++; 
 			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_Tranform_"+count;

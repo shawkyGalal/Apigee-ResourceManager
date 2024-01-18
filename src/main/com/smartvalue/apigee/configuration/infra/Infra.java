@@ -1,12 +1,20 @@
 package com.smartvalue.apigee.configuration.infra;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
+import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
+import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
+import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 
 public class Infra {
 	private String Name ; 
@@ -15,6 +23,7 @@ public class Infra {
 	private DevPortal DevPortal ; 
 	private ArrayList<Region> regions; 
 	private String AuthType ;
+	
 	
 	private Boolean googleCloud;
 	
@@ -25,6 +34,13 @@ public class Infra {
 	public static final String GoogleServiceAccount = "googleServiceAccount" ; 
 	public static final String GoogleWebAppCredential = "googleWebAppCredential" ;
 	
+	@JsonProperty("Transformers")
+    private ArrayList<Transformer> transformers ; //= new ArrayList<Transformer>();
+	
+	public ArrayList<Transformer> getTransformers() {
+		return transformers;
+	}
+
 	@JsonProperty("googleWebAppCredential")
 	private GoogleWebAppCredential googleWebAppCredential ; 
 	
@@ -194,5 +210,27 @@ public class Infra {
 		return accessTokenSource;
 	}
 	
+	public ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	{
+		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
+		for (Transformer tr :  getTransformers() )
+		{
+			String transformerClass = tr.getImplClass(); 
+			Class<?> cls = Class.forName(transformerClass);
+			java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
+			ApigeeObjectTransformer obj = (ApigeeObjectTransformer) cons.newInstance();
+
+			for (Attribute att :  tr.getAttributes())
+			{
+				Field field = cls.getDeclaredField(att.getName());
+				field.setAccessible(true);
+				field.set(obj, att.getValue());
+			}
+			result.add(obj); 
+		}
+		
+		return result ; 
+		
+	}
 		
 }

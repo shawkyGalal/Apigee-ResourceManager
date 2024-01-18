@@ -2,7 +2,7 @@ package com.smartvalue.apigee.rest.schema.sharedFlow;
 
 import java.io.File;
 import java.io.IOException;
-
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -60,12 +60,13 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	
 
 	
-	public void transformPundle(String pundleZipFileName , String newFilePath)
+	public void transformPundle(String pundleZipFileName , String newFilePath) throws Exception
 	{
 		int count=0; 
-		int transformersSize = this.getTransformers().size();
+		ArrayList<ApigeeObjectTransformer> transformers  = this.getMs().getInfra().buildTransformers() ;
+		int transformersSize = transformers.size();
 		String sourceFile = pundleZipFileName ;
-		for (ApigeeObjectTransformer aot : this.getTransformers())
+		for (ApigeeObjectTransformer aot : transformers )
 		{
 			count++; 
 			String tranformedFile = (count == transformersSize)? newFilePath : newFilePath+"_"+count;

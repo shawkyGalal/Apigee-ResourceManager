@@ -6,20 +6,24 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
 /**
  * The Main Objective of this tranformer is to change HTTPTargetConnection from using a hardcoded backend server URL , to an Environment Configured TargetServer 
  */
+	
+	String targetServerName = "xxxxx" ;
+	String targetServerPath = "pathyyyy"; 
+	private String fileName ;
+    private String xpath ;
+	
 	@Override
 	public  TransformResult  trasform(String  bundleZipFileName , String outputZipFile) {
 
 		//--- TODO --
 		//1- Creare a new Target Server specific for this Proxy Pundle
-		String targetServerName = "xxxxx" ;
-		String targetServerPath = "pathyyyy"; 
+		targetServerName = "xxxxx" ;
+		 targetServerPath = "pathyyyy"; 
 		
 		//2- Use the 
 		
 		TransformResult result = new TransformResult() ; 
-		String fileName = "apiproxy/targets/default.xml";
-        String xpath = "/TargetEndpoint/HTTPTargetConnection";
-        
+		        
         //String outputZipFile = bundleZipFileName.substring(0, bundleZipFileName.indexOf("."))+"_TSTransormed.zip" ; //"G:\\My Drive\\MasterWorks\\Apigee\\Customers\\MOJ\\10.162.3.3.etc.apigee\\apigee-migrate-tool\\data_history\\MOJ\\Prod\\moj-prod\\iam-protected\\2023-11-19-03-33\\proxies\\AccessCaseFile_updated.zip";
         String newXmlString = "<HTTPTargetConnection><SSLInfo>\r\n" + 
         		"            <Enabled>true</Enabled>\r\n" + 
