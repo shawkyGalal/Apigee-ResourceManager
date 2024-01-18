@@ -1,5 +1,6 @@
-package com.smartvalue.apigee.rest.schema.proxy.transformers;
+package com.smartvalue.apigee.rest.schema;
 
+import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public interface  ApigeeObjectTransformer {
 

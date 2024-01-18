@@ -8,7 +8,6 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public abstract class EnvironmentScopeService extends ApigeeService {

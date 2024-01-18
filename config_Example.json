@@ -1,70 +1,69 @@
 {
 	"Partners":[		
-	{	"Name" : "YourCompanyName" , 
-		"Customers" : [
-			{	"Name" : "Customer01"  
-				,"Infras" : [
-					{	"Name" : "Stage" ,
-						"regions" :
-						 [
-							{ "name" : "dc-1" ,  
-							"MgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" , 
-							"OauthMgmServerUrl" : "http://stage.apigee.moj.gov.local:9001/api-management" ,
-							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" ,  
-							"podGateWayName" : "gateway"
+		{  "Name" : "YourCompanyName" , 
+			"Customers" : [
+				{	"Name" : "Customer01"  
+					,"Infras" : [
+						{	"Name" : "Stage" ,
+							"regions" :
+							 [
+								{ "name" : "dc-1" ,  
+								"MgmServerUrl" : "http://stage.apigee.yourcompany.com:9001/api-management" , 
+								"OauthMgmServerUrl" : "http://stage.apigee.yourcompany.com/api-management" ,
+								"tokenUrl" : "http://stage.apigee.yourcompany.com/v1/authorize/access-token" ,  
+								"podGateWayName" : "gateway"
+								}, 
+								{ "name" : "dc-2" ,  
+								"MgmServerUrl" : "http://stage-dr.apigee.yourcompany.com/api-management" , 
+								"OauthMgmServerUrl" : "http://stage-dr.apigee.yourcompany.com/api-management" ,
+								"tokenUrl" : "http://stage.apigee.yourcompany.com/v1/authorize/access-token" , 
+								"podGateWayName" : "gateway-2"
+								}
+							],
+							"AuthType" : "OAuth" , 
+							"sysadminCred" : {
+								"Username" : "******" , 
+								"Password" : "*******" , 
+								"clientId" : "*********************" , 
+								"clientSecret" : "********************"
 							}, 
-							{ "name" : "dc-2" ,  
-							"MgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" , 
-							"OauthMgmServerUrl" : "http://stage-dr.apigee.moj.gov.local:9001/api-management" ,
-							"tokenUrl" : "http://stage.apigee.moj.gov.local:9001/v1/authorize/access-token" , 
-							"podGateWayName" : "gateway-2"
-							}
-						],
-						"AuthType" : "OAuth" , 
-						"sysadminCred" : {
-							"Username" : "devops@moj.gov.sa" , 
-							"Password" : "Moj@1357" , 
-							"clientId" : "u0iC4EnKDdVLQvud1GUSzSgwUMhxwyXP" , 
-							"clientSecret" : "UKLBn325ZIX1mulU"
+							"connectionTimeout" : "0" ,
+							"socketTimeout" : "20000" , 
+							"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
+							"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 						}, 
-						"connectionTimeout" : "0" ,
-						"socketTimeout" : "20000" , 
-						"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
-						"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
-					}, 
-					
-					{	 "Name" : "Gcloud(shawky.foda@gmail.com)" ,
-						"connectionTimeout" : "0" ,
-						"socketTimeout" : "20000" ,
-						 "AuthType" : "OAuth" , 
-						 "googleCloud" : "true",
-						 "googleServiceAccount" : {
-							  "type": "service_account",
-							  "project_id": "********",
-							  "private_key_id": "*************************",
-							  "private_key": "-----BEGIN PRIVATE KEY-----****************************\n-----END PRIVATE KEY-----\n",
-							  "client_email": "********@******.iam.gserviceaccount.com",
-							  "client_id": "100161588649150357715",
-							  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-							  "token_uri": "https://oauth2.googleapis.com/token",
-							  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-							  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/apigeeamin-java%40moj-apigee.iam.gserviceaccount.com",
-							  "universe_domain": "googleapis.com"
+						
+						{	 
+							"Name" : "MyApigee" ,
+							"connectionTimeout" : "0" ,
+							"socketTimeout" : "20000" ,
+							"AuthType" : "OAuth" , 
+							"googleCloud" : "true",
+							"googleServiceAccount" : {
+								  "type": "service_account",
+								  "project_id": "********",
+								  "private_key_id": "*************************",
+								  "private_key": "-----BEGIN PRIVATE KEY-----****************************\n-----END PRIVATE KEY-----\n",
+								  "client_email": "********@******.iam.gserviceaccount.com",
+								  "client_id": "100161588649150357715",
+								  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+								  "token_uri": "https://oauth2.googleapis.com/token",
+								  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+								  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/apigeeamin-java%40moj-apigee.iam.gserviceaccount.com",
+								  "universe_domain": "googleapis.com"
 							}
-						 
-						 , 
-						"regions" :
-						 [
-							{ "name" : "region01" ,  
-							"OauthMgmServerUrl" : "https://apigee.googleapis.com/" ,
-							"tokenUrl" : "http://10.162.3.3:9001/gcloudaccesstokengenerator"   
-							}
-						]
-					}
-					
-				]
-			} 			
-		]
-	}	
+							 , 
+							"regions" :
+							[
+								{ "name" : "region01" ,  
+									"OauthMgmServerUrl" : "https://apigee.googleapis.com/" 
+								}
+							]
+						}
+						
+					]
+				} 			
+			]
+		}	
 	]
 }

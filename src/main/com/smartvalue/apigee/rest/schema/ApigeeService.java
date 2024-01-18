@@ -17,7 +17,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 

@@ -14,8 +14,8 @@ import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;

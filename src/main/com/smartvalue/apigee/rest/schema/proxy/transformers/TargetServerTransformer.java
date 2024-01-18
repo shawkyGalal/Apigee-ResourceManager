@@ -1,5 +1,7 @@
 package com.smartvalue.apigee.rest.schema.proxy.transformers;
 
+import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+
 public class TargetServerTransformer implements ApigeeObjectTransformer {
 /**
  * The Main Objective of this tranformer is to change HTTPTargetConnection from using a hardcoded backend server URL , to an Environment Configured TargetServer 

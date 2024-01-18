@@ -18,6 +18,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+
 public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	
 	private List<String> searchFor ;

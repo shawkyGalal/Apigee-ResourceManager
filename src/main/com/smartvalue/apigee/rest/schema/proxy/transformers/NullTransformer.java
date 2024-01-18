@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+
 public class NullTransformer implements ApigeeObjectTransformer {
 
 	@Override
