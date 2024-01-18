@@ -27,6 +27,7 @@ import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;
@@ -96,7 +97,7 @@ public class NewTest {
 		transformers.add(zfet) ; 
 		//----End of building transformers 
 		
-		SharedFlowServices sfs = sourceMngServer.getSharedFlowServices(sourceOrgName);
+		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices(sourceOrgName);
 		sfs.setTranformers(transformers); 
 		ArrayList<TransformResult> sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
 		
@@ -118,8 +119,8 @@ public class NewTest {
 		//String destOrgName = "apigee-moj-stage" ; 
 		//ArrayList<HttpResponse<String>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).importAll(sourceFolderName +"\\targetservers") ;
 		//ArrayList<HttpResponse<String>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).importAll(sourceFolderName +"\\kvms") ;
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
-		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices(destOrgName).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices(destOrgName)).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
+		ArrayList<HttpResponse<String>> proxiesFaults =  ((ProxyServices) destMngServer.getProxyServices(destOrgName)).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
 		//ArrayList<HttpResponse<String>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).importAll(sourceFolderName +"\\products") ; 
 		//ArrayList<HttpResponse<String>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).importAll(sourceFolderName +"\\developers") ;
 		//ArrayList<HttpResponse<String>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).importAll(sourceFolderName +"\\apps") ;
@@ -180,7 +181,7 @@ public class NewTest {
 	 
 	 @Test
 	  public void testProductsWithoutProxies() throws UnirestException, IOException {
-		ProductsServices   productServices = destMngServer.getProductServices(sourceOrgName) ; 
+		ProductsServices   productServices = (ProductsServices) destMngServer.getProductServices(sourceOrgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 
 		assert productsWithoutProxies.size() == 0 : "Product With No Proxies not Found!";
@@ -228,7 +229,8 @@ public class NewTest {
 			HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 			System.out.println(proxies);
 			String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
-			destMngServer.getProxyServices(sourceOrgName).getProxiesWithoutPolices(aa, true) ; 
+			ProxyServices ps = (ProxyServices) destMngServer.getProxyServices(sourceOrgName) ;  
+			ps.getProxiesWithoutPolices(aa, true) ; 
 			HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 			System.out.println(allTargetServers);
 			

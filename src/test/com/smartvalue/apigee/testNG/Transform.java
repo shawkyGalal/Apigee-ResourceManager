@@ -40,6 +40,74 @@ public class Transform extends ApigeeTest{
 		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(destFolderName + SharedflowsSubFolder,  transformFolderName + SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
+	 
+	 @Test
+	 public void transformAllDevelopers() throws Exception {
+		//==================Transform All Sharedflows ===========================
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(sourceOrgName); 
+		objectServices.setTranformers(buildDevelopersTransformers()); 
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(destFolderName + DevelopersSubFolder,  transformFolderName + DevelopersSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 }
+	 
+	 @Test
+	 public void transformAllApps() throws Exception {
+		//==================Transform All Sharedflows ===========================
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(sourceOrgName); 
+		objectServices.setTranformers(buildAppsTransformers()); 
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(destFolderName + appsSubFolder,  transformFolderName + appsSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 } 
+	 
+	 @Test
+	 public void transformAllProducts() throws Exception {
+		//==================Transform All Sharedflows ===========================
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(sourceOrgName); 
+		objectServices.setTranformers(buildProductssTransformers()); 
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(destFolderName + PrtoductsSubFolder,  transformFolderName + PrtoductsSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 } 
+	 
+	 @Test
+	 public void transformAllTargetServers() throws Exception {
+		//==================Transform All Sharedflows ===========================
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(sourceOrgName); 
+		objectServices.setTranformers(buildTargetServersTransformers()); 
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(destFolderName + targetserversSubFolder,  transformFolderName + targetserversSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 } 
+	 
+	 @Test
+	 public void transformAllKvms() throws Exception {
+		//==================Transform All Sharedflows ===========================
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(sourceOrgName); 
+		objectServices.setTranformers(buildKvmsTransformers()); 
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(destFolderName + kvmsSubFolder,  transformFolderName + kvmsSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 } 
+	 
+	 
+	 
+	 
+	private ArrayList<ApigeeObjectTransformer> buildKvmsTransformers() {
+		return new ArrayList<ApigeeObjectTransformer>() ;
+	}
+
+	private ArrayList<ApigeeObjectTransformer> buildTargetServersTransformers() {
+		return new ArrayList<ApigeeObjectTransformer>() ;
+	}
+
+	private ArrayList<ApigeeObjectTransformer> buildProductssTransformers() {
+		return new ArrayList<ApigeeObjectTransformer>() ;
+	}
+
+	private ArrayList<ApigeeObjectTransformer> buildAppsTransformers() {
+		return new ArrayList<ApigeeObjectTransformer>() ;
+	}
+
+	private ArrayList<ApigeeObjectTransformer> buildDevelopersTransformers() {
+		return new ArrayList<ApigeeObjectTransformer>() ;
+	}
 
 	@BeforeMethod
 	 public void beforeMethod() {

@@ -101,9 +101,6 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return result; 
 	}
 
-	
-
-	
 
 	public HttpResponse<String> deleteProxy( String m_proxyName) throws UnirestException, IOException
 	{
@@ -145,7 +142,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
 		if (isGoogleCloud != null && isGoogleCloud)
 		{
-			GoogleProxiesList proxiesList = this.getMs().getProxyServices(this.orgName).getAllProxiesList(GoogleProxiesList.class);
+			GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class);
 			allProxies = new ArrayList<String>();
 			for (GoogleProxy googleproxy : proxiesList.getProxies())
 			{

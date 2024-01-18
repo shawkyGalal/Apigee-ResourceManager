@@ -27,6 +27,7 @@ import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -47,21 +48,7 @@ public class ManagementServer extends Server{
 	private Infra infra ;  
 	private String infraName ; 
 	
-	/*
-	public ManagementServer(Infra m_infra , String m_regionName  ) throws UnirestException 
-	{
-		MyServerProfile m_serverProfile = mapConfigFileToServerProfile(m_infra , m_regionName ) ;
-		serverProfile = m_serverProfile; 
-		if (serverProfile.getAuthType().equalsIgnoreCase("OAuth") ) 
-		{
-			ApigeeAccessToken at = this.getAccess_token() ;
-			this.serverProfile.setBearerToken(at.getAccess_token()) ;
-			this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
-		}
-		this.setRegion(m_regionName);
-		this.setInfra(m_infra);
-	}
-	*/
+
 	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra ) { 
 		this.setInfraName(m_infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
@@ -352,61 +339,43 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return targetServersNames ; 
 	}
 	
-	public ProductsServices getProductServices(String m_orgName)
+	public ApigeeService getProductServices(String m_orgName)
 	{
-		ProductsServices srv = new ProductsServices( this, m_orgName) ; 
-		srv.setMs(this);
-		return srv;
-		
+		return  new ProductsServices( this, m_orgName) ; 
 	}
 
-	public ServerServices getServerServices( )
+	public ServerServices  getServerServices( )
 	{
-		ServerServices srv = new ServerServices(this) ; 
-		srv.setMs(this);
-		return srv;
+		return  new ServerServices(this) ; 
 	}
 	
-	public KvmServices getKeyValueMapServices(String m_orgName)
+	public ApigeeService getKeyValueMapServices(String m_orgName)
 	{
-		KvmServices  srv = new KvmServices(this , m_orgName) ; 
-		srv.setMs(this);
-		return srv;
-		
+		return  new KvmServices(this , m_orgName) ; 
 	}
 	
-	public ProxyServices getProxyServices(String m_orgName )
+	public ApigeeService getProxyServices(String m_orgName )
 	{
-		ProxyServices  srv = new ProxyServices(this , m_orgName) ; 
-		srv.setMs(this);
-		return srv;
-		
+		return  new ProxyServices(this , m_orgName) ; 
 	}
-	public SharedFlowServices getSharedFlowServices(String m_orgName )
+	
+	public ApigeeService getSharedFlowServices(String m_orgName )
 	{
-		SharedFlowServices  sfrv = new SharedFlowServices(this , m_orgName ) ; 
-		sfrv.setMs(this);
-		return sfrv;
+		return  new SharedFlowServices(this , m_orgName ) ; 
 	}
 	
-	public ApplicationServices getApplicationServices(String m_orgName )
+	public ApigeeService getApplicationServices(String m_orgName )
 	{
-		ApplicationServices  appServices = new ApplicationServices(this , m_orgName ) ; 
-		appServices.setMs(this);
-		return appServices;
+		return  new ApplicationServices(this , m_orgName ) ; 
 	}
 	
-	public DeveloperServices getDevelopersServices(String m_orgName) {
-		DeveloperServices  developersServices = new DeveloperServices(this , m_orgName ) ; 
-		developersServices.setMs(this);
-		return developersServices;
+	public ApigeeService getDevelopersServices(String m_orgName) {
+		return  new DeveloperServices(this , m_orgName ) ; 
 	}
 	
-	public TargetServerServices getTargetServersServices(String m_orgName) {
-		TargetServerServices  targetServerServices = new TargetServerServices(this , m_orgName) ; 
-		return targetServerServices;
+	public ApigeeService getTargetServersServices(String m_orgName) {
+		return  new TargetServerServices(this , m_orgName) ; 
 	}
-	
 
 	@Override
 	public String getSimpleName() {
@@ -414,7 +383,6 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 
 	public ArrayList<MPServer>  getFreeMps(String m_region ) throws Exception {
-		// TODO Auto-generated method stub
 		ArrayList<MPServer> result = new ArrayList<MPServer>(); 
 		FilteredList<MPServer> all =  this.getServerServices().getMPServers(m_region); 
 		for ( MPServer mpServer : all )
@@ -488,8 +456,5 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		this.accessToken = webLoginAccessToken ; 
 		
 	}
-
-	
-
 
 }

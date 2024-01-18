@@ -14,6 +14,7 @@ import com.smartvalue.apigee.configuration.ApigeeConfig;
 import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
@@ -143,7 +144,7 @@ public class ApigeeTool
  	 org = getMandatoryArg(argsMap, "-org");
  	 String[]  policesNameArray =  policesName.split(",") ; 
  	 String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
-	 ProxyServices ps = ms.getProxyServices(org) ;
+	 ProxyServices ps = (ProxyServices) ms.getProxyServices(org) ;
 	 HashMap<String,List<Object>>  result  = ps.getProxiesWithoutPolices(policesNameArray, deployedRevisionOnly.equalsIgnoreCase("true")) ;
 	 System.out.println("=================List Of Proxies Do not Use the following policies "+policesName+" ======================");
 	 System.out.println(Renderer.hashMapWithArraylisttoHtmlTable(result));
@@ -152,7 +153,7 @@ public class ApigeeTool
 
  	private static ArrayList<Object>  productsWithoutProxies(String[] args) throws UnirestException, IOException 
  	{
-	 ProductsServices ps = ms.getProductServices(org) ; 
+	 ProductsServices ps = (ProductsServices) ms.getProductServices(org) ; 
 	 ArrayList<Object> results  = ps.getProductsWithoutProxies() ;
 	 System.out.println("=================List Of Products without Proxies ======================");
 	 System.out.println(Renderer.arrayListToHtmlTable(results)); 
@@ -278,33 +279,69 @@ public class ApigeeTool
 		
 	}
 
+	
 	private static void transformAllTargetServers() {
-		// TODO Auto-generated method stub
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getTargetServersServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
 	private static void transformAllKvms() {
-		// TODO Auto-generated method stub
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getKeyValueMapServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
 	private static void transformAllDevelopers() {
-		// TODO Auto-generated method stub
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getDevelopersServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
 	private static void transformAllApps() {
-		// TODO Auto-generated method stub
-		
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getApplicationServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 	}
 
 	private static void transformAllProducts() {
-		// TODO Auto-generated method stub
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getProductServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
 	private static void transformAlltSharedFlows() {
-		// TODO Auto-generated method stub
+		HashMap<String, String> argsAsHashMap = getArgsHashMap(); 
+		org = getMandatoryArg(argsAsHashMap, "-org");
+		ApigeeService service = ms.getSharedFlowServices(org); 
+		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
+		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
+		service.getTransformers().add(new NullTransformer()) ;
+		service.transformAll(sourceFolder, destFolder);
 		
 	}
 
@@ -312,7 +349,7 @@ public class ApigeeTool
 		org = getMandatoryArg(getArgsHashMap(), "-org");
 		String sourceFolder = getMandatoryArg(getArgsHashMap(), "-sourceFolder");
 		String destFolder = getMandatoryArg(getArgsHashMap(), "-destFolder");
-		ProxyServices ps = ms.getProxyServices(org); 
+		ProxyServices ps = (ProxyServices) ms.getProxyServices(org); 
 		ps.getTransformers().add(new TargetServerTransformer()) ; 
 		ps.getTransformers().add(new NullTransformer()) ;
 		List<String> searchFor = Arrays.asList("<Pattern/>"	);
@@ -342,45 +379,45 @@ public class ApigeeTool
 	
 	private static void deleteAllProducts() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		ProductsServices service = ms.getProductServices(org); 
+		ProductsServices service = (ProductsServices) ms.getProductServices(org); 
 		service.deleteAll(); 
 	}
 	private static void deleteAllTargetServers() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		TargetServerServices service = ms.getTargetServersServices(org);
+		TargetServerServices service = (TargetServerServices) ms.getTargetServersServices(org);
 		service.deleteAll(); 
 		
 	}
 
 	private static void deleteAllKvms() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		KvmServices service = ms.getKeyValueMapServices(org);
+		KvmServices service = (KvmServices) ms.getKeyValueMapServices(org);
 		service.deleteAll(); 
 		
 	}
 
 	private static void deleteAllDevelopers() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		DeveloperServices service = ms.getDevelopersServices(org);
+		DeveloperServices service = (DeveloperServices) ms.getDevelopersServices(org);
 		service.deleteAll(); 
 	}
 
 	private static void deleteAllApps() throws UnirestException, IOException {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		ApplicationServices service = ms.getApplicationServices(org);
+		ApplicationServices service = (ApplicationServices) ms.getApplicationServices(org);
 		service.deleteAll(); 
 	}
 
 	private static void deleteAlltSharedFlows() throws Exception {
 		org = getMandatoryArg(getArgsHashMap(), "-org"); 
-		SharedFlowServices sfs = ms.getSharedFlowServices(org); 
+		SharedFlowServices sfs = (SharedFlowServices) ms.getSharedFlowServices(org); 
 		sfs.deleteAll() ;
 	}
 
 	private static void deleteAllProxies() throws Exception {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
-		ProxyServices proxiesServices = ms.getProxyServices(org); 
+		ProxyServices proxiesServices = (ProxyServices) ms.getProxyServices(org); 
 		proxiesServices.deleteAll() ;
 		
 	}
@@ -419,7 +456,7 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
-		SharedFlowServices sfs = ms.getSharedFlowServices(org);
+		SharedFlowServices sfs = (SharedFlowServices) ms.getSharedFlowServices(org);
 		sfs.exportAll(folderDest);
 		
 	}
@@ -428,7 +465,7 @@ public class ApigeeTool
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
-		ProxyServices ps = ms.getProxyServices(org);
+		ProxyServices ps = (ProxyServices) ms.getProxyServices(org);
 		ps.exportAll(folderDest);
 		
 	}
@@ -468,7 +505,7 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
-    	SharedFlowServices sharedFlowServices = ms.getSharedFlowServices(org); 
+    	SharedFlowServices sharedFlowServices = (SharedFlowServices) ms.getSharedFlowServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
 		sharedFlowServices.setDeployUponUpload(isdeploy);
 		sharedFlowServices.importAll(sourceFolder) ;
@@ -480,7 +517,7 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");
 		String deploy = argsMap.get("-deploy"); 
-    	ProxyServices proxiesServices = ms.getProxyServices(org); 
+    	ProxyServices proxiesServices = (ProxyServices) ms.getProxyServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
 		proxiesServices.setDeployUponUpload(isdeploy);
 		proxiesServices.importAll(sourceFolder) ;

@@ -109,13 +109,13 @@ public class Tester {
 		
 		String transFolder = "C:\\temp\\MOJ\\Stage_tranformed" ;
 		//==================Transform All  ===========================
-		ProxyServices ps = sourceMngServer.getProxyServices(sourceOrgName); 
+		ProxyServices ps = (ProxyServices) sourceMngServer.getProxyServices(sourceOrgName); 
 		ps.getTransformers().add(new NullTransformer()) ;
 		ps.getTransformers().add(new TargetServerTransformer()) ;
 		ps.getTransformers().add(new NullTransformer()) ;
 		ps.transformAll(exportFolderName+"\\proxies", transFolder+"\\proxies");
 		
-		SharedFlowServices sfs = sourceMngServer.getSharedFlowServices(sourceOrgName); 
+		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices(sourceOrgName); 
 		sfs.getTransformers().add(new TargetServerTransformer()) ; 
 		sfs.getTransformers().add(new NullTransformer()) ;
 		sfs.transformAll(exportFolderName + "\\sharedflows", transFolder + "\\sharedflows");
