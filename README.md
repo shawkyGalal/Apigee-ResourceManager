@@ -4,8 +4,11 @@ A Java Command Line tool for Google Apigee API management gateway
 
 ## Prerequizite 
 Before start using this project you should have the following components/system installed on your machine 
+
 1- Java 
+
 2- maven 
+
 3- Having a Google Cloud account and a Project with Apigee API's enabled 
 
 ## Project Objective 
@@ -47,7 +50,7 @@ Or Using gcloud command line installed in
 gcloud iam service-accounts keys create my-key-file.json  --iam-account my-service-account@my-project.iam.gserviceaccount.com
 ~~~
     
-### 1.5 Add the Service account key to your config.json file.
+### 1.6 Add the Service account key to your config.json file.
 Sample : 
 ~~~
 {
@@ -124,50 +127,67 @@ Sample :
 
 •	Use Usage_Examples folder for Some Usage Examples (exportAllSource.bat , importAllToDest.bat , transformAllSource.bat ... ) 
 For Example : 
-### To export all proxies : 
+### Export all proxies : 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
 ~~~
-### To transform all proxies : 
+### Transform all proxies : 
 Transforming All Apigee Objects are fully customizable, You should be java faimilar to build your own Java Tranfomer Class that implements  java interface com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer 
-and attach this transformer to the corresponding object service : 
+then configure your Transformer class in the project configuration file ( Config.json)  as the example below  : 
 
 ~~~
-//==================Transform All Proxies ===========================
-@Test
-public void transformAllProxies() throws Exception {
-ApigeeService proxyServ =  sourceMngServer.getProxyServices(sourceOrgName); 
-proxyServ.setTranformers(buildProxyTransformers()); 
-ArrayList<TransformResult> objectErrors =  proxyServ.transformAll(destFolderName + ProxiesSubFolder,  transformFolderName + ProxiesSubFolder) ;
-assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
-}
-
-private ArrayList<ApigeeObjectTransformer> buildProxyTransformers()
+//================== Your config.json  ===========================
+,"Infras" : [
 {
-	ArrayList<ApigeeObjectTransformer> proxyTransformers = new ArrayList<ApigeeObjectTransformer>(); 
-	proxyTransformers.add(new TargetServerTransformer()) ; 
-	List<String> searchFor = Arrays.asList("<Pattern/>"	);
-	List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
-	ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
-	proxyTransformers.add(zfet) ; 
-	return proxyTransformers ; 
-}
+	"Name" : "Prod", 
+	"transformers" : 
+	[
+		{
+		"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer", 
+		"attributes" : 
+			[
+				{ "name" : "fileName" , "value" :"apiproxy/targets/default.xml"	} ,
+				{ "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection" }
+			]
+		}, 
+		{
+		"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer", 
+		"attributes" : 
+			[
+				{ "name" : "filePathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml"}, 
+			  	{ "name" : "valueDelimiter" , "value" :";;"	},
+				{ "name" : "searchFor" , "value" :"<Pattern/>  ;; oldvlaue"	}, 
+				{ "name" : "replaceBy" , "value" :"<Pattern>aaaaaaa</Pattern> ;; newValue"}
+			]
+		}
+	]
+...
+
 ~~~
 
-You Could Use the command line to Transform using the simple built it transformer , or build the project after introducing your new transformer 
-Future Enacement : Add Your new Transformer's full class name to your configuration file config.json - Collaboration is welcome 
+The above Transformers configuration will configure the tool to apply 2 transformers : 
+
+1- TargetServerTransformer : This Transformer will replace the current  HTTPTargetConnection with a Target Server instead of hardcoded URL 
+
+2- ZipFileEntryModifyTransformer :  This is a generic trasformer can be used to search for a specific text in a specific file in the proxy pundle and replace this text with a new value. 
+
+You Can build your own transformers to satisfy your specific needs and simply attach it with its attributes as the example above.
+
+You Could Use the command line to perform the Transformation  
+ 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -transformAll proxies -sourceFolder "</path/to/Source>" -destFolder "</path/to/Traformed>"
 ~~~
-
-### To Import from the transformed proxies : 
+### Import from the transformed proxies : 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -importAll proxies -sourceFolder "</path/to/Traformed>"
 ~~~
-###  To Delete all proxies : 
+###  Delete all proxies : 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
 ~~~
+
+
 
 ## 2- Build an automatic on demand capacity control and resource failures handling system. 
 This will implemented by continuously monitoring all Apigee message processors and routers and make the appropriate decision to allocate these type of resources to different Apigee Environment based on availability and workload to grantee a High Availability and ensure SRE 
