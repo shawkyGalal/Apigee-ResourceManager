@@ -9,7 +9,15 @@
   </properties>
   <packaging>jar</packaging>
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main</sourceDirectory>
+    <resources>
+	    <resource>
+	      <directory>src/main/resources</directory>
+	      <includes>
+	        <include>**/*.xml</include>
+	      </includes>
+	    </resource>
+  	</resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -18,7 +26,6 @@
           <release>17</release>
         </configuration>
       </plugin>
-      
      <plugin>
       <artifactId>maven-assembly-plugin</artifactId>
       <configuration>
@@ -70,6 +77,16 @@
 	    <groupId>io.apigee.build-tools.enterprise4g</groupId>
 	    <artifactId>apigee-edge-maven-plugin</artifactId>
 	    <version>2.4.0</version>
+	    <exclusions>
+		    <exclusion>
+		    	<groupId>org.apache.axis2</groupId>
+		    	<artifactId>axis2-kernel</artifactId>
+		    </exclusion>
+		    <exclusion>
+		    	<groupId>org.apache.axis2</groupId>
+		    	<artifactId>axis2-metadata</artifactId>
+		    </exclusion>
+	    </exclusions>
 	    <type>maven-plugin</type>
 	</dependency>
 	 

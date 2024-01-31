@@ -67,11 +67,14 @@ public ArrayList<String>  getAllProducsList() throws Exception
 	return producsList ;  
 }
 
-public <T> T  getAllProducsList( Class<T> classOfT ) throws Exception
+public ArrayList<Product>  getAllProducs( ) throws Exception
 {
-	T proxiesList  = this.getAllResources(classOfT) ; 
-	return proxiesList ;  
+	ArrayList<Product> products = this.getAllResourcesList(Product.class) ; 
+	return products ;  
 }
+
+
+
 
 @Override
 public String getApigeeObjectType() {
