@@ -150,7 +150,6 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 		String previousAuthCode = (accessToken == null)? null : accessToken.getAuthoirizationCode() ; 
 		if ( previousAuthCode == null || ! previousAuthCode.equalsIgnoreCase(m_authCode))
 		{
-			Unirest.setTimeouts(0, 0);
 			HttpResponse<String> response = Unirest.post(this.getNafath().getTokenUrl())
 			  .header("Content-Type", "application/x-www-form-urlencoded")
 			  .header("Authorization", getClientBasicAuth () )
@@ -191,7 +190,6 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 	
 	public void refreshAccessToken() throws JsonSyntaxException, UnirestException 
 	{
-		Unirest.setTimeouts(0, 0);
 		HttpResponse<String> response = Unirest.post(this.getNafath().getRefreshTokenUrl())
 		  .header("Content-Type", "application/x-www-form-urlencoded")
 		  .header("Authorization", getClientBasicAuth () )
@@ -205,7 +203,6 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 	
 	public void refreshAccessTokenWithPkce(String m_codeVerifier) throws JsonSyntaxException, UnirestException 
 	{
-		Unirest.setTimeouts(0, 0);
 		HttpResponse<String> response = Unirest.post(this.getNafath().getRefreshTokenWithPkceUrl() + "?client_id=MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8")
 		  .header("Content-Type", "application/x-www-form-urlencoded")
 		  .field("grant_type", "refresh_token")
