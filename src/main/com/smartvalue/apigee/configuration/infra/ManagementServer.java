@@ -290,7 +290,6 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	{
 		if(accessToken == null || regenerate)
 		{
-		Unirest.setTimeouts(0, 0);
 		accessToken = new ApigeeAccessToken();
 		HttpResponse<String> response = null ; 
 		Gson gson = new Gson();

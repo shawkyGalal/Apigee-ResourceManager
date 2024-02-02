@@ -8,6 +8,7 @@ import java.util.List;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
@@ -180,7 +181,8 @@ public class Infra {
 	{
 		ManagementServer ms = new ManagementServer() ; 
 		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
-		ms.setServerProfile(m_serverProfile); 
+		ms.setServerProfile(m_serverProfile);
+		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 

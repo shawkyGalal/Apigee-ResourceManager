@@ -64,8 +64,8 @@ public class NewTest {
 	  public void testExportAll() throws Exception {
 		//==================Export All ===========================
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
-		ApigeeConfig ac = apigeeConfigParser.getObject("config_Example.json" , ApigeeConfig.class) ; 
-		Infra mojStageinfra = ac.getInfra("YourCompanyName" , "Customer01" , "Stage") ;
+		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
+		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
 		String destFolderName = "C:\\temp\\Stage" ;
 		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName +"\\targetservers") ;
