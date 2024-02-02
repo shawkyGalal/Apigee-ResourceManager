@@ -1,1 +1,1 @@
-java -jar ..\target\ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile ..\config.json -partner MasterWorks -customer MOJ  -infra  Gcloud(shawky.foda@gmail.com)  -org apigee-moj-stage  -operation migrate -importAll proxies -sourceFolder "c:\temp\transformed\Stage\proxies"
+java -jar ../target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile ../config.json -partner MasterWorks -customer MOJ  -infra  Gcloud(shawky.foda@gmail.com)  -org apigee-moj-stage  -operation migrate -importAll proxies -sourceFolder "c:/temp/transformed/Stage/proxies"
