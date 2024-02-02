@@ -22,7 +22,7 @@ You could Use this tool especially for Apigee onpremise migration to Apigee Clou
 
 ### 1.1 Clone this reposatory 
 ~~~
-	git clone https://github.com/shawkyGalal/ResourceManager.git
+	git clone https://github.com/shawkyGalal/Apigee-ResourceManager.git
 ~~~
 
 ### 1.2 Build Project With Maven 
