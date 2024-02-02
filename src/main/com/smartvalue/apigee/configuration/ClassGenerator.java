@@ -20,23 +20,20 @@ public class ClassGenerator {
 	public static void main (String[] args) throws Exception
 	{
    
-		String TargetServer = "{\r\n"
-				+ "                \"name\": \"Yesser_MOJGSB\",\r\n"
-				+ "                \"host\": \"10.179.9.22\",\r\n"
-				+ "                \"port\": \"443\",\r\n"
-				+ "                \"isEnabled\": \"true\",\r\n"
-				+ "                \"sSLInfo\": {\r\n"
-				+ "                    \"clientAuthEnabled\": \"false\",\r\n"
-				+ "                    \"ciphers\": [],\r\n"
-				+ "                    \"ignoreValidationErrors\": \"false\",\r\n"
-				+ "                    \"protocols\": [],\r\n"
-				+ "                    \"keyAlias\": null,\r\n"
-				+ "                    \"keyStore\": null,\r\n"
-				+ "                    \"trustStore\": null\r\n"
-				+ "                }\r\n"
-				+ "            }" ; 
-		generateJavaClassFromJson(TargetServer, "TargetServer" , "com.smartvalue.apigee.rest.schema.targetServer.auto");
-		Gson gson = new Gson() ; 
+		String Transformers = "{	\"Transformers\" : \r\n"
+				+ "							[\r\n"
+				+ "								{ \r\n"
+				+ "									\"implClass\" : \"class01\", \r\n"
+				+ "									 \"attributes\" : \r\n"
+				+ "									[\r\n"
+				+ "										{ \"name\" : \"nam01\" , \"value\" :\"111\"	}\r\n"
+				+ "									  , { \"name\" : \"nam02\" , \"value\" :\"222\"	}\r\n"
+				+ "									\r\n"
+				+ "									]\r\n"
+				+ "								}"
+				+ "							]}" ; 
+		generateJavaClassFromJson(Transformers, "Transformers" , "com.smartvalue.apigee.configuration.transformer.auto");
+		//Gson gson = new Gson() ; 
 		//com.smartvalue.moj.najiz.services.appointments.auto.Appointments appouRequest = gson.fromJson(appointments , com.smartvalue.moj.najiz.services.appointments.auto.Appointments.class) ;
 		//System.out.print(appouRequest);
 	}

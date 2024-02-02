@@ -97,7 +97,7 @@ public class Renderer {
 		                if (fieldClass.isPrimitive() || value instanceof String || value instanceof Number) {
 		                    htmlTable.append(value);
 		                } else if ( value instanceof List  ) {
-		                    htmlTable.append(generateArrayHtmlTable((ArrayList) value));
+		                    htmlTable.append(arrayListToHtmlTable((ArrayList) value));
 		                } 
 		                else if (fieldClass.getName().equalsIgnoreCase("java.util.List") || fieldClass.getName().equalsIgnoreCase("java.util.ArrayList") )
 		                {

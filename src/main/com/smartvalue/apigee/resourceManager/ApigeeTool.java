@@ -2,11 +2,13 @@ package com.smartvalue.apigee.resourceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -22,9 +24,6 @@ import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
@@ -40,6 +39,7 @@ public class ApigeeTool
 	private static ManagementServer ms ; 
 	private static String partner = "MasterWorks" ;
 	private static String customer = "MOJ" ;
+	protected static final Logger logger = LogManager.getLogger(ApigeeTool.class);
 	
 	
 	private static HashMap<String , String> convertArgsToHashMap(String[] args )
@@ -78,7 +78,8 @@ public class ApigeeTool
 	}
 
 	public static void main(String[] args) throws Exception {
-    	initialize(args);
+		Configurator.initialize(null, "resources/log4j/log4j2.xml");
+		initialize(args);
     	if (operation != null)
     	{
         switch (operation) {
@@ -337,8 +338,9 @@ public class ApigeeTool
 		ApigeeService service = ms.getSharedFlowServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		//service.getTransformers().add(new NullTransformer()) ;
+		logger.info("====== Start Tranforming All SharedFlows ==========");
 		service.transformAll(sourceFolder, destFolder);
+		logger.info("====== End Tranforming All SharedFlows ==========");
 		
 	}
 
@@ -347,13 +349,9 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(getArgsHashMap(), "-sourceFolder");
 		String destFolder = getMandatoryArg(getArgsHashMap(), "-destFolder");
 		ProxyServices ps = (ProxyServices) ms.getProxyServices(org); 
-		//ps.getTransformers().add(new TargetServerTransformer()) ; 
-		//ps.getTransformers().add(new NullTransformer()) ;
-		//List<String> searchFor = Arrays.asList("<Pattern/>"	);
-	    //List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
-		//ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
-		//ps.getTransformers().add(zfet) ; 
+		logger.info("====== Start Tranforming All Proxies ==========");
 		ps.transformAll(sourceFolder, destFolder);
+		logger.info("====== End Tranforming All SharedFlows ==========");
 	}
 
 	//---------------DeleteAll Operations --------------

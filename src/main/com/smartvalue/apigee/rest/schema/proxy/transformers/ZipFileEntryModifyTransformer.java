@@ -1,13 +1,11 @@
 package com.smartvalue.apigee.rest.schema.proxy.transformers;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,13 +16,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
+import com.smartvalue.apigee.resourceManager.ApigeeTool;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 
 public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	
-	private List<String> searchFor ;
-	private List<String> replaceBy ; 
+	
+	protected static final Logger logger = LogManager.getLogger(ApigeeTool.class);
+	private String searchFor ;
+	private String replaceBy ;
 	private String filePathInZip ; 
+	private String valueDelimiter = "," ; 
 
 	/**
 	 * a General Purpose transformer to replace specific content searchFor in a given filePathInZip  
@@ -32,21 +38,20 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	 * @param m_searchFor		Search for this value in file content 
 	 * @param m_replaceBy		replace with this value
 	 */
-	public ZipFileEntryModifyTransformer(String m_filePathInZip , List<String> m_searchFor , List<String> m_replaceBy)
+	public ZipFileEntryModifyTransformer()
 	{
-		this.searchFor = m_searchFor ; 
-		this.replaceBy = m_replaceBy ; 
-		this.filePathInZip = m_filePathInZip ; 
+		
 	}
-	
-	
+		
 	@Override
 	public  TransformResult  trasform(String  bundleZipFileName , String outputZipFile) {
-		return replaceStringInZipEntry(bundleZipFileName , this.getFilePathInZip() , this.getSearchFor() , this.getReplaceBy() , outputZipFile ) ; 
+		return replaceStringInZipEntry(bundleZipFileName ,  outputZipFile ) ;
+		
 	}
 
 	
-	 public static TransformResult replaceStringInZipEntry(String bundleZipFileName, String filePathInZip, List<String> searchFor, List<String> replaceBy, String outputZipFile) {
+	 public  TransformResult replaceStringInZipEntry(String bundleZipFileName, String outputZipFile) {
+		 logger.info("Start Processing Transformer " + this.getClass()) ; 
 		 TransformResult result = new TransformResult() ;    
 		 try{ Files.createDirectories(Paths.get(outputZipFile));}
 		 catch (IOException e) {
@@ -55,6 +60,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	      		  	  .withSource(bundleZipFileName)
 	      		  	  .withDestination(outputZipFile); 
 	        	e.printStackTrace();
+	        	logger.error(e.getMessage());
 	        	return result; 
 	        	}
 		  
@@ -73,7 +79,10 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	                    copyZipEntry(zipFile, entry, zipOutputStream);
 	                } else {
 	                    // Replace content of matching entry
-	                    replaceAndCopyZipEntry(zipFile, entry, zipOutputStream, searchFor, replaceBy);
+	                	logger.info ("Zip File entry " + filePathInZip + " Found in " + bundleZipFileName) ; 
+	                	List<String> searchForAsList = Arrays.asList( searchFor.split(valueDelimiter)) ; 
+	                	List<String> replaceByAsList = Arrays.asList( replaceBy.split(valueDelimiter)) ; 
+	                    replaceAndCopyZipEntry(zipFile, entry, zipOutputStream, searchForAsList, replaceByAsList);
 	                }
 	            }
 	            zipOutputStream.closeEntry();
@@ -85,7 +94,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	      		  	  .withDestination(outputZipFile); 
 	        	e.printStackTrace();
 	        }
-		 
+		 logger.info("End Processing Transformer " + this.getClass()) ;
 		 return result; 
 	    }
 
@@ -99,8 +108,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	            while ((len = inputStream.read(buffer)) > 0) {
 	                zipOutputStream.write(buffer, 0, len);
 	            }
-
-	            //zipOutputStream.closeEntry();
+            
 	        }
 	    }
 
@@ -115,23 +123,30 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	            }
 	            String modifiedContent = content.toString(); 
 	            for (int i = 0; i < searchFor.size(); i++) {
-	            	modifiedContent = modifiedContent.replace(searchFor.get(i), replaceBy.get(i));
+	            	String oldValue = searchFor.get(i) ; 
+	            	String newValue = replaceBy.get(i) ; 
+	            	logger.info("Replacing  Old value : <" + oldValue + ">  With New Value : <" + newValue + ">");
+	            	modifiedContent = modifiedContent.replace(oldValue, newValue);
+	            	
                 }
 	            ZipEntry newEntry = new ZipEntry(entry.getName());
 	            zipOutputStream.putNextEntry(newEntry);
 	            zipOutputStream.write(modifiedContent.getBytes(StandardCharsets.UTF_8));
-	            //zipOutputStream.closeEntry();
-            
 	        }
 	    }
 
 	    public static void main(String[] args) {
+	    	Configurator.initialize(null, "resources/log4j/log4j2.xml");  	
 	        String zipFilePath = "C:\\temp\\Stage\\proxies\\moj-external-clients\\Apigee-Commandment-API\\2\\Apigee-Commandment-API.zip";
 	        String filePathInZip = "apiproxy/policies/Regular-Expression-Protection.xml";
-	        List<String> searchFor = Arrays.asList("<Pattern/>"	);
-	        List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+	        String searchFor = "<Pattern/>"	;
+	        String replaceBy = "<Pattern>zzzzzzz</Pattern>";
 	        String destFolder = "C:\\temp\\transformed\\Stage\\proxies\\moj-external-clients\\Apigee-Commandment-API\\2";
-	        replaceStringInZipEntry(zipFilePath, filePathInZip, searchFor, replaceBy, destFolder);
+	        ZipFileEntryModifyTransformer zfemt = new ZipFileEntryModifyTransformer() ; 
+	        zfemt.setSearchFor(searchFor);
+	        zfemt.setReplaceBy(replaceBy);
+	        zfemt.setFilePathInZip(filePathInZip);
+	        zfemt.replaceStringInZipEntry(zipFilePath,   destFolder);
 	    }
 	
 	
@@ -142,26 +157,6 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	}
 
 
-	public List<String> getSearchFor() {
-		return searchFor;
-	}
-
-
-	public void setSearchFor(List<String> searchFor) {
-		this.searchFor = searchFor;
-	}
-
-
-	public List<String> getReplaceBy() {
-		return replaceBy;
-	}
-
-
-	public void setReplaceBy(List<String> replaceBy) {
-		this.replaceBy = replaceBy;
-	}
-
-
 	public String getFilePathInZip() {
 		return filePathInZip;
 	}
@@ -169,6 +164,16 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 
 	public void setFilePathInZip(String filePathInZip) {
 		this.filePathInZip = filePathInZip;
+	}
+
+
+	public void setSearchFor(String searchFor) {
+		this.searchFor = searchFor;
+	}
+
+
+	public void setReplaceBy(String replaceBy) {
+		this.replaceBy = replaceBy;
 	}
 	
 

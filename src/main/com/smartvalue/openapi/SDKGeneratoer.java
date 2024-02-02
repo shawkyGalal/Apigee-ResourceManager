@@ -21,11 +21,11 @@ public class SDKGeneratoer {
 	{
 		SDKGeneratoer sdkg = new SDKGeneratoer() ;
 		sdkg.setLang("java");
-		String specsUrl = "https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
-		sdkg.generateSDK(specsUrl);
-		sdkg.setOutputDir("G:\\My Drive\\MasterWorks\\Eclipse-WS\\MOJ_SDK");
+		String specsUrl =  "file://C:\\tmp\\ApigeeManagementAPI-Specs\\api-products.yaml" ; //"https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/3_0/petstore.json" ;  
+		sdkg.setOutputDir("E:\\MasterWorks\\Eclipse-WS\\ResourceManager\\src\\main");
 		sdkg.setValidateSpecs(false); 
-		sdkg.setPackageName("org.moj.najiz.sdk");
+		sdkg.setPackageName("com.smartvalue.apigee.schema.sdkgenerator.products");
+		sdkg.generateSDK(specsUrl);
 		
 
 	}

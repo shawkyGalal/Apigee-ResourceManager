@@ -89,12 +89,12 @@ public class NewTest {
 		
 		
 		//-- Build Transformers ----
-		ArrayList<ApigeeObjectTransformer> transformers = new ArrayList<ApigeeObjectTransformer>(); 
+		//ArrayList<ApigeeObjectTransformer> transformers = new ArrayList<ApigeeObjectTransformer>(); 
 		//transformers.add(new TargetServerTransformer()) ; 
-		List<String> searchFor = Arrays.asList("<Pattern/>"	);
-	    List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
-		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
-		transformers.add(zfet) ; 
+		//List<String> searchFor = Arrays.asList("<Pattern/>"	);
+	    //List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+		//ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
+		//transformers.add(zfet) ; 
 		//----End of building transformers 
 		
 		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices(sourceOrgName);

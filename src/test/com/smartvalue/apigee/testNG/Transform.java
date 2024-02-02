@@ -119,14 +119,14 @@ public class Transform extends ApigeeTest{
 		super.beforeClass(); 
 		initalizeSource();
 	 }
-	 
+	/*
 	private ArrayList<ApigeeObjectTransformer> buildProxyTransformers()
 	{
 		//-- Build Transformers ----
 		ArrayList<ApigeeObjectTransformer> proxyTransformers = new ArrayList<ApigeeObjectTransformer>(); 
 		proxyTransformers.add(new TargetServerTransformer()) ; 
-		List<String> searchFor = Arrays.asList("<Pattern/>"	);
-		List<String> replaceBy = Arrays.asList("<Pattern>xxxxxxx</Pattern>");
+		String searchFor = "<Pattern/>, oldvlaue "	;
+		String replaceBy = "<Pattern>xxxxxxx</Pattern> , newValue";
 		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/Regular-Expression-Protection.xml", searchFor, replaceBy);
 		proxyTransformers.add(zfet) ; 
 		//----End of building transformers 
@@ -137,14 +137,14 @@ public class Transform extends ApigeeTest{
 		//-- Build Transformers ----
 		ArrayList<ApigeeObjectTransformer> sharedflowsTransformers = new ArrayList<ApigeeObjectTransformer>(); 
 		sharedflowsTransformers.add(new TargetServerTransformer()) ; 
-		List<String> searchFor = Arrays.asList("xxxxx");
-		List<String> replaceBy = Arrays.asList("yyyyy");
+		String searchFor = "xxxxx , aaaaa";
+		String replaceBy = "yyyyy , bbbbb";
 		ZipFileEntryModifyTransformer zfet = new ZipFileEntryModifyTransformer("apiproxy/policies/zzzzzz.xml", searchFor, replaceBy);
 		sharedflowsTransformers.add(zfet) ; 
 		//----End of building transformers 
 		return sharedflowsTransformers ; 
 	}
-	 
+	 */
 	  @BeforeTest
 	public void beforeTest() {
 	}
