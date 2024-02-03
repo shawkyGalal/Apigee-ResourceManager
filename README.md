@@ -27,30 +27,45 @@ You could Use this tool especially for Apigee onpremise migration to Apigee Clou
 
 ### 1.2 Build Project With Maven 
 ~~~
- 	cd <AppHome>
+ 	cd Apigee-ResourceManager
  	mvn clean compile assembly:single
 ~~~
-### 1.3 Install gcloud Google Command Line Tool 
+
+### 1.3 Build Your Configuration File config.json 
+the configuration file is used to store all information about all your your Apigee Environments including api management url and credentials used to access this apis
+
+Type of credentials :
+ 
+Basic : For Basic authentication 
+OAuth : for Oauth Authentication 
+
+Also You Need to Identify Apigee infrastructure wheter it is Google Cloud or onpremise through a josn attribute : 
+
+googleCloud = true/false
+  
+Provided a Sample Conf file ( ./config_Example.json ) 
+
+### 1.4 Install gcloud Google Command Line Tool 
 	
  	flow instruction at: 
 	https://cloud.google.com/sdk/docs/install#windows 
 	
 	Follow the installation wizard instructions. You can choose the installation location and whether to add the Cloud SDK tools to your system PATH. Adding to the PATH allows you to use gcloud from any command prompt window.
 
-### 1.4 gcloud Authenticate:
+### 1.5 gcloud Authenticate:
 ~~~
 gcloud auth login 
 ~~~
    	to authenticate with your Google Cloud account. This will open a browser window for you to sign in.
     
-### 1.5 Create Your Service Account Json Key :
+### 1.6 Create Your Service Account Json Key :
 You Can Create Your Service Account Using Gcloud Service "API & Services" at https://console.cloud.google.com/apis/dashboard 
 Or Using gcloud command line installed in 
 ~~~
 gcloud iam service-accounts keys create my-key-file.json  --iam-account my-service-account@my-project.iam.gserviceaccount.com
 ~~~
     
-### 1.6 Add the Service account key to your config.json file.
+### 1.7 Add the Service account key to your config.json file.
 Sample : 
 ~~~
 {
@@ -189,15 +204,14 @@ java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile 
 
 
 
-## 2- Build an automatic on demand capacity control and resource failures handling system. 
-This will implemented by continuously monitoring all Apigee message processors and routers and make the appropriate decision to allocate these type of resources to different Apigee Environment based on availability and workload to grantee a High Availability and ensure SRE 
-Under Construction ....
-
-
-## 3- Perform specific Apigee queries like :  
+## 2- Perform specific Apigee queries like :  
 ### Find All Products without Proxies 
 ### Find all Target Server Usage in all Proxies 
 ### Find all un-deployed proxies
 ### Find All Products without Proxies 	 
+
+## 3- for Apigee onprimes, Build an automatic on demand capacity control and resource failures handling system. 
+This will implemented by continuously monitoring all Apigee message processors and routers and make the appropriate decision to allocate these type of resources to different Apigee Environment based on availability and workload to grantee a High Availability and ensure SRE 
+Under Construction ....
       
 
