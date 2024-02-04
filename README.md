@@ -7,9 +7,17 @@ Before start using this project you should have the following components/system 
 
 1- Java 
 
-2- maven 
+Install jdk 21 or higher from -> [https://www.oracle.com/java/technologies/downloads/]( https://www.oracle.com/java/technologies/downloads/ ) 
 
-3- Having a Google Cloud account and a Project with Apigee API's enabled 
+2- git 
+
+Install from -> [https://git-scm.com/book/en/v2/Getting-Started-Installing-Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
+3- maven : 
+
+Install from -> [https://maven.apache.org/install.html](https://maven.apache.org/install.html)
+
+4- Having a Google Cloud account and a Project with Apigee API's enabled, in Case you need to import/export from Your Apigee cloud account 
 
 ## Project Objective 
 This Project is intended to build a set of Google Apigee related utilities : 
@@ -20,20 +28,20 @@ This Project is intended to build a set of Google Apigee related utilities :
 
 You could Use this tool especially for Apigee onpremise migration to Apigee Cloud - using Google Service Account Key as an authorization method
 
-### 1.1 Clone this reposatory 
+### 1.1 Clone this repository 
 ~~~
-	git clone https://github.com/shawkyGalal/ResourceManager.git
+git clone https://github.com/shawkyGalal/Apigee-ResourceManager.git
 ~~~
 
 ### 1.2 Build Project With Maven 
 ~~~
- 	cd <AppHome>
- 	mvn clean compile assembly:single
+ cd Apigee-ResourceManager
+ mvn clean compile assembly:single
 ~~~
-### 1.3 Install gcloud Google Command Line Tool 
+### 1.3 Install gCloud Google Cloud Command Line Tool 
 	
  	flow instruction at: 
-	https://cloud.google.com/sdk/docs/install#windows 
+	[https://cloud.google.com/sdk/docs/install#windows](https://cloud.google.com/sdk/docs/install#windows)
 	
 	Follow the installation wizard instructions. You can choose the installation location and whether to add the Cloud SDK tools to your system PATH. Adding to the PATH allows you to use gcloud from any command prompt window.
 
@@ -52,6 +60,7 @@ gcloud iam service-accounts keys create my-key-file.json  --iam-account my-servi
     
 ### 1.6 Add the Service account key to your config.json file.
 Sample : 
+
 ~~~
 {
 	"Partners":[		
@@ -87,7 +96,6 @@ Sample :
 							"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
 							"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
 						}, 
-						
 						{	 
 							"Name" : "MyApigee" ,
 							"connectionTimeout" : "0" ,
@@ -116,7 +124,6 @@ Sample :
 								}
 							]
 						}
-						
 					]
 				} 			
 			]
@@ -127,11 +134,11 @@ Sample :
 
 •	Use Usage_Examples folder for Some Usage Examples (exportAllSource.bat , importAllToDest.bat , transformAllSource.bat ... ) 
 For Example : 
-### Export all proxies : 
+### Export all Proxies : 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
 ~~~
-### Transform all proxies : 
+### Transform all Proxies : 
 Transforming All Apigee Objects are fully customizable, You should be java faimilar to build your own Java Tranfomer Class that implements  java interface com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer 
 then configure your Transformer class in the project configuration file ( Config.json)  as the example below  : 
 
@@ -186,6 +193,20 @@ java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile 
 ~~~
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
 ~~~
+
+## Objects Valid for exportAll , transformAll , importAll , deleteAll 
+
+You Could Perform any of the operation ( exportAll , transformAll , importAll , deleteAll ) with the following Apigee Objects Type : 
+
+- apps
+- developers
+- kvms
+- products
+- proxies
+- sharedflows
+- targetservers
+
+
 
 
 
