@@ -54,8 +54,25 @@ gcloud auth login
 ### 1.5 Create Your Service Account Json Key :
 You Can Create Your Service Account Using Gcloud Service "API & Services" at https://console.cloud.google.com/apis/dashboard 
 Or Using gcloud command line installed in 
+
+#### 1.5.1 Create a Service Account 
+
 ~~~
-gcloud iam service-accounts keys create my-key-file.json  --iam-account my-service-account@my-project.iam.gserviceaccount.com
+PROJECT_ID=<Your_Project_Name>
+SERVICE_ACCOUNT_NAME=<Your_Service_Account_Name>
+gcloud iam service-accounts create ${SERVICE_ACCOUNT_NAME} --description="[DESCRIPTION]" --display-name="[DISPLAY_NAME]"
+SERVICE_ACCOUNT_EMAIL=${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com
+~~~
+
+Grant apigee.apiAdminV2 role (permissions) to the service account. Use the following command to grant a role to the service account:
+
+~~~
+gcloud projects add-iam-policy-binding ${PROJECT_ID} --member="serviceAccount:${SERVICE_ACCOUNT_EMAIL}" --role="roles/apigee.apiAdminV2"
+~~~
+
+#### 1.5.2 Create a Service Account Json Key
+~~~
+gcloud iam service-accounts keys create my-key-file.json  --iam-account ${SERVICE_ACCOUNT_EMAIL}
 ~~~
     
 ### 1.6 Add the Service account key to your config.json file.
