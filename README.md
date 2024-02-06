@@ -156,6 +156,12 @@ For Example :
 java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
 ~~~
 ### Transform all Proxies : 
+Transformation can be done through 2 ways : 
+#### Shell script Transformer   
+You could build your own shell script transformer 
+Example : [./scripts/modifyPrxoies.sh](./scripts/modifyPrxoies.sh)
+
+#### Java Transformer   
 Transforming All Apigee Objects are fully customizable, You should be java faimilar to build your own Java Tranfomer Class that implements  java interface com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer 
 then configure your Transformer class in the project configuration file ( Config.json)  as the example below  : 
 
