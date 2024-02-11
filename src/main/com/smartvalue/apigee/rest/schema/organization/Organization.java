@@ -32,7 +32,7 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	public HashMap<String , Environment> getEnvs() throws UnirestException, IOException {
 		ArrayList<String> envNames = null; 
 		HashMap<String , Environment > result  = new HashMap<> () ;
-		String apiPath = "/v1/organizations/"+this.getName() +"/environments/" ; 
+		String apiPath = "/v1/organizations/"+this.getName() +"/environments" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		envNames = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ;
 		for (String envName : envNames )

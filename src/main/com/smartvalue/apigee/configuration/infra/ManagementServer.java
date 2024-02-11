@@ -89,7 +89,7 @@ public class ManagementServer extends Server{
 
 	public ArrayList<String> getRegions() throws UnirestException, IOException {
 		// TODO Auto-generated method stub
-		 String apiPath = "/v1/regions/" ; 
+		 String apiPath = "/v1/regions" ; 
 		 @SuppressWarnings("unchecked")
 		ArrayList<String> result  = this.executeGetMgmntAPI(apiPath , ArrayList.class) ; 
 		return result;
