@@ -28,7 +28,7 @@ public class KvmServices extends EnvironmentScopeService {
 	
 	public KeyValueMap  getKvmDetails( String m_kvmName ) throws Exception
 	{
-		String apiPath = getResourcePath() +  m_kvmName ; 
+		String apiPath = getResourcePath() + "/" + m_kvmName ; 
 		KeyValueMap result = this.getMs().executeGetMgmntAPI(apiPath, KeyValueMap.class) ; 
 		result.setEnvName(envName);
 		return result;

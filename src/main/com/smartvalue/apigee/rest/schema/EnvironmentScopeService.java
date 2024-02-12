@@ -27,7 +27,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 		super(ms, m_orgName);
 	}
 
-	protected void setEnvName(String m_envName)
+	public void setEnvName(String m_envName)
 	{
 		this.envName = m_envName ; 
 		this.resourcePath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+ this.getApigeeObjectType();
