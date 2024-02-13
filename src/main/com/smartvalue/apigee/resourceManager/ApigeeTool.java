@@ -66,18 +66,18 @@ public class ApigeeTool
 		System.out.println(argsMap );
 		operation = getMandatoryArg ( argsMap , "-operation") ; 
 	 	configFile = argsMap.get("-configFile") ;
-	 	try {  partner  = getMandatoryArg (argsMap , "-partner") ;} catch (Exception e) { /* -- Use the Defaults -- */ 	}
-	 	try {  customer = getMandatoryArg (argsMap , "-customer") ; } catch (Exception e) { /* -- Use the Defaults -- */ 	}
+	 	partner  = getMandatoryArg (argsMap , "-partner") ;
+	 	customer = getMandatoryArg (argsMap , "-customer") ;
     	infra = getMandatoryArg(argsMap, "-infra") ;
     	
 		ApigeeConfig ac = ApigeeConfigFactory.create( configFile , ApigeeConfig.class) ;  //(ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
 
 		infraObject = ac.getInfra(partner , customer , infra) ;
     	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
-    	Unirest.setTimeouts(ms.getServerProfile().getConnectionTimeout(), ms.getServerProfile().getSocketTimeout());
 	}
 
 	public static void main(String[] args) throws Exception {
+    
 		Configurator.initialize(null, "resources/log4j/log4j2.xml");
 		initialize(args);
     	if (operation != null)
@@ -99,7 +99,7 @@ public class ApigeeTool
     }
 
 	
-
+	
 	private static String getMandatoryArg( HashMap<String , String>  args , String arg)
 	 { 
 		String result = args.get(arg) ;
@@ -508,6 +508,7 @@ public class ApigeeTool
 	}
 
 	private static void importAllProxies() throws FileNotFoundException, IOException, UnirestException {
+		
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");

@@ -98,46 +98,5 @@ public class Import extends ApigeeTest{
 	  @AfterTest
 	  public void afterTest() {
 	  }
-	  
-	  @Test
-	  public void  xxx() throws UnirestException, ParseException, IOException
-	  {
-		 
-        
-		  System.setProperty("java.net.useSystemProxies", "true");
-		  System.setProperty("https.proxyHost", "10.179.8.22");
-	      System.setProperty("https.proxyPort", "8080");
-	      System.setProperty("http.proxyHost", "10.179.8.22");
-	      System.setProperty("http.proxyPort", "8080");
-	      
-	      System.out.println("http.proxyHost: " + System.getProperty("http.proxyHost"));
-	      System.out.println("http.proxyPort: " + System.getProperty("http.proxyPort"));
-	      System.out.println("https.proxyHost: " + System.getProperty("https.proxyHost"));
-	      System.out.println("https.proxyPort: " + System.getProperty("https.proxyPort"));
-
-	      CloseableHttpClient httpClient = HttpClients.createDefault();
-	      HttpPost httpPost = new HttpPost("https://oauth2.googleapis.com/token");
-	      httpPost.setHeader("abc", "123");
-	      httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-	      httpPost.setHeader("Authorization", "Basic **********");
-	      List<NameValuePair> params = new ArrayList<NameValuePair>();
-	      params.add(new BasicNameValuePair("grant_type", "authorization_code"));
-	      httpPost.setEntity(new UrlEncodedFormEntity(params));
-	      CloseableHttpResponse responsexx = httpClient.execute(httpPost);
-	      String responseBody = EntityUtils.toString(responsexx.getEntity());
-	      
-	      Unirest.setTimeouts(4000, 8000);
-		  HttpResponse<String> response = Unirest.post("https://oauth2.googleapis.com/token")
-		    .header("abc", "123")
-		    .header("Content-Type", "application/x-www-form-urlencoded")
-		    .header("Authorization", "Basic NDU1NjczODk3MTMxLWY2MTBjOXRhdTFpNTgydHBrOG5xMnE1Nzk0cWRiMW9pLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tOkdPQ1NQWC1jdDNaU1NJSEhqYi1pT1ZhaWFibXBYdlRXbnZ6")
-		    .field("grant_type", "authorization_code")
-		    .field("code", "4/0AfJohXkbYM7vQBrvWf1mNtTnZpafjuVNS8ooSc1dFI-7dEBZmQzrO_rwtF30cTt7WoVVVw")
-		    .field("redirect_uri", "https://apigeeadmin.moj.gov.sa:8443/ResourceManagerWeb/loginWithGoogle/authCodeHandler.jsp")
-		    .asString();
-		  
-		  // return response ; 
-
-	  }
 
 }

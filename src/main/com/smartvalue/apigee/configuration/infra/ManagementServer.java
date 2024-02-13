@@ -66,6 +66,8 @@ public class ManagementServer extends Server{
 		result.setAuthType(m_infra.getAuthType());
 		result.setConnectionTimeout(m_infra.getConnectionTimeout());
 		result.setSocketTimeout(m_infra.getSocketTimeout());
+		result.setProxyServer(m_infra.getProxyServer());
+		result.setProxyPort(m_infra.getProxyPort());
 		
 		Boolean isGoogleCloud = m_infra.getGooglecloud() ; 
 		if  ( !(isGoogleCloud != null && isGoogleCloud) ) 

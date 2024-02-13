@@ -14,7 +14,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.smartvalue.apigee.resourceManager.ApigeeTool"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="ResourceManager"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-configFile config.json  -infra  Dev -org training01 -operation migrate -importAll proxies -sourceFolder &quot;c:\temp&quot;"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-configFile config.json  -infra  Dev -org training01 -operation migrate -importAll proxies -sourceFolder &quot;c:\temp\proxies&quot;"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ResourceManager"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
