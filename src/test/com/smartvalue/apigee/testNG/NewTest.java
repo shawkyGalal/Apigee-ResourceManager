@@ -223,10 +223,10 @@ public class NewTest {
 	  
 	  @Test
 	  public void testOtherServices() throws Exception {
-		  HashMap<String, Proxy> allProxies = org.getAllProxies();
+		  HashMap<Object, Proxy> allProxies = org.getAllProxies();
 			Renderer.hashMaptoHtmlTable(allProxies); 
 			
-			HashMap<String, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
+			HashMap<Object, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 			System.out.println(proxies);
 			String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
 			ProxyServices ps = (ProxyServices) destMngServer.getProxyServices(sourceOrgName) ;  

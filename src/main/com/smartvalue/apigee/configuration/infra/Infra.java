@@ -10,6 +10,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.Unirest;
+import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
@@ -19,6 +21,7 @@ import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 
 public class Infra {
+	private Customer parentCustomer ; 
 	private String Name ; 
 	private SysAdminCred sysadminCred ; 
 	private String Ansible_hosts_file ; 
@@ -48,10 +51,7 @@ public class Infra {
 	
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
-	 
-	private String proxyServer  ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
-	private int proxyPort = 8080; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
-
+ 
 	
 	public SysAdminCred getSysadminCred() {
 		return sysadminCred;
@@ -180,25 +180,28 @@ public class Infra {
 		return managementServers;
 	}
 	
-
+	private void setInternetProxy()
+	{
+		ApigeeConfig ac = this.getParentCustomer().getParentConfig() ;
+		if ( this.getGooglecloud()!= null &&  this.getGooglecloud() )
+		{
+			ac.setInternetProxy(); 
+		}
+		else 
+		{
+			ApigeeConfig.clearInternetProxy();
+		}
+		
+	}
+	
 	private ManagementServer buildManagementServer(String m_region) throws Exception
 	{
+		
 		ManagementServer ms = new ManagementServer() ; 
 		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
+		setInternetProxy(); 
 		ms.setServerProfile(m_serverProfile);
-		String proxyServer = m_serverProfile.getProxyServer() ; 
-		int proxyPort = m_serverProfile.getProxyPort() ; 
-		if ( proxyServer != null )
-		{
-			System.setProperty("http.proxyHost", proxyServer );
-	        System.setProperty("http.proxyPort", String.valueOf(proxyPort));
-	        
-			System.setProperty("https.proxyHost", proxyServer) ; 
-			System.setProperty("https.proxyPort", String.valueOf(proxyPort)) ;
-			Unirest.setProxy(new HttpHost( proxyServer , proxyPort ));
-		}
 		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
-		
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
@@ -250,11 +253,12 @@ public class Infra {
 		return result ; 
 		
 	}
-	public String getProxyServer() {
-		return proxyServer;
+	
+	public Customer getParentCustomer() {
+		return parentCustomer;
 	}
-	public int getProxyPort() {
-		return proxyPort;
+	public void setParentCustomer(Customer parentCustomer) {
+		this.parentCustomer = parentCustomer;
 	}
 		
 }

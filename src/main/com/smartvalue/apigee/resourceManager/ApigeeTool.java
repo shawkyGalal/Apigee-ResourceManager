@@ -177,7 +177,7 @@ public class ApigeeTool
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
     	String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
-		HashMap<String, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer , deployedRevisionOnly.equals("true")); 
+		HashMap<Object, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer , deployedRevisionOnly.equals("true")); 
 		System.out.println("=================List Of Proxies Using a Target Server : "+ targetServer +" ======================");
 		System.out.println(Renderer.hashMaptoHtmlTable(proxies));
 		System.out.println(proxies);
@@ -187,7 +187,7 @@ public class ApigeeTool
     {
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String orgName = getMandatoryArg(argsMap, "-orgName") ; 
-    	HashMap<String , HashMap< String , List<MPServer>> > result = ms.getServerServices().getAllEnvsMessageProcessors(orgName) ; 
+    	HashMap<Object , HashMap< String , List<MPServer>> > result = ms.getServerServices().getAllEnvsMessageProcessors(orgName) ; 
     	System.out.println("=================List Of Regions/Env Message Processors  ======================");
 		System.out.println(Renderer.hashMaptoHtmlTable(result));
     }

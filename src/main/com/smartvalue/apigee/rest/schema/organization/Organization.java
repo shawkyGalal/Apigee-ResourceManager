@@ -46,13 +46,13 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	}
 	
 	@SuppressWarnings("unchecked")
-	public HashMap<String , Proxy>  getAllProxies() throws UnirestException, IOException
+	public HashMap<Object , Proxy>  getAllProxies() throws UnirestException, IOException
 	{
 		ArrayList<String> proxiesName = null; 
 		String apiPath = "/v1/organizations/"+this.getName()+"/apis" ; 
 		ManagementServer ms = this.getManagmentServer() ;
 		proxiesName = ms.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
-		HashMap<String , Proxy> proxies = new HashMap<>() ; 
+		HashMap<Object , Proxy> proxies = new HashMap<>() ; 
 		for (String proxyName : proxiesName)
 		{
 			String apiPath01 = apiPath + "/" + proxyName ; 
@@ -75,9 +75,9 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 		return proxiesName ;  
 	}
 	
-	public HashMap < String , Object > getAllProxiesUsesTargetServer(String m_targetServerName , boolean m_deployedVersionOnly) throws UnirestException, IOException
+	public HashMap < Object , Object > getAllProxiesUsesTargetServer(String m_targetServerName , boolean m_deployedVersionOnly) throws UnirestException, IOException
 	{
-		HashMap < String , Object > result = new HashMap < >() ;
+		HashMap < Object , Object > result = new HashMap < >() ;
 		ArrayList<String> allProxies = getAllProxiesNames(); 
 		int counter = 1;
 		this.getPrintStream().println("======== Searching over " + allProxies.size()  +  "  Proxies Using Target Server "+m_targetServerName+"===" ) ;  

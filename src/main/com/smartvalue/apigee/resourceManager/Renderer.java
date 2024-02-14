@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.api.client.util.ArrayMap;
+
 //import com.google.gson.internal.LinkedTreeMap;
 
 public class Renderer {
@@ -35,12 +37,12 @@ public class Renderer {
 		return result.toString();
 	}
 	
-	public static String hashMaptoHtmlTable(AbstractMap<String , ? extends Object > m_object)
+	public static String hashMaptoHtmlTable(AbstractMap<Object , ? extends Object > m_object)
 	{
 		StringBuffer result = new StringBuffer() ;
 		result.append("<table border = 1>") ;
 		
-		for (String key : m_object.keySet() )
+		for (Object key : m_object.keySet() )
 		{
 			result.append("<tr>") ; 
 				result.append("<td>") ; 
@@ -53,7 +55,7 @@ public class Renderer {
 				{result.append(obj) ;}
 				else if (obj instanceof AbstractMap ) 
 				{
-					result.append ( hashMaptoHtmlTable((HashMap<String, ? extends Object>) obj) ) ; 
+					result.append ( hashMaptoHtmlTable((HashMap<Object, ? extends Object>) obj) ) ; 
 				}
 				else 
 				{
@@ -104,9 +106,10 @@ public class Renderer {
 		                	htmlTable.append ( arrayListToHtmlTable((List<Object>) value) ) ; 
 		                	//htmlTable.append("List");
 		                }
+		                 
 		                else if (fieldClass.getName().equalsIgnoreCase("java.util.Map") )
 		                {
-		                	htmlTable.append(hashMaptoHtmlTable((HashMap<String, Object>) value));
+		                	htmlTable.append(hashMaptoHtmlTable((AbstractMap<Object, Object>) value));
 		                }
 		                else if (fieldClass.getName().equalsIgnoreCase("java.lang.Boolean") )
 		                {

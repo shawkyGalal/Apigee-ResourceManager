@@ -122,11 +122,11 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeServ
 	}
 	
 	
-   public HashMap<String , HashMap< String , List<MPServer>> >  getAllEnvsMessageProcessors(String m_org) throws Exception
+   public HashMap<Object , HashMap< String , List<MPServer>> >  getAllEnvsMessageProcessors(String m_org) throws Exception
     {
     	Organization orgObj = (Organization) this.getMs().getOrgByName(m_org) ;
     	List<String> regions = this.getMs().getRegions() ;
-    	HashMap<String , HashMap< String , List<MPServer>> > result = new HashMap<> () ; 
+    	HashMap<Object , HashMap< String , List<MPServer>> > result = new HashMap<> () ; 
     	for (String region : regions)
     	{
     		List<String> envs =  orgObj.getEnvironments() ; 

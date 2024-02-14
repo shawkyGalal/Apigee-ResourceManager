@@ -4,13 +4,18 @@ package com.smartvalue.apigee.configuration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.http.HttpHost;
+
+import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.infra.Infra;
 
 
 public class ApigeeConfig {
 	
 	private ArrayList<Partner> Partners ;
-	private String fileContent ;  
+	private String fileContent ;
+	private String proxyHost ; 
+	private String proxyPort ; 
 	
 	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
 
@@ -41,6 +46,7 @@ public class ApigeeConfig {
 		{
 			throw new Exception ("Customer " + m_customerName + " Not Found For Partner " + m_partnerName ) ;
 		}
+		customer.setParentConfig(this) ; 
 		return customer ; 
 	}
 
@@ -50,8 +56,9 @@ public class ApigeeConfig {
 		if (infra == null )
 		{
 			throw new Exception ("Infra " + m_infraName  + " Not Found For Customer " + m_customerName + " and Partner " + m_partnerName ) ;
-
 		}
+
+		infra.setParentCustomer(customer) ; 
 		return infra ; 
 	}
 
@@ -59,8 +66,43 @@ public class ApigeeConfig {
 	public String getFileContent() {
 		return fileContent;
 	}
+	public String getProxyHost() {
+		return proxyHost;
+	}
+	public String getProxyPort() {
+		return proxyPort;
+	}
 	
 
-	
+	public void setInternetProxy()
+	{
+		String proxyHost = this.getProxyHost() ; 
+		if (proxyHost != null)
+		{
+			String proxyPort = this.getProxyPort() ; 
+			int proxyPortInt = Integer.parseInt(proxyPort)  ; 
+			System.setProperty("http.proxyHost", proxyHost );
+		    System.setProperty("http.proxyPort", proxyPort);
+		       
+			System.setProperty("https.proxyHost", proxyHost) ; 
+			System.setProperty("https.proxyPort", proxyPort) ;
+			// System.setProperty("http.noProxy", "localhost|127.0.0.1|10.*.*.*|*.moj.gov.*|etc");
+			
+			Unirest.setProxy(new HttpHost( proxyHost , proxyPortInt ));
+		}
+			
+		}
+		
 
+	
+	public static void clearInternetProxy()
+	{
+		System.clearProperty("http.proxyHost") ; 
+		System.clearProperty("http.proxyPort") ;
+		
+		System.clearProperty("https.proxyHost") ;
+		System.clearProperty("https.proxyPort") ;
+		Unirest.setProxy(null) ; 
+	}
+	
 }
