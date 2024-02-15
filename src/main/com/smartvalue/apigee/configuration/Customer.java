@@ -42,7 +42,7 @@ public class Customer {
 			if (x.getName().equalsIgnoreCase(m_name) )
 			{	result = x ;break ;  }
 		}
-		
+		result.setParentCustomer(this);
 		return result ; 
 	}
 

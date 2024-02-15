@@ -104,5 +104,9 @@ public class ApigeeConfig {
 		System.clearProperty("https.proxyPort") ;
 		Unirest.setProxy(null) ; 
 	}
+	public void setFileContent(String fileContent2) {
+		 this.fileContent = fileContent2 ; 
+		
+	}
 	
 }
