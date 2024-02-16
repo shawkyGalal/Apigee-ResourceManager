@@ -37,7 +37,6 @@ public class Infra {
 	
 	private String accessTokenSource ;   // Valid Values :  "googleServiceAccount" , "googleWebAppCredential"  
 	public static final String GoogleServiceAccount = "googleServiceAccount" ; 
-	public static final String GoogleWebAppCredential = "googleWebAppCredential" ;
 	
 	@JsonProperty("Transformers")
     private ArrayList<Transformer> transformers ; //= new ArrayList<Transformer>();
@@ -46,8 +45,6 @@ public class Infra {
 		return transformers;
 	}
 
-	@JsonProperty("googleWebAppCredential")
-	private GoogleWebAppCredential googleWebAppCredential ; 
 	
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
@@ -205,7 +202,7 @@ public class Infra {
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
-		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(Infra.GoogleWebAppCredential) ;
+		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(ApigeeConfig.GoogleWebAppCredential) ;
 		boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
 		if ( cloudInfra && ! webLogin)
 		{
@@ -224,9 +221,7 @@ public class Infra {
 	public Boolean getGooglecloud() {
 		return googleCloud;
 	}
-	public GoogleWebAppCredential getGoogleWebAppCredential() {
-		return googleWebAppCredential;
-	}
+
 	public String getAccessTokenSource() {
 		return accessTokenSource;
 	}

@@ -6,16 +6,20 @@ import java.util.HashMap;
 
 import org.apache.http.HttpHost;
 
+
 import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.infra.Infra;
+import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 
 
 public class ApigeeConfig {
-	
+	public static final String GoogleWebAppCredential = "googleWebAppCredential" ;
+	private GoogleWebAppCredential googleWebAppCredential ; 
 	private ArrayList<Partner> Partners ;
 	private String fileContent ;
 	private String proxyHost ; 
 	private String proxyPort ; 
+	
 	
 	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
 
@@ -108,5 +112,10 @@ public class ApigeeConfig {
 		 this.fileContent = fileContent2 ; 
 		
 	}
+	
+	public GoogleWebAppCredential getGoogleWebAppCredential() {
+		return googleWebAppCredential;
+	}
+
 	
 }

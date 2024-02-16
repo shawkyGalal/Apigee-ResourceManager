@@ -445,7 +445,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public HttpResponse<String>  getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
 	{
-		return  this.getInfra().getGoogleWebAppCredential().getAccessTokenByAuthCode(authCode, redirectUri); 
+		return  this.getInfra().getParentCustomer().getParentConfig().getGoogleWebAppCredential().getAccessTokenByAuthCode(authCode, redirectUri); 
 	}
 	
 	public void webLogin(String authCode , String redirectUri ) throws UnirestException
