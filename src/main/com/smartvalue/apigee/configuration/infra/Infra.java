@@ -10,7 +10,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.Unirest;
-import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
@@ -163,7 +163,7 @@ public class Infra {
 	private ArrayList<ManagementServer> getManagementServers() throws Exception
 	{
 		
-		if ( managementServers == null )
+		if ( managementServers == null || managementServers.size() == 0)
 		{
 			managementServers = new ArrayList<ManagementServer>() ; 
 			
@@ -179,14 +179,14 @@ public class Infra {
 	
 	private void setInternetProxy()
 	{
-		ApigeeConfig ac = this.getParentCustomer().getParentConfig() ;
+		AppConfig ac = this.getParentCustomer().getParentConfig() ;
 		if ( this.getGooglecloud()!= null &&  this.getGooglecloud() )
 		{
 			ac.setInternetProxy(); 
 		}
 		else 
 		{
-			ApigeeConfig.clearInternetProxy();
+			AppConfig.clearInternetProxy();
 		}
 		
 	}
@@ -202,7 +202,7 @@ public class Infra {
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
-		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(ApigeeConfig.GoogleWebAppCredential) ;
+		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(AppConfig.GoogleWebAppCredential) ;
 		boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
 		if ( cloudInfra && ! webLogin)
 		{

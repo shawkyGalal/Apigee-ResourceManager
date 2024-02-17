@@ -13,8 +13,8 @@ import org.apache.logging.log4j.core.config.Configurator;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.ApigeeConfig;
-import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
+import com.smartvalue.apigee.configuration.AppConfig;
+import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
@@ -70,7 +70,7 @@ public class ApigeeTool
 	 	customer = getMandatoryArg (argsMap , "-customer") ;
     	infra = getMandatoryArg(argsMap, "-infra") ;
     	
-		ApigeeConfig ac = ApigeeConfigFactory.create( configFile , ApigeeConfig.class) ;  //(ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
+		AppConfig ac = AppConfigFactory.create( configFile , AppConfig.class) ;  //(ApigeeConfig) apigeeConfigParser.getObject(configFile , ApigeeConfig.class) ; 
 
 		infraObject = ac.getInfra(partner , customer , infra) ;
     	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;

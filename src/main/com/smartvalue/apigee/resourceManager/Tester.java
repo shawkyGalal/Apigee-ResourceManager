@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.mashape.unirest.http.HttpResponse;
-import com.smartvalue.apigee.configuration.ApigeeConfig;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -72,7 +72,7 @@ public class Tester {
 
 		//e.executeRequest("/test01", null, "GET", "") ; 
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
-		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
+		AppConfig ac = apigeeConfigParser.getObject("config.json" , AppConfig.class) ; 
 		//ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
 
 

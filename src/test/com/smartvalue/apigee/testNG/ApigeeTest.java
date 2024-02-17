@@ -2,8 +2,8 @@ package com.smartvalue.apigee.testNG;
 
 import org.testng.annotations.BeforeClass;
 
-import com.smartvalue.apigee.configuration.ApigeeConfig;
-import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
+import com.smartvalue.apigee.configuration.AppConfig;
+import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 
@@ -17,7 +17,7 @@ public class ApigeeTest {
 	protected static final String kvmsSubFolder = "\\kvms" ;
 	protected static final String targetserversSubFolder = "\\targetservers" ; 
 	
-	protected static ApigeeConfig ac ; 
+	protected static AppConfig ac ; 
 	protected static String sourceInfraName = "Stage";
 	protected String sourceOrgName = "stg"; 
 	protected Infra sourceInfra ; 
@@ -36,7 +36,7 @@ public class ApigeeTest {
 	@BeforeClass
 	public void beforeClass() throws Exception 
 	{
-		ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
+		ac  = AppConfigFactory.create("config.json" , AppConfig.class) ; 
 	}
 	
 	protected void initalizeSource() throws Exception

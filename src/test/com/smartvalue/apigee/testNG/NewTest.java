@@ -16,8 +16,8 @@ import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.ApigeeConfig;
-import com.smartvalue.apigee.configuration.ApigeeConfigFactory;
+import com.smartvalue.apigee.configuration.AppConfig;
+import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.resourceManager.Renderer;
@@ -50,7 +50,7 @@ public class NewTest {
 	boolean deployUponImport = false ; 
 	
 	
-	ApigeeConfig ac ; 
+	AppConfig ac ; 
 	String envName ; 
 	String proxyName ;
 	String region ; 
@@ -64,7 +64,7 @@ public class NewTest {
 	  public void testExportAll() throws Exception {
 		//==================Export All ===========================
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
-		ApigeeConfig ac = apigeeConfigParser.getObject("config.json" , ApigeeConfig.class) ; 
+		AppConfig ac = apigeeConfigParser.getObject("config.json" , AppConfig.class) ; 
 		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
 		String destFolderName = "C:\\temp\\Stage" ;
@@ -262,7 +262,7 @@ public class NewTest {
 	  @Test(dataProvider = "testData" , groups = "deleteAll")
 	  public void beforeClass() throws Exception 
 	  {
-		ApigeeConfig ac  = ApigeeConfigFactory.create("config.json" , ApigeeConfig.class) ; 
+		AppConfig ac  = AppConfigFactory.create("config.json" , AppConfig.class) ; 
 			
 		destInfra = ac.getInfra("MasterWorks" , "Moj" , destInfraName) ;
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;

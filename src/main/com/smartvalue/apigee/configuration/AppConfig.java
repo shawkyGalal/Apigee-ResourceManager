@@ -12,7 +12,7 @@ import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 
 
-public class ApigeeConfig {
+public class AppConfig {
 	public static final String GoogleWebAppCredential = "googleWebAppCredential" ;
 	private GoogleWebAppCredential googleWebAppCredential ; 
 	private ArrayList<Partner> Partners ;
