@@ -2,25 +2,23 @@ package com.smartvalue.apigee.rest.schema.proxy;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gson.Gson;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
-import com.smartvalue.apigee.rest.schema.ApigeeService;
+
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
-import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
+
 
 
 public class ProxyServices extends BundleObjectService implements Deployable {

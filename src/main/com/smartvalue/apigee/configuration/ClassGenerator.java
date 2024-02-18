@@ -12,8 +12,6 @@ import org.jsonschema2pojo.SchemaStore;
 import org.jsonschema2pojo.SourceType;
 import org.jsonschema2pojo.rules.RuleFactory;
 
-import com.google.gson.Gson;
-import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.sun.codemodel.JCodeModel;
 
 public class ClassGenerator {

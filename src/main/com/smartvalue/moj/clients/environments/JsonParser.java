@@ -61,7 +61,6 @@ public class JsonParser {
 	private <T> T  parseConfigFileInputStream(InputStream inputStream , Class<T> classOfT) throws IOException {
 		fileContent = readFromInputStream(inputStream) ; 
 		Gson gson = new Gson();
-		Object  result = null;
 		return gson.fromJson(fileContent, classOfT );  
 	
 	}

@@ -1,12 +1,11 @@
 package com.smartvalue.apigee.rest.schema.sharedFlow;
 
-import java.io.File;
+
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -14,7 +13,7 @@ import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
-import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
+
 
 
 public class SharedFlowServices extends BundleObjectService implements Deployable{

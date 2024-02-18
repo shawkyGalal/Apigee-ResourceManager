@@ -7,9 +7,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
-import com.smartvalue.apigee.rest.schema.application.Application;
-import com.smartvalue.apigee.rest.schema.product.Product;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public class DeveloperServices extends ApigeeService {
 

@@ -2,7 +2,6 @@ package com.smartvalue.apigee.configuration;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.http.HttpHost;
 
@@ -21,8 +20,6 @@ public class AppConfig {
 	private String proxyPort ; 
 	
 	
-	private HashMap<String , HashMap<String , HashMap<String , Infra> > > partnersMap = new HashMap<> () ; 
-
 
 	public ArrayList<Partner> getPartners() {
 		return Partners;

@@ -1,7 +1,6 @@
 
 package com.smartvalue.apigee.rest.schema.sharedFlow.auto;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.ApigeeComman;
-import com.smartvalue.apigee.rest.schema.Deployable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +17,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public abstract class ApigeeService {

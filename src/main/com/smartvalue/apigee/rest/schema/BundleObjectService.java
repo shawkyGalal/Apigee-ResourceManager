@@ -3,7 +3,6 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;

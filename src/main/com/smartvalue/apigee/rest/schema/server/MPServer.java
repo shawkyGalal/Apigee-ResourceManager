@@ -10,7 +10,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.server.Server;
 
 public class MPServer extends Server {
 	

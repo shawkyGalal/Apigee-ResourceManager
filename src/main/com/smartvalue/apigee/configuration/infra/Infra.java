@@ -3,17 +3,13 @@ package com.smartvalue.apigee.configuration.infra;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpHost;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
-import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
+
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
 import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;

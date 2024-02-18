@@ -2,16 +2,12 @@ package com.smartvalue.apigee.rest.schema.application;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
-import com.smartvalue.apigee.rest.schema.product.Product;
-import com.smartvalue.apigee.rest.schema.proxy.Proxy;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public class ApplicationServices extends ApigeeService {
 

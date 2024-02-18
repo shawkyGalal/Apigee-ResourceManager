@@ -4,10 +4,8 @@ import java.nio.charset.Charset;
 
 import java.util.HashMap;
 
-import org.checkerframework.checker.initialization.qual.Initialized;
 import org.springframework.security.crypto.codec.Base64;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mashape.unirest.http.HttpResponse;

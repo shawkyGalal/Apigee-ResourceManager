@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;

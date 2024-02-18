@@ -8,13 +8,11 @@ import java.util.List;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
 import com.smartvalue.apigee.environmentsMonitor.MonitoringEnvThread;
 import com.smartvalue.apigee.rest.schema.TargetServer;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KeyValueMap;
-import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
 

@@ -16,7 +16,6 @@ import com.smartvalue.apigee.rest.schema.developer.Developer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
-import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
 public class Organization extends com.smartvalue.apigee.rest.schema.organization.auto.Organization {

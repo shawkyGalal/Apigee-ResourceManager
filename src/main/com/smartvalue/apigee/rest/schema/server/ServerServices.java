@@ -12,7 +12,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;

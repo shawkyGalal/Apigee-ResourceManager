@@ -1,48 +1,21 @@
 package com.smartvalue.apigee.resourceManager;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.AppConfig;
-import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.environmentsMonitor.CondActionPair;
-import com.smartvalue.apigee.environmentsMonitor.EnvironmentAction;
-import com.smartvalue.apigee.environmentsMonitor.EnvironmentCondition;
-import com.smartvalue.apigee.rest.schema.environment.Environment;
-import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.product.ProductsServices;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.NullTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
-import com.smartvalue.apigee.rest.schema.server.MPServer;
-import com.smartvalue.apigee.rest.schema.server.Postgres;
-import com.smartvalue.apigee.rest.schema.server.QupidServer;
-import com.smartvalue.apigee.rest.schema.server.Router;
-import com.smartvalue.apigee.rest.schema.server.Server;
-import com.smartvalue.apigee.rest.schema.server.ServerServices;
-import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
-import com.smartvalue.apigee.rest.schema.TargetServer;
-import com.smartvalue.apigee.rest.schema.virtualHost.VirtualHost;
-import com.smartvalue.moj.clients.environments.ClientEnvironmentsFactory;
-import com.smartvalue.moj.clients.environments.Environments;
 import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
-import com.smartvalue.zip.ZipUtility;
 
 public class Tester {
 
