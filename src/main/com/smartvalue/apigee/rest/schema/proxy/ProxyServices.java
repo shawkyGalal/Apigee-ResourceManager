@@ -179,7 +179,6 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 
 	@Override
 	public String getResourcePath() {
-		// TODO Auto-generated method stub
 		return "/v1/organizations/"+orgName+"/apis";
 	}
 

@@ -3,6 +3,7 @@ package com.smartvalue.apigee.rest.schema.application;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -16,13 +17,12 @@ public class ApplicationServices extends ApigeeService {
 
 	public ApplicationServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
-		
 	}
 
 
 	@Override
 	public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub - 
 		return null;
 	}
 
@@ -49,7 +49,7 @@ public class ApplicationServices extends ApigeeService {
 	{
 		
 		return this.getAllResourcesList(Application.class) ; 
-		
+
 	}
 
 
@@ -58,5 +58,11 @@ public class ApplicationServices extends ApigeeService {
 		return "apps";
 	}
 	
+	public List<String> getAllGrantedScopes()
+	{
+		List<String> result = new ArrayList<String>(); 
+		// TODO Need Implementation get All App Products scopes - 
+		return result ; 
+	}
 
 }

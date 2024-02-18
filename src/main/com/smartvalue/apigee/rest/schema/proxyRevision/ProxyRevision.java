@@ -12,7 +12,6 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
 
 	public void setManagementServer(ManagementServer managmentServer) {
-		// TODO Auto-generated method stub
 		this.setManagmentServer(managmentServer) ; 
 	}
 	

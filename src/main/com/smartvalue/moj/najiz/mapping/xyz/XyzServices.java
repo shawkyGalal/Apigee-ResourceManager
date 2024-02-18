@@ -6,7 +6,6 @@ public class XyzServices extends com.smartvalue.moj.najiz.NajizService {
 
 	public XyzServices(Environment environment) {
 		super(environment);
-		// TODO Auto-generated constructor stub
 	}
 
 }

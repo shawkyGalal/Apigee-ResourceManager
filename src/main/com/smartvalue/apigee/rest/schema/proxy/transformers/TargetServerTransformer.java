@@ -15,7 +15,6 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
 	@Override
 	public  TransformResult  trasform(String  bundleZipFileName , String outputZipFile) {
 
-		//--- TODO --
 		//1- Creare a new Target Server specific for this Proxy Pundle
 		targetServerName = "xxxxx" ;
 		 targetServerPath = "pathyyyy"; 
@@ -49,7 +48,6 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
 
 	@Override
 	public boolean filter(String bundleZipFileNam) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 	

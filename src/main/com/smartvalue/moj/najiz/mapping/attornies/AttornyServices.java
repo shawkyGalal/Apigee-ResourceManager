@@ -6,7 +6,6 @@ public class AttornyServices extends com.smartvalue.moj.najiz.NajizService {
 
 	public AttornyServices(Environment environment) {
 		super(environment);
-		// TODO Auto-generated constructor stub
 	}
 
 }

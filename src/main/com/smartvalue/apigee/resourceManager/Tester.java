@@ -252,7 +252,6 @@ public class Tester {
 		EnvironmentAction ea = new EnvironmentAction(env) 
 			{	@Override
 				public void run() throws Exception {
-					// TODO Auto-generated method stub
 					// Add one of the free mp's to this env. 
 					Environment env = this.getEnv() ;
 					ArrayList<MPServer> freeMps = env.getMs().getFreeMps(region) ;
@@ -297,10 +296,8 @@ public class Tester {
 			com.google.auth.oauth2.AccessToken token = credentials.getAccessToken();
 			return token;
 		}catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			throw e;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			throw e;
 		}
 	}

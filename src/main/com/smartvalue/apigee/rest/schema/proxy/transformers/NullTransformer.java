@@ -34,7 +34,6 @@ public class NullTransformer implements ApigeeObjectTransformer {
 
 	@Override
 	public boolean filter(String bundleZipFileNam) {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

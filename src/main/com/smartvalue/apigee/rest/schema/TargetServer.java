@@ -11,7 +11,6 @@ public class TargetServer {
     private int port;
     private SSLInfo sSLInfo;
 	public TargetServer() {
-		// TODO Auto-generated constructor stub
 	}
 	public String getHost() {
 		return host;
