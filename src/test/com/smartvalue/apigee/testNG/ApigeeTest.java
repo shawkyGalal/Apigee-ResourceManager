@@ -27,7 +27,7 @@ public class ApigeeTest {
 	
 	
 	protected String destInfraName = "Gcloud(shawky.foda@gmail.com)";  
-	protected String destOrgName = "apigee-moj-stage"; 
+	protected String destOrgName = "moj-prod-apigee"; 
 	protected Infra destInfra; 
 	protected ManagementServer destMngServer ; 
 	protected boolean deployUponImport = false ; 

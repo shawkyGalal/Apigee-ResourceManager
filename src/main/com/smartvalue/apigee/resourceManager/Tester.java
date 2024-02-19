@@ -97,7 +97,7 @@ public class Tester {
 		 
 		Infra destInfra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
 		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
-		String destOrgName = "apigee-moj-stage" ;
+		String destOrgName = "moj-prod-apigee" ;
 		ArrayList<HttpResponse<String>> importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
 		ArrayList<HttpResponse<String>> importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
 		ArrayList<HttpResponse<String>> importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;

@@ -44,7 +44,7 @@ public class NewTest {
 	ManagementServer sourceMngServer ; 
 	
 	String destInfraName = "Gcloud(shawky.foda@gmail.com)";  
-	String destOrgName = "apigee-moj-stage"; 
+	String destOrgName = "moj-prod-apigee"; 
 	Infra destInfra; 
 	ManagementServer destMngServer ; 
 	boolean deployUponImport = false ; 
@@ -116,7 +116,7 @@ public class NewTest {
 	  public void testImportAll() throws Exception {
     	//==================Import All ===========================
 		String sourceFolderName = transformFolderName ; // "C:\\temp\\Stage" ;
-		//String destOrgName = "apigee-moj-stage" ; 
+		//String destOrgName = "moj-prod-apigee" ; 
 		//ArrayList<HttpResponse<String>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).importAll(sourceFolderName +"\\targetservers") ;
 		//ArrayList<HttpResponse<String>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).importAll(sourceFolderName +"\\kvms") ;
 		ArrayList<HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices(destOrgName)).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;

@@ -32,9 +32,9 @@ public class Import extends ApigeeTest{
 	 @Test
 	 public void importAllProxies() throws Exception {
 		//==================Import All Proxies ===========================
-		System.setProperty("http.proxyHost", "proxy.moj.gov.local");
-		System.setProperty("http.proxyPort", "8080");
-		destMngServer.getInfra().buildTransformers(); 
+		//System.setProperty("http.proxyHost", "proxy.moj.gov.local");
+		//System.setProperty("http.proxyPort", "8080");
+		//destMngServer.getInfra().buildTransformers(); 
 		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(sourceOrgName).importAll(transformFolderName + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
