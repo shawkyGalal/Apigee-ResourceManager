@@ -12,7 +12,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.rest.schema.AccessToken;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -198,6 +202,26 @@ public class GoogleAccessToken  extends AccessToken {
         result = ((result* 31)+((this.refresh_token == null)? 0 :this.refresh_token.hashCode()));
         return result;
     }
+    
+    public  Claims  getJwtClaims()
+	{
+		 Claims claims = Jwts.parser()
+                 .setSigningKey(getSourceCredentials().getClientSecret())
+                 .parseClaimsJws(this.getIdToken())
+                 .getBody();
+		 
+		 return claims ; 
+	}
+
+    private GoogleWebAppCredential sourceCredential ; 
+	public void setSourceCredentials(GoogleWebAppCredential m_googleWebAppCredential) {
+		sourceCredential = m_googleWebAppCredential ; 
+		
+	}
+
+	public GoogleWebAppCredential getSourceCredentials() {
+		return sourceCredential;
+	}
 
   	
 }

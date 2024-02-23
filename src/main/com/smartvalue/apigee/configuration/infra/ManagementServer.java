@@ -23,6 +23,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.googleAccessToken.auto.GoogleAccessToken;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
+import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.AccessToken;
@@ -441,17 +442,21 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		this.serverProfile = serverProfile;
 	}
 	
-	public HttpResponse<String>  getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
+	GoogleAccessToken googleAccessToken ;
+	
+	private GoogleAccessToken getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
 	{
-		return  this.getInfra().getParentCustomer().getParentConfig().getGoogleWebAppCredential().getAccessTokenByAuthCode(authCode, redirectUri); 
+		GoogleWebAppCredential googleWebAppCredential = this.getInfra().getParentCustomer().getParentConfig().getGoogleWebAppCredential() ; 
+		googleAccessToken = googleWebAppCredential.getAccessTokenByAuthCode(authCode, redirectUri); 
+		return  googleAccessToken ; 
 	}
 	
 	public void webLogin(String authCode , String redirectUri ) throws UnirestException
 	{
-		Gson json = new Gson(); 
-		GoogleAccessToken webLoginAccessToken = json.fromJson( getAccessTokenByAuthCode(authCode, redirectUri).getBody() , GoogleAccessToken.class ) ;
+		GoogleAccessToken webLoginAccessToken = getAccessTokenByAuthCode(authCode, redirectUri) ;
 		this.accessToken = webLoginAccessToken ; 
-		
 	}
+	
+	
 
 }
