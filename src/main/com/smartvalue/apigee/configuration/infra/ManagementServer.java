@@ -444,17 +444,22 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	GoogleAccessToken googleAccessToken ;
 	
-	private GoogleAccessToken getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
+	private GoogleAccessToken requestAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
 	{
 		GoogleWebAppCredential googleWebAppCredential = this.getInfra().getParentCustomer().getParentConfig().getGoogleWebAppCredential() ; 
 		googleAccessToken = googleWebAppCredential.getAccessTokenByAuthCode(authCode, redirectUri); 
 		return  googleAccessToken ; 
 	}
 	
+	public GoogleAccessToken getGoogelAccessToken()
+	{
+		return googleAccessToken; 
+	}
+	
 	public void webLogin(String authCode , String redirectUri ) throws UnirestException
 	{
-		GoogleAccessToken webLoginAccessToken = getAccessTokenByAuthCode(authCode, redirectUri) ;
-		this.accessToken = webLoginAccessToken ; 
+		googleAccessToken = requestAccessTokenByAuthCode(authCode, redirectUri) ;
+		this.accessToken = googleAccessToken ; 
 	}
 	
 	

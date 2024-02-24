@@ -1,6 +1,9 @@
 
 package com.smartvalue.apigee.configuration.infra.googleAccessToken.auto;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.processing.Generated;
@@ -12,11 +15,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -203,15 +209,30 @@ public class GoogleAccessToken  extends AccessToken {
         return result;
     }
     
-    public  Claims  getJwtClaims()
+    public GoogleIdToken verifyIdToken( ) throws GeneralSecurityException, IOException
 	{
-		 Claims claims = Jwts.parser()
-                 .setSigningKey(getSourceCredentials().getClientSecret())
-                 .parseClaimsJws(this.getIdToken())
-                 .getBody();
-		 
-		 return claims ; 
+		String client_id = this.getSourceCredentials().getClient_id(); 
+    	HttpTransport httpTransport = new NetHttpTransport() ;
+	
+		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(httpTransport, new JacksonFactory())
+				// Specify the CLIENT_ID of the app that accesses the backend:
+				.setAudience(Collections.singletonList(client_id))
+				// Or, if multiple clients access the backend:
+				//.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+				.build();
+		return  verifier.verify(this.getIdToken());
 	}
+    
+    public GoogleIdToken getGoogleIdToken( ) throws GeneralSecurityException, IOException
+   	{
+    	GoogleIdToken result = null ; 
+    	if (this.getIdToken()!=null)
+    	{
+    		result = GoogleIdToken.parse(new JacksonFactory(), this.getIdToken());
+    	}
+       	return  result ; 
+   	}
+    
 
     private GoogleWebAppCredential sourceCredential ; 
 	public void setSourceCredentials(GoogleWebAppCredential m_googleWebAppCredential) {
