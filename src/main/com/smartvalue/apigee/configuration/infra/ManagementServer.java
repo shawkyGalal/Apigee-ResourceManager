@@ -162,6 +162,11 @@ public class ManagementServer extends Server{
 		HttpResponse<String> response = request.asString();
 		return response ;  
 	}
+	
+	public HttpResponse<String> getPostHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
+		return getPostHttpResponse(m_apiPath , null , null) ; 
+	}
+	
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 

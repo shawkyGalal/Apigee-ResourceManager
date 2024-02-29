@@ -27,7 +27,10 @@ public class DeveloperServices extends ApigeeService {
 	
 	public Developer getDeveloperById(String developerId) throws Exception
 	{
-		return this.getResource(developerId, Developer.class) ; 
+		Developer result ; 
+		result = this.getResource(developerId, Developer.class) ;
+		result.setManagmentServer(getMs());
+		return result ; 
 	}
 
 	@SuppressWarnings("unchecked")

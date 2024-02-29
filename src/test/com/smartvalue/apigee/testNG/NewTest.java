@@ -24,6 +24,10 @@ import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.TargetServer;
+import com.smartvalue.apigee.rest.schema.application.Application;
+import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
+import com.smartvalue.apigee.rest.schema.application.auto.ApiProduct;
+import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
@@ -36,17 +40,8 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
 
-public class NewTest {
+public class NewTest extends ApigeeTest {
 	
-	String sourceInfraName = "Stage";
-	String sourceOrgName = "stg"; 
-	Infra sourceInfra ; 
-	ManagementServer sourceMngServer ; 
-	
-	String destInfraName = "Gcloud(shawky.foda@gmail.com)";  
-	String destOrgName = "moj-prod-apigee"; 
-	Infra destInfra; 
-	ManagementServer destMngServer ; 
 	boolean deployUponImport = false ; 
 	
 	
@@ -193,6 +188,21 @@ public class NewTest {
 			HashMap<String, ArrayList<String>> xx= proxy.getRevisionsUsesTargetServer("Yesser_Server" , true) ; 
 			System.out.println(xx);
 	  }
+	  
+	  @Test
+	  public void testApproveAppProduct() throws Exception {
+	  
+		  initalizeSource(); 
+		  DeveloperServices ds = (DeveloperServices) sourceMngServer.getDevelopersServices(sourceOrgName); 
+		  Application app = ds.getDeveloperById("sfoda@moj.gov.sa").getAppByname("App01") ;
+		  String key = "MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8" ; 
+		  String productName = "SDK_Generator" ; 
+		  app.approveApiProduct(key, productName); ;
+		  app.revokeApiProduct(key, productName); ;
+		  ApiProduct xxy =  app.getCredentialByKey(key).getApiProductByname(productName);
+		  
+	  }
+	  
 	  @Test
 	  public void testSdkGenerator() throws FileNotFoundException, IOException
 	  {
@@ -258,6 +268,7 @@ public class NewTest {
 	  public void beforeMethod() {
 	  }
 
+	  /*
 	  @BeforeClass
 	  @Test(dataProvider = "testData" , groups = "deleteAll")
 	  public void beforeClass() throws Exception 
@@ -274,6 +285,7 @@ public class NewTest {
 		//env =  org.getEnvByName(envName);
 
 	  }
+	  */
 
 	  @BeforeTest
 	  public void beforeTest() {

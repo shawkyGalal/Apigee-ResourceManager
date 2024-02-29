@@ -16,6 +16,7 @@ public abstract class ApigeeComman {
 	
 	public void setManagmentServer(ManagementServer ms) {
 		this.managmentServer = ms;
+		this.setOrgName(ms.getOrgName());
 	}
 	
 	public ManagementServer getManagmentServer() {

@@ -255,5 +255,20 @@ public class Credential {
         Credential rhs = ((Credential) other);
         return ((((((((((this.consumerSecret == rhs.consumerSecret)||((this.consumerSecret!= null)&&this.consumerSecret.equals(rhs.consumerSecret)))&&((this.attributes == rhs.attributes)||((this.attributes!= null)&&this.attributes.equals(rhs.attributes))))&&((this.issuedAt == rhs.issuedAt)||((this.issuedAt!= null)&&this.issuedAt.equals(rhs.issuedAt))))&&((this.scopes == rhs.scopes)||((this.scopes!= null)&&this.scopes.equals(rhs.scopes))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.consumerKey == rhs.consumerKey)||((this.consumerKey!= null)&&this.consumerKey.equals(rhs.consumerKey))))&&((this.apiProducts == rhs.apiProducts)||((this.apiProducts!= null)&&this.apiProducts.equals(rhs.apiProducts))))&&((this.expiresAt == rhs.expiresAt)||((this.expiresAt!= null)&&this.expiresAt.equals(rhs.expiresAt))))&&((this.status == rhs.status)||((this.status!= null)&&this.status.equals(rhs.status))));
     }
+    
+	public ApiProduct getApiProductByname( String apiProductId)
+	{
+		ApiProduct result = null ; 
+		for ( ApiProduct apiProduct:   this.getApiProducts())
+			{
+				ApiProduct xx = (ApiProduct) apiProduct ; 
+				if ( xx.getApiproduct().equalsIgnoreCase(apiProductId) ) 
+				{
+					result = xx ;
+					break; 
+				}
+			}
+		return result ; 
+	}
 
 }

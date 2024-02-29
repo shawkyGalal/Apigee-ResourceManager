@@ -43,12 +43,14 @@ public class ApigeeTest {
 	{
 		sourceInfra = ac.getInfra("MasterWorks" , "MOJ" , sourceInfraName) ;
 		sourceMngServer = sourceInfra.getManagementServer(sourceInfra.getRegions().get(0).getName());
+		sourceMngServer.setOrgName(sourceOrgName);
 	}
 	
 	protected void initalizeDest() throws Exception
 	{
 		destInfra = ac.getInfra("MasterWorks" , "Moj" , destInfraName) ;
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
+		destMngServer.setOrgName(destOrgName);
 	}
 
 }
