@@ -1,4 +1,8 @@
 package com.smartvalue.apigee.rest.schema.targetServer;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 
@@ -12,6 +16,15 @@ public class TargetServerServices  extends EnvironmentScopeService {
 	@Override
 	public String getApigeeObjectType() {
 		return "targetservers";
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<String>  getTargetServersList(String m_org ) throws UnirestException, IOException
+	{
+		ArrayList<String> targetServersNames = null; 
+		String apiPath = "/v1/organizations/"+m_org+"/environments/"+this.envName+"/targetservers?expand=true" ; 
+		targetServersNames = this.getMs().executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
+		return targetServersNames ; 
 	}
 
 }

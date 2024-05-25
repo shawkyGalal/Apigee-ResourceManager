@@ -332,7 +332,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		
 		return accessToken ; 
 	}
-	
+	/**
 	@SuppressWarnings("unchecked")
 	public ArrayList<String>  getTargetServersList01(String m_org , String m_env ) throws UnirestException, IOException
 	{
@@ -341,7 +341,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		targetServersNames = this.executeGetMgmntAPI(apiPath , ArrayList.class ) ; 
 		return targetServersNames ; 
 	}
-	
+	**/
 	public ApigeeService getProductServices(String m_orgName)
 	{
 		return  new ProductsServices( this, m_orgName) ; 
@@ -379,6 +379,20 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ApigeeService getTargetServersServices(String m_orgName) {
 		return  new TargetServerServices(this , m_orgName) ; 
 	}
+	
+	public ArrayList<ApigeeService> getAllServices(String m_orgName)
+	{
+		ArrayList<ApigeeService> result = new ArrayList<ApigeeService>() ; 
+		result.add(this.getProxyServices(m_orgName)) ; 
+		result.add(this.getSharedFlowServices(m_orgName)) ;
+		result.add(this.getDevelopersServices(m_orgName)) ;
+		result.add(this.getApplicationServices(m_orgName)) ;
+		result.add(this.getProductServices(m_orgName)) ;
+		result.add(this.getTargetServersServices(m_orgName)) ;
+		result.add(this.getKeyValueMapServices(m_orgName)) ;
+		return result; 
+	}
+	
 
 	@Override
 	public String getSimpleName() {

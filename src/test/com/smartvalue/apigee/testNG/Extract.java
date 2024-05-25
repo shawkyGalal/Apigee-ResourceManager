@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class Export extends ApigeeTest{
+public class Extract extends ApigeeTest{
 	 
 	 @Test
 	 public void exportAllProxies() throws Exception {

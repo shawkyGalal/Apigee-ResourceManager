@@ -160,12 +160,25 @@ public abstract class ApigeeService {
 	public ArrayList<HttpResponse<String>> importAll(String sourceFolder) throws UnirestException, IOException, Exception
 	{
 		ArrayList<HttpResponse<String>> result = new ArrayList<HttpResponse<String>> () ; 
+		ArrayList<HttpResponse<String>> failedResult ; 
 		File source = new File(sourceFolder); 
 		for (File resourceFile : source.listFiles() )
 		{
+			failedResult = new ArrayList<HttpResponse<String>>(); 
 			System.out.println("Importing "+this.getApigeeObjectType()+" : "  + resourceFile );
 			try {
-				result.add(importResource(resourceFile)) ;
+				HttpResponse<String> productImportresult =  importResource(resourceFile) ;
+				int status = productImportresult.getStatus() ; 
+				if (! (status == 200 || status == 201) )
+				{	int dotIndex = resourceFile.getName().indexOf(".");
+					String objectName= resourceFile.getName().substring(0, dotIndex ) ; 
+					System.out.println("Error Uploading " + this.getResourcePath() +": " + objectName);
+					System.out.println("Error Details " + productImportresult.getBody());
+					failedResult.add(productImportresult) ; 
+					logger.error("Error Importing (" + this.getApigeeObjectType() +") Name : " + objectName +", Response_Body : "+ productImportresult.getBody());
+				}
+				
+				result.add(productImportresult) ;
 			}
 			catch (Exception e ) {
 				

@@ -18,16 +18,16 @@ public class ApigeeTest {
 	protected static final String targetserversSubFolder = "\\targetservers" ; 
 	
 	protected static AppConfig ac ; 
-	protected static String sourceInfraName = "Stage";
-	protected String sourceOrgName = "stg"; 
+	protected static final String sourceInfraName = "Stage";
+	protected static final String sourceOrgName = "stg"; 
 	protected Infra sourceInfra ; 
 	protected ManagementServer sourceMngServer ;
 	protected static final String destFolderName = "C:\\temp\\"+sourceInfraName ;
 	protected static final String transformFolderName = "C:\\temp\\"+sourceInfraName+"\\Transformed" ;
 	
 	
-	protected String destInfraName = "Gcloud(shawky.foda@gmail.com)";  
-	protected String destOrgName = "moj-prod-apigee"; 
+	protected static final String destInfraName = "Gcloud(shawky.foda@gmail.com)";  
+	protected static final String destOrgName = "moj-prod-apigee"; 
 	protected Infra destInfra; 
 	protected ManagementServer destMngServer ; 
 	protected boolean deployUponImport = false ; 
