@@ -175,8 +175,9 @@ public class NewTest extends ApigeeTest {
 
 	 
 	 @Test
-	  public void testProductsWithoutProxies() throws UnirestException, IOException {
-		ProductsServices   productServices = (ProductsServices) destMngServer.getProductServices(sourceOrgName) ; 
+	  public void testProductsWithoutProxies() throws Exception {
+		initalizeSource(); 
+		ProductsServices   productServices = (ProductsServices) sourceMngServer.getProductServices(sourceOrgName) ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 
 		assert productsWithoutProxies.size() == 0 : "Product With No Proxies not Found!";
