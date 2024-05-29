@@ -1,6 +1,7 @@
 # Apigee ResourceManager
 ## Project Scope: 
-A Java Command Line tool for Google Apigee API management gateway
+A Java Command Line tool for Google Apigee API management gateway for suitable for migartion purposed especially from on premise Apigee Edge (OPDK) to Google Apigee Cloud 
+
 
 ## Prerequizite 
 Before start using this project you should have the following components/system installed on your machine 
@@ -38,24 +39,31 @@ git clone https://github.com/shawkyGalal/Apigee-ResourceManager.git
  cd Apigee-ResourceManager
  mvn clean compile assembly:single
 ~~~
-### 1.3 Install gCloud Google Cloud Command Line Tool 
+This Should build a jar file  /target/ResourceManager-jar-with-dependencies.jar
+
+
+    
+### 1.3 Create Your Service Account Json Key :
+
+#### 1.3.1 Using Google Cloud Consle 
+ 
+You Can Create Your Service Account Using Gcloud Console Service "API & Services" at https://console.cloud.google.com/apis/dashboard
+
+
+#### 1.3.2 Using gcloud cli
+
+### 1.3.2.1 Install gcloud Google Cloud Command Line Tool 
 	
  	flow instruction at: 
 	[https://cloud.google.com/sdk/docs/install#windows](https://cloud.google.com/sdk/docs/install#windows)
 	
 	Follow the installation wizard instructions. You can choose the installation location and whether to add the Cloud SDK tools to your system PATH. Adding to the PATH allows you to use gcloud from any command prompt window.
 
-### 1.4 gcloud Authenticate:
+### 1.3.2.2  gcloud Authenticate:
 ~~~
 gcloud auth login 
 ~~~
    	to authenticate with your Google Cloud account. This will open a browser window for you to sign in.
-    
-### 1.5 Create Your Service Account Json Key :
-You Can Create Your Service Account Using Gcloud Service "API & Services" at https://console.cloud.google.com/apis/dashboard 
-Or Using gcloud command line installed in 
-
-#### 1.5.1 Create a Service Account 
 
 ~~~
 PROJECT_ID=<Your_Project_Name>
@@ -70,12 +78,12 @@ Grant apigee.apiAdminV2 role (permissions) to the service account. Use the follo
 gcloud projects add-iam-policy-binding ${PROJECT_ID} --member="serviceAccount:${SERVICE_ACCOUNT_EMAIL}" --role="roles/apigee.apiAdminV2"
 ~~~
 
-#### 1.5.2 Create a Service Account Json Key
+#### 1.3.3 Create a Service Account Json Key
 ~~~
 gcloud iam service-accounts keys create my-key-file.json  --iam-account ${SERVICE_ACCOUNT_EMAIL}
 ~~~
     
-### 1.6 Add the Service account key to your config.json file.
+### 1.4 Add the Service account key to your config.json file.
 Sample : 
 
 ~~~
@@ -153,15 +161,13 @@ Sample :
 For Example : 
 ### Export all Proxies : 
 ~~~
-java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
 ~~~
-### Transform all Proxies : 
-Transformation can be done through 2 ways : 
-#### Shell script Transformer   
-You could build your own shell script transformer 
-Example : [./scripts/modifyPrxoies.sh](./scripts/modifyPrxoies.sh)
 
-#### Java Transformer   
+### Transform All Proxies : 
+Transformation can be done through 2 ways : 
+
+##### 1- Java Transformer   
 Transforming All Apigee Objects are fully customizable, You should be java faimilar to build your own Java Tranfomer Class that implements  java interface com.smartvalue.apigee.rest.schema.proxy.transformers.ApigeeObjectTransformer 
 then configure your Transformer class in the project configuration file ( Config.json)  as the example below  : 
 
@@ -206,15 +212,21 @@ You Can build your own transformers to satisfy your specific needs and simply at
 You Could Use the command line to perform the Transformation  
  
 ~~~
-java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -transformAll proxies -sourceFolder "</path/to/Source>" -destFolder "</path/to/Traformed>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -transformAll proxies -sourceFolder "</path/to/Source>" -destFolder "</path/to/Traformed>"
 ~~~
+
+##### 2- Shell script Transformer   
+You could build your own shell script transformer 
+Example : [./scripts/modifyPrxoies.sh](./scripts/modifyPrxoies.sh)
+ 
+ 
 ### Import from the transformed proxies : 
 ~~~
-java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -importAll proxies -sourceFolder "</path/to/Traformed>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -importAll proxies -sourceFolder "</path/to/Traformed>"
 ~~~
 ###  Delete all proxies : 
 ~~~
-java -jar ./target/ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
 ~~~
 
 ## Objects Valid for exportAll , transformAll , importAll , deleteAll 

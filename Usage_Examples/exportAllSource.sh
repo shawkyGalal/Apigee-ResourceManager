@@ -1,1 +1,1 @@
-java -jar ../target/Apigee-ResourceManager-1.0.0-jar-with-dependencies.jar  -configFile ../config.json -partner MasterWorks -customer MOJ  -infra  Stage  -org stg  -operation migrate -exportAll proxies -folderDest "/temp/Stage/proxies"
+java -jar ../target/ResourceManager-jar-with-dependencies.jar  -configFile ../config.json -partner MasterWorks -customer MOJ  -infra  Stage  -org stg  -operation migrate -exportAll proxies -folderDest "/temp/Stage/proxies"
