@@ -26,6 +26,7 @@ import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServ
 import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.cloud.OrganizationList.OrganizationList;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
@@ -115,7 +116,14 @@ public class ManagementServer extends Server{
 		if (orgs.size() ==0  || m_refresh )
 		{
 			String apiPath = "/v1/organizations/" ; 
-			String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ;  
+			String[] orgNames ; 
+			Boolean isGoogleCloud = this.getInfra().getGooglecloud() ;
+			if (isGoogleCloud != null && isGoogleCloud)
+			{
+				OrganizationList orgList = this.executeGetMgmntAPI(apiPath , OrganizationList.class);
+				orgNames = orgList.toArray(); 
+			}
+			else { orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ; }  
 			for (String orgname : orgNames )
 			{
 				String path2 = "/v1/organizations/" + orgname ; 

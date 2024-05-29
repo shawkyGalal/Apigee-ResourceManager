@@ -154,6 +154,8 @@ public class ApigeeTool
 
  	private static ArrayList<Object>  productsWithoutProxies(String[] args) throws UnirestException, IOException 
  	{
+ 	 HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+ 	 org = getMandatoryArg(argsMap, "-org");
 	 ProductsServices ps = (ProductsServices) ms.getProductServices(org) ; 
 	 ArrayList<Object> results  = ps.getProductsWithoutProxies() ;
 	 System.out.println("=================List Of Products without Proxies ======================");
@@ -163,6 +165,8 @@ public class ApigeeTool
  
     private static void listProxiesNotDeployed(String[] args ) throws Exception 
     {
+    	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+    	org = getMandatoryArg(argsMap, "-org");
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
     	ArrayList<String> proxiesNotDeployed = orgObj.getUndeployedProxies() ;
     	System.out.println("=================List Of Proxies With No Deployments ======================");
@@ -175,6 +179,7 @@ public class ApigeeTool
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
     	String targetServer = getMandatoryArg(argsMap, "-targetServer"); //argsMap.get("-targetServer") ;
     	String deployedRevisionOnly =  getMandatoryArg(argsMap, "-deployedRevisionOnly");
+    	org = getMandatoryArg(argsMap, "-org");
 		Organization orgObj = (Organization) ms.getOrgByName(org) ;  
 		HashMap<Object, Object> proxies = orgObj.getAllProxiesUsesTargetServer(targetServer , deployedRevisionOnly.equals("true")); 
 		System.out.println("=================List Of Proxies Using a Target Server : "+ targetServer +" ======================");
