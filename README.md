@@ -184,10 +184,10 @@ then configure your Transformer class in the project configuration file ( Config
 		"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer", 
 		"attributes" : 
 			[
-				{ "name" : "filePathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml"}, 
-			  	{ "name" : "valueDelimiter" , "value" :";;"	},
-				{ "name" : "searchFor" , "value" :"<Pattern/>  ;; oldvlaue"	}, 
-				{ "name" : "replaceBy" , "value" :"<Pattern>aaaaaaa</Pattern> ;; newValue"}
+			{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml"}, 
+		  	{ "name" : "valueDelimiter" , "value" :";;"	},
+			{ "name" : "searchFor" , "value" :"<Pattern/>  ;; oldvlaue"	}, 
+			{ "name" : "replaceBy" , "value" :"<Pattern>aaaaaaa</Pattern> ;; newValue"}
 			]
 		}
 	]
@@ -199,7 +199,7 @@ The above Transformers configuration will configure the tool to apply 2 transfor
 
 1- TargetServerTransformer : This Transformer will replace the current  HTTPTargetConnection with a Target Server instead of hardcoded URL 
 
-2- ZipFileEntryModifyTransformer :  This is a generic trasformer can be used to search for a specific text in a specific file in the proxy pundle and replace this text with a new value. 
+2- ZipFileEntryModifyTransformer :  This is a generic trasformer can be used to search for a specific text in a specific file in the proxy/sharedflow  pundle and replace this text with a new value. 
 
 You Can build your own transformers to satisfy your specific needs and simply attach it with its attributes as the example above.
 
