@@ -1,5 +1,7 @@
 package com.smartvalue.apigee.rest.schema.proxy.transformers;
 
+import java.io.File;
+
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 
 public class TargetServerTransformer implements ApigeeObjectTransformer {
@@ -7,7 +9,7 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
  * The Main Objective of this tranformer is to change HTTPTargetConnection from using a hardcoded backend server URL , to an Environment Configured TargetServer 
  */
 	
-	String targetServerName = "xxxxx" ;
+	private String targetServerName  ;
 	String targetServerPath = "pathyyyy"; 
 	private String fileName ;
     private String xpath ;
@@ -16,8 +18,10 @@ public class TargetServerTransformer implements ApigeeObjectTransformer {
 	public  TransformResult  trasform(String  bundleZipFileName , String outputZipFile) {
 
 		//1- Creare a new Target Server specific for this Proxy Pundle
-		targetServerName = "xxxxx" ;
-		 targetServerPath = "pathyyyy"; 
+		File bundleZipFile = new File(bundleZipFileName) ; 
+		int dotIndex = bundleZipFile.getName().indexOf(".") ; 
+		targetServerName = bundleZipFile.getName().substring(0, dotIndex)+"_TS" ;
+		targetServerPath = "pathyyyy"; 
 		
 		//2- Use the 
 		

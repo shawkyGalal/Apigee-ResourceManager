@@ -61,6 +61,7 @@ public abstract class BundleObjectService extends ApigeeService {
 						
 						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
+							System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
 							boolean transform = trasnformer.filter(pundleZipFileName) ;
 							if (transform)
 							{	

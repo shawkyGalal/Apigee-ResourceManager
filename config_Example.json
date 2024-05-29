@@ -30,7 +30,30 @@
 							"connectionTimeout" : "0" ,
 							"socketTimeout" : "20000" , 
 							"Ansible_hosts_file" : "/etc/apigee/ansible/ansible_hosts/moj/stage/hosts"  , 
-							"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"}
+							"DevPortal" : {"basePath" : "/var/www/html/moj-int" , "dataBaseName" :"moj_int"} , 
+							"transformers" : 
+							[
+								{
+									"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer", 
+									"attributes" : 
+									[
+										{ "name" : "fileName" , "value" :"apiproxy/targets/default.xml"	}
+									  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection"	}
+									
+									]
+								}, 
+								{
+									"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer", 
+									"attributes" : 
+									[
+										{ "name" : "valueDelimiter" , "value" :";;"	}
+									,{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml "}
+								  	,{ "name" : "searchFor" , "value" :"<Pattern/> ;; oldvlaue"	}
+									,{ "name" : "replaceBy" , "value" :"  ;; newValue"}
+									
+									]
+								}
+							] 
 						}, 
 						
 						{	 

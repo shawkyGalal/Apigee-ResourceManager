@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	protected static final Logger logger = LogManager.getLogger(ApigeeTool.class);
 	private String searchFor ;
 	private String replaceBy ;
-	private String filePathInZip ; 
+	private String filesPathInZip ; 
 	private String valueDelimiter = "," ; 
 
 	/**
@@ -67,23 +68,28 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 		 try (ZipFile zipFile = new ZipFile(bundleZipFileName);
 	          ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputZipFile +File.separatorChar+ new File(bundleZipFileName).getName()))) 
 		 {
-
 	            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 	            // Create the destination folder if it doesn't exist
+	            List<String> filesPathInZipArray = new ArrayList<String>() ; 
+	            for (String element : filesPathInZip.split(valueDelimiter)) {
+	            	filesPathInZipArray.add(element.trim());
+	            	}
 	            
 	            while (entries.hasMoreElements()) {
 	                ZipEntry entry = entries.nextElement();
-
-	                if (!entry.getName().equals(filePathInZip)) {
+               
+	                if (! filesPathInZipArray.contains(entry.getName()) ) {
 	                    // Copy non-matching entry as is
 	                    copyZipEntry(zipFile, entry, zipOutputStream);
 	                } else {
 	                    // Replace content of matching entry
-	                	logger.info ("Zip File entry " + filePathInZip + " Found in " + bundleZipFileName) ; 
+	                	logger.info ("Zip File entry " + entry.getName() + " Found in " + bundleZipFileName) ;
+	                	System.out.println("Zip File entry " + entry.getName() + " Found in " + bundleZipFileName);
 	                	List<String> searchForAsList = Arrays.asList( searchFor.split(valueDelimiter)) ; 
 	                	List<String> replaceByAsList = Arrays.asList( replaceBy.split(valueDelimiter)) ; 
 	                    replaceAndCopyZipEntry(zipFile, entry, zipOutputStream, searchForAsList, replaceByAsList);
 	                }
+	                
 	            }
 	            zipOutputStream.closeEntry();
 
@@ -123,9 +129,10 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 	            }
 	            String modifiedContent = content.toString(); 
 	            for (int i = 0; i < searchFor.size(); i++) {
-	            	String oldValue = searchFor.get(i) ; 
-	            	String newValue = replaceBy.get(i) ; 
+	            	String oldValue = searchFor.get(i).trim() ; 
+	            	String newValue = replaceBy.get(i).trim() ; 
 	            	logger.info("Replacing  Old value : <" + oldValue + ">  With New Value : <" + newValue + ">");
+	            	System.out.println("Replacing  Old value : <" + oldValue + ">  With New Value : <" + newValue + ">");
 	            	modifiedContent = modifiedContent.replace(oldValue, newValue);
 	            	
                 }
@@ -157,12 +164,12 @@ public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
 
 
 	public String getFilePathInZip() {
-		return filePathInZip;
+		return filesPathInZip;
 	}
 
 
 	public void setFilePathInZip(String filePathInZip) {
-		this.filePathInZip = filePathInZip;
+		this.filesPathInZip = filePathInZip;
 	}
 
 
