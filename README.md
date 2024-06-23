@@ -160,8 +160,9 @@ Sample :
 •	Use Usage_Examples folder for Some Usage Examples (exportAllSource.bat , importAllToDest.bat , transformAllSource.bat ... ) 
 For Example : 
 ### Export all Proxies : 
+The following command will export all proxies from Organization <OrgName> and store the result to </path/to/Destination>
 ~~~
-java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -sourceFolder -destFolder "</path/to/Destination>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <path/to/your/config.json>  -partner YourCompanyName -customer Customer01  -infra  Stage -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -destFolder "</path/to/Destination>"
 ~~~
 
 ### Transform All Proxies : 
@@ -190,8 +191,8 @@ then configure your Transformer class in the project configuration file ( Config
 		"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer", 
 		"attributes" : 
 			[
+			{ "name" : "valueDelimiter" , "value" :";;"	},
 			{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml"}, 
-		  	{ "name" : "valueDelimiter" , "value" :";;"	},
 			{ "name" : "searchFor" , "value" :"<Pattern/>  ;; oldvlaue"	}, 
 			{ "name" : "replaceBy" , "value" :"<Pattern>aaaaaaa</Pattern> ;; newValue"}
 			]
@@ -212,7 +213,7 @@ You Can build your own transformers to satisfy your specific needs and simply at
 You Could Use the command line to perform the Transformation  
  
 ~~~
-java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -transformAll proxies -sourceFolder "</path/to/Source>" -destFolder "</path/to/Traformed>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <path/to/your/config.json> -partner YourCompanyName -customer Customer01  -infra  Stage  -org <OrgName> -operation migrate -transformAll proxies -sourceFolder "</path/to/Source>" -destFolder "</path/to/Traformed>"
 ~~~
 
 ##### 2- Shell script Transformer   
@@ -222,11 +223,11 @@ Example : [./scripts/modifyPrxoies.sh](./scripts/modifyPrxoies.sh)
  
 ### Import from the transformed proxies : 
 ~~~
-java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -importAll proxies -sourceFolder "</path/to/Traformed>"
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <path/to/your/config.json>  -partner YourCompanyName -customer Customer01 -infra  <Infra>  -org <OrgName> -operation migrate -importAll proxies -sourceFolder "</path/to/Traformed>"
 ~~~
 ###  Delete all proxies : 
 ~~~
-java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <config.json>  -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
+java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <path/to/your/config.json>  -partner YourCompanyName -customer Customer01 -infra  <Infra>  -org <OrgName> -operation migrate -deleteAll proxies
 ~~~
 
 ## Objects Valid for exportAll , transformAll , importAll , deleteAll 
@@ -240,8 +241,6 @@ You Could Perform any of the operation ( exportAll , transformAll , importAll , 
 - proxies
 - sharedflows
 - targetservers
-
-
 
 
 
