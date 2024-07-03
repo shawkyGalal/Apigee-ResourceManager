@@ -20,6 +20,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.googleAccessToken.auto.GoogleAccessToken;
 import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
@@ -49,34 +50,45 @@ public class ManagementServer extends Server{
 	HashMap <String , Organization> orgs = new HashMap <String , Organization>();
 	private Infra infra ;  
 	private String infraName ; 
+	private GoogleAccessToken googleAccessToken ;
+	private AppConfig appConfig ; 
 	
+	public ManagementServer(AppConfig m_appConfig)
+	{
+		this.appConfig = m_appConfig ; 
+	}
 
-	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra ) { 
-		this.setInfraName(m_infra.getName());
+	public ManagementServer(Infra m_infra2) {
+		this.infra = m_infra2 ; 
+		this.mapConfigFileToServerProfile(); 
+	}
+
+	protected  MyServerProfile mapConfigFileToServerProfile(  ) { 
+		this.setInfraName(this.infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
 		
 		
 		return result;
 	}
-	protected  MyServerProfile mapConfigFileToServerProfile( Infra m_infra , String m_regionName) {
-		this.setInfraName(m_infra.getName());
+	protected  MyServerProfile mapConfigFileToServerProfile(  String m_regionName) {
+		this.setInfraName(this.infra.getName());
 		MyServerProfile result = new MyServerProfile() ;
 		
-		Region region = m_infra.getRegion(m_regionName) ; 
+		Region region = this.infra.getRegion(m_regionName) ; 
 		result.setTokenUrl(region.getTokenUrl());
 		result.setOauthHostURL(region.getOauthMgmServerUrl());
-		result.setAuthType(m_infra.getAuthType());
-		result.setConnectionTimeout(m_infra.getConnectionTimeout());
-		result.setSocketTimeout(m_infra.getSocketTimeout());
+		result.setAuthType(this.infra.getAuthType());
+		result.setConnectionTimeout(this.infra.getConnectionTimeout());
+		result.setSocketTimeout(this.infra.getSocketTimeout());
 
-		Boolean isGoogleCloud = m_infra.getGooglecloud() ; 
+		Boolean isGoogleCloud = this.infra.getGooglecloud() ; 
 		if  ( !(isGoogleCloud != null && isGoogleCloud) ) 
 		{
 			result.setHostUrl(region.getMgmServerUrl());
-			result.setCredential_user(m_infra.getSysadminCred().getUsername());
-			result.setCredential_pwd(m_infra.getSysadminCred().getPassword());
-			result.setClientId(m_infra.getSysadminCred().getClientId());
-			result.setClientSecret(m_infra.getSysadminCred().getClientSecret());
+			result.setCredential_user(this.infra.getSysadminCred().getUsername());
+			result.setCredential_pwd(this.infra.getSysadminCred().getPassword());
+			result.setClientId(this.infra.getSysadminCred().getClientId());
+			result.setClientSecret(this.infra.getSysadminCred().getClientSecret());
 			
 		}
 		
@@ -141,11 +153,19 @@ public class ManagementServer extends Server{
 	private String  getAuthorizationHeader() throws IOException, UnirestException
 	{
 		String authorization = null ; 
-		if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
+		if (this.getServerProfile() != null)
 		{
-			authorization = "Basic "+ new String(Base64.encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
+			if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
+			{
+				authorization = "Basic "+ new String(Base64.encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
+			}
+			else if (this.getServerProfile().getAuthType().equalsIgnoreCase("OAuth"))
+			{
+				String accessToken  = this.getAccessToken().getAccess_token() ;
+				 authorization = "Bearer "+ accessToken ; 
+			}
 		}
-		else if (this.getServerProfile().getAuthType().equalsIgnoreCase("OAuth"))
+		else
 		{
 			String accessToken  = this.getAccessToken().getAccess_token() ;
 			 authorization = "Bearer "+ accessToken ; 
@@ -156,9 +176,16 @@ public class ManagementServer extends Server{
 	private String getHostUrl()
 	{
 		String hostUrl ; 
-		if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
-		{hostUrl = this.getServerProfile().getHostUrl() ;}
-		else {hostUrl = this.getServerProfile().getOauthHostURL() ; }
+		if (this.getServerProfile() != null)
+		{
+			if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
+			{hostUrl = this.getServerProfile().getHostUrl() ;}
+			else {hostUrl = this.getServerProfile().getOauthHostURL() ; }
+		}
+		else 
+		{
+			hostUrl = "https://apigee.googleapis.com/" ; 
+		}
 		return hostUrl ; 
 	}
 	public HttpResponse<String> getPostFileHttpResponse(String m_apiPath ,  String postFileName ) throws UnirestException, IOException  {
@@ -469,11 +496,16 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		this.serverProfile = serverProfile;
 	}
 	
-	GoogleAccessToken googleAccessToken ;
+	
 	
 	private GoogleAccessToken requestAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
 	{
-		GoogleWebAppCredential googleWebAppCredential = this.getInfra().getParentCustomer().getParentConfig().getGoogleWebAppCredential() ; 
+		
+		if (this.getInfra() != null)
+		{
+			appConfig = this.getInfra().getParentCustomer().getParentConfig();
+		}
+		GoogleWebAppCredential googleWebAppCredential = appConfig.getGoogleWebAppCredential() ; 
 		googleAccessToken = googleWebAppCredential.getAccessTokenByAuthCode(authCode, redirectUri); 
 		return  googleAccessToken ; 
 	}

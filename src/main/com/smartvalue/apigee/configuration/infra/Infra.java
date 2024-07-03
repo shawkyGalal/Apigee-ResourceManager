@@ -190,8 +190,8 @@ public class Infra {
 	private ManagementServer buildManagementServer(String m_region) throws Exception
 	{
 		
-		ManagementServer ms = new ManagementServer() ; 
-		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile(this , m_region ) ;
+		ManagementServer ms = new ManagementServer(this) ; 
+		MyServerProfile m_serverProfile = ms.mapConfigFileToServerProfile( m_region ) ;
 		setInternetProxy(); 
 		ms.setServerProfile(m_serverProfile);
 		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
