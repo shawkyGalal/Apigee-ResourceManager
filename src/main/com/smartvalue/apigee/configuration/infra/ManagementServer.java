@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.http.HttpHost;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
@@ -19,7 +20,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.mashape.unirest.request.body.MultipartBody;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.infra.googleAccessToken.auto.GoogleAccessToken;
@@ -184,20 +187,43 @@ public class ManagementServer extends Server{
 		}
 		else 
 		{
-			hostUrl = "https://apigee.googleapis.com/" ; 
+			// Accessing Google Cloud Apigee API's  through Our local apigee automation proxy ( Apigee-API-Management on AIO Apigee Server )  
+			hostUrl = "http://gcloud.apigee.moj.gov.local:9001/api-management" ; //"https://apigee.googleapis.com/" ; 
 		}
 		return hostUrl ; 
 	}
 	public HttpResponse<String> getPostFileHttpResponse(String m_apiPath ,  String postFileName ) throws UnirestException, IOException  {
+		
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
 		HttpRequestWithBody request = Unirest.post(hostUrl + m_apiPath)
 				.header("Authorization", authorization ) ; 
 		request.field("file", new File(postFileName)); 
-		HttpResponse<String> response = request.asString();
+		HttpResponse<String> response = sendRequestByPassProxyIfNeeded(request) ; 
 		return response ;  
 	}
 	
+	private HttpResponse<String>  sendRequestByPassProxyIfNeeded(HttpRequest request ) throws UnirestException
+	{
+		
+		boolean byPassProxy = isByPassProxy(request.getUrl()) ;  
+		if (byPassProxy)
+		{
+			Unirest.setProxy(null);
+		}
+		HttpResponse<String> response = request.asString();
+		if (byPassProxy)
+		{
+			this.getInfra().getParentCustomer().getParentConfig().setInternetProxy();
+		}
+		return response ; 
+		
+	}
+	private static final String BY_PASS_HOSTS = "moj.gov.local" ;  
+	private boolean isByPassProxy(String m_apiPath) {
+		return m_apiPath.contains(BY_PASS_HOSTS);
+	}
+
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
 		return getPostHttpResponse(m_apiPath , null , null) ; 
 	}
@@ -205,15 +231,15 @@ public class ManagementServer extends Server{
 	public HttpResponse<String> getPostHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
 		String hostUrl = getHostUrl () ; 
 		String authorization = getAuthorizationHeader() ; 
-		HttpRequestWithBody  xx = Unirest.post(hostUrl + m_apiPath)
+		HttpRequestWithBody  request = Unirest.post(hostUrl + m_apiPath)
 								.header("Authorization", authorization ); 
 		if (m_contentType != null) {
-			xx.header("Content-Type", m_contentType ) ; 
+			request.header("Content-Type", m_contentType ) ; 
 		}
 		if (m_body != null) {
-			xx.body(m_body);  
+			request.body(m_body);  
 		}
-		HttpResponse<String> response = xx.asString();
+		HttpResponse<String> response = this.sendRequestByPassProxyIfNeeded(request);
 		return response ;  
 	}
 	public HttpResponse<InputStream> getGetHttpBinResponse(String m_apiPath  ) throws UnirestException, IOException  {
@@ -230,7 +256,7 @@ public class ManagementServer extends Server{
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
 		GetRequest gr = Unirest.get(hostUrl + m_apiPath).header("Authorization", authorization ) ; 
-		HttpResponse<String> response =  gr.asString() ; 
+		HttpResponse<String> response =  sendRequestByPassProxyIfNeeded(gr)  ; 
 		
 		return response ;
 		
@@ -239,14 +265,16 @@ public class ManagementServer extends Server{
 	public HttpResponse<String> getDeleteHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
 		String hostUrl = getHostUrl() ;
 		String authorization = getAuthorizationHeader() ; 
-		HttpResponse<String> response  = Unirest.delete(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
+		HttpRequestWithBody  request = Unirest.delete(hostUrl + m_apiPath).header("Authorization", authorization ) ; 
+		HttpResponse<String> response  = sendRequestByPassProxyIfNeeded(request);
 		return response ;
 	}
 	
 	public HttpResponse<String> getPutHttpResponse(String m_apiPath ) throws UnirestException, IOException  {
 		String hostUrl = getHostUrl() ;
-		String authorization = getAuthorizationHeader() ; 
-		HttpResponse<String> response  = Unirest.put(hostUrl + m_apiPath).header("Authorization", authorization ).asString();
+		String authorization = getAuthorizationHeader() ;
+		HttpRequestWithBody  request = Unirest.put(hostUrl + m_apiPath).header("Authorization", authorization ) ; 
+		HttpResponse<String> response  = sendRequestByPassProxyIfNeeded(request);
 		return response ;
 	}
 	
@@ -347,12 +375,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		}
 		else 
 		{
-		  response = Unirest.post(this.getServerProfile().getTokenUrl())
-			  .header("Content-Type", "application/x-www-form-urlencoded")
-			  .header("grant_type", "client_credentials")
-			  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
-			  .field("grant_type", "client_credentials")
-			  .asString();
+			MultipartBody multiPartBody = Unirest.post(this.getServerProfile().getTokenUrl())
+					  .header("Content-Type", "application/x-www-form-urlencoded")
+					  .header("grant_type", "client_credentials")
+					  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
+					  .field("grant_type", "client_credentials") ; 
+		  response = sendRequestByPassProxyIfNeeded(multiPartBody.getHttpRequest()) ; 
 		  if (Helper.isConsideredSuccess(response.getStatus()) )   
 		  {
 			  accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
