@@ -56,6 +56,7 @@ public class ManagementServer extends Server{
 	private GoogleAccessToken googleAccessToken ;
 	private AppConfig appConfig ; 
 	
+	// -- This Constructor should be used in case of accessing Google Cloud - no selected infra 
 	public ManagementServer(AppConfig m_appConfig)
 	{
 		this.appConfig = m_appConfig ; 
@@ -214,7 +215,8 @@ public class ManagementServer extends Server{
 		HttpResponse<String> response = request.asString();
 		if (byPassProxy)
 		{
-			this.getInfra().getParentCustomer().getParentConfig().setInternetProxy();
+			AppConfig x = (this.getInfra() != null ) ? this.getInfra().getParentCustomer().getParentConfig() : appConfig ;
+			x.setInternetProxy(); 
 		}
 		return response ; 
 		
