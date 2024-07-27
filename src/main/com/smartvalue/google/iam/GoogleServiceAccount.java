@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.configuration.infra.googleServiceAccount;
+package com.smartvalue.google.iam;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.auth.oauth2.GoogleCredentials;
 
-public class GoogleServiceAccount extends com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto.GoogleServiceAccount{
+public class GoogleServiceAccount extends com.smartvalue.google.iam.auto.GoogleServiceAccount{
 
 	public com.google.auth.oauth2.GoogleCredentials getGoogleCredentials() throws IOException {
 		GoogleCredentials credentials;

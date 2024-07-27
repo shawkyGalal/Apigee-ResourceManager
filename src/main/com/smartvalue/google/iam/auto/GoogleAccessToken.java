@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.configuration.infra.googleAccessToken.auto;
+package com.smartvalue.google.iam.auto;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -20,7 +20,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 
 

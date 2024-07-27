@@ -8,7 +8,7 @@ import org.apache.http.HttpHost;
 
 import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.infra.Infra;
-import com.smartvalue.apigee.configuration.infra.googleWebAppCredential.GoogleWebAppCredential;
+import com.smartvalue.google.iam.GoogleWebAppCredential;
 
 
 public class AppConfig {
@@ -17,7 +17,8 @@ public class AppConfig {
 	private ArrayList<Partner> Partners ;
 	private String fileContent ;
 	private String proxyHost ; 
-	private String proxyPort ; 
+	private String proxyPort ;
+	private String googleApigeeAPIUrl = "https://apigee.googleapis.com" ; 
 	
 	
 
@@ -112,6 +113,10 @@ public class AppConfig {
 	
 	public GoogleWebAppCredential getGoogleWebAppCredential() {
 		return googleWebAppCredential;
+	}
+	
+	public String getGoogleApigeeAPIUrl() {
+		return googleApigeeAPIUrl ; 
 	}
 
 	

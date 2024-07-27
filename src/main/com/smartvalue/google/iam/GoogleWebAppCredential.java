@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.configuration.infra.googleWebAppCredential ;
+package com.smartvalue.google.iam ;
 
 
 import java.nio.charset.Charset;
@@ -9,10 +9,10 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.smartvalue.apigee.configuration.infra.googleAccessToken.auto.GoogleAccessToken;
+import com.smartvalue.google.iam.auto.GoogleAccessToken;
 
 
-public class GoogleWebAppCredential extends com.smartvalue.apigee.configuration.infra.googleWebAppCredential.auto.GoogleWebAppCredential 
+public class GoogleWebAppCredential extends com.smartvalue.google.iam.auto.GoogleWebAppCredential 
 {
 	
 	public HttpResponse<String>  getAccessTokenResByAuthCode( String authCode , String redirectUri) throws UnirestException

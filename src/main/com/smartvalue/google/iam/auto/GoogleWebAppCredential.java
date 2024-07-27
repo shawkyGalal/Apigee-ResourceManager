@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.configuration.infra.googleWebAppCredential.auto;
+package com.smartvalue.google.iam.auto;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

@@ -8,13 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.Customer;
-import com.smartvalue.apigee.configuration.infra.googleServiceAccount.GoogleServiceAccount;
-
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
 import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+import com.smartvalue.google.iam.GoogleServiceAccount;
 
 public class Infra {
 	private Customer parentCustomer ; 

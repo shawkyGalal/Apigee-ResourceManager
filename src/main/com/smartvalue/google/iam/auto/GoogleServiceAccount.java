@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.configuration.infra.googleServiceAccount.auto;
+package com.smartvalue.google.iam.auto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

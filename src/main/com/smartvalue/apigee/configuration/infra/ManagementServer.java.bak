@@ -177,8 +177,8 @@ public class ManagementServer extends Server{
 		return authorization ; 
 	}
 	/**
-		Retur Apigee Management API's URL configured in the app json config file for the selected Infra 
-		// In case of Apigee Cloud , to allow indirect access to apigee cloud management api's  through MOJ AIO Apigee 
+		Returm Apigee Management API's URL configured in the app json config file 
+		// to allow indirect access to apigee cloud management api's  through MOJ AIO Apigee 
 		//	Update app config file with  :		
 		// googleApigeeAPIUrl = http://gcloud.apigee.moj.gov.local:9001/api-management
 	**/
