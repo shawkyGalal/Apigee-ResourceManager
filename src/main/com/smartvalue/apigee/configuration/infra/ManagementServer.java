@@ -54,7 +54,8 @@ public class ManagementServer extends Server{
 	private Infra infra ;  
 	private String infraName ; 
 	private GoogleAccessToken googleAccessToken ;
-	private AppConfig appConfig ; 
+	private AppConfig appConfig ;
+	private boolean onPremise = true ;  // New Attribute indicate wheather this management server is for an onpremise or for a google cloud 
 	
 	// -- This Constructor should be used in case of accessing Google Cloud - no selected infra 
 	public ManagementServer(AppConfig m_appConfig)
@@ -185,7 +186,7 @@ public class ManagementServer extends Server{
 	private String getHostUrl()
 	{
 		String hostUrl ; 
-		if (this.getServerProfile() != null)
+		if ( isOnPremise() )
 		{
 			if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
 			{hostUrl = this.getServerProfile().getHostUrl() ;}
@@ -554,6 +555,14 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	{
 		googleAccessToken = requestAccessTokenByAuthCode(authCode, redirectUri) ;
 		this.accessToken = googleAccessToken ; 
+	}
+
+	public boolean isOnPremise() {
+		return onPremise;
+	}
+
+	public void setOnPremise(boolean onPremise) {
+		this.onPremise = onPremise;
 	}
 	
 	

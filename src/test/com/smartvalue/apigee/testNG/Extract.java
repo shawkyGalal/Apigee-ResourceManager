@@ -2,12 +2,16 @@ package com.smartvalue.apigee.testNG;
 import static org.testng.Assert.assertEquals;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.smartvalue.apigee.rest.schema.application.Application;
+import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 
 public class Extract extends ApigeeTest{
 	 
@@ -16,6 +20,20 @@ public class Extract extends ApigeeTest{
 		//==================Export All Proxies ===========================
 		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(destFolderName + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 }
+
+	 @Test
+	 public void getAppScopes() throws Exception
+	 {
+		 ApplicationServices appServices  = (ApplicationServices) sourceMngServer.getApplicationServices(sourceOrgName) ; 
+		 Application app = appServices.getAppByName("ff7c016c-e78f-4392-bfd3-b734fc76809b") ; 
+		 List<Object> scopes = app.getScopes() ;
+		 List<Object> products = app.getApiProducts() ; 
+		 
+		 for (Object x : scopes)
+		 {
+			 System.out.println(x);
+		 }
 	 }
 	 
 	 @Test
