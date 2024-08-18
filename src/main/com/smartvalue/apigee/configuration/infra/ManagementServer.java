@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.http.HttpHost;
 import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
@@ -55,7 +53,8 @@ public class ManagementServer extends Server{
 	private String infraName ; 
 	private GoogleAccessToken googleAccessToken ;
 	private AppConfig appConfig ;
-	private boolean onPremise = true ;  // New Attribute indicate wheather this management server is for an onpremise or for a google cloud 
+	private boolean onPremise = true ;  // New Attribute indicate wheather this management server is for an onpremise or for a google cloud
+	private boolean internetProxyCleared = true; 
 	
 	// -- This Constructor should be used in case of accessing Google Cloud - no selected infra 
 	public ManagementServer(AppConfig m_appConfig)
@@ -214,16 +213,29 @@ public class ManagementServer extends Server{
 	{
 		
 		boolean byPassProxy = isByPassProxy(request.getUrl()) ;  
-		if (byPassProxy)
+		if (byPassProxy) 
 		{
-			Unirest.setProxy(null);
+			if (! this.internetProxyCleared) // if it is  not yet cleared 
+			{ 
+				Unirest.setProxy(null);
+				internetProxyCleared = true ;
+			}
 		}
+		
+		else 
+		{
+			if (this.internetProxyCleared)
+			{
+				AppConfig x = (this.getInfra() != null ) ? this.getInfra().getParentCustomer().getParentConfig() : appConfig ;
+				x.setInternetProxy(); 
+				internetProxyCleared = false ;
+			}
+		}	
+		
 		HttpResponse<String> response = request.asString();
-		if (byPassProxy)
-		{
-			AppConfig x = (this.getInfra() != null ) ? this.getInfra().getParentCustomer().getParentConfig() : appConfig ;
-			x.setInternetProxy(); 
-		}
+		
+		
+		
 		return response ; 
 		
 	}
