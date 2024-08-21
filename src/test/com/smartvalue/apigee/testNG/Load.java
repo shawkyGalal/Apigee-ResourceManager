@@ -12,55 +12,69 @@ import org.testng.annotations.Test;
 import com.mashape.unirest.http.HttpResponse;
 
 public class Load extends ApigeeTest{
-	 private String loadingSourceFolder ;  
+	 private String loadingSourceFolder ;
+	 private static final boolean LOAD_TRANSFORMED = true ; 
+	 
+	 @BeforeClass
+	 public void beforeClass() throws Exception 
+	 {
+		super.beforeClass(); 
+		initalizeDest();
+		this.loadingSourceFolder = (LOAD_TRANSFORMED)? TRANSFORM_FOLDER_NAME  : DEST_FOLDER_NAME ;  
+	 }
+	 
 	 @Test
-	 public void loadAllProxies() throws Exception {
+	 public void loadOriginalProxies() throws Exception {
 		//==================Import All Proxies ===========================
-		//System.setProperty("http.proxyHost", "proxy.moj.gov.local");
-		//System.setProperty("http.proxyPort", "8080");
-		//destMngServer.getInfra().buildTransformers(); 
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(destOrgName).importAll(loadingSourceFolder + ProxiesSubFolder) ;
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(DEST_ORG_NAME).importAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
 	 @Test
+	 public void loadTransformedProxies() throws Exception {
+			//==================Import All Proxies ===========================
+			ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(DEST_ORG_NAME).importAll(TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+			assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+		 }
+	 
+	 @Test
 	 public void loadAllSharedFlows() throws Exception {
 		//==================Import All Sharedflows ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getSharedFlowServices(destOrgName).importAll(loadingSourceFolder +SharedflowsSubFolder) ;
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getSharedFlowServices(DEST_ORG_NAME).importAll(loadingSourceFolder +SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 
 	 @Test
 	 public void loadAllProducts() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors = destMngServer.getProductServices(destOrgName).importAll(loadingSourceFolder + PrtoductsSubFolder) ;
+		 ArrayList<HttpResponse<String>> objectErrors = destMngServer.getProductServices(DEST_ORG_NAME).importAll(loadingSourceFolder + PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	
 	 @Test
 	 public void loadAllDevelopers() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getDevelopersServices(destOrgName).importAll(loadingSourceFolder + DevelopersSubFolder) ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getDevelopersServices(DEST_ORG_NAME).importAll(loadingSourceFolder + DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void loadAllTargetServers() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getTargetServersServices(destOrgName).importAll(loadingSourceFolder +"\\targetservers") ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getTargetServersServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\targetservers") ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void loadAllKvms() throws Exception {
 		//==================Import All ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getKeyValueMapServices(destOrgName).importAll(loadingSourceFolder +"\\kvms") ;		
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getKeyValueMapServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\kvms") ;		
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 @Test
 	 public void loadApps() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getApplicationServices(destOrgName).importAll(loadingSourceFolder +"\\apps") ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getApplicationServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\apps") ;
 		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
@@ -68,13 +82,7 @@ public class Load extends ApigeeTest{
 	 public void beforeMethod() {
 	 }
 
-	 @BeforeClass
-	 public void beforeClass() throws Exception 
-	 {
-		super.beforeClass(); 
-		initalizeDest();
-		this.loadingSourceFolder = this.destFolderName  ; 
-	 }
+	 
 
 	  @BeforeTest
 	  public void beforeTest() {

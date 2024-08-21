@@ -18,14 +18,14 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(destFolderName + ProxiesSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getProxyServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 
 	 @Test
 	 public void getAppScopes() throws Exception
 	 {
-		 ApplicationServices appServices  = (ApplicationServices) sourceMngServer.getApplicationServices(sourceOrgName) ; 
+		 ApplicationServices appServices  = (ApplicationServices) sourceMngServer.getApplicationServices(SOURCE_Org_NAME) ; 
 		 Application app = appServices.getAppByName("ff7c016c-e78f-4392-bfd3-b734fc76809b") ; 
 		 List<Object> scopes = app.getScopes() ;
 		 List<Object> products = app.getApiProducts() ; 
@@ -39,41 +39,41 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllSharedFlows() throws Exception {
 		//==================Export All Sharedflows===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getSharedFlowServices(sourceOrgName).exportAll(destFolderName +SharedflowsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getSharedFlowServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME +SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 
 	 @Test
 	 public void exportAllProducts() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors = sourceMngServer.getProductServices(sourceOrgName).exportAll(destFolderName + PrtoductsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors = sourceMngServer.getProductServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	
 	 @Test
 	 public void exportAllDevelopers() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getDevelopersServices(sourceOrgName).exportAll(destFolderName + DevelopersSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void exportAllTargetServers() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName + targetserversSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void exportAllKvms() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(destFolderName + kvmsSubFolder) ;		
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + kvmsSubFolder) ;		
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 @Test
 	 public void exportApps() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices(sourceOrgName).exportAll(destFolderName + appsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices(SOURCE_Org_NAME).exportAll(DEST_FOLDER_NAME + appsSubFolder) ;
 		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
