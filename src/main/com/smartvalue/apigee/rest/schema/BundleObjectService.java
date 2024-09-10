@@ -3,6 +3,9 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
@@ -58,20 +61,34 @@ public abstract class BundleObjectService extends ApigeeService {
 						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
 						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
-						
+						int transformerCount = 1 ; 
+						String tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
 						for (ApigeeObjectTransformer trasnformer : transformers)
 						{
 							System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
 							boolean transform = trasnformer.filter(pundleZipFileName) ;
 							if (transform)
 							{	
-								TransformResult  tr = trasnformer.trasform( pundleZipFileName , newBundleFolderPath);
+								 
+								TransformResult  tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
 								if (tr.isFailed())	
 								{transformResults.add(tr);}
 							
-								System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+newBundleFolderPath+" ==========") ;
+								System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
+								// in the next loop transform the transformed file
+								if (transformerCount < transformers.size())
+								{
+									pundleZipFileName = tempTramsformedFilePath + File.separatorChar + proxyName + ".zip" ;
+									transformerCount++;
+									tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
+								}
 							}
+							 
 						}
+						//-- Copy Last Transformed file to the outputFolderPath 
+						Path sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + proxyName + ".zip");
+						Path destPath = Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
+						Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 					}
 				}
 			}
