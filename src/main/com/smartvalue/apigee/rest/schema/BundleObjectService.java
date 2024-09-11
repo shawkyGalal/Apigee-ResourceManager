@@ -120,7 +120,8 @@ public abstract class BundleObjectService extends ApigeeService {
 				
 					for (File zipfile : revisionFolder.listFiles())
 					{
-						int dotIndex = zipfile.getName().indexOf(".");
+						int dotIndex = zipfile.getName().indexOf(".zip");
+						if (dotIndex<0) break ; // ignore not zip files & folders 
 						/*
 						if ( this.getProxyFilter() != null && !this.getProxyFilter().filter(zipfile))
 						{

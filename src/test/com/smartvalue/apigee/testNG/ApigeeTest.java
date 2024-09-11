@@ -43,7 +43,7 @@ public class ApigeeTest {
 	{
 		sourceInfra = ac.getInfra("MasterWorks" , "MOJ" , SOURCE_INFRA_NAME) ;
 		sourceMngServer = sourceInfra.getManagementServer(sourceInfra.getRegions().get(0).getName());
-		if ( sourceInfra.isGooglecloud())
+		if ( sourceInfra.isGooglecloud() != null && sourceInfra.isGooglecloud())
 		{
 			sourceMngServer.setOrgName(sourceInfra.getGoogleServiceAccount().getProjectId());
 		}
@@ -54,7 +54,7 @@ public class ApigeeTest {
 	{
 		destInfra = ac.getInfra("MasterWorks" , "Moj" , DEST_INFRA_NAME) ;
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
-		if ( destInfra.isGooglecloud() )
+		if ( destInfra.isGooglecloud() != null && destInfra.isGooglecloud() )
 		{
 			destMngServer.setOrgName(destInfra.getGoogleServiceAccount().getProjectId());
 		}
