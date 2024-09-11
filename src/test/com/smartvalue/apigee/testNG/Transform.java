@@ -26,7 +26,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllProxies() throws Exception {
 		//==================Transform All Proxies ===========================
-		ApigeeService proxyServ =  sourceMngServer.getProxyServices(SOURCE_Org_NAME); 
+		ApigeeService proxyServ =  sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(buildProxyTransformers()); 
 		ArrayList<TransformResult> objectErrors =  proxyServ.transformAll(DEST_FOLDER_NAME + ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -35,7 +35,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllSharedflows() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService sharedflowsServ =  sourceMngServer.getSharedFlowServices(SOURCE_Org_NAME); 
+		ApigeeService sharedflowsServ =  sourceMngServer.getSharedFlowServices(); 
 		//sharedflowsServ.setTranformers(buildSharedflowsTransformers()); 
 		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -44,7 +44,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllDevelopers() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildDevelopersTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -53,7 +53,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllApps() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildAppsTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + appsSubFolder,  TRANSFORM_FOLDER_NAME + appsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -62,7 +62,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllProducts() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildProductssTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -71,7 +71,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllTargetServers() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildTargetServersTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + targetserversSubFolder,  TRANSFORM_FOLDER_NAME + targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -80,7 +80,7 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllKvms() throws Exception {
 		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildKvmsTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + kvmsSubFolder,  TRANSFORM_FOLDER_NAME + kvmsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 

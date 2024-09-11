@@ -19,7 +19,7 @@ public class ApigeeTest {
 	
 	protected static AppConfig ac ; 
 	protected static final String SOURCE_INFRA_NAME = "Stage";
-	protected static final String SOURCE_Org_NAME = "stg"; 
+	private static final String SOURCE_Org_NAME = "stg"; 
 	protected Infra sourceInfra ; 
 	protected ManagementServer sourceMngServer ;
 	protected static final String DEST_FOLDER_NAME = "C:\\temp\\"+SOURCE_INFRA_NAME ;
@@ -27,7 +27,7 @@ public class ApigeeTest {
 	
 	
 	protected static final String DEST_INFRA_NAME = "Gcloud(shawky.foda@gmail.com)";  
-	protected static final String DEST_ORG_NAME = "moj-prod-apigee"; 
+	private static final String DEST_ORG_NAME = "moj-prod-apigee"; 
 	protected Infra destInfra; 
 	protected ManagementServer destMngServer ; 
 	protected boolean deployUponImport = false ; 
@@ -43,6 +43,10 @@ public class ApigeeTest {
 	{
 		sourceInfra = ac.getInfra("MasterWorks" , "MOJ" , SOURCE_INFRA_NAME) ;
 		sourceMngServer = sourceInfra.getManagementServer(sourceInfra.getRegions().get(0).getName());
+		if ( sourceInfra.isGooglecloud())
+		{
+			sourceMngServer.setOrgName(sourceInfra.getGoogleServiceAccount().getProjectId());
+		}
 		sourceMngServer.setOrgName(SOURCE_Org_NAME);
 	}
 	
@@ -50,7 +54,11 @@ public class ApigeeTest {
 	{
 		destInfra = ac.getInfra("MasterWorks" , "Moj" , DEST_INFRA_NAME) ;
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
-		destMngServer.setOrgName(DEST_ORG_NAME);
+		if ( destInfra.isGooglecloud() )
+		{
+			destMngServer.setOrgName(destInfra.getGoogleServiceAccount().getProjectId());
+		}
+		else destMngServer.setOrgName(DEST_ORG_NAME);
 	}
 
 }

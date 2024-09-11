@@ -26,55 +26,55 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadOriginalProxies() throws Exception {
 		//==================Import All Proxies ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(DEST_ORG_NAME).importAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices().importAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
 	 @Test
 	 public void loadTransformedProxies() throws Exception {
 			//==================Import All Proxies ===========================
-			ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices(DEST_ORG_NAME).importAll(TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+			ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices().importAll(TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
 			assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 		 }
 	 
 	 @Test
 	 public void loadAllSharedFlows() throws Exception {
 		//==================Import All Sharedflows ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getSharedFlowServices(DEST_ORG_NAME).importAll(loadingSourceFolder +SharedflowsSubFolder) ;
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getSharedFlowServices().importAll(loadingSourceFolder +SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 
 	 @Test
 	 public void loadAllProducts() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors = destMngServer.getProductServices(DEST_ORG_NAME).importAll(loadingSourceFolder + PrtoductsSubFolder) ;
+		 ArrayList<HttpResponse<String>> objectErrors = destMngServer.getProductServices().importAll(loadingSourceFolder + PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	
 	 @Test
 	 public void loadAllDevelopers() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getDevelopersServices(DEST_ORG_NAME).importAll(loadingSourceFolder + DevelopersSubFolder) ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getDevelopersServices().importAll(loadingSourceFolder + DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void loadAllTargetServers() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getTargetServersServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\targetservers") ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getTargetServersServices().importAll(loadingSourceFolder +"\\targetservers") ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void loadAllKvms() throws Exception {
 		//==================Import All ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getKeyValueMapServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\kvms") ;		
+		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getKeyValueMapServices().importAll(loadingSourceFolder +"\\kvms") ;		
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 @Test
 	 public void loadApps() throws Exception {
 		//==================Import All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getApplicationServices(DEST_ORG_NAME).importAll(loadingSourceFolder +"\\apps") ;
+		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getApplicationServices().importAll(loadingSourceFolder +"\\apps") ;
 		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 

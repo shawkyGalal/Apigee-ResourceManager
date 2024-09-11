@@ -175,7 +175,7 @@ public class Infra {
 	private void setInternetProxy()
 	{
 		AppConfig ac = this.getParentCustomer().getParentConfig() ;
-		if ( this.getGooglecloud()!= null &&  this.getGooglecloud() )
+		if ( this.isGooglecloud()!= null &&  this.isGooglecloud() )
 		{
 			ac.setInternetProxy(); 
 		}
@@ -196,7 +196,7 @@ public class Infra {
 		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
 		ms.setInfra(this);
 		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
-		Boolean isGoogleCloudBoolean = this.getGooglecloud() ; 
+		Boolean isGoogleCloudBoolean = this.isGooglecloud() ; 
 		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(AppConfig.GoogleWebAppCredential) ;
 		boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
 		if ( cloudInfra && ! webLogin)
@@ -213,7 +213,7 @@ public class Infra {
 		return googleServiceAccount;
 	}
 
-	public Boolean getGooglecloud() {
+	public Boolean isGooglecloud() {
 		return googleCloud;
 	}
 

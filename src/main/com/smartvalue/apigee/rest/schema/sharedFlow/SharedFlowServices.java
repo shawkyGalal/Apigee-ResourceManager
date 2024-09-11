@@ -172,7 +172,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
 	{
 		ArrayList<String> allSharedflows ; 
-		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
+		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
 		if (isGoogleCloud != null && isGoogleCloud)
 		{
 			GoogleSharedflowList sharedflowList = this.getAllSharedFlowsList(GoogleSharedflowList.class);

@@ -140,7 +140,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
 	{
 		ArrayList<String> allProxies ; 
-		Boolean isGoogleCloud = this.getMs().getInfra().getGooglecloud() ;
+		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
 		if (isGoogleCloud != null && isGoogleCloud)
 		{
 			GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class);

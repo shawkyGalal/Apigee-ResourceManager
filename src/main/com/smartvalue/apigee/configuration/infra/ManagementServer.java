@@ -85,7 +85,7 @@ public class ManagementServer extends Server{
 		result.setConnectionTimeout(this.infra.getConnectionTimeout());
 		result.setSocketTimeout(this.infra.getSocketTimeout());
 
-		Boolean isGoogleCloud = this.infra.getGooglecloud() ; 
+		Boolean isGoogleCloud = this.infra.isGooglecloud() ; 
 		if  ( !(isGoogleCloud != null && isGoogleCloud) ) 
 		{
 			result.setHostUrl(region.getMgmServerUrl());
@@ -133,7 +133,7 @@ public class ManagementServer extends Server{
 		{
 			String apiPath = "/v1/organizations/" ; 
 			String[] orgNames ; 
-			Boolean isGoogleCloud = this.getInfra().getGooglecloud() ;
+			Boolean isGoogleCloud = this.getInfra().isGooglecloud() ;
 			if (isGoogleCloud != null && isGoogleCloud)
 			{
 				OrganizationList orgList = this.executeGetMgmntAPI(apiPath , OrganizationList.class);
@@ -380,7 +380,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		accessToken = new ApigeeAccessToken();
 		HttpResponse<String> response = null ; 
 		Gson gson = new Gson();
-		Boolean isGoogleCloudBoolean = this.infra.getGooglecloud() ;
+		Boolean isGoogleCloudBoolean = this.infra.isGooglecloud() ;
 		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
 		{
 			GoogleServiceAccount googleServiceAccount = this.infra.getGoogleServiceAccount() ; 
@@ -425,6 +425,11 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return targetServersNames ; 
 	}
 	**/
+	public ApigeeService getProductServices()
+	{
+		return  new ProductsServices( this, this.getOrgName()) ; 
+	}
+	
 	public ApigeeService getProductServices(String m_orgName)
 	{
 		return  new ProductsServices( this, m_orgName) ; 
@@ -435,9 +440,19 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ServerServices(this) ; 
 	}
 	
+	public ApigeeService getKeyValueMapServices()
+	{
+		return  new KvmServices(this , this.getOrgName()) ; 
+	}
+	
 	public ApigeeService getKeyValueMapServices(String m_orgName)
 	{
 		return  new KvmServices(this , m_orgName) ; 
+	}
+	
+	public ApigeeService getProxyServices()
+	{
+		return  new ProxyServices(this , this.getOrgName()) ; 
 	}
 	
 	public ApigeeService getProxyServices(String m_orgName )
@@ -445,9 +460,19 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ProxyServices(this , m_orgName) ; 
 	}
 	
+	public ApigeeService getSharedFlowServices()
+	{
+		return  new SharedFlowServices(this , this.getOrgName() ) ; 
+	}
+	
 	public ApigeeService getSharedFlowServices(String m_orgName )
 	{
 		return  new SharedFlowServices(this , m_orgName ) ; 
+	}
+	
+	public ApigeeService getApplicationServices()
+	{
+		return  new ApplicationServices(this , this.getOrgName() ) ; 
 	}
 	
 	public ApigeeService getApplicationServices(String m_orgName )
@@ -455,8 +480,16 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ApplicationServices(this , m_orgName ) ; 
 	}
 	
+	public ApigeeService getDevelopersServices() {
+		return  new DeveloperServices(this , this.getOrgName() ) ; 
+	}
+	
 	public ApigeeService getDevelopersServices(String m_orgName) {
 		return  new DeveloperServices(this , m_orgName ) ; 
+	}
+	
+	public ApigeeService getTargetServersServices() {
+		return  new TargetServerServices(this , this.getOrgName()) ; 
 	}
 	
 	public ApigeeService getTargetServersServices(String m_orgName) {

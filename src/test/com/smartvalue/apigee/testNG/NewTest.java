@@ -67,7 +67,7 @@ public class NewTest extends ApigeeTest {
 		//HashMap<String, HashMap<String, Exception>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).exportAll(destFolderName +"\\products") ; 
 		//HashMap<String, HashMap<String, Exception>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).exportAll(destFolderName +"\\apps") ;
 		//HashMap<String, HashMap<String, Exception>> proxiesFaults =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(destFolderName +"\\proxies") ;
-		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices(SOURCE_Org_NAME).exportAll(destFolderName +"\\sharedflows") ;
+		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices().exportAll(destFolderName +"\\sharedflows") ;
 		//HashMap<String, HashMap<String, Exception>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).exportAll(destFolderName +"\\developers") ;
 		//HashMap<String, HashMap<String, Exception>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(destFolderName +"\\kvms") ;
 		
@@ -92,11 +92,11 @@ public class NewTest extends ApigeeTest {
 		//transformers.add(zfet) ; 
 		//----End of building transformers 
 		
-		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices(SOURCE_Org_NAME);
+		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices();
 		//sfs.setTranformers(transformers); 
 		ArrayList<TransformResult> sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
 		
-		ApigeeService proxyServ =  sourceMngServer.getProxyServices(SOURCE_Org_NAME); 
+		ApigeeService proxyServ =  sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(transformers); 
 		ArrayList<TransformResult> proxiesFaults =  proxyServ.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
 		//ArrayList<TransformResult> productsFaults = sourceMngServer.getProductServices(sourceOrgName).transformAll(sourceFolderName +"\\products" , transformFolderName +"\\products") ; 
@@ -114,8 +114,8 @@ public class NewTest extends ApigeeTest {
 		//String destOrgName = "moj-prod-apigee" ; 
 		//ArrayList<HttpResponse<String>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).importAll(sourceFolderName +"\\targetservers") ;
 		//ArrayList<HttpResponse<String>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).importAll(sourceFolderName +"\\kvms") ;
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices(DEST_ORG_NAME)).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
-		ArrayList<HttpResponse<String>> proxiesFaults =  ((ProxyServices) destMngServer.getProxyServices(DEST_ORG_NAME)).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
+		ArrayList<HttpResponse<String>> proxiesFaults =  ((ProxyServices) destMngServer.getProxyServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
 		//ArrayList<HttpResponse<String>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).importAll(sourceFolderName +"\\products") ; 
 		//ArrayList<HttpResponse<String>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).importAll(sourceFolderName +"\\developers") ;
 		//ArrayList<HttpResponse<String>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).importAll(sourceFolderName +"\\apps") ;
@@ -127,7 +127,7 @@ public class NewTest extends ApigeeTest {
 	  public void testDeleteAllProxies() throws Exception {
 		//==================Import All ===========================
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ; 
-		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices(DEST_ORG_NAME).deleteAll() ;
+		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices().deleteAll() ;
 	  }
 
 	 
@@ -144,32 +144,32 @@ public class NewTest extends ApigeeTest {
 	 
 	 @Test(groups = "deleteAll")
 	  public void testDeleteAllsharedflows() throws Exception {
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices(DEST_ORG_NAME).deleteAll() ;
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices().deleteAll() ;
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	  public void testDeleteAllTargetservers() throws Exception {
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getTargetServersServices(DEST_ORG_NAME).deleteAll() ;
+		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getTargetServersServices().deleteAll() ;
 	 }
 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllKvms() throws Exception {
-		 ArrayList<HttpResponse<String>> kvmsFaults =  destMngServer.getKeyValueMapServices(DEST_ORG_NAME).deleteAll() ;	 
+		 ArrayList<HttpResponse<String>> kvmsFaults =  destMngServer.getKeyValueMapServices().deleteAll() ;	 
 	 }
 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllProducts() throws Exception {
-		 ArrayList<HttpResponse<String>> productsFaults = destMngServer.getProductServices(DEST_ORG_NAME).deleteAll() ; 	 
+		 ArrayList<HttpResponse<String>> productsFaults = destMngServer.getProductServices().deleteAll() ; 	 
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllDevelopers() throws Exception {
-			ArrayList<HttpResponse<String>> devsFaults =  destMngServer.getDevelopersServices(DEST_ORG_NAME).deleteAll() ;
+			ArrayList<HttpResponse<String>> devsFaults =  destMngServer.getDevelopersServices().deleteAll() ;
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllApplications() throws Exception {
-			ArrayList<HttpResponse<String>> appsFaults = destMngServer.getApplicationServices(DEST_ORG_NAME).deleteAll() ;
+			ArrayList<HttpResponse<String>> appsFaults = destMngServer.getApplicationServices().deleteAll() ;
 	 }
 	 
 
@@ -177,7 +177,7 @@ public class NewTest extends ApigeeTest {
 	 @Test
 	  public void testProductsWithoutProxies() throws Exception {
 		initalizeSource(); 
-		ProductsServices   productServices = (ProductsServices) sourceMngServer.getProductServices(SOURCE_Org_NAME) ; 
+		ProductsServices   productServices = (ProductsServices) sourceMngServer.getProductServices() ; 
 		ArrayList<Object>  productsWithoutProxies  =productServices.getProductsWithoutProxies() ;  
 		System.out.println(productsWithoutProxies); 
 		assert productsWithoutProxies.size() == 0 : "Product With No Proxies not Found!";
@@ -194,7 +194,7 @@ public class NewTest extends ApigeeTest {
 	  public void testApproveAppProduct() throws Exception {
 	  
 		  initalizeSource(); 
-		  DeveloperServices ds = (DeveloperServices) sourceMngServer.getDevelopersServices(SOURCE_Org_NAME); 
+		  DeveloperServices ds = (DeveloperServices) sourceMngServer.getDevelopersServices(); 
 		  Application app = ds.getDeveloperById("sfoda@moj.gov.sa").getAppByname("App01") ;
 		  String key = "MtQPBZK57lXLJlB93gHYdA6f6o9bNzp8" ; 
 		  String productName = "SDK_Generator" ; 
@@ -240,7 +240,7 @@ public class NewTest extends ApigeeTest {
 			HashMap<Object, Object> proxies = org.getAllProxiesUsesTargetServer("Yesser_Server" , true);
 			System.out.println(proxies);
 			String[] aa = {"FC-ELK-Logger" ,  "ELK-Logger" ,  "FC-Elk-Logger" } ; 
-			ProxyServices ps = (ProxyServices) destMngServer.getProxyServices(SOURCE_Org_NAME) ;  
+			ProxyServices ps = (ProxyServices) destMngServer.getProxyServices() ;  
 			ps.getProxiesWithoutPolices(aa, true) ; 
 			HashMap<String , TargetServer> allTargetServers = env.getTargetServers();  
 			System.out.println(allTargetServers);
