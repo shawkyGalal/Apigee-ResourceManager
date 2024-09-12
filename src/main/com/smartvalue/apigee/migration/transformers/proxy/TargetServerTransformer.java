@@ -1,10 +1,11 @@
-package com.smartvalue.apigee.rest.schema.proxy.transformers;
+package com.smartvalue.apigee.migration.transformers.proxy;
 
 import java.io.File;
 
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.tools.ZipXmlModifier;
 
-public class TargetServerTransformer implements ApigeeObjectTransformer {
+public class TargetServerTransformer extends ProxyTransformer {
 /**
  * The Main Objective of this tranformer is to change HTTPTargetConnection from using a hardcoded backend server URL , to an Environment Configured TargetServer 
  */

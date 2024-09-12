@@ -10,9 +10,11 @@ import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
 import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 import com.smartvalue.google.iam.GoogleServiceAccount;
 
 public class Infra {
@@ -221,7 +223,72 @@ public class Infra {
 		return accessTokenSource;
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	/**
+	 * Build  Only Transformers with implClass is a subclass from the input parameter Class<T> type who should extends ApigeeObjectTransformer 
+	 * @param <T>
+	 * @param type
+	 * @return
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchFieldException
+	 */
+
+	public <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	{
+		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
+		for (Transformer tr :  getTransformers() )
+		{
+			String transformerClass = tr.getImplClass(); 
+			Class<?> cls = Class.forName(transformerClass);
+			if (type.isAssignableFrom(cls))
+			{
+				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
+				ApigeeObjectTransformer obj = (ApigeeObjectTransformer) cons.newInstance();
+	
+				for (Attribute att :  tr.getAttributes())
+				{
+					Field field = cls.getDeclaredField(att.getName());
+					field.setAccessible(true);
+					field.set(obj, att.getValue());
+				}
+				result.add(obj);
+			}
+		}
+		
+		return result ; 
+	}
+	
+	public <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildNonProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	{
+		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
+		for (Transformer tr :  getTransformers() )
+		{
+			String transformerClass = tr.getImplClass(); 
+			Class<?> cls = Class.forName(transformerClass);
+			if (! ProxyTransformer.class.isAssignableFrom(cls))
+			{
+				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
+				ApigeeObjectTransformer obj = (ApigeeObjectTransformer) cons.newInstance();
+	
+				for (Attribute att :  tr.getAttributes())
+				{
+					Field field = cls.getDeclaredField(att.getName());
+					field.setAccessible(true);
+					field.set(obj, att.getValue());
+				}
+				result.add(obj);
+			}
+		}
+		
+		return result ; 
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildAllTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
 		for (Transformer tr :  getTransformers() )
@@ -250,5 +317,6 @@ public class Infra {
 	public void setParentCustomer(Customer parentCustomer) {
 		this.parentCustomer = parentCustomer;
 	}
+	
 		
 }

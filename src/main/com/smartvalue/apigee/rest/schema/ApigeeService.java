@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,8 +17,11 @@ import org.apache.logging.log4j.Logger;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public abstract class ApigeeService {
 
@@ -103,24 +107,44 @@ public abstract class ApigeeService {
 	{
 		// Default Simple Implementation 
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildNonProxyTransformers();
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
 		
 		for (File apigeeObjectFile : folder.listFiles() )
 		{
-			envName = apigeeObjectFile.getName();
+			String objectFileName = apigeeObjectFile.getName();
+			
 			System.out.println("================Tranforming "+this.getApigeeObjectType()+" ==============");
-			for (ApigeeObjectTransformer trasnformer : transformers)
+			int transformerCount = 1 ; 
+			String tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
+			for (IApigeeObjectTransformer trasnformer : transformers)
 			{
+				if ((trasnformer instanceof ProxyTransformer ) ) continue; 
+				
 				boolean transform = trasnformer.filter(apigeeObjectFile.getAbsolutePath()) ;
 				if (transform)
 				{	String filePath = apigeeObjectFile.getAbsolutePath() ; 
-					TransformResult  tr = trasnformer.trasform( filePath , outputFolderPath);
+					TransformResult  tr = trasnformer.trasform( filePath , tempTramsformedFilePath);
 					if (tr.isFailed())	
 					{transformResults.add(tr);}
 					System.out.println("=======Object  "+ filePath + " Is Tranformed To : "+outputFolderPath+" ==========") ;
+					// in the next loop transform the transformed file
+					if (transformerCount < transformers.size())
+					{
+						filePath = tempTramsformedFilePath + File.separatorChar + objectFileName ;
+						transformerCount++;
+						tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
+					}
+					else // Last Transformer 
+					{
+						//-- Copy Last Transformed file to the outputFolderPath 
+						Path sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + objectFileName );
+						Path destPath = Path.of(outputFolderPath + File.separatorChar + objectFileName );
+						Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+					}
 				}
 			}
+			
 		}
 		
 		return transformResults ; 

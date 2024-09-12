@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.rest.schema.proxy.transformers;
+package com.smartvalue.apigee.migration.transformers.proxy;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,10 +21,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.resourceManager.ApigeeTool;
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
 
-public class ZipFileEntryModifyTransformer implements ApigeeObjectTransformer {
+public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 	
 	
 	protected static final Logger logger = LogManager.getLogger(ApigeeTool.class);

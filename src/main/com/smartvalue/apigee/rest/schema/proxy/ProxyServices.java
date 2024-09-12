@@ -10,14 +10,14 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.Deployable;
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
-
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 
 
@@ -83,7 +83,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	public ArrayList<TransformResult> transformPundle(String pundleZipFileName , String newFilePath) throws Exception
 	{
 		int count=0; 
-		ArrayList<ApigeeObjectTransformer> transformers  = this.getMs().getInfra().buildTransformers() ;
+		ArrayList<ApigeeObjectTransformer> transformers  = this.getMs().getInfra().buildAllTransformers() ;
 		
 		int transformersSize = transformers.size();
 		String sourceFile = pundleZipFileName ;

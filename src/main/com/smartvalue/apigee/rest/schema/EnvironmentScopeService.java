@@ -9,7 +9,8 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 
 public abstract class EnvironmentScopeService extends ApigeeService {
 
@@ -74,7 +75,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildAllTransformers();
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
 		
 		for (File envFolder : folder.listFiles() )

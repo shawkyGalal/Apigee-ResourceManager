@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.rest.schema.proxy.transformers;
+package com.smartvalue.apigee.migration.transformers.proxy;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 
-public class NullTransformer implements ApigeeObjectTransformer {
+public class NullTransformer extends ProxyTransformer {
 
 	@Override
 	public TransformResult trasform(String bundleZipFileName , String newBundlePath) {

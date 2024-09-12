@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.rest.schema.proxy.transformers;
+package com.smartvalue.apigee.migration.transformers;
 
 public class TransformResult {
 	

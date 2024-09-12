@@ -12,9 +12,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
 
 public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeService{
 	

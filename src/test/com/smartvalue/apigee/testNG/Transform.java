@@ -14,11 +14,11 @@ import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer;
+import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
 public class Transform extends ApigeeTest{
@@ -61,8 +61,8 @@ public class Transform extends ApigeeTest{
 	 
 	 @Test
 	 public void transformAllProducts() throws Exception {
-		//==================Transform All Sharedflows ===========================
-		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
+		//==================Transform All Products ===========================
+		ApigeeService objectServices =  sourceMngServer.getProductServices(); 
 		//objectServices.setTranformers(buildProductssTransformers()); 
 		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
@@ -89,24 +89,24 @@ public class Transform extends ApigeeTest{
 	 
 	 
 	 
-	private ArrayList<ApigeeObjectTransformer> buildKvmsTransformers() {
-		return new ArrayList<ApigeeObjectTransformer>() ;
+	private ArrayList<IApigeeObjectTransformer> buildKvmsTransformers() {
+		return new ArrayList<IApigeeObjectTransformer>() ;
 	}
 
-	private ArrayList<ApigeeObjectTransformer> buildTargetServersTransformers() {
-		return new ArrayList<ApigeeObjectTransformer>() ;
+	private ArrayList<IApigeeObjectTransformer> buildTargetServersTransformers() {
+		return new ArrayList<IApigeeObjectTransformer>() ;
 	}
 
-	private ArrayList<ApigeeObjectTransformer> buildProductssTransformers() {
-		return new ArrayList<ApigeeObjectTransformer>() ;
+	private ArrayList<IApigeeObjectTransformer> buildProductssTransformers() {
+		return new ArrayList<IApigeeObjectTransformer>() ;
 	}
 
-	private ArrayList<ApigeeObjectTransformer> buildAppsTransformers() {
-		return new ArrayList<ApigeeObjectTransformer>() ;
+	private ArrayList<IApigeeObjectTransformer> buildAppsTransformers() {
+		return new ArrayList<IApigeeObjectTransformer>() ;
 	}
 
-	private ArrayList<ApigeeObjectTransformer> buildDevelopersTransformers() {
-		return new ArrayList<ApigeeObjectTransformer>() ;
+	private ArrayList<IApigeeObjectTransformer> buildDevelopersTransformers() {
+		return new ArrayList<IApigeeObjectTransformer>() ;
 	}
 
 	@BeforeMethod

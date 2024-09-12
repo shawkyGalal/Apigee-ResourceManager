@@ -1,6 +1,8 @@
 package com.smartvalue.apigee.rest.schema;
 
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +14,10 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 public abstract class BundleObjectService extends ApigeeService {
@@ -42,7 +47,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers() ;   
+		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers(ProxyTransformer.class) ;  
 	
 		for (File envFolder : folder.listFiles() )
 		{
@@ -76,7 +81,7 @@ public abstract class BundleObjectService extends ApigeeService {
 							
 								System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
 								// in the next loop transform the transformed file
-								if (transformerCount < transformers.size())
+								if (transformerCount != transformers.size())
 								{
 									pundleZipFileName = tempTramsformedFilePath + File.separatorChar + proxyName + ".zip" ;
 									transformerCount++;

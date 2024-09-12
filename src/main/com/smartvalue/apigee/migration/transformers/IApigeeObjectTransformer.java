@@ -1,8 +1,6 @@
-package com.smartvalue.apigee.rest.schema;
+package com.smartvalue.apigee.migration.transformers;
 
-import com.smartvalue.apigee.rest.schema.proxy.transformers.TransformResult;
-
-public interface  ApigeeObjectTransformer {
+public interface  IApigeeObjectTransformer {
 
 	/**
 	 * Implementation should Tranform the apigeeObjectFile to another apigeeObjectFile file and return a TransformResult object    
