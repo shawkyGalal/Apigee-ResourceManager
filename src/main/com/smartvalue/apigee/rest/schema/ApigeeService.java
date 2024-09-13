@@ -117,32 +117,43 @@ public abstract class ApigeeService {
 			System.out.println("================Tranforming "+this.getApigeeObjectType()+" ==============");
 			int transformerCount = 1 ; 
 			String tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
-			for (IApigeeObjectTransformer trasnformer : transformers)
+			Path sourcePath ; 
+			Path destPath ; 
+			if (transformers.size() > 0 )
 			{
-				if ((trasnformer instanceof ProxyTransformer ) ) continue; 
-				
-				boolean transform = trasnformer.filter(apigeeObjectFile.getAbsolutePath()) ;
-				if (transform)
-				{	String filePath = apigeeObjectFile.getAbsolutePath() ; 
-					TransformResult  tr = trasnformer.trasform( filePath , tempTramsformedFilePath);
-					if (tr.isFailed())	
-					{transformResults.add(tr);}
-					System.out.println("=======Object  "+ filePath + " Is Tranformed To : "+outputFolderPath+" ==========") ;
-					// in the next loop transform the transformed file
-					if (transformerCount < transformers.size())
-					{
-						filePath = tempTramsformedFilePath + File.separatorChar + objectFileName ;
-						transformerCount++;
-						tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
-					}
-					else // Last Transformer 
-					{
-						//-- Copy Last Transformed file to the outputFolderPath 
-						Path sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + objectFileName );
-						Path destPath = Path.of(outputFolderPath + File.separatorChar + objectFileName );
-						Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+				for (IApigeeObjectTransformer trasnformer : transformers)
+				{
+					if ((trasnformer instanceof ProxyTransformer ) ) continue; 
+					
+					boolean transform = trasnformer.filter(apigeeObjectFile.getAbsolutePath()) ;
+					if (transform)
+					{	String filePath = apigeeObjectFile.getAbsolutePath() ; 
+						TransformResult  tr = trasnformer.trasform( filePath , tempTramsformedFilePath);
+						if (tr.isFailed())	
+						{transformResults.add(tr);}
+						System.out.println("=======Object  "+ filePath + " Is Tranformed To : "+outputFolderPath+" ==========") ;
+						// in the next loop transform the transformed file
+						if (transformerCount < transformers.size())
+						{
+							filePath = tempTramsformedFilePath + File.separatorChar + objectFileName ;
+							transformerCount++;
+							tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
+						}
+						else // Last Transformer 
+						{
+							//-- Copy Last Transformed file to the outputFolderPath 
+							sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + objectFileName );
+							destPath = Path.of(outputFolderPath + File.separatorChar + objectFileName );
+							Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+						}
 					}
 				}
+			}
+			else
+			{
+				// if No TRansformers found, simply copy the file to destination 
+				sourcePath =  Path.of(objectFileName);
+				destPath =  Path.of(outputFolderPath + File.separatorChar + objectFileName );
 			}
 			
 		}
