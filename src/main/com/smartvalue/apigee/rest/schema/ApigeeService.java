@@ -152,8 +152,9 @@ public abstract class ApigeeService {
 			else
 			{
 				// if No TRansformers found, simply copy the file to destination 
-				sourcePath =  Path.of(objectFileName);
+				sourcePath =  Path.of(inputFolderPath + File.separatorChar + objectFileName);
 				destPath =  Path.of(outputFolderPath + File.separatorChar + objectFileName );
+				Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 			}
 			
 		}

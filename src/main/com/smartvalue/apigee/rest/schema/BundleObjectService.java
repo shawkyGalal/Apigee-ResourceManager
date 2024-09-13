@@ -99,6 +99,7 @@ public abstract class BundleObjectService extends ApigeeService {
 						{
 							 sourcePath =  Path.of(pundleZipFileName);
 							 destPath =  Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
+							 Files.createDirectories(destPath.getParent());
 						}
 
 						Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
