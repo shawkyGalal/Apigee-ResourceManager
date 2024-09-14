@@ -3,6 +3,7 @@ package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -14,7 +15,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
-import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 public abstract class BundleObjectService extends ApigeeService {
@@ -44,7 +44,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildTransformers(ProxyTransformer.class) ;  
+		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();  
 	
 		for (File envFolder : folder.listFiles() )
 		{

@@ -1,11 +1,13 @@
 package com.smartvalue.apigee.rest.schema.developer;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 
 public class DeveloperServices extends ApigeeService {
@@ -50,6 +52,13 @@ public class DeveloperServices extends ApigeeService {
 	@Override
 	public String getApigeeObjectType() {
 		return "Developer";
+	}
+
+	@Override
+	public ArrayList<ApigeeObjectTransformer> buildTransformers()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return this.getMs().getInfra().buildDeveloperTransformers();
 	}
 
 

@@ -1,6 +1,7 @@
 package com.smartvalue.apigee.rest.schema.server;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -166,6 +168,14 @@ public String getApigeeObjectType() {
 
 @Override
 public ArrayList<TransformResult> transformAll(String inputFolderPath, String outputFolderPath) {
+	return null;
+}
+
+@Override
+public ArrayList<ApigeeObjectTransformer> buildTransformers()
+		throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	// TODO Auto-generated method stub
 	return null;
 }
 

@@ -1,10 +1,12 @@
 package com.smartvalue.apigee.rest.schema.keyValueMap;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 
 public class KvmServices extends EnvironmentScopeService {
@@ -38,6 +40,15 @@ public class KvmServices extends EnvironmentScopeService {
 	@Override
 	public String getApigeeObjectType() {
 		return "keyvaluemaps";
+	}
+
+	
+	@Override
+	public ArrayList<ApigeeObjectTransformer> buildTransformers()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		// TODO Auto-generated method stub
+		return this.getMs().getInfra().buildKvmTransformers();
 	}
 
 }

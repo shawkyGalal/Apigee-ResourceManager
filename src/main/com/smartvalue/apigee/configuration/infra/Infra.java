@@ -10,9 +10,15 @@ import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
 import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
+import com.smartvalue.apigee.migration.tranformers.apps.AppTransformer;
+import com.smartvalue.apigee.migration.tranformers.developer.DeveloperTransformer;
+import com.smartvalue.apigee.migration.tranformers.kvm.KvmTransformer;
+import com.smartvalue.apigee.migration.tranformers.targetServer.TargetServerTransformer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.products.ProductTransformer;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
+import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.google.iam.GoogleServiceAccount;
@@ -223,6 +229,37 @@ public class Infra {
 		return accessTokenSource;
 	}
 	
+	public <T extends ProxyTransformer> ArrayList<ApigeeObjectTransformer> buildProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	{
+		return buildTransformers(ProxyTransformer.class); 
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildSharedFlowTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return buildTransformers(SharedflowTransformer.class);
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildProductsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return buildTransformers(ProductTransformer.class);
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildAppsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return buildTransformers(AppTransformer.class);
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildDeveloperTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return buildTransformers(DeveloperTransformer.class);
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildKvmTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return buildTransformers(KvmTransformer.class);
+	}
+	
+	public ArrayList<ApigeeObjectTransformer> buildTargetServerTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		// TODO Auto-generated method stub
+		return buildTransformers(TargetServerTransformer.class);
+	}
+	
+	
 	/**
 	 * Build  Only Transformers with implClass is a subclass from the input parameter Class<T> type who should extends ApigeeObjectTransformer 
 	 * @param <T>
@@ -238,7 +275,7 @@ public class Infra {
 	 * @throws NoSuchFieldException
 	 */
 
-	public <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
 		for (Transformer tr :  getTransformers() )
@@ -263,7 +300,7 @@ public class Infra {
 		return result ; 
 	}
 	
-	public <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildNonProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildNonProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
 		for (Transformer tr :  getTransformers() )
@@ -288,7 +325,7 @@ public class Infra {
 		return result ; 
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildAllTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private  ArrayList<ApigeeObjectTransformer> buildAllTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
 		for (Transformer tr :  getTransformers() )

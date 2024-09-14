@@ -1,11 +1,13 @@
 package com.smartvalue.apigee.rest.schema.product;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.ApigeeService {
@@ -76,6 +78,14 @@ public ArrayList<Product>  getAllProducs( ) throws Exception
 @Override
 public String getApigeeObjectType() {
 	return "apiproducts";
+}
+
+@Override
+public ArrayList<ApigeeObjectTransformer> buildTransformers()
+		throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	// TODO Auto-generated method stub
+	return this.getMs().getInfra().buildProductsTransformers();
 }
 
 

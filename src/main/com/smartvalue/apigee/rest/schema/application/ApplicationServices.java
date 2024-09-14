@@ -1,12 +1,14 @@
 package com.smartvalue.apigee.rest.schema.application;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 
 public class ApplicationServices extends ApigeeService {
@@ -59,6 +61,14 @@ public class ApplicationServices extends ApigeeService {
 		List<String> result = new ArrayList<String>(); 
 		// TODO Need Implementation get All App Products scopes - 
 		return result ; 
+	}
+
+
+	@Override
+	public ArrayList<ApigeeObjectTransformer> buildTransformers()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		return this.getMs().getInfra().buildAppsTransformers();
 	}
 
 }

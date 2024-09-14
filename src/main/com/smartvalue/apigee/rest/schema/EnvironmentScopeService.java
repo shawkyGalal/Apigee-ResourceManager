@@ -75,7 +75,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.getMs().getInfra().buildAllTransformers();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
 		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
 		
 		for (File envFolder : folder.listFiles() )
