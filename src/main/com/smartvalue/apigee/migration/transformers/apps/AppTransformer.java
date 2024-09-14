@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.migration.tranformers.apps;
+package com.smartvalue.apigee.migration.transformers.apps;
 
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 
