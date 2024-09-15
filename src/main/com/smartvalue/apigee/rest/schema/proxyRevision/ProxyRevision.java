@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyEndpoint;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
 
@@ -16,6 +17,18 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	}
 	
 
+	public HashMap<String , ProxyEndpoint >  getProxyEndPointDetails(  ) throws UnirestException, IOException
+	{
+		HashMap<String , ProxyEndpoint > result = new HashMap<>() ; 
+		for (String proxyEndpointName :   this.getProxyEndpoints())
+		{
+			String path = getResourcePath() + "/proxies/"+ proxyEndpointName  ; 
+			ProxyEndpoint  proxyEndPoint = this.getManagmentServer().executeGetMgmntAPI(path, ProxyEndpoint.class) ; 	
+			result.put( proxyEndpointName, proxyEndPoint) ; 
+		}
+		return result ; 
+	}
+	
 	
 	public HashMap<String , Object >  getTargetEndPointDetails(  ) throws UnirestException, IOException
 	{
@@ -85,4 +98,5 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
 	}
 
+	
 }

@@ -84,7 +84,6 @@ public String getApigeeObjectType() {
 public ArrayList<ApigeeObjectTransformer> buildTransformers()
 		throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
-	// TODO Auto-generated method stub
 	return this.getMs().getInfra().buildProductsTransformers();
 }
 

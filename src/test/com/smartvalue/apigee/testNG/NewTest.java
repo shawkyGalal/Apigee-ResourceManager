@@ -62,15 +62,16 @@ public class NewTest extends ApigeeTest {
 		AppConfig ac = apigeeConfigParser.getObject("config.json" , AppConfig.class) ; 
 		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
 		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
-		String destFolderName = "C:\\temp\\Stage" ;
+		//String destFolderName = "C:\\temp\\Stage" ;
 		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName +"\\targetservers") ;
 		//HashMap<String, HashMap<String, Exception>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).exportAll(destFolderName +"\\products") ; 
 		//HashMap<String, HashMap<String, Exception>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).exportAll(destFolderName +"\\apps") ;
 		//HashMap<String, HashMap<String, Exception>> proxiesFaults =  sourceMngServer.getProxyServices(sourceOrgName).exportAll(destFolderName +"\\proxies") ;
-		HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices().exportAll(destFolderName +"\\sharedflows") ;
+		//HashMap<String, HashMap<String, Exception>> sharedflowsFaults =  sourceMngServer.getSharedFlowServices().exportAll(destFolderName +"\\sharedflows") ;
 		//HashMap<String, HashMap<String, Exception>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).exportAll(destFolderName +"\\developers") ;
 		//HashMap<String, HashMap<String, Exception>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).exportAll(destFolderName +"\\kvms") ;
-		
+		sourceMngServer.setOrgName("stg") ;
+		sourceMngServer.getOrgByName("stg").getProxy("SMS-Governance").generateOpenApi("147") ;  
 	  }
 
 	  @Test

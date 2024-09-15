@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
@@ -100,7 +101,23 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 			return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName();
 	}
 
-
+	public String generateOpenApi(String m_revision) throws UnirestException, IOException
+	{
+		StringBuffer result = new StringBuffer() ; 
+		String delimiter = "__" ; 
+		for ( Entry<String, ProxyEndpoint> entry : this.getRevision(m_revision).getProxyEndPointDetails().entrySet()) 
+		{
+			String proxyEnpointName = entry.getKey();
+		    ProxyEndpoint proxyEndPoint = entry.getValue();
+		    for (Flow flow : proxyEndPoint.getFlows())
+		    {
+		    	String operationId = this.getName()+ delimiter +proxyEnpointName+delimiter+flow.getName() ; 
+		    	result.append("\n"+operationId) ; 
+		    }
+			System.out.println(proxyEndPoint) ; 
+		}
+		return result.toString() ; 
+	}
 	
 	
 
