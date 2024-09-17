@@ -1,6 +1,8 @@
 
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.processing.Generated;
@@ -10,6 +12,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
+import com.smartvalue.apigee.rest.schema.environment.Environment;
+
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -184,5 +194,84 @@ public class Flow {
         Flow rhs = ((Flow) other);
         return (((((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.description == rhs.description)||((this.description!= null)&&this.description.equals(rhs.description))))&&((this.request == rhs.request)||((this.request!= null)&&this.request.equals(rhs.request))))&&((this.condition == rhs.condition)||((this.condition!= null)&&this.condition.equals(rhs.condition))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.response == rhs.response)||((this.response!= null)&&this.response.equals(rhs.response))));
     }
+
+    public HttpResponse<String>  call(String serverURL , String accessToken) throws Exception {
+		String pathsuffix = extractPathSuffixFromCondition() ; 
+		String basePath = this.getParentProxyEndPoint().getConnection().getBasePath(); 
+		String authorization = "Bearer " + accessToken ; 
+		GetRequest request = Unirest.get(serverURL + basePath + pathsuffix).header("Authorization", authorization ) ; 
+		HttpResponse<String> response =  request.asString();  
+		return response; 
+		
+	}
+	public String extractPathSuffixFromCondition() throws Exception
+	{
+		String result = null ; 
+		try {
+		String condition = this.getCondition().replaceAll(" ", "");    // (proxy.pathsuffix MatchesPath \"/api/Files/UploadFile\")
+		
+		int pathSuffixStartIndex = "(proxy.pathsuffixMatchesPath\"".length() ;
+		int pathSuffixEndIndex = condition.substring(pathSuffixStartIndex).indexOf("\"") ; 
+		result = condition.substring(pathSuffixStartIndex).substring(0, pathSuffixEndIndex  ).trim() ;
+		}
+		catch (Exception e ) {
+			System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
+			throw e ; 
+		}
+		return result ; 
+	}
+	
+	private String extractVerbFromCondition() throws Exception
+	{
+		String result = null ; 
+		try {
+		String condition = this.getCondition().replaceAll(" ", "");    // (proxy.pathsuffix MatchesPath \"/api/Files/UploadFile\")
+		String prefix = "(request.verb=\"" ; 
+		int verbStartIndex = condition.indexOf(prefix ) + prefix.length();
+		int verbEndIndex = condition.substring(verbStartIndex).indexOf("\"") ; 
+		result = condition.substring(verbStartIndex).substring(0, verbEndIndex  ).trim() ; 
+		}
+		catch (Exception e ) {
+			System.out.println("Warnning : Unable to extract Verb from Condition " + this.toString());
+		}
+		return result ; 
+	}
+	
+	private ProxyEndpoint parentProxyEndPoint ; 
+	public ProxyEndpoint getParentProxyEndPoint() {
+		return parentProxyEndPoint;
+	}
+
+	public void setParentProxyEndPoint(ProxyEndpoint parentProxyEndPoint) {
+		this.parentProxyEndPoint = parentProxyEndPoint;
+	}
+ 
+	public boolean match(String pathStr, Operation oper, String verb)
+	{
+		boolean result = false ;
+		try {
+		String apigeePath = this.getParentProxyEndPoint().getConnection().getBasePath() + 
+				this.extractPathSuffixFromCondition() ;  
+
+		result =  	(
+					apigeePath.equalsIgnoreCase(pathStr)	
+					&& this.extractVerbFromCondition().equalsIgnoreCase(verb)
+					//&& this.getName().equalsIgnoreCase(oper.getOperationId()) 
+				);
+		} catch (Exception e )
+		{
+			
+		}
+		return result ; 
+		
+	}
+
+	
+
+	ArrayList<Operation> matchedOper = new ArrayList<Operation>() ;  
+	public void addMatchedOperation(Operation m_operation) {
+		matchedOper.add(m_operation) ; 
+		
+	}
 
 }

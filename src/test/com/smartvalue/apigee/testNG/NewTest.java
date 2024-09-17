@@ -35,6 +35,8 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
@@ -55,7 +57,24 @@ public class NewTest extends ApigeeTest {
 	
 	String transformFolderName = "C:\\temp\\Transform\\Stage" ; 
 	
-	 @Test
+	@Test
+	  public void checkOpenApiConsistancy() throws Exception {
+		//==================Export All ===========================
+		JsonParser apigeeConfigParser = new JsonParser( ) ;
+		AppConfig ac = apigeeConfigParser.getObject("config.json" , AppConfig.class) ; 
+		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
+		
+		sourceMngServer.setOrgName("stg") ;
+		ProxyRevision pr =    sourceMngServer.getOrgByName("stg").getProxy("SMS-Governance").getRevision("147") ;
+		String serverUrl = "https://api-test.moj.gov.local/" ; 
+					
+		pr.checkOpenApiConsistancy(serverUrl) ;
+		
+		 
+	  }
+	 
+	@Test
 	  public void testExportAll() throws Exception {
 		//==================Export All ===========================
 		JsonParser apigeeConfigParser = new JsonParser( ) ;

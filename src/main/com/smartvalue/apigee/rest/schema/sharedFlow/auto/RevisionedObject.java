@@ -80,6 +80,7 @@ public abstract class RevisionedObject extends ApigeeComman {
 		result = this.getManagmentServer().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
 		result.setManagementServer(this.getManagmentServer()) ; 
 		result.setOrgName(this.getOrgName());
+		result.setParentProxy(this);
 		return result ; 
 	}
 	

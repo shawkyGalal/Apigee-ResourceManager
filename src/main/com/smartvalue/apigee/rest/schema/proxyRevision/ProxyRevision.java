@@ -1,16 +1,33 @@
 package com.smartvalue.apigee.rest.schema.proxyRevision;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.rest.schema.proxy.ProxyEndpoint;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
+import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
+
+import io.swagger.parser.OpenAPIParser;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
+
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
+
+	private static final String OAS_FLOW_NAME = "GetOAS";
+	private static final String SERVICE_NOT_AVAILABLE = "ServiceNotAvailable";
+	private RevisionedObject parentProxy ; 
+
 
 	public void setManagementServer(ManagementServer managmentServer) {
 		this.setManagmentServer(managmentServer) ; 
@@ -23,7 +40,9 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		for (String proxyEndpointName :   this.getProxyEndpoints())
 		{
 			String path = getResourcePath() + "/proxies/"+ proxyEndpointName  ; 
-			ProxyEndpoint  proxyEndPoint = this.getManagmentServer().executeGetMgmntAPI(path, ProxyEndpoint.class) ; 	
+			ProxyEndpoint  proxyEndPoint = this.getManagmentServer().executeGetMgmntAPI(path, ProxyEndpoint.class) ; 
+			proxyEndPoint.setParentProxyRevision(this);
+			proxyEndPoint.setManagmentServer(this.getManagmentServer());     
 			result.put( proxyEndpointName, proxyEndPoint) ; 
 		}
 		return result ; 
@@ -98,5 +117,152 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
 	}
 
+	/**
+	 * 
+	 * @return the expected minimum (operations without input or output parameters ) openapi specification for this proxy revision based on the defined flows 
+	 * @throws UnirestException
+	 * @throws IOException
+	 */
+	public String generateOpenApi() throws UnirestException, IOException 
+	{
+		StringBuffer result = new StringBuffer() ; 
+		String delimiter = "__" ; 
+		for ( Entry<String, ProxyEndpoint> entry : this.getProxyEndPointDetails().entrySet()) 
+		{
+			String proxyEnpointName = entry.getKey();
+		    ProxyEndpoint proxyEndPoint = entry.getValue();
+		    for (Flow flow : proxyEndPoint.getFlows())
+		    {
+		    	String operationId = this.getName()+ delimiter +proxyEnpointName+delimiter+flow.getName() ; 
+		    	result.append("\n"+operationId) ; 
+		    }
+			System.out.println(proxyEndPoint) ; 
+		}
+		return result.toString() ; 
+	}
+
+	/**
+	 * Returns a Specific ProxyEndpoint  
+	 * @param proxyEndpointname
+	 * @return
+	 * @throws UnirestException
+	 * @throws IOException
+	 */
+	public ProxyEndpoint getProxyEndpointsByName(String proxyEndpointname) throws UnirestException, IOException {
+		ProxyEndpoint result ; 
+		String path = getResourcePath() + "/proxies/"+ proxyEndpointname  ;
+		result = this.getManagmentServer().executeGetMgmntAPI(path, ProxyEndpoint.class)  ;
+		result.setParentProxyRevision(this);
+		return  result ;
+	}
+
+/**
+ * This method check the OAS consistancy of this ProxyVersion assuming that there is a one OAS flow service that will return all proxyEndpoints flows operation  
+ * @param virtualHostUrl
+ * @return
+ * @throws UnirestException
+ * @throws IOException
+ */
+	public List<Flow> checkOpenApiConsistancy(String virtualHostUrl) throws Exception  
+	{
+		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
+		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
+		
+		String oasJsonString  = oasResponse.getBody() ;
+		SwaggerParseResult openAPI = this.parseOpenAPI(oasJsonString) ; 
+
+		Paths paths =  openAPI.getOpenAPI().getPaths(); 
+		String oasServerURL = openAPI.getOpenAPI().getServers().get(0).getUrl() ; 
+		String  serverPath = new URL(oasServerURL).getPath() ; 
+		String pathStr ;
+		PathItem pathItem ; 
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		execuldedFlowNames.add(OAS_FLOW_NAME);
+		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		  
+		for ( Flow flow : allApigeeFlows )
+		{
+		
+			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
+			{
+				pathStr = entry.getKey() ; 
+				pathItem = entry.getValue() ; 
+				String completeOasPath = serverPath + pathStr ;  
+				Operation getOper = pathItem.getGet(); 
+				if (getOper != null)
+				{
+					if ( flow.match( completeOasPath , getOper , "GET" ) ) {flow.addMatchedOperation(getOper) ; } 
+				}
+				
+				Operation postOper = pathItem.getPost();
+				if (postOper != null)
+				{
+					if ( flow.match(completeOasPath , postOper , "POST" ) ) {flow.addMatchedOperation(postOper) ; } 
+				}
+				
+				Operation putOper = pathItem.getPut();
+				if (putOper != null)
+				{
+					if ( flow.match(completeOasPath , putOper , "PUT" ) ) {flow.addMatchedOperation(putOper) ; } 
+				}
+				
+				Operation deleteOper = pathItem.getDelete();
+				if (deleteOper != null)
+				{
+					if ( flow.match(completeOasPath , deleteOper , "DELETE" ) ) {flow.addMatchedOperation(deleteOper) ; } 
+				}
+
+			}
+		
+		}
+		
+		return allApigeeFlows; 
+	}
+	
+	private List<Flow> getAllFlows(ArrayList<String> execludeFlowNames) throws UnirestException, IOException {
+		List<Flow> result = new ArrayList<Flow>() ; 
+		
+		for ( String  pepStr :  this.getProxyEndpoints())
+		{
+			
+			result.addAll(this.getProxyEndpointsByName(pepStr).getFlows(execludeFlowNames ) ); 
+		}
+		return result;
+	}
+
+
+	private SwaggerParseResult parseOpenAPI(String oasJsonString )
+	{
+		OpenAPIParser parser = new OpenAPIParser();
+		return parser.readContents(oasJsonString , null , null);
+	}
+	
+	
+	private Flow getOASFlow(String oasFlowName) throws UnirestException, IOException
+	{
+		Flow oasFlow = null ; 
+		for ( Entry<String, ProxyEndpoint> entry : this.getProxyEndPointDetails().entrySet()) 
+		{
+		    ProxyEndpoint proxyEndPoint = entry.getValue();
+		    oasFlow = proxyEndPoint.getFlowByName(oasFlowName) ; 
+		    if (oasFlow != null) break ; 
+		}
+		return oasFlow;
+	}
+
+
+	public RevisionedObject getParentProxy() {
+		return parentProxy;
+	}
+
+
+	public void setParentProxy(RevisionedObject revisionedObject) {
+		this.parentProxy = revisionedObject;
+	}
+
+
+	
+	
 	
 }

@@ -23,6 +23,7 @@ import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
@@ -88,6 +89,7 @@ public class ApigeeTool
             case "ProxiesWithoutPolices":         	ProxiesWithoutPolices(args);          break;
             case "listAllEnvsMessageProcessors":   	listAllEnvsMessageProcessors(args);   break;  
             case "migrate":			            	migrate(args);			              break;  
+            case "checkOasConsistancy":			    checkOasConsistancy(args);		      break;  
             default:
                 System.out.println("Unknown operation: " + operation);
                 printUsage();
@@ -99,6 +101,8 @@ public class ApigeeTool
 
 	
 	
+	
+
 	private static String getMandatoryArg( HashMap<String , String>  args , String arg)
 	 { 
 		String result = args.get(arg) ;
@@ -195,6 +199,26 @@ public class ApigeeTool
     	System.out.println("=================List Of Regions/Env Message Processors  ======================");
 		System.out.println(Renderer.hashMaptoHtmlTable(result));
     }
+    
+    /**
+     * 
+     * @param args
+     * @return a list of flows each flow has a openapi matchedOper object if found in the GetOAS flow call result   
+     * @throws Exception
+     */
+    private static List<Flow>   checkOasConsistancy(String[] args) throws Exception 
+    {
+		
+    	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
+    	org = getMandatoryArg(argsMap, "-org");
+    	String proxyName = getMandatoryArg(argsMap, "-proxyName");
+    	String proxyRevision = getMandatoryArg(argsMap, "-proxyRevision");
+    	String virtualPathUrl = getMandatoryArg(argsMap, "-virtualPathUrl");
+    	
+    	ms.setOrgName(org) ;
+    	
+   		return ms.getOrgByName(org).getProxy(proxyName).getRevision(proxyRevision).checkOpenApiConsistancy(virtualPathUrl) ; 
+	}
     
     private static void migrate(String[] args) throws Exception {
     	HashMap<String , String> argsMap = getArgsHashMap() ;

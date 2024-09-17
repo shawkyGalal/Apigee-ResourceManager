@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "children"
 })
 @Generated("jsonschema2pojo")
-public class Request {
+public class Response {
 
     @JsonProperty("children")
     private List<Child> children = new ArrayList<Child>();
@@ -35,7 +35,7 @@ public class Request {
         this.children = children;
     }
 
-    public Request withChildren(List<Child> children) {
+    public Response withChildren(List<Child> children) {
         this.children = children;
         return this;
     }
@@ -50,7 +50,7 @@ public class Request {
         this.additionalProperties.put(name, value);
     }
 
-    public Request withAdditionalProperty(String name, Object value) {
+    public Response withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -58,7 +58,7 @@ public class Request {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Request.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(Response .class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("children");
         sb.append('=');
         sb.append(((this.children == null)?"<null>":this.children));
@@ -88,10 +88,10 @@ public class Request {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Request) == false) {
+        if ((other instanceof Response) == false) {
             return false;
         }
-        Request rhs = ((Request) other);
+        Response rhs = ((Response) other);
         return (((this.children == rhs.children)||((this.children!= null)&&this.children.equals(rhs.children)))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 

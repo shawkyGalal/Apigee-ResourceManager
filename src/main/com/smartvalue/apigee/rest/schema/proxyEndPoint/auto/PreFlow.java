@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "response"
 })
 @Generated("jsonschema2pojo")
-public class PostFlow {
+public class PreFlow {
 
     @JsonProperty("name")
     private String name;
@@ -39,7 +39,7 @@ public class PostFlow {
         this.name = name;
     }
 
-    public PostFlow withName(String name) {
+    public PreFlow withName(String name) {
         this.name = name;
         return this;
     }
@@ -54,7 +54,7 @@ public class PostFlow {
         this.request = request;
     }
 
-    public PostFlow withRequest(Request request) {
+    public PreFlow withRequest(Request request) {
         this.request = request;
         return this;
     }
@@ -69,7 +69,7 @@ public class PostFlow {
         this.response = response;
     }
 
-    public PostFlow withResponse(Response response) {
+    public PreFlow withResponse(Response response) {
         this.response = response;
         return this;
     }
@@ -84,7 +84,7 @@ public class PostFlow {
         this.additionalProperties.put(name, value);
     }
 
-    public PostFlow withAdditionalProperty(String name, Object value) {
+    public PreFlow withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -92,7 +92,7 @@ public class PostFlow {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(PostFlow.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(PreFlow.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("name");
         sb.append('=');
         sb.append(((this.name == null)?"<null>":this.name));
@@ -132,10 +132,10 @@ public class PostFlow {
         if (other == this) {
             return true;
         }
-        if ((other instanceof PostFlow) == false) {
+        if ((other instanceof PreFlow) == false) {
             return false;
         }
-        PostFlow rhs = ((PostFlow) other);
+        PreFlow rhs = ((PreFlow) other);
         return (((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.request == rhs.request)||((this.request!= null)&&this.request.equals(rhs.request))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.response == rhs.response)||((this.response!= null)&&this.response.equals(rhs.response))));
     }
 

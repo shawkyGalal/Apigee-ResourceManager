@@ -1,5 +1,5 @@
 
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

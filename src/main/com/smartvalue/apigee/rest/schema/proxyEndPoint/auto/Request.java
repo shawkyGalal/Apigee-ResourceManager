@@ -1,7 +1,9 @@
 
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -13,28 +15,28 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "Step"
+    "children"
 })
 @Generated("jsonschema2pojo")
-public class Child {
+public class Request {
 
-    @JsonProperty("Step")
-    private Step step;
+    @JsonProperty("children")
+    private List<Child> children = new ArrayList<Child>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
-    @JsonProperty("Step")
-    public Step getStep() {
-        return step;
+    @JsonProperty("children")
+    public List<Child> getChildren() {
+        return children;
     }
 
-    @JsonProperty("Step")
-    public void setStep(Step step) {
-        this.step = step;
+    @JsonProperty("children")
+    public void setChildren(List<Child> children) {
+        this.children = children;
     }
 
-    public Child withStep(Step step) {
-        this.step = step;
+    public Request withChildren(List<Child> children) {
+        this.children = children;
         return this;
     }
 
@@ -48,7 +50,7 @@ public class Child {
         this.additionalProperties.put(name, value);
     }
 
-    public Child withAdditionalProperty(String name, Object value) {
+    public Request withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -56,10 +58,10 @@ public class Child {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Child.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("step");
+        sb.append(Request.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append("children");
         sb.append('=');
-        sb.append(((this.step == null)?"<null>":this.step));
+        sb.append(((this.children == null)?"<null>":this.children));
         sb.append(',');
         sb.append("additionalProperties");
         sb.append('=');
@@ -76,7 +78,7 @@ public class Child {
     @Override
     public int hashCode() {
         int result = 1;
-        result = ((result* 31)+((this.step == null)? 0 :this.step.hashCode()));
+        result = ((result* 31)+((this.children == null)? 0 :this.children.hashCode()));
         result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
         return result;
     }
@@ -86,11 +88,11 @@ public class Child {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Child) == false) {
+        if ((other instanceof Request) == false) {
             return false;
         }
-        Child rhs = ((Child) other);
-        return (((this.step == rhs.step)||((this.step!= null)&&this.step.equals(rhs.step)))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
+        Request rhs = ((Request) other);
+        return (((this.children == rhs.children)||((this.children!= null)&&this.children.equals(rhs.children)))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
 }
