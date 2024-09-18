@@ -15,6 +15,7 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
 
 import io.swagger.parser.OpenAPIParser;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
@@ -163,16 +164,16 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
  * @throws UnirestException
  * @throws IOException
  */
-	public List<Flow> checkOpenApiConsistancy(String virtualHostUrl) throws Exception  
+	public List<Flow> checkFlowsConsistancy (String virtualHostUrl) throws Exception  
 	{
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
 		String oasJsonString  = oasResponse.getBody() ;
-		SwaggerParseResult openAPI = this.parseOpenAPI(oasJsonString) ; 
-
-		Paths paths =  openAPI.getOpenAPI().getPaths(); 
-		String oasServerURL = openAPI.getOpenAPI().getServers().get(0).getUrl() ; 
+		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
+		OpenAPI openapi = swaggerParse.getOpenAPI() ; 
+		Paths paths =  openapi.getPaths(); 
+		String oasServerURL = swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
 		String  serverPath = new URL(oasServerURL).getPath() ; 
 		String pathStr ;
 		PathItem pathItem ; 
@@ -183,7 +184,6 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		  
 		for ( Flow flow : allApigeeFlows )
 		{
-		
 			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 			{
 				pathStr = entry.getKey() ; 
@@ -192,32 +192,96 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 				Operation getOper = pathItem.getGet(); 
 				if (getOper != null)
 				{
-					if ( flow.match( completeOasPath , getOper , "GET" ) ) {flow.addMatchedOperation(getOper) ; } 
+					if ( flow.match( completeOasPath ,  "GET" ) ) {flow.addMatchedOperation(getOper) ; } 
 				}
-				
 				Operation postOper = pathItem.getPost();
 				if (postOper != null)
 				{
-					if ( flow.match(completeOasPath , postOper , "POST" ) ) {flow.addMatchedOperation(postOper) ; } 
+					if ( flow.match(completeOasPath ,  "POST" ) ) {flow.addMatchedOperation(postOper) ; } 
 				}
-				
 				Operation putOper = pathItem.getPut();
 				if (putOper != null)
 				{
-					if ( flow.match(completeOasPath , putOper , "PUT" ) ) {flow.addMatchedOperation(putOper) ; } 
+					if ( flow.match(completeOasPath ,  "PUT" ) ) {flow.addMatchedOperation(putOper) ; } 
 				}
-				
 				Operation deleteOper = pathItem.getDelete();
 				if (deleteOper != null)
 				{
-					if ( flow.match(completeOasPath , deleteOper , "DELETE" ) ) {flow.addMatchedOperation(deleteOper) ; } 
+					if ( flow.match(completeOasPath , "DELETE" ) ) {flow.addMatchedOperation(deleteOper) ; } 
+				}
+			}
+		}
+		return allApigeeFlows; 
+	}
+	
+	/**
+	 * 
+	 * @param virtualHostUrl
+	 * @return an updated version of the 
+	 * @throws Exception
+	 */
+	public OpenAPI checkOpenApiConsistancy (String virtualHostUrl) throws Exception  
+	{
+		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
+		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
+		
+		String oasJsonString  = oasResponse.getBody() ;
+		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
+		OpenAPI openapi = swaggerParse.getOpenAPI() ;  
+		Paths 	paths =  openapi.getPaths(); 
+		String 	oasServerURL = swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
+		String 	serverPath = new URL(oasServerURL).getPath() ; 
+		String 	pathStr ;
+		PathItem pathItem ; 
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		execuldedFlowNames.add(OAS_FLOW_NAME);
+		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		  
+		for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
+		{
+			pathStr = entry.getKey() ; 
+			pathItem = entry.getValue() ;
+			String completeOasPath = serverPath + pathStr ;
+			Operation getOper = pathItem.getGet();
+			Operation postOper = pathItem.getPost();
+			Operation putOper = pathItem.getPut();
+			Operation deleteOper = pathItem.getDelete();
+			for ( Flow flow : allApigeeFlows )
+			{
+				if (getOper != null)
+				{
+					if ( flow.match( completeOasPath ,  "GET" ) ) { 
+						//getOper.addMatchedFlow(flow) ; 
+						getOper.setOperationId(flow.getUniqueIdentifier()); } 
+				}
+				
+				if (postOper != null)
+				{
+					if ( flow.match(completeOasPath ,  "POST" ) ) {
+						//postOper.addMatchedFlow(flow) ; 
+						postOper.setOperationId(flow.getUniqueIdentifier()); } 
+				}
+
+				if (putOper != null)
+				{
+					if ( flow.match(completeOasPath ,  "PUT"  ) ) {
+						//putOper.addMatchedFlow(flow) ;  
+						putOper.setOperationId(flow.getUniqueIdentifier());} 
+				}
+				
+				if (deleteOper != null)
+				{
+					if ( flow.match(completeOasPath , "DELETE" ) ) {
+						//deleteOper.addMatchedFlow(flow) ; 
+						deleteOper.setOperationId(flow.getUniqueIdentifier()); } 
 				}
 
 			}
 		
 		}
 		
-		return allApigeeFlows; 
+		return openapi; 
 	}
 	
 	private List<Flow> getAllFlows(ArrayList<String> execludeFlowNames) throws UnirestException, IOException {

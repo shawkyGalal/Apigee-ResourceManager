@@ -17,6 +17,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -221,7 +222,7 @@ public class Flow {
 		return result ; 
 	}
 	
-	private String extractVerbFromCondition() throws Exception
+	public String extractVerbFromCondition() throws Exception
 	{
 		String result = null ; 
 		try {
@@ -237,16 +238,17 @@ public class Flow {
 		return result ; 
 	}
 	
-	private ProxyEndpoint parentProxyEndPoint ; 
-	public ProxyEndpoint getParentProxyEndPoint() {
+	private com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint parentProxyEndPoint ; 
+	
+	public com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint getParentProxyEndPoint() {
 		return parentProxyEndPoint;
 	}
 
-	public void setParentProxyEndPoint(ProxyEndpoint parentProxyEndPoint) {
+	public void setParentProxyEndPoint(com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint parentProxyEndPoint) {
 		this.parentProxyEndPoint = parentProxyEndPoint;
 	}
  
-	public boolean match(String pathStr, Operation oper, String verb)
+	public boolean match(String pathStr, String verb)
 	{
 		boolean result = false ;
 		try {
@@ -268,10 +270,21 @@ public class Flow {
 
 	
 
-	ArrayList<Operation> matchedOper = new ArrayList<Operation>() ;  
+	ArrayList<Operation> matchedOper = new ArrayList<Operation>() ; 
+	public ArrayList<Operation> getMatchedOasOper()
+	{
+		return matchedOper ; 
+	}
 	public void addMatchedOperation(Operation m_operation) {
 		matchedOper.add(m_operation) ; 
 		
+	}
+	
+	public String getUniqueIdentifier()
+	{
+		com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint pep = this.getParentProxyEndPoint() ; 
+		ProxyRevision pr = pep.getParentProxyRevision() ; 
+		return pr.getName() + "."+ pep.getName() +"." + this.getName(); 
 	}
 
 }

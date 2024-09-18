@@ -69,7 +69,8 @@ public class NewTest extends ApigeeTest {
 		ProxyRevision pr =    sourceMngServer.getOrgByName("stg").getProxy("SMS-Governance").getRevision("147") ;
 		String serverUrl = "https://api-test.moj.gov.local/" ; 
 					
-		pr.checkOpenApiConsistancy(serverUrl) ;
+		//pr.checkFlowsConsistancy(serverUrl) ;
+		pr.checkOpenApiConsistancy(serverUrl); 
 		
 		 
 	  }
