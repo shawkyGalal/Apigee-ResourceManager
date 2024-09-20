@@ -12,17 +12,17 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.xerces.dom.DeferredElementImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public abstract class BundleElement //extends DeferredElementImpl
+public abstract class BundleDocument //extends DeferredDocumentImpl
 {
 	private String name ; 
 	private String content ;
 	private Document xmlDocument ; 
+	
 	
 	public String getName() {
 		return name;
@@ -37,7 +37,7 @@ public abstract class BundleElement //extends DeferredElementImpl
 		this.content = content;
 	} 
 	
-	public BundleElement (String m_name, ZipInputStream m_zipInputStream) throws IOException {
+	public BundleDocument (String m_name, ZipInputStream m_zipInputStream) throws IOException {
 		this.setName(m_name);
 		this.setContent(readFromInputStream(m_zipInputStream) ); 
 	}
@@ -53,7 +53,19 @@ public abstract class BundleElement //extends DeferredElementImpl
 		return document ; 
 	}
 	
-	public String readFromInputStream(ZipInputStream zipInputStream) throws IOException
+	public static Policy buildPolicyDocument(ZipInputStream m_zipInputStream) throws ParserConfigurationException, SAXException, IOException
+	{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder builder = factory.newDocumentBuilder();
+		// Parse the XML content into a Document
+	    InputSource source = new InputSource(new StringReader(readFromInputStream(m_zipInputStream)));
+	    Policy policy = (Policy)builder.parse(source);
+		
+		return policy ; 
+	}
+	
+		
+	public static String readFromInputStream(ZipInputStream zipInputStream) throws IOException
 	{
 		// Buffer for reading data from the zip entry
 	    byte[] buffer = new byte[1024];

@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Generated;
+import org.w3c.dom.Element;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,9 +19,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "children"
 })
 @Generated("jsonschema2pojo")
-public class Request {
+public class Request extends ProxyEndPointChild{
 
-    @JsonProperty("children")
+	
+	@JsonProperty("children")
     private List<Child> children = new ArrayList<Child>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
@@ -95,4 +97,15 @@ public class Request {
         return (((this.children == rhs.children)||((this.children!= null)&&this.children.equals(rhs.children)))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
+  //---------------End of Auto generated Code ------------------------------------
+    
+    public Request(Element element) {
+  		super(element);
+  		populate() ; 
+  	}
+
+  	public void populate() {
+  		// TODO Auto-generated method stub
+  		
+  	}
 }

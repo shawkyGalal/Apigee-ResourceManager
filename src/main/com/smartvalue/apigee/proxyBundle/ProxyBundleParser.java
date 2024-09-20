@@ -3,22 +3,28 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
+
+//import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint; 
 public class ProxyBundleParser {
 
 	private HashMap<String , TargetEndPoint> targets = new HashMap<String , TargetEndPoint>(); 
-	private HashMap<String ,ProxyEndPoint> proxies = new HashMap<String ,ProxyEndPoint>();
+	private HashMap<String ,BundleProxyEndPoint> proxies = new HashMap<String ,BundleProxyEndPoint>();
 	private HashMap<String ,Policy> policies = new HashMap<String ,Policy>() ;
 	private HashMap<String ,JsResource> jsResources = new HashMap<String ,JsResource>();
 	private HashMap<String ,JavaResource> javaResources = new HashMap<String ,JavaResource>(); 
 	private HashMap<String ,OpenApiResource> openApiResources = new HashMap<String ,OpenApiResource>();
 	
-	public ProxyBundleParser(String inputZipFilePath)
+	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException
 	{
 		try (
 		        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
@@ -36,7 +42,7 @@ public class ProxyBundleParser {
 		            
 		            elementPath = "apiproxy/proxies/" ; 
 		            if (entryName.startsWith(elementPath)) 
-		            { elementName = getElementName (entryName , elementPath ) ; this.proxies.put (elementName ,  new ProxyEndPoint(elementName , zipInputStream) ); continue; }
+		            { elementName = getElementName (entryName , elementPath ) ; this.proxies.put (elementName ,  new BundleProxyEndPoint(zipInputStream) ); continue; }
 		            
 		            elementPath = "apiproxy/targets/" ;
 		            if (entryName.startsWith(elementPath)) 
@@ -94,7 +100,7 @@ public class ProxyBundleParser {
 		return targets;
 	}
 	
-	public HashMap<String, ProxyEndPoint> getProxies() {
+	public HashMap<String, BundleProxyEndPoint> getProxies() {
 		return this.proxies;
 	}
 	
@@ -108,13 +114,15 @@ public class ProxyBundleParser {
 	
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
 	{
-		ProxyBundleParser smsGovernanceProxy =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
-		ProxyEndPoint pep = smsGovernanceProxy.getProxies().get("default");
-		String flowName = "GetOAS" ; 
-		Element getOasElement = pep.getFlowByName(flowName) ; 
-		Element flowRequest = pep.getFlowRequest(flowName);
-		Element flowResponse = pep.getFlowRequest(flowName);
-		Element condition = pep.getFlowCondition(flowName);
+		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
+		BundleProxyEndPoint pep = smsGovernanceProxyBundle.getProxies().get("default");
+		List<Flow> allFlows = pep.getFlows() ; 
+		for (Flow  flow : allFlows )
+		{
+			String flowName = flow.getName(); 
+			Request req = flow.getRequest();
+			Response res = flow.getResponse(); 
+		}
 		
 		
 		/**

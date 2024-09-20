@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterTest;
@@ -13,6 +15,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.xml.sax.SAXException;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -23,6 +26,8 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
+import com.smartvalue.apigee.proxyBundle.BundleProxyEndPoint;
+import com.smartvalue.apigee.proxyBundle.ProxyBundleParser;
 import com.smartvalue.apigee.resourceManager.Renderer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.TargetServer;
@@ -36,6 +41,9 @@ import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
@@ -58,6 +66,19 @@ public class NewTest extends ApigeeTest {
 	String transformFolderName = "C:\\temp\\Transform\\Stage" ; 
 	
 	@Test
+	public void parseProxyBundle() throws ParserConfigurationException, SAXException
+	{
+		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
+		BundleProxyEndPoint pep = smsGovernanceProxyBundle.getProxies().get("default");
+		List<Flow> allFlows = pep.getFlows() ; 
+		for (Flow  flow : allFlows )
+		{
+			String flowName = flow.getName(); 
+			Request req = flow.getRequest();
+			Response res = flow.getResponse(); 
+		}
+	}
+	@Test
 	  public void checkOpenApiConsistancy() throws Exception {
 		//==================Export All ===========================
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
@@ -69,9 +90,8 @@ public class NewTest extends ApigeeTest {
 		ProxyRevision pr =    sourceMngServer.getOrgByName("stg").getProxy("SMS-Governance").getRevision("147") ;
 		String serverUrl = "https://api-test.moj.gov.local/" ; 
 					
-		//pr.checkFlowsConsistancy(serverUrl) ;
+		pr.checkFlowsConsistancy(serverUrl) ;
 		pr.checkOpenApiConsistancy(serverUrl); 
-		
 		 
 	  }
 	 

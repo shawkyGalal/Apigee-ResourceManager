@@ -1,11 +1,13 @@
 
 package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.annotation.processing.Generated;
+
+import org.w3c.dom.Element;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,13 +16,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
-import com.smartvalue.apigee.rest.schema.environment.Environment;
+
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.v3.oas.models.Operation;
-import io.swagger.v3.oas.models.PathItem;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -31,9 +31,11 @@ import io.swagger.v3.oas.models.PathItem;
     "response"
 })
 @Generated("jsonschema2pojo")
-public class Flow {
+public class Flow extends ProxyEndPointChild {
 
-    @JsonProperty("condition")
+   
+
+	@JsonProperty("condition")
     private String condition;
     @JsonProperty("description")
     private String description;
@@ -195,7 +197,16 @@ public class Flow {
         Flow rhs = ((Flow) other);
         return (((((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.description == rhs.description)||((this.description!= null)&&this.description.equals(rhs.description))))&&((this.request == rhs.request)||((this.request!= null)&&this.request.equals(rhs.request))))&&((this.condition == rhs.condition)||((this.condition!= null)&&this.condition.equals(rhs.condition))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.response == rhs.response)||((this.response!= null)&&this.response.equals(rhs.response))));
     }
-
+  
+    
+    //---------------End of Auto generated Code ------------------------------------
+    
+    //--------------Extra Manual  Code------------------
+    public Flow(Element element) {
+		super(element);
+		// TODO Auto-generated constructor stub
+	}
+    
     public HttpResponse<String>  call(String serverURL , String accessToken) throws Exception {
 		String pathsuffix = extractPathSuffixFromCondition() ; 
 		String basePath = this.getParentProxyEndPoint().getConnection().getBasePath(); 
