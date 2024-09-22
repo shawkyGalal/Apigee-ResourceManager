@@ -164,8 +164,9 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
  * @throws UnirestException
  * @throws IOException
  */
-	public List<Flow> checkFlowsConsistancy (String virtualHostUrl) throws Exception  
+	public HashMap<Flow, Operation> checkFlowsConsistancy (String virtualHostUrl) throws Exception  
 	{
+		HashMap<Flow, Operation> result = new HashMap<Flow, Operation>() ; 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
@@ -192,26 +193,26 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 				Operation getOper = pathItem.getGet(); 
 				if (getOper != null)
 				{
-					if ( flow.match( completeOasPath ,  "GET" ) ) {flow.addMatchedOperation(getOper) ; } 
+					if ( flow.match( completeOasPath ,  "GET" ) ) {result.put(flow , getOper) ; } 
 				}
 				Operation postOper = pathItem.getPost();
 				if (postOper != null)
 				{
-					if ( flow.match(completeOasPath ,  "POST" ) ) {flow.addMatchedOperation(postOper) ; } 
+					if ( flow.match(completeOasPath ,  "POST" ) ) {result.put(flow, postOper) ; } 
 				}
 				Operation putOper = pathItem.getPut();
 				if (putOper != null)
 				{
-					if ( flow.match(completeOasPath ,  "PUT" ) ) {flow.addMatchedOperation(putOper) ; } 
+					if ( flow.match(completeOasPath ,  "PUT" ) ) {result.put(flow, putOper) ; } 
 				}
 				Operation deleteOper = pathItem.getDelete();
 				if (deleteOper != null)
 				{
-					if ( flow.match(completeOasPath , "DELETE" ) ) {flow.addMatchedOperation(deleteOper) ; } 
+					if ( flow.match(completeOasPath , "DELETE" ) ) {result.put(flow, deleteOper) ; } 
 				}
 			}
 		}
-		return allApigeeFlows; 
+		return result; 
 	}
 	
 	/**
@@ -220,8 +221,9 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	 * @return an updated version of the 
 	 * @throws Exception
 	 */
-	public OpenAPI checkOpenApiConsistancy (String virtualHostUrl) throws Exception  
+	public HashMap<Operation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean setOperationId) throws Exception  
 	{
+		HashMap<Operation , Flow> result = new HashMap<Operation , Flow>(); 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
@@ -247,41 +249,73 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			Operation postOper = pathItem.getPost();
 			Operation putOper = pathItem.getPut();
 			Operation deleteOper = pathItem.getDelete();
+			Operation patchOper = pathItem.getPatch();
+			
+			
+			boolean getOperMachedFlowFound = false ;
+			boolean postOperMachedFlowFound = false ; 
+			boolean putOperMachedFlowFound = false ;
+			boolean deleteOperMachedFlowFound = false ;
+			boolean patchOperMachedFlowFound = false ;
 			for ( Flow flow : allApigeeFlows )
 			{
+				 
 				if (getOper != null)
 				{
-					if ( flow.match( completeOasPath ,  "GET" ) ) { 
-						//getOper.addMatchedFlow(flow) ; 
-						getOper.setOperationId(flow.getUniqueIdentifier()); } 
+					if ( flow.match( completeOasPath ,  "GET" ) ) 
+						{ 
+							if (setOperationId) getOper.setOperationId(flow.getUniqueIdentifier());	
+							result.put(getOper , flow );
+							getOperMachedFlowFound = true ; 
+						} 
 				}
 				
 				if (postOper != null)
 				{
 					if ( flow.match(completeOasPath ,  "POST" ) ) {
-						//postOper.addMatchedFlow(flow) ; 
-						postOper.setOperationId(flow.getUniqueIdentifier()); } 
+						if (setOperationId) postOper.setOperationId(flow.getUniqueIdentifier()); 
+						result.put(postOper , flow );
+						postOperMachedFlowFound= true ; 
+						} 
 				}
 
 				if (putOper != null)
 				{
 					if ( flow.match(completeOasPath ,  "PUT"  ) ) {
-						//putOper.addMatchedFlow(flow) ;  
-						putOper.setOperationId(flow.getUniqueIdentifier());} 
+						result.put(putOper , flow ); 
+						if (setOperationId) putOper.setOperationId(flow.getUniqueIdentifier());
+						putOperMachedFlowFound = true ; 
+						} 
 				}
 				
 				if (deleteOper != null)
 				{
 					if ( flow.match(completeOasPath , "DELETE" ) ) {
-						//deleteOper.addMatchedFlow(flow) ; 
-						deleteOper.setOperationId(flow.getUniqueIdentifier()); } 
+						result.put(deleteOper , flow );
+						if (setOperationId) deleteOper.setOperationId(flow.getUniqueIdentifier()); 
+						deleteOperMachedFlowFound = true ; 
+						} 
+				}
+				
+				if (patchOper != null)
+				{
+					if ( flow.match(completeOasPath , "PATCH" ) ) {
+						result.put(patchOper , flow );
+						if (setOperationId) patchOper.setOperationId(flow.getUniqueIdentifier()); 
+						patchOperMachedFlowFound = true ; 
+						} 
 				}
 
 			}
+			if ( getOper  	 != null && !getOperMachedFlowFound) 	{result.put(getOper , null );}
+			if ( postOper 	 != null && !postOperMachedFlowFound)	{result.put(postOper , null );}
+			if ( putOper  	 != null && !putOperMachedFlowFound) 	{result.put(putOper , null );}
+			if ( deleteOper  != null && !deleteOperMachedFlowFound) {result.put(deleteOper , null );}
+			if ( patchOper   != null && !patchOperMachedFlowFound)  {result.put(patchOper , null );}
 		
 		}
 		
-		return openapi; 
+		return result; 
 	}
 	
 	private List<Flow> getAllFlows(ArrayList<String> execludeFlowNames) throws UnirestException, IOException {
