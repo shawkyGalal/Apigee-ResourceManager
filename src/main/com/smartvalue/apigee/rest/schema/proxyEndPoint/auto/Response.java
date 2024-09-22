@@ -13,13 +13,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.smartvalue.apigee.proxyBundle.BundleElement;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "children"
 })
 @Generated("jsonschema2pojo")
-public class Response extends ProxyEndPointChild {
+public class Response extends BundleElement {
 
       
 	@JsonProperty("children")
@@ -98,7 +99,7 @@ public class Response extends ProxyEndPointChild {
     }
 
     //-------------- end of auto code generated -----
-    public Response(Element element) {
-  		super(element);
+    public Response(String proxyName , Element element) {
+  		super(proxyName , element);
   	}
 }

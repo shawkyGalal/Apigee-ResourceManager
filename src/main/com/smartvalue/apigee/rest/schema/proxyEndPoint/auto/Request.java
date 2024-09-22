@@ -1,25 +1,32 @@
 
 package com.smartvalue.apigee.rest.schema.proxyEndPoint.auto;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Generated;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.smartvalue.apigee.proxyBundle.BundleElement;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "children"
 })
 @Generated("jsonschema2pojo")
-public class Request extends ProxyEndPointChild{
+public class Request extends BundleElement{
 
 	
 	@JsonProperty("children")
@@ -99,13 +106,32 @@ public class Request extends ProxyEndPointChild{
 
   //---------------End of Auto generated Code ------------------------------------
     
-    public Request(Element element) {
-  		super(element);
-  		populate() ; 
+    public Request(String proxyname , Element element) throws ParserConfigurationException, SAXException, IOException {
+  		super(proxyname , element);
+  		populate(proxyname , element) ; 
   	}
 
-  	public void populate() {
-  		// TODO Auto-generated method stub
+  	public void populate(String proxyname , Element element) throws ParserConfigurationException, SAXException, IOException {
+
+  		NodeList stepsElement = element.getElementsByTagName("Step") ;
+  		List<Child> children = new ArrayList<Child>();
+  		for (int i =0 ; i<stepsElement.getLength() ; i++)
+  		{
+  			Element stepElement = (Element) stepsElement.item(i) ;
+  			Element stepNameElement = (Element) stepElement.getElementsByTagName("Name").item(0); 
+  			
+  			String stepNameElementStr = stepNameElement.getTextContent() ; 
+  			
+  			Child child = new Child() ;
+  			Step step = new Step() ;
+  			step.setName(stepNameElementStr);
+  			child.setStep(step);
+  			
+  			children.add(child) ; 
+  	  		 
+  		}
+  		this.setChildren(children);
+  		 
   		
   	}
 }

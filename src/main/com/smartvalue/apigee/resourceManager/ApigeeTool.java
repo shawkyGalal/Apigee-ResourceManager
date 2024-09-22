@@ -28,6 +28,8 @@ import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
 
+import io.swagger.v3.oas.models.Operation;
+
 
 public class ApigeeTool 
 {
@@ -206,7 +208,7 @@ public class ApigeeTool
      * @return a list of flows each flow has a openapi matchedOper object if found in the GetOAS flow call result   
      * @throws Exception
      */
-    private static List<Flow>   checkOasConsistancy(String[] args) throws Exception 
+    private static HashMap<Flow, Operation>   checkOasConsistancy(String[] args) throws Exception 
     {
 		
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;

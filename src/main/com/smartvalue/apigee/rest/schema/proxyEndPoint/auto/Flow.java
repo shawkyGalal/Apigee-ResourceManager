@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
-
+import com.smartvalue.apigee.proxyBundle.BundleElement;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.v3.oas.models.Operation;
@@ -31,7 +31,7 @@ import io.swagger.v3.oas.models.Operation;
     "response"
 })
 @Generated("jsonschema2pojo")
-public class Flow extends ProxyEndPointChild {
+public class Flow extends BundleElement {
 
    
 
@@ -202,8 +202,8 @@ public class Flow extends ProxyEndPointChild {
     //---------------End of Auto generated Code ------------------------------------
     
     //--------------Extra Manual  Code------------------
-    public Flow(Element element) {
-		super(element);
+    public Flow(String proxyName, Element element) {
+		super(proxyName, element);
 		// TODO Auto-generated constructor stub
 	}
     
@@ -281,15 +281,19 @@ public class Flow extends ProxyEndPointChild {
 
 	
 
-	ArrayList<Operation> matchedOper = new ArrayList<Operation>() ; 
+	/* 
+	 * private ArrayList<Operation> matchedOper = new ArrayList<Operation>() ; 
+	 
 	public ArrayList<Operation> getMatchedOasOper()
 	{
 		return matchedOper ; 
 	}
 	public void addMatchedOperation(Operation m_operation) {
+		if(matchedOper == null) matchedOper = new ArrayList<Operation>(); 
 		matchedOper.add(m_operation) ; 
 		
 	}
+	*/
 	
 	public String getUniqueIdentifier()
 	{

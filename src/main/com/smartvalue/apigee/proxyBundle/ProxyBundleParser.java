@@ -1,4 +1,5 @@
 package com.smartvalue.apigee.proxyBundle;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,11 +9,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Child;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
+
+import io.swagger.parser.OpenAPIParser;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
 //import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint; 
 public class ProxyBundleParser {
@@ -26,6 +35,8 @@ public class ProxyBundleParser {
 	
 	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException
 	{
+		String proxyName = new File(inputZipFilePath).getName();
+		proxyName = proxyName.substring(0 , proxyName.indexOf(".zip")) ; 
 		try (
 		        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
 		        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
@@ -34,19 +45,23 @@ public class ProxyBundleParser {
 		        ZipEntry entry;
 		        while ((entry = zipInputStream.getNextEntry()) != null) 
 		        {
+		        	Element element ; 
 		            String entryName = entry.getName();
 		            String elementPath = "apiproxy/policies/" ; 
 		            String elementName ; 
 		            if (entryName.startsWith(elementPath)) 
-		            { elementName = getElementName (entryName , elementPath ) ; this.policies.put (elementName , new Policy(elementName, zipInputStream));  continue ; } 
+		            {   element= BundleElement.buildXmlDocument(zipInputStream).getDocumentElement() ;
+		            	elementName = getElementName (entryName , elementPath ) ; this.policies.put (elementName , new Policy(proxyName , element));  continue ; } 
 		            
 		            elementPath = "apiproxy/proxies/" ; 
 		            if (entryName.startsWith(elementPath)) 
-		            { elementName = getElementName (entryName , elementPath ) ; this.proxies.put (elementName ,  new BundleProxyEndPoint(zipInputStream) ); continue; }
+		            {   element= BundleElement.buildXmlDocument(zipInputStream).getDocumentElement() ;
+		            	elementName = getElementName (entryName , elementPath ) ; this.proxies.put (elementName ,  new BundleProxyEndPoint(proxyName , element)); continue; }
 		            
 		            elementPath = "apiproxy/targets/" ;
 		            if (entryName.startsWith(elementPath)) 
-		            { elementName = getElementName (entryName , elementPath) ; this.targets.put( elementName ,  new TargetEndPoint(elementName, zipInputStream)); continue ; } 
+		            { 	element= BundleElement.buildXmlDocument(zipInputStream).getDocumentElement() ;
+		            	elementName = getElementName (entryName , elementPath) ; this.targets.put( elementName ,  new TargetEndPoint(proxyName , element)); continue ; } 
 		            
 		            elementPath = "apiproxy/resources/jsc/" ;
 		            if (entryName.startsWith(elementPath)) 
@@ -132,6 +147,29 @@ public class ProxyBundleParser {
 	   	 */ 
 	}
 	
+	
+	public Paths getOasJson() throws XPathExpressionException
+	{
+		Paths result ; 
+		BundleProxyEndPoint pep = this.getProxies().get("default");
+		Request request = pep.getFlowByName("GetOAS").getRequest() ;
+		List<Child>  xx =request.getChildren();
+		//-- Assume the last step contains the proxy OAS json   
+		int size = xx.size() ; 
+		String policyName = xx.get(size-1).getStep().getName() ;
+		
+		Policy policy = this.getPolices().get(policyName) ; 
+		String oasStr= policy.getXpathValue("/RaiseFault/FaultResponse/Set/Payload") ; 
+		String abc = oasStr.replace("@oas.servers#", "\"zzzzzzzzzzzzzzzzzzz\"") ;
+		
+		OpenAPIParser parser = new OpenAPIParser();
+		
+		SwaggerParseResult swaggerParse =  parser.readContents(abc , null , null);
+		 
+		OpenAPI openapi = swaggerParse.getOpenAPI() ; 
+		result =  openapi.getPaths(); 
+		return result ; 
+	}
 	
 	
 	

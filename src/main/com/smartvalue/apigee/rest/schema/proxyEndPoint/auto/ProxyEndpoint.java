@@ -6,12 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Generated;
+
+import org.w3c.dom.Element;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.smartvalue.apigee.proxyBundle.BundleElement;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,9 +33,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "type"
 })
 @Generated("jsonschema2pojo")
-public class ProxyEndpoint {
+public class ProxyEndpoint extends BundleElement  {
 
-    @JsonProperty("connection")
+    public ProxyEndpoint(String proxyName , Element element) {
+		super(proxyName, element);
+	}
+
+	@JsonProperty("connection")
     private Connection connection;
     @JsonProperty("connectionType")
     private String connectionType;
