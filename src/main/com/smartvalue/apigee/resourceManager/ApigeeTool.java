@@ -24,6 +24,7 @@ import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
+import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
@@ -208,7 +209,7 @@ public class ApigeeTool
      * @return a list of flows each flow has a openapi matchedOper object if found in the GetOAS flow call result   
      * @throws Exception
      */
-    private static HashMap<Flow, Operation>   checkOasConsistancy(String[] args) throws Exception 
+    private static HashMap<Flow, OasOperation>   checkOasConsistancy(String[] args) throws Exception 
     {
 		
     	HashMap<String , String> argsMap = convertArgsToHashMap(args) ;
@@ -219,7 +220,7 @@ public class ApigeeTool
     	
     	ms.setOrgName(org) ;
     	
-   		return ms.getOrgByName(org).getProxy(proxyName).getRevision(proxyRevision).checkFlowsConsistancy(virtualPathUrl) ; 
+   		return ms.getOrgByName(org).getProxy(proxyName).getRevision(proxyRevision).checkFlowsConsistancy(virtualPathUrl, true) ; 
 	}
     
     private static void migrate(String[] args) throws Exception {

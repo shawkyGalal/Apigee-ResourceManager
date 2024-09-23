@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.xml.parsers.ParserConfigurationException;
@@ -148,11 +149,10 @@ public class ProxyBundleParser {
 	}
 	
 	
-	public Paths getOasJson() throws XPathExpressionException
+	public Paths getOasJson(String getOasFlowName) throws XPathExpressionException
 	{
 		Paths result ; 
-		BundleProxyEndPoint pep = this.getProxies().get("default");
-		Request request = pep.getFlowByName("GetOAS").getRequest() ;
+		Request request = searchForGetOasFlow(getOasFlowName).getRequest() ; // "GetOAS"
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
 		int size = xx.size() ; 
@@ -167,7 +167,23 @@ public class ProxyBundleParser {
 		SwaggerParseResult swaggerParse =  parser.readContents(abc , null , null);
 		 
 		OpenAPI openapi = swaggerParse.getOpenAPI() ; 
+		
 		result =  openapi.getPaths(); 
+		return result ; 
+	}
+	
+	public BundleFlow searchForGetOasFlow(String getOasFlowName)
+	{
+		BundleFlow result = null ; 
+		for (Entry<String, BundleProxyEndPoint> entry : this.getProxies().entrySet())
+		{
+			String proxyEndPointName= entry.getKey() ;
+			BundleProxyEndPoint pep = entry.getValue() ;
+			result = (BundleFlow) pep.getFlowByName(getOasFlowName) ;  
+			if ( result != null ) {
+				break; 
+			}
+		}
 		return result ; 
 	}
 	

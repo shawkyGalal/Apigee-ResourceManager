@@ -135,7 +135,8 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		    for (Flow flow : proxyEndPoint.getFlows())
 		    {
 		    	String operationId = this.getName()+ delimiter +proxyEnpointName+delimiter+flow.getName() ; 
-		    	result.append("\n"+operationId) ; 
+		    	result.append("\n"+operationId) ;
+		    	//TODO 
 		    }
 			System.out.println(proxyEndPoint) ; 
 		}
@@ -164,9 +165,9 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
  * @throws UnirestException
  * @throws IOException
  */
-	public HashMap<Flow, Operation> checkFlowsConsistancy (String virtualHostUrl) throws Exception  
+	public HashMap<Flow, OasOperation> checkFlowsConsistancy (String virtualHostUrl, boolean fixOperationId) throws Exception  
 	{
-		HashMap<Flow, Operation> result = new HashMap<Flow, Operation>() ; 
+		HashMap<Flow, OasOperation> result = new HashMap<Flow, OasOperation>() ; 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
@@ -185,35 +186,50 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		  
 		for ( Flow flow : allApigeeFlows )
 		{
+			boolean matched ; 
 			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 			{
 				pathStr = entry.getKey() ; 
 				pathItem = entry.getValue() ; 
 				String completeOasPath = serverPath + pathStr ;  
-				Operation getOper = pathItem.getGet(); 
-				if (getOper != null)
-				{
-					if ( flow.match( completeOasPath ,  "GET" ) ) {result.put(flow , getOper) ; } 
+
+				OasOperation getOper = new OasOperation( completeOasPath , "GET", pathItem.getGet()) ; 
+				if (flow.match(getOper)) { 	
+					result.put(flow, getOper) ;
+					if (fixOperationId) getOper.setOperationId(flow);
+					continue ;	
 				}
-				Operation postOper = pathItem.getPost();
-				if (postOper != null)
-				{
-					if ( flow.match(completeOasPath ,  "POST" ) ) {result.put(flow, postOper) ; } 
+				
+				OasOperation postOper = new OasOperation( completeOasPath , "POST" , pathItem.getPost()) ; 
+				if (flow.match(postOper)) { 
+					result.put(flow, postOper) ; 
+					if (fixOperationId) postOper.setOperationId(flow);
+					continue ; 
 				}
-				Operation putOper = pathItem.getPut();
-				if (putOper != null)
-				{
-					if ( flow.match(completeOasPath ,  "PUT" ) ) {result.put(flow, putOper) ; } 
+				
+				OasOperation putOper = new OasOperation( completeOasPath , "PUT" , pathItem.getPut()) ; 
+				if (flow.match(putOper)) { 
+					result.put(flow, putOper) ;  
+					if (fixOperationId) putOper.setOperationId(flow);
+					continue ; 
 				}
-				Operation deleteOper = pathItem.getDelete();
-				if (deleteOper != null)
-				{
-					if ( flow.match(completeOasPath , "DELETE" ) ) {result.put(flow, deleteOper) ; } 
-				}
+				
+				OasOperation deleteOper = new OasOperation( completeOasPath , "DELETE" , pathItem.getDelete()) ; 
+				if (flow.match(deleteOper)) { 
+					result.put(flow, deleteOper) ; 
+					if (fixOperationId) deleteOper.setOperationId(flow);
+					continue ; } 
+				
+				OasOperation patchOper = new OasOperation( completeOasPath , "PATCH" , pathItem.getPatch()) ;
+				if (flow.match(patchOper)) { 
+					result.put(flow, patchOper) ; 
+					if (fixOperationId) patchOper.setOperationId(flow);
+					continue ; } 
 			}
 		}
 		return result; 
 	}
+	
 	
 	/**
 	 * 
@@ -221,9 +237,9 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	 * @return an updated version of the 
 	 * @throws Exception
 	 */
-	public HashMap<Operation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean setOperationId) throws Exception  
+	public HashMap<OasOperation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean fixOperationId) throws Exception  
 	{
-		HashMap<Operation , Flow> result = new HashMap<Operation , Flow>(); 
+		HashMap<OasOperation , Flow> result = new HashMap<OasOperation , Flow>(); 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
@@ -245,11 +261,11 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			pathStr = entry.getKey() ; 
 			pathItem = entry.getValue() ;
 			String completeOasPath = serverPath + pathStr ;
-			Operation getOper = pathItem.getGet();
-			Operation postOper = pathItem.getPost();
-			Operation putOper = pathItem.getPut();
-			Operation deleteOper = pathItem.getDelete();
-			Operation patchOper = pathItem.getPatch();
+			OasOperation getOper = new OasOperation(completeOasPath , "GET" , pathItem.getGet());
+			OasOperation postOper = new OasOperation(completeOasPath , "POST" , pathItem.getPost());
+			OasOperation putOper = new OasOperation(completeOasPath , "PUT" , pathItem.getPut());
+			OasOperation deleteOper = new OasOperation(completeOasPath , "DELETE", pathItem.getDelete());
+			OasOperation patchOper = new OasOperation(completeOasPath ,"PATCH" , pathItem.getPatch());
 			
 			
 			boolean getOperMachedFlowFound = false ;
@@ -262,18 +278,18 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 				 
 				if (getOper != null)
 				{
-					if ( flow.match( completeOasPath ,  "GET" ) ) 
+					if ( flow.match( getOper ) ) 
 						{ 
-							if (setOperationId) getOper.setOperationId(flow.getUniqueIdentifier());	
+							if (fixOperationId) getOper.getOperation().setOperationId(flow.getUniqueIdentifier());	
 							result.put(getOper , flow );
 							getOperMachedFlowFound = true ; 
 						} 
 				}
 				
 				if (postOper != null)
-				{
-					if ( flow.match(completeOasPath ,  "POST" ) ) {
-						if (setOperationId) postOper.setOperationId(flow.getUniqueIdentifier()); 
+				{	
+					if ( flow.match(postOper ) ) {
+						if (fixOperationId) postOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
 						result.put(postOper , flow );
 						postOperMachedFlowFound= true ; 
 						} 
@@ -281,27 +297,27 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 
 				if (putOper != null)
 				{
-					if ( flow.match(completeOasPath ,  "PUT"  ) ) {
+					if ( flow.match(putOper ) ) {
 						result.put(putOper , flow ); 
-						if (setOperationId) putOper.setOperationId(flow.getUniqueIdentifier());
+						if (fixOperationId) putOper.getOperation().setOperationId(flow.getUniqueIdentifier());
 						putOperMachedFlowFound = true ; 
 						} 
 				}
 				
 				if (deleteOper != null)
 				{
-					if ( flow.match(completeOasPath , "DELETE" ) ) {
+					if ( flow.match(deleteOper ) ) {
 						result.put(deleteOper , flow );
-						if (setOperationId) deleteOper.setOperationId(flow.getUniqueIdentifier()); 
+						if (fixOperationId) deleteOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
 						deleteOperMachedFlowFound = true ; 
 						} 
 				}
 				
 				if (patchOper != null)
 				{
-					if ( flow.match(completeOasPath , "PATCH" ) ) {
+					if ( flow.match(patchOper ) ) {
 						result.put(patchOper , flow );
-						if (setOperationId) patchOper.setOperationId(flow.getUniqueIdentifier()); 
+						if (fixOperationId) patchOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
 						patchOperMachedFlowFound = true ; 
 						} 
 				}
@@ -314,7 +330,6 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			if ( patchOper   != null && !patchOperMachedFlowFound)  {result.put(patchOper , null );}
 		
 		}
-		
 		return result; 
 	}
 	

@@ -18,6 +18,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import com.smartvalue.apigee.proxyBundle.BundleElement;
+import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.v3.oas.models.Operation;
@@ -259,18 +260,15 @@ public class Flow extends BundleElement {
 		this.parentProxyEndPoint = parentProxyEndPoint;
 	}
  
-	public boolean match(String pathStr, String verb)
+	public boolean match(OasOperation oper )
 	{
 		boolean result = false ;
 		try {
 		String apigeePath = this.getParentProxyEndPoint().getConnection().getBasePath() + 
 				this.extractPathSuffixFromCondition() ;  
 
-		result =  	(
-					apigeePath.equalsIgnoreCase(pathStr)	
-					&& this.extractVerbFromCondition().equalsIgnoreCase(verb)
-					//&& this.getName().equalsIgnoreCase(oper.getOperationId()) 
-				);
+		result = apigeePath.equalsIgnoreCase(oper.getPath())	
+					&& this.extractVerbFromCondition().equalsIgnoreCase(oper.getVerb()) ;
 		} catch (Exception e )
 		{
 			

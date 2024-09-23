@@ -47,6 +47,7 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Child;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
+import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
@@ -78,7 +79,7 @@ public class NewTest extends ApigeeTest {
 	public void getOasFromOasFlow() throws ParserConfigurationException, SAXException, UnirestException, IOException, XPathExpressionException
 	{
 		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
- 		Paths paths =  smsGovernanceProxyBundle.getOasJson(); 
+ 		Paths paths =  smsGovernanceProxyBundle.getOasJson("GetOAS"); 
 	}
 	
 	@Test
@@ -109,8 +110,8 @@ public class NewTest extends ApigeeTest {
 		ProxyRevision pr =    sourceMngServer.getOrgByName("stg").getProxy("SMS-Governance").getRevision("147") ;
 		String serverUrl = "https://api-test.moj.gov.local/" ; 
 					
-		HashMap<Flow , Operation > flowMatchedOper = pr.checkFlowsConsistancy(serverUrl) ;
-		HashMap<Operation , Flow>  operMatchedFlow = pr.checkOpenApiConsistancy(serverUrl , false); 
+		HashMap<Flow, OasOperation> flowMatchedOper = pr.checkFlowsConsistancy(serverUrl , true) ;
+		HashMap<OasOperation, Flow>  operMatchedFlow = pr.checkOpenApiConsistancy(serverUrl , false); 
 		 
 	  }
 	 
