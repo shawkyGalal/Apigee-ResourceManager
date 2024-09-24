@@ -76,14 +76,15 @@ public class NewTest extends ApigeeTest {
 	String transformFolderName = "C:\\temp\\Transform\\Stage" ; 
 	
 	@Test
-	public void getOasFromOasFlow() throws ParserConfigurationException, SAXException, UnirestException, IOException, XPathExpressionException
+	public void getOasFromOasFlow() throws Exception
 	{
-		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
- 		Paths paths =  smsGovernanceProxyBundle.getOasJson("GetOAS"); 
+		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ; 
+		HashMap<Flow , OasOperation >  apigeeFlows   = smsGovernanceProxyBundle.checkFlowsConsistancy(true, false);
+		HashMap<OasOperation , Flow >  oas   = smsGovernanceProxyBundle.checkOasConsistancy(true, false); 
 	}
 	
 	@Test
-	public void parseProxyBundle() throws ParserConfigurationException, SAXException, UnirestException, IOException
+	public void parseProxyBundle() throws ParserConfigurationException, SAXException,   XPathExpressionException
 	{
 		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
 		BundleProxyEndPoint pep = smsGovernanceProxyBundle.getProxies().get("default");

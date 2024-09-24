@@ -25,8 +25,8 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
 
-	private static final String OAS_FLOW_NAME = "GetOAS";
-	private static final String SERVICE_NOT_AVAILABLE = "ServiceNotAvailable";
+	public static final String OAS_FLOW_NAME = "GetOAS";
+	public static final String SERVICE_NOT_AVAILABLE = "ServiceNotAvailable";
 	private RevisionedObject parentProxy ; 
 
 
@@ -158,32 +158,23 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		return  result ;
 	}
 
-/**
- * This method check the OAS consistancy of this ProxyVersion assuming that there is a one OAS flow service that will return all proxyEndpoints flows operation  
- * @param virtualHostUrl
- * @return
- * @throws UnirestException
- * @throws IOException
- */
-	public HashMap<Flow, OasOperation> checkFlowsConsistancy (String virtualHostUrl, boolean fixOperationId, boolean execludeKnownFlows ) throws Exception  
+	public String  getOasString(String virtualHostUrl ) throws Exception
 	{
-		HashMap<Flow, OasOperation> result = new HashMap<Flow, OasOperation>() ; 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
-		
-		String oasJsonString  = oasResponse.getBody() ;
-		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
+		String result  = oasResponse.getBody() ;
+		return result; 
+	}
+	
+	public static HashMap<Flow, OasOperation> checkFlowsConsistancy ( SwaggerParseResult swaggerParse , List<Flow> allApigeeFlows, String oasProxyEndPointBasePath , boolean fixOperationId, boolean execludeKnownFlows ) throws Exception  
+	{
+		HashMap<Flow, OasOperation> result = new HashMap<Flow, OasOperation>() ;
 		OpenAPI openapi = swaggerParse.getOpenAPI() ; 
 		Paths paths =  openapi.getPaths(); 
-		String oasServerURL = swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
-		String  serverPath = new URL(oasServerURL).getPath() ; 
+		//String oasServerURL = swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
+		//String  oasServerBasePath = new URL(oasServerURL).getPath() ; 
 		String pathStr ;
 		PathItem pathItem ; 
-		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
-		if (execludeKnownFlows)
-		{execuldedFlowNames.add(OAS_FLOW_NAME); 
-		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);}
-		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		  
 		for ( Flow flow : allApigeeFlows )
 		{
@@ -192,7 +183,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			{
 				pathStr = entry.getKey() ; 
 				pathItem = entry.getValue() ; 
-				String completeOasPath = serverPath + pathStr ;  
+				String completeOasPath = oasProxyEndPointBasePath + pathStr ;  
 
 				OasOperation getOper = new OasOperation( completeOasPath , "GET", pathItem.getGet()) ; 
 				if (flow.match(getOper)) { 	
@@ -238,39 +229,45 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			}
 		}
 		return result; 
+
+		
+	}
+/**
+ * This method check the OAS consistancy of this ProxyVersion assuming that there is a one OAS flow service that will return all proxyEndpoints flows operation  
+ * @param virtualHostUrl
+ * @return
+ * @throws UnirestException
+ * @throws IOException
+ */
+	public HashMap<Flow, OasOperation> checkFlowsConsistancy (String virtualHostUrl, boolean fixOperationId, boolean execludeKnownFlows ) throws Exception  
+	{
+		String oasJsonString  = getOasString(virtualHostUrl ) ;  
+		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		if (execludeKnownFlows)
+		{execuldedFlowNames.add(OAS_FLOW_NAME); 
+		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);}
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		return ProxyRevision.checkFlowsConsistancy(swaggerParse, allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath(),  fixOperationId , execludeKnownFlows ) ; 
 	}
 	
-	
-	/**
-	 * 
-	 * @param virtualHostUrl
-	 * @return an updated version of the 
-	 * @throws Exception
-	 */
-	public HashMap<OasOperation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean fixOperationId) throws Exception  
+
+	public static HashMap<OasOperation , Flow>  checkOpenApiConsistancy (SwaggerParseResult swaggerParse , List<Flow> allApigeeFlows , String oasProxyEndPointBasePath ,  boolean fixOperationId) throws Exception
 	{
-		HashMap<OasOperation , Flow> result = new HashMap<OasOperation , Flow>(); 
-		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
-		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
-		
-		String oasJsonString  = oasResponse.getBody() ;
-		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
+		HashMap<OasOperation , Flow> result = new HashMap<OasOperation , Flow>();
 		OpenAPI openapi = swaggerParse.getOpenAPI() ;  
 		Paths 	paths =  openapi.getPaths(); 
-		String 	oasServerURL = swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
-		String 	serverPath = new URL(oasServerURL).getPath() ; 
+		//String 	oasServerBasePath =  swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
+		//String 	serverPath = new URL(oasServerBasePath).getPath() ; 
 		String 	pathStr ;
 		PathItem pathItem ; 
-		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
-		execuldedFlowNames.add(OAS_FLOW_NAME);
-		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
-		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		
 		  
 		for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 		{
 			pathStr = entry.getKey() ; 
 			pathItem = entry.getValue() ;
-			String completeOasPath = serverPath + pathStr ;
+			String completeOasPath = oasProxyEndPointBasePath + pathStr ;
 			OasOperation getOper = 	( pathItem.getGet() != null ) ? new OasOperation(completeOasPath , "GET" , pathItem.getGet()) : null;
 			OasOperation postOper =	(pathItem.getPost() != null) ?  new OasOperation(completeOasPath , "POST" , pathItem.getPost()): null;
 			OasOperation putOper = 	( pathItem.getPut() != null) ? new OasOperation(completeOasPath , "PUT" , pathItem.getPut()): null;
@@ -341,6 +338,30 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		
 		}
 		return result; 
+
+	}
+	
+	/**
+	 * 
+	 * @param virtualHostUrl
+	 * @return an updated version of the 
+	 * @throws Exception
+	 */
+	public HashMap<OasOperation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean fixOperationId) throws Exception  
+	{
+		 
+		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
+		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
+		
+		String oasJsonString  = oasResponse.getBody() ;
+		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ;
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		execuldedFlowNames.add(OAS_FLOW_NAME);
+		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		ProxyEndpoint oasProxyEndPoint = this.getOASProxyEndpoint() ; 
+		return ProxyRevision.checkOpenApiConsistancy(swaggerParse , allApigeeFlows , oasProxyEndPoint.getConnection().getBasePath() ,  fixOperationId ) ; 
+		
 	}
 	
 	private List<Flow> getAllFlows(ArrayList<String> execludeFlowNames) throws UnirestException, IOException {
@@ -372,6 +393,18 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		    if (oasFlow != null) break ; 
 		}
 		return oasFlow;
+	}
+	
+	private ProxyEndpoint getOASProxyEndpoint() throws UnirestException, IOException
+	{
+		ProxyEndpoint result = null ; 
+		for ( Entry<String, ProxyEndpoint> entry : this.getProxyEndPointDetails().entrySet()) 
+		{
+		    ProxyEndpoint proxyEndPoint = entry.getValue();
+		    Flow flow  = proxyEndPoint.getFlowByName(OAS_FLOW_NAME) ; 
+		    if (flow != null) { result = proxyEndPoint ;  break ; } 
+		}
+		return result ;
 	}
 
 

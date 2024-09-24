@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -14,18 +15,21 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Child;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
+import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.parser.OpenAPIParser;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
 //import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint; 
-public class ProxyBundleParser {
+public class ProxyBundleParser  
+{
 
 	private HashMap<String , TargetEndPoint> targets = new HashMap<String , TargetEndPoint>(); 
 	private HashMap<String ,BundleProxyEndPoint> proxies = new HashMap<String ,BundleProxyEndPoint>();
@@ -34,7 +38,7 @@ public class ProxyBundleParser {
 	private HashMap<String ,JavaResource> javaResources = new HashMap<String ,JavaResource>(); 
 	private HashMap<String ,OpenApiResource> openApiResources = new HashMap<String ,OpenApiResource>();
 	
-	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException
+	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException, XPathExpressionException
 	{
 		String proxyName = new File(inputZipFilePath).getName();
 		proxyName = proxyName.substring(0 , proxyName.indexOf(".zip")) ; 
@@ -128,30 +132,17 @@ public class ProxyBundleParser {
 		return this.jsResources;
 	}
 	
-	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+	public static void main(String[] args) throws Exception
 	{
 		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
-		BundleProxyEndPoint pep = smsGovernanceProxyBundle.getProxies().get("default");
-		List<Flow> allFlows = pep.getFlows() ; 
-		for (Flow  flow : allFlows )
-		{
-			String flowName = flow.getName(); 
-			Request req = flow.getRequest();
-			Response res = flow.getResponse(); 
-		}
-		
-		
-		/**
-		* 1- Get XML Node for the GetOAS flow from /proxies/default (or others if found )  
-	   	 * 2- Get the last Step Name  ( normally returnOpenApiSpecs)  ( file Name for the policy returned the oas ) 
-	   	 * 3- parse the policy file /polices/returnOpenApiSpecs.xml  ( it should be of type RaiseFault policy )
-	   	 */ 
+		smsGovernanceProxyBundle.checkFlowsConsistancy(false, false); 
+
 	}
 	
 	
-	public Paths getOasJson(String getOasFlowName) throws XPathExpressionException
+	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException
 	{
-		Paths result ; 
+
 		Request request = searchForGetOasFlow(getOasFlowName).getRequest() ; // "GetOAS"
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
@@ -160,24 +151,57 @@ public class ProxyBundleParser {
 		
 		Policy policy = this.getPolices().get(policyName) ; 
 		String oasStr= policy.getXpathValue("/RaiseFault/FaultResponse/Set/Payload") ; 
-		String abc = oasStr.replace("@oas.servers#", "\"zzzzzzzzzzzzzzzzzzz\"") ;
+		
+		String abc = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
 		
 		OpenAPIParser parser = new OpenAPIParser();
 		
 		SwaggerParseResult swaggerParse =  parser.readContents(abc , null , null);
-		 
-		OpenAPI openapi = swaggerParse.getOpenAPI() ; 
-		
-		result =  openapi.getPaths(); 
-		return result ; 
+	
+		return swaggerParse ; 
+	}
+
+	public HashMap<Flow, OasOperation> checkFlowsConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
+	{
+		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		if (execludeKnownFlows)
+		{execuldedFlowNames.add(ProxyRevision.OAS_FLOW_NAME); 
+		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		ProxyEndpoint oasProxyEndPoint = this.getOASProxyEndpoint(); 
+		return ProxyRevision.checkFlowsConsistancy(swaggerParse, allApigeeFlows , oasProxyEndPoint.getConnection().getBasePath(), fixOperationId , execludeKnownFlows ) ; 
 	}
 	
+	public HashMap<OasOperation , Flow> checkOasConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
+	{
+		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
+		if (execludeKnownFlows)
+		{execuldedFlowNames.add(ProxyRevision.OAS_FLOW_NAME); 
+		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
+		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
+		return ProxyRevision.checkOpenApiConsistancy(swaggerParse, allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath() , fixOperationId ) ; 
+	}
+	
+	
+	private List<Flow> getAllFlows(ArrayList<String> execuldedFlowNames) {
+		List<Flow> result = new ArrayList<Flow>() ; 
+		
+		for ( Entry<String , BundleProxyEndPoint>  entry : this.getProxies().entrySet())
+		{
+			BundleProxyEndPoint pep = entry.getValue() ;
+			result.addAll(pep.getFlows(execuldedFlowNames) ); 
+		}
+		return result;
+	}
+
+
 	public BundleFlow searchForGetOasFlow(String getOasFlowName)
 	{
 		BundleFlow result = null ; 
 		for (Entry<String, BundleProxyEndPoint> entry : this.getProxies().entrySet())
 		{
-			String proxyEndPointName= entry.getKey() ;
 			BundleProxyEndPoint pep = entry.getValue() ;
 			result = (BundleFlow) pep.getFlowByName(getOasFlowName) ;  
 			if ( result != null ) {
@@ -185,6 +209,18 @@ public class ProxyBundleParser {
 			}
 		}
 		return result ; 
+	}
+	
+	private ProxyEndpoint getOASProxyEndpoint() throws UnirestException, IOException
+	{
+		ProxyEndpoint result = null ; 
+		for ( Entry<String, BundleProxyEndPoint> entry : this.getProxies().entrySet()) 
+		{
+		    ProxyEndpoint proxyEndPoint = entry.getValue();
+		    Flow flow  = proxyEndPoint.getFlowByName(ProxyRevision.OAS_FLOW_NAME) ; 
+		    if (flow != null) { result = proxyEndPoint ;  break ; } 
+		}
+		return result ;
 	}
 	
 	

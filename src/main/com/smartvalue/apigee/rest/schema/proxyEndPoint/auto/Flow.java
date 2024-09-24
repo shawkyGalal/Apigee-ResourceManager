@@ -217,19 +217,29 @@ public class Flow extends BundleElement {
 		return response; 
 		
 	}
+    private String pathSuffix ; 
+    public String getPathSuffix() {
+		return pathSuffix;
+	}
+
 	public String extractPathSuffixFromCondition() throws Exception
-	{
-		String result = null ; 
-		try {
-		String condition = this.getCondition().replaceAll(" ", "");    // (proxy.pathsuffix MatchesPath \"/api/Files/UploadFile\")
+	{	
+		String result = this.getPathSuffix(); 
+		if (result == null)
+		{
+			try {
+			String condition = this.getCondition().replaceAll(" ", "");    // (proxy.pathsuffix MatchesPath \"/api/Files/UploadFile\")
+			
+			int pathSuffixStartIndex = "(proxy.pathsuffixMatchesPath\"".length() ;
+			int pathSuffixEndIndex = condition.substring(pathSuffixStartIndex).indexOf("\"") ; 
+			result = condition.substring(pathSuffixStartIndex).substring(0, pathSuffixEndIndex  ).trim() ;
+			pathSuffix = result ; 
+			}
+			catch (Exception e ) {
+				System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
+			}
+		}
 		
-		int pathSuffixStartIndex = "(proxy.pathsuffixMatchesPath\"".length() ;
-		int pathSuffixEndIndex = condition.substring(pathSuffixStartIndex).indexOf("\"") ; 
-		result = condition.substring(pathSuffixStartIndex).substring(0, pathSuffixEndIndex  ).trim() ;
-		}
-		catch (Exception e ) {
-			System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
-		}
 		return result ; 
 	}
 	
@@ -305,4 +315,5 @@ public class Flow extends BundleElement {
 		return pr.getName() + "."+ pep.getName() +"." + this.getName(); 
 	}
 
+	
 }
