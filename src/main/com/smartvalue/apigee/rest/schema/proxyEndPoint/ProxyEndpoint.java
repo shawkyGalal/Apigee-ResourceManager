@@ -74,7 +74,7 @@ public class ProxyEndpoint  extends com.smartvalue.apigee.rest.schema.proxyEndPo
 		}
 
 		public List<Flow> getFlows(ArrayList<String> execludeFlowNames) {
-			List<Flow> allFlows =  super.getFlows();
+			List<Flow> allFlows =  this.getFlows();
 			List<Flow> result = allFlows ; 
 			for (String flowName : execludeFlowNames )
 			{

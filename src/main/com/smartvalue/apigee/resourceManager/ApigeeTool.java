@@ -220,7 +220,7 @@ public class ApigeeTool
     	
     	ms.setOrgName(org) ;
     	
-   		return ms.getOrgByName(org).getProxy(proxyName).getRevision(proxyRevision).checkFlowsConsistancy(virtualPathUrl, true) ; 
+   		return ms.getOrgByName(org).getProxy(proxyName).getRevision(proxyRevision).checkFlowsConsistancy(virtualPathUrl, true , false) ; 
 	}
     
     private static void migrate(String[] args) throws Exception {

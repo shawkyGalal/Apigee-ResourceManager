@@ -165,7 +165,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
  * @throws UnirestException
  * @throws IOException
  */
-	public HashMap<Flow, OasOperation> checkFlowsConsistancy (String virtualHostUrl, boolean fixOperationId) throws Exception  
+	public HashMap<Flow, OasOperation> checkFlowsConsistancy (String virtualHostUrl, boolean fixOperationId, boolean execludeKnownFlows ) throws Exception  
 	{
 		HashMap<Flow, OasOperation> result = new HashMap<Flow, OasOperation>() ; 
 		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
@@ -180,13 +180,14 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		String pathStr ;
 		PathItem pathItem ; 
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
-		execuldedFlowNames.add(OAS_FLOW_NAME);
-		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
+		if (execludeKnownFlows)
+		{execuldedFlowNames.add(OAS_FLOW_NAME); 
+		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		  
 		for ( Flow flow : allApigeeFlows )
 		{
-			boolean matched ; 
+			boolean matchedOperationFound = false ; 
 			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 			{
 				pathStr = entry.getKey() ; 
@@ -195,36 +196,45 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 
 				OasOperation getOper = new OasOperation( completeOasPath , "GET", pathItem.getGet()) ; 
 				if (flow.match(getOper)) { 	
+					matchedOperationFound= true; 
 					result.put(flow, getOper) ;
 					if (fixOperationId) getOper.setOperationId(flow);
-					continue ;	
+					break ;	
 				}
 				
 				OasOperation postOper = new OasOperation( completeOasPath , "POST" , pathItem.getPost()) ; 
 				if (flow.match(postOper)) { 
+					matchedOperationFound= true;
 					result.put(flow, postOper) ; 
 					if (fixOperationId) postOper.setOperationId(flow);
-					continue ; 
+					break ; 
 				}
 				
 				OasOperation putOper = new OasOperation( completeOasPath , "PUT" , pathItem.getPut()) ; 
 				if (flow.match(putOper)) { 
+					matchedOperationFound= true;
 					result.put(flow, putOper) ;  
 					if (fixOperationId) putOper.setOperationId(flow);
-					continue ; 
+					break ; 
 				}
 				
 				OasOperation deleteOper = new OasOperation( completeOasPath , "DELETE" , pathItem.getDelete()) ; 
 				if (flow.match(deleteOper)) { 
+					matchedOperationFound= true;
 					result.put(flow, deleteOper) ; 
 					if (fixOperationId) deleteOper.setOperationId(flow);
-					continue ; } 
+					break ; } 
 				
 				OasOperation patchOper = new OasOperation( completeOasPath , "PATCH" , pathItem.getPatch()) ;
 				if (flow.match(patchOper)) { 
+					matchedOperationFound= true;
 					result.put(flow, patchOper) ; 
 					if (fixOperationId) patchOper.setOperationId(flow);
-					continue ; } 
+					break ; } 
+			}
+			if (! matchedOperationFound)
+			{
+				result.put(flow, null) ;
 			}
 		}
 		return result; 
@@ -261,11 +271,11 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			pathStr = entry.getKey() ; 
 			pathItem = entry.getValue() ;
 			String completeOasPath = serverPath + pathStr ;
-			OasOperation getOper = new OasOperation(completeOasPath , "GET" , pathItem.getGet());
-			OasOperation postOper = new OasOperation(completeOasPath , "POST" , pathItem.getPost());
-			OasOperation putOper = new OasOperation(completeOasPath , "PUT" , pathItem.getPut());
-			OasOperation deleteOper = new OasOperation(completeOasPath , "DELETE", pathItem.getDelete());
-			OasOperation patchOper = new OasOperation(completeOasPath ,"PATCH" , pathItem.getPatch());
+			OasOperation getOper = 	( pathItem.getGet() != null ) ? new OasOperation(completeOasPath , "GET" , pathItem.getGet()) : null;
+			OasOperation postOper =	(pathItem.getPost() != null) ?  new OasOperation(completeOasPath , "POST" , pathItem.getPost()): null;
+			OasOperation putOper = 	( pathItem.getPut() != null) ? new OasOperation(completeOasPath , "PUT" , pathItem.getPut()): null;
+			OasOperation deleteOper=(pathItem.getDelete() != null) ? new OasOperation(completeOasPath , "DELETE", pathItem.getDelete()): null;
+			OasOperation patchOper =(pathItem.getPatch() != null) ? new OasOperation(completeOasPath ,"PATCH" , pathItem.getPatch()):null;
 			
 			
 			boolean getOperMachedFlowFound = false ;

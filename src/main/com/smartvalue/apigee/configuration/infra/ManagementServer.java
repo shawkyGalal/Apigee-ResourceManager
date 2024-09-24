@@ -209,7 +209,7 @@ public class ManagementServer extends Server{
 		return response ;  
 	}
 	
-	private HttpResponse<String>  sendRequestByPassProxyIfNeeded(HttpRequest request ) throws UnirestException
+	private HttpResponse<String>  sendRequestByPassProxyIfNeeded(HttpRequest request ) throws UnirestException , IOException 
 	{
 		
 		boolean byPassProxy = isByPassProxy(request.getUrl()) ;  
@@ -233,11 +233,26 @@ public class ManagementServer extends Server{
 		}	
 		
 		HttpResponse<String> response = request.asString();
-		
-		
-		
+		response = handleResponseErrors(request, response) ; 
 		return response ; 
 		
+	}
+	
+	public HttpResponse<String>  handleResponseErrors(HttpRequest request , HttpResponse<String> response) throws IOException, UnirestException 
+	{
+		HttpResponse<String> result = response; 
+		if (! Helper.isConsideredSuccess(response.getStatus()) )   
+		{
+			if (response.getBody().contains("Access Token expired"))
+			{
+				this.reNewAccessToken() ; 
+				result = request.asString(); 
+			}
+			else 
+			throw new UnirestException ( response.getBody()) ; 
+		}
+		
+		return result ; 
 	}
 	private static final String BY_PASS_HOSTS = "moj.gov.local" ;  
 	private boolean isByPassProxy(String m_apiPath) {
@@ -366,10 +381,8 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	
 	
-	private void reNewAccessToken() throws Exception {
+	private void reNewAccessToken() throws IOException, UnirestException  {
 		 this.getAccess_token(true) ;
-		//this.serverProfile.setRefreshToken(at.getRefresh_token()) ;
-		
 	}
 
 	private AccessToken accessToken; 

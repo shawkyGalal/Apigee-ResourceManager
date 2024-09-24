@@ -229,7 +229,6 @@ public class Flow extends BundleElement {
 		}
 		catch (Exception e ) {
 			System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
-			throw e ; 
 		}
 		return result ; 
 	}
@@ -264,19 +263,25 @@ public class Flow extends BundleElement {
 	{
 		boolean result = false ;
 		try {
-		String apigeePath = this.getParentProxyEndPoint().getConnection().getBasePath() + 
-				this.extractPathSuffixFromCondition() ;  
-
-		result = apigeePath.equalsIgnoreCase(oper.getPath())	
-					&& this.extractVerbFromCondition().equalsIgnoreCase(oper.getVerb()) ;
+			result = 	this.getCompletePath().equalsIgnoreCase(oper.getPath())	
+					&& 	this.extractVerbFromCondition().equalsIgnoreCase(oper.getVerb()) ;
 		} catch (Exception e )
 		{
-			
+		 //e.printStackTrace();	
 		}
 		return result ; 
 		
 	}
-
+	public String getCompletePath()
+	{
+		String result = null ; 
+		try {
+			result=  this.getParentProxyEndPoint().getConnection().getBasePath() + this.extractPathSuffixFromCondition() ;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return result ; 
+	}
 	
 
 	/* 
