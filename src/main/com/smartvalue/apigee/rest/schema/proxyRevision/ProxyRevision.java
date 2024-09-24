@@ -179,49 +179,69 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		for ( Flow flow : allApigeeFlows )
 		{
 			boolean matchedOperationFound = false ; 
+			if (flow.extractPathSuffixFromCondition() != null && flow.extractVerbFromCondition() != null)
+			{
 			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 			{
 				pathStr = entry.getKey() ; 
 				pathItem = entry.getValue() ; 
 				String completeOasPath = oasProxyEndPointBasePath + pathStr ;  
 
-				OasOperation getOper = new OasOperation( completeOasPath , "GET", pathItem.getGet()) ; 
-				if (flow.match(getOper)) { 	
+				Operation oper = pathItem.getGet() ; 
+				if (oper != null)
+				{
+					OasOperation getOper = new OasOperation( completeOasPath , "GET", oper) ; 
+					if ( flow.match(getOper)) { 	
 					matchedOperationFound= true; 
 					result.put(flow, getOper) ;
 					if (fixOperationId) getOper.setOperationId(flow);
 					break ;	
+					}
 				}
-				
-				OasOperation postOper = new OasOperation( completeOasPath , "POST" , pathItem.getPost()) ; 
-				if (flow.match(postOper)) { 
+				oper = pathItem.getPost() ; 
+				if (oper != null)
+				{
+					OasOperation postOper = new OasOperation( completeOasPath , "POST" , oper ) ; 
+					if (flow.match(postOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, postOper) ; 
 					if (fixOperationId) postOper.setOperationId(flow);
 					break ; 
+					}
 				}
-				
-				OasOperation putOper = new OasOperation( completeOasPath , "PUT" , pathItem.getPut()) ; 
-				if (flow.match(putOper)) { 
+				oper = pathItem.getPut() ;
+				if (oper != null)
+				{
+					OasOperation putOper = new OasOperation( completeOasPath , "PUT" , oper) ; 
+					if (flow.match(putOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, putOper) ;  
 					if (fixOperationId) putOper.setOperationId(flow);
-					break ; 
+					break ;	
+					}
 				}
-				
-				OasOperation deleteOper = new OasOperation( completeOasPath , "DELETE" , pathItem.getDelete()) ; 
+				oper = pathItem.getDelete() ;
+				if (oper != null)
+				{
+				OasOperation deleteOper = new OasOperation( completeOasPath , "DELETE" , oper) ; 
 				if (flow.match(deleteOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, deleteOper) ; 
 					if (fixOperationId) deleteOper.setOperationId(flow);
-					break ; } 
-				
-				OasOperation patchOper = new OasOperation( completeOasPath , "PATCH" , pathItem.getPatch()) ;
+					break ; 
+					} 
+				}
+				oper = pathItem.getPatch() ;
+				if (oper != null)
+				{
+				OasOperation patchOper = new OasOperation( completeOasPath , "PATCH" , oper) ;
 				if (flow.match(patchOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, patchOper) ; 
 					if (fixOperationId) patchOper.setOperationId(flow);
 					break ; } 
+				}
+			}
 			}
 			if (! matchedOperationFound)
 			{
@@ -282,53 +302,54 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			boolean patchOperMachedFlowFound = false ;
 			for ( Flow flow : allApigeeFlows )
 			{
-				 
-				if (getOper != null)
-				{
-					if ( flow.match( getOper ) ) 
-						{ 
-							if (fixOperationId) getOper.getOperation().setOperationId(flow.getUniqueIdentifier());	
-							result.put(getOper , flow );
-							getOperMachedFlowFound = true ; 
-						} 
+				if (flow.extractPathSuffixFromCondition() != null && flow.extractVerbFromCondition() != null)
+				{ 
+					if (getOper != null)
+					{
+						if ( flow.match( getOper ) ) 
+							{ 
+								if (fixOperationId) getOper.getOperation().setOperationId(flow.getUniqueIdentifier());	
+								result.put(getOper , flow );
+								getOperMachedFlowFound = true ; 
+							} 
+					}
+					
+					if (postOper != null)
+					{	
+						if ( flow.match(postOper ) ) {
+							if (fixOperationId) postOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							result.put(postOper , flow );
+							postOperMachedFlowFound= true ; 
+							} 
+					}
+	
+					if (putOper != null)
+					{
+						if ( flow.match(putOper ) ) {
+							result.put(putOper , flow ); 
+							if (fixOperationId) putOper.getOperation().setOperationId(flow.getUniqueIdentifier());
+							putOperMachedFlowFound = true ; 
+							} 
+					}
+					
+					if (deleteOper != null)
+					{
+						if ( flow.match(deleteOper ) ) {
+							result.put(deleteOper , flow );
+							if (fixOperationId) deleteOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							deleteOperMachedFlowFound = true ; 
+							} 
+					}
+					
+					if (patchOper != null)
+					{
+						if ( flow.match(patchOper ) ) {
+							result.put(patchOper , flow );
+							if (fixOperationId) patchOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							patchOperMachedFlowFound = true ; 
+							} 
+					}
 				}
-				
-				if (postOper != null)
-				{	
-					if ( flow.match(postOper ) ) {
-						if (fixOperationId) postOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
-						result.put(postOper , flow );
-						postOperMachedFlowFound= true ; 
-						} 
-				}
-
-				if (putOper != null)
-				{
-					if ( flow.match(putOper ) ) {
-						result.put(putOper , flow ); 
-						if (fixOperationId) putOper.getOperation().setOperationId(flow.getUniqueIdentifier());
-						putOperMachedFlowFound = true ; 
-						} 
-				}
-				
-				if (deleteOper != null)
-				{
-					if ( flow.match(deleteOper ) ) {
-						result.put(deleteOper , flow );
-						if (fixOperationId) deleteOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
-						deleteOperMachedFlowFound = true ; 
-						} 
-				}
-				
-				if (patchOper != null)
-				{
-					if ( flow.match(patchOper ) ) {
-						result.put(patchOper , flow );
-						if (fixOperationId) patchOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
-						patchOperMachedFlowFound = true ; 
-						} 
-				}
-
 			}
 			if ( getOper  	 != null && !getOperMachedFlowFound) 	{result.put(getOper , null );}
 			if ( postOper 	 != null && !postOperMachedFlowFound)	{result.put(postOper , null );}

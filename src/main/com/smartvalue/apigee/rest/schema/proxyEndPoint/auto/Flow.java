@@ -277,7 +277,7 @@ public class Flow extends BundleElement {
 					&& 	this.extractVerbFromCondition().equalsIgnoreCase(oper.getVerb()) ;
 		} catch (Exception e )
 		{
-		 //e.printStackTrace();	
+		 e.printStackTrace();	
 		}
 		return result ; 
 		
