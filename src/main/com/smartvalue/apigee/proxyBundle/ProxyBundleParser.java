@@ -20,25 +20,27 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Child;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
-import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Response;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.parser.core.models.SwaggerParseResult;
 
-//import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint; 
+
 public class ProxyBundleParser  
 {
 
+	public  static final String PAYLOAD_XPTH = "/RaiseFault/FaultResponse/Set/Payload";
 	private HashMap<String , TargetEndPoint> targets = new HashMap<String , TargetEndPoint>(); 
 	private HashMap<String ,BundleProxyEndPoint> proxies = new HashMap<String ,BundleProxyEndPoint>();
 	private HashMap<String ,Policy> policies = new HashMap<String ,Policy>() ;
 	private HashMap<String ,JsResource> jsResources = new HashMap<String ,JsResource>();
 	private HashMap<String ,JavaResource> javaResources = new HashMap<String ,JavaResource>(); 
 	private HashMap<String ,OpenApiResource> openApiResources = new HashMap<String ,OpenApiResource>();
+	private SwaggerParseResult swaggerParseResult ;
+	private String estimatedOasPolicyName ;  
 	
-	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException, XPathExpressionException
+	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException, XPathExpressionException, FileNotFoundException
 	{
 		String proxyName = new File(inputZipFilePath).getName();
 		proxyName = proxyName.substring(0 , proxyName.indexOf(".zip")) ; 
@@ -82,10 +84,12 @@ public class ProxyBundleParser
 		            { elementName = getElementName (entryName, elementPath ) ; this.javaResources.put(elementName , new JavaResource(elementName , zipInputStream)); continue ;  }
 		            
 		        }
-		        System.out.println("");
+
+		        this.estimateSwaggerParser(ProxyRevision.OAS_FLOW_NAME); 
+
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw e ; 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -139,26 +143,41 @@ public class ProxyBundleParser
 
 	}
 	
-	
-	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException
+	public SwaggerParseResult getSwaggerParser() throws XPathExpressionException
 	{
-
+		return getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+	}
+	
+	
+	public String getEstimatedOasPolicyName() {
+		return estimatedOasPolicyName;
+	}
+	
+	private void estimateSwaggerParser(String getOasFlowName) throws XPathExpressionException
+	{
 		Request request = searchForGetOasFlow(getOasFlowName).getRequest() ; // "GetOAS"
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
 		int size = xx.size() ; 
-		String policyName = xx.get(size-1).getStep().getName() ;
+		estimatedOasPolicyName = xx.get(size-1).getStep().getName() ;
 		
-		Policy policy = this.getPolices().get(policyName) ; 
-		String oasStr= policy.getXpathValue("/RaiseFault/FaultResponse/Set/Payload") ; 
+		Policy policy = this.getPolices().get(estimatedOasPolicyName) ; 
+		String oasStr= policy.getXpathValue(ProxyBundleParser.PAYLOAD_XPTH ) ; 
 		
-		String abc = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
+		String modifiedOasString = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
 		
 		OpenAPIParser parser = new OpenAPIParser();
 		
-		SwaggerParseResult swaggerParse =  parser.readContents(abc , null , null);
+		swaggerParseResult =  parser.readContents(modifiedOasString , null , null);
+	}
 	
-		return swaggerParse ; 
+	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException
+	{
+		if (swaggerParseResult == null)
+		{
+			 estimateSwaggerParser(getOasFlowName) ; 
+		}
+		return swaggerParseResult ; 
 	}
 
 	public HashMap<Flow, OasOperation> checkFlowsConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
@@ -173,7 +192,7 @@ public class ProxyBundleParser
 		return ProxyRevision.checkFlowsConsistancy(swaggerParse, allApigeeFlows , oasProxyEndPoint.getConnection().getBasePath(), fixOperationId , execludeKnownFlows ) ; 
 	}
 	
-	public HashMap<OasOperation , Flow> checkOasConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
+	public HashMap<OasOperation , Flow> checkOpenApiConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
 	{
 		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
@@ -221,6 +240,12 @@ public class ProxyBundleParser
 		    if (flow != null) { result = proxyEndPoint ;  break ; } 
 		}
 		return result ;
+	}
+
+
+	public String getOasJsonStr() throws XPathExpressionException {
+		// TODO Auto-generated method stub
+		return this.getSwaggerParser().getOpenAPI().toString();
 	}
 	
 	

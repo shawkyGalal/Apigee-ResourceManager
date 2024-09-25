@@ -18,14 +18,18 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer;
 import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.proxyBundle.BundleProxyEndPoint;
 import com.smartvalue.apigee.proxyBundle.Policy;
@@ -54,6 +58,7 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
 import com.smartvalue.openapi.SDKGeneratoer;
 
+import io.swagger.models.Swagger;
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -76,15 +81,18 @@ public class NewTest extends ApigeeTest {
 	String transformFolderName = "C:\\temp\\Transform\\Stage" ; 
 	
 	@Test
-	public void getOasFromOasFlow() throws Exception
+	public void fixOasInconsistancyByTransformer() throws Exception
 	{
-		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ; 
-		HashMap<Flow , OasOperation >  apigeeFlows   = smsGovernanceProxyBundle.checkFlowsConsistancy(true, false);
-		HashMap<OasOperation , Flow >  oas   = smsGovernanceProxyBundle.checkOasConsistancy(true, false); 
+		String proxyBundleFileName = "C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip" ; 
+		String destFolder = "C:\\temp\\Stage\\Transformed\\proxies\\moj-internal-clients\\SMS-Governance\\147\\" ;
+		FixOasInconsistancyTransformer fix = new FixOasInconsistancyTransformer() ; 
+		fix.trasform(proxyBundleFileName, destFolder) ; 
+		
+		
 	}
 	
 	@Test
-	public void parseProxyBundle() throws ParserConfigurationException, SAXException,   XPathExpressionException
+	public void parseProxyBundle() throws ParserConfigurationException, SAXException,   XPathExpressionException, FileNotFoundException
 	{
 		ProxyBundleParser smsGovernanceProxyBundle =  new ProxyBundleParser("C:\\temp\\Stage\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip") ;
 		BundleProxyEndPoint pep = smsGovernanceProxyBundle.getProxies().get("default");
