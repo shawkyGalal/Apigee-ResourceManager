@@ -161,6 +161,7 @@ Sample :
 For Example : 
 ### Export all Proxies : 
 The following command will export all proxies from Organization <OrgName> and store the result to </path/to/Destination>
+
 ~~~
 java -jar ./target/ResourceManager-jar-with-dependencies.jar  -configFile <path/to/your/config.json>  -partner YourCompanyName -customer Customer01  -infra  Stage -infra  <Infra> -org <OrgName> -operation migrate -exportAll proxies -destFolder "</path/to/Destination>"
 ~~~
