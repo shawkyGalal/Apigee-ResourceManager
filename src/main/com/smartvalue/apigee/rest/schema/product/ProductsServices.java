@@ -88,6 +88,9 @@ public ArrayList<ApigeeObjectTransformer> buildTransformers()
 	return this.getMs().getInfra().buildProductsTransformers();
 }
 
-
-
+public ArrayList<Product> searchForProduct(String m_scopes , String m_resourceProxyName)
+{
+	//TODO
+	return null ; 
+}
 }

@@ -15,6 +15,9 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Child;
@@ -22,9 +25,11 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Request;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
+import com.smartvalue.swagger.v3.parser.util.OpenAPIDeserializer;
+import com.smartvalue.swagger.v3.parser.util.SwaggerParseResult;
 
 import io.swagger.parser.OpenAPIParser;
-import io.swagger.v3.parser.core.models.SwaggerParseResult;
+import io.swagger.v3.parser.ObjectMapperFactory;
 
 
 public class ProxyBundleParser  
@@ -38,8 +43,20 @@ public class ProxyBundleParser
 	private HashMap<String ,JavaResource> javaResources = new HashMap<String ,JavaResource>(); 
 	private HashMap<String ,OpenApiResource> openApiResources = new HashMap<String ,OpenApiResource>();
 	private SwaggerParseResult swaggerParseResult ;
-	private String estimatedOasPolicyName ;  
+	private String estimatedOasPolicyName ;
+	private String oasStr;
+	private JsonNode oasJsonNode;  
 	
+	public JsonNode getOasJsonNode() {
+		return oasJsonNode;
+	}
+
+
+	public String getOasStr() {
+		return oasStr;
+	}
+
+
 	public ProxyBundleParser(String inputZipFilePath) throws ParserConfigurationException, SAXException, XPathExpressionException, FileNotFoundException
 	{
 		String proxyName = new File(inputZipFilePath).getName();
@@ -143,7 +160,7 @@ public class ProxyBundleParser
 
 	}
 	
-	public SwaggerParseResult getSwaggerParser() throws XPathExpressionException
+	public SwaggerParseResult getSwaggerParser() throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
 		return getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
 	}
@@ -153,25 +170,33 @@ public class ProxyBundleParser
 		return estimatedOasPolicyName;
 	}
 	
-	private void estimateSwaggerParser(String getOasFlowName) throws XPathExpressionException
+	private void estimateSwaggerParser(String getOasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
-		Request request = searchForGetOasFlow(getOasFlowName).getRequest() ; // "GetOAS"
+		Flow oasflow =  searchForGetOasFlow(getOasFlowName);  
+		if ( oasflow == null ) 
+		{
+			throw new IllegalArgumentException ("OAS Flow ("+getOasFlowName+")  Not Found  " ) ;   
+		}
+		Request request = oasflow.getRequest() ; // "GetOAS"
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
 		int size = xx.size() ; 
 		estimatedOasPolicyName = xx.get(size-1).getStep().getName() ;
 		
 		Policy policy = this.getPolices().get(estimatedOasPolicyName) ; 
-		String oasStr= policy.getXpathValue(ProxyBundleParser.PAYLOAD_XPTH ) ; 
-		
+		oasStr= policy.getXpathValue(ProxyBundleParser.PAYLOAD_XPTH ) ; 
+				
 		String modifiedOasString = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
+		oasJsonNode = ObjectMapperFactory.createJson().readTree(modifiedOasString);
+		//OpenAPIParser parser = new OpenAPIParser();
+		//swaggerParseResult =  parser.readContents(modifiedOasString , null , null);
 		
-		OpenAPIParser parser = new OpenAPIParser();
+		OpenAPIDeserializer openAPIDeserializer = new OpenAPIDeserializer() ;
+		swaggerParseResult = openAPIDeserializer.mydeserialize(oasJsonNode) ; 
 		
-		swaggerParseResult =  parser.readContents(modifiedOasString , null , null);
 	}
 	
-	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException
+	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
 		if (swaggerParseResult == null)
 		{
@@ -242,10 +267,11 @@ public class ProxyBundleParser
 		return result ;
 	}
 
+	
+	
+	public String getOasJsonStr() throws XPathExpressionException, JsonMappingException, JsonProcessingException {
 
-	public String getOasJsonStr() throws XPathExpressionException {
-		// TODO Auto-generated method stub
-		return this.getSwaggerParser().getOpenAPI().toString();
+		return this.getSwaggerParser().getOpenAPI().toJsonString();
 	}
 	
 	

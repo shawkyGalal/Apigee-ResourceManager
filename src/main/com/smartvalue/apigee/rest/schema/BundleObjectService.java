@@ -69,16 +69,21 @@ public abstract class BundleObjectService extends ApigeeService {
 						Path destPath ; 
 						if (transformers.size() > 0 )
 						{
+							TransformResult  tr = null ; 
 							for (ApigeeObjectTransformer trasnformer : transformers)
 							{
 								System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
 								boolean transform = trasnformer.filter(pundleZipFileName) ;
+								
 								if (transform)
 								{	
 									 
-									TransformResult  tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
+									tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
 									if (tr.isFailed())	
-									{transformResults.add(tr);}
+									{	
+										transformResults.add(tr);
+										break; 
+									}
 								
 									System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
 									// in the next loop transform the transformed file
@@ -91,18 +96,23 @@ public abstract class BundleObjectService extends ApigeeService {
 								}
 								 
 							}
-							//-- Copy Last Transformed file to the outputFolderPath 
-							sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + proxyName + ".zip");
-							destPath = Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
+							//--Upon success transformation, Copy Last Transformed file to the outputFolderPath 
+							if (tr!= null && !tr.isFailed())
+							{
+								sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + proxyName + ".zip");
+								destPath = Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
+								Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+							}
 						}
 						else
 						{
 							 sourcePath =  Path.of(pundleZipFileName);
 							 destPath =  Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
 							 Files.createDirectories(destPath.getParent());
+							 Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 						}
 
-						Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+						
 					}
 				}
 			}

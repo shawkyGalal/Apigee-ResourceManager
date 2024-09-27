@@ -26,7 +26,6 @@ import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer;

@@ -8,18 +8,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
+import com.smartvalue.swagger.v3.parser.util.OpenAPIDeserializer;
+import com.smartvalue.swagger.v3.parser.util.SwaggerParseResult;
 
 import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.parser.core.models.SwaggerParseResult;
+import io.swagger.v3.parser.ObjectMapperFactory;
 
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 
@@ -397,10 +401,11 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	}
 
 
-	private SwaggerParseResult parseOpenAPI(String oasJsonString )
+	private SwaggerParseResult parseOpenAPI(String oasJsonString ) throws JsonMappingException, JsonProcessingException
 	{
-		OpenAPIParser parser = new OpenAPIParser();
-		return parser.readContents(oasJsonString , null , null);
+		OpenAPIDeserializer openAPIDeserializer = new OpenAPIDeserializer() ;
+		SwaggerParseResult swaggerParseResult = openAPIDeserializer.mydeserialize(ObjectMapperFactory.createJson().readTree(oasJsonString)) ;
+		return swaggerParseResult ; 
 	}
 	
 	
