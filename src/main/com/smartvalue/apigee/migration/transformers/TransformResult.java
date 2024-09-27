@@ -6,6 +6,7 @@ public class TransformResult {
 	private String destination ;
 	private String error ;
 	private boolean failed ; 
+	private Class transformerClass ; 
 
 	public String getSource() {
 		return source;
@@ -44,6 +45,24 @@ public class TransformResult {
 	public TransformResult withFailed(boolean failed) {
 		this.failed = failed;
 		return this; 
+	}
+
+	public Class getTransformerClass() {
+		return transformerClass;
+	}
+
+	public void setTransformerClass(Class transformerClass) {
+		this.transformerClass = transformerClass;
+	}
+	
+	public TransformResult withTransformerClass(Class transformerClass) {
+		this.transformerClass = transformerClass;
+		return this ; 
+	}
+	
+	public String toString()
+	{
+		return super.toString() ;
 	}
 
 }

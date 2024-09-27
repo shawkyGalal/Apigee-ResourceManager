@@ -98,8 +98,9 @@ public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 	        	result.withError(e.getMessage())
 	      		  	  .withFailed(true) 
 	      		  	  .withSource(bundleZipFileName)
-	      		  	  .withDestination(outputZipFile); 
-	        	e.printStackTrace();
+	      		  	  .withDestination(outputZipFile)
+	        		  .withTransformerClass(this.getClass());
+	        	System.out.println(result.toString()); 
 	        }
 		 logger.info("End Processing Transformer " + this.getClass()) ;
 		 return result; 

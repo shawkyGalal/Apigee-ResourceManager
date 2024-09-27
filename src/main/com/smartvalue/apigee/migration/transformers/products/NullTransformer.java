@@ -26,8 +26,9 @@ public class NullTransformer extends ProductTransformer {
         	result.withError(e.getMessage())
         	.withFailed(true)
   		  	.withSource(bundleZipFileName)
-  		  	.withDestination(newBundlePath); 
-        	e.printStackTrace();
+  		  	.withDestination(newBundlePath)
+  		  	.withTransformerClass(this.getClass()); 
+        	System.out.println(" transformation Error : " + result.toString());
         }
         return result ; 
 	}

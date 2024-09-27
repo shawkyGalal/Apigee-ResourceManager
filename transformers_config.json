@@ -1,27 +1,43 @@
 {
 	"transformers" : 
-							[
-								{
-									"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.TargetServerTransformer", 
-									"Desc"		: "This Transformer Will Replace the hardcoded targetServer to an Environment Target Server with Name = Proxy Name " , 
-									"attributes" : 
-									[
-										{ "name" : "fileName" , "value" :"apiproxy/targets/default.xml"	}
-									  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection"	}
-									
-									]
-								}, 
-								{
-									"implClass" : "com.smartvalue.apigee.rest.schema.proxy.transformers.ZipFileEntryModifyTransformer",
-									"Desc"		: "This Transformer will Serach for a set of Strings inside a set of files then replaces this strings with a new values " ,  
-									"attributes" : 
-									[
-										 { "name" : "valueDelimiter" , "value" :";;"	}
-										,{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml "}
-									  	,{ "name" : "searchFor" , "value" :"<Pattern/> ;; oldvlaue"	}
-										,{ "name" : "replaceBy" , "value" :" <Pattern>AABBCC</Pattern> ;; newValue"}
-									
-									]
-								}
-							] 
+						[
+							
+							{
+								"guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ", 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer", 
+								"attributes" : 
+								[
+									{ "name" : "fileName" , "value" :"apiproxy/targets/defaultxx.xml"	}
+								  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection"	}
+								
+								]
+							},
+							
+							{
+								"guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ", 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer" 
+							},  
+							 
+							{
+								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer", 
+								"attributes" : 
+								[
+									 { "name" : "valueDelimiter" , "value" :";;"	}
+									,{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml "}
+								  	,{ "name" : "searchFor" , "value" :"<Pattern/> ;; oldvlaue"	}
+									,{ "name" : "replaceBy" , "value" :"<Pattern>AABBCC</Pattern> ;; newValue"}
+								
+								]
+							}, 
+							{
+							    "guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProductTransformer to be applied for product transformation ", 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.products.NullTransformer" 
+							}
+							, 
+							{
+							    "guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.products.ProductTransformer to be applied for product transformation ", 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.products.CleanUpTransformer" 
+							}
+							
+						] 
 }

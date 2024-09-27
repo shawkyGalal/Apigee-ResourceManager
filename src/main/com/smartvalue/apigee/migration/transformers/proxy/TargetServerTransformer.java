@@ -45,8 +45,8 @@ public class TargetServerTransformer extends ProxyTransformer {
         	result.withError(e.getMessage())
         		  .withFailed(true) 
         		  .withSource(bundleZipFileName)
-        		  .withDestination(outputZipFile); 
-            e.printStackTrace();
+        		  .withDestination(outputZipFile)
+        		  .withTransformerClass(this.getClass()); 
         }
 		return result ; 
 	}
