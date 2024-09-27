@@ -1,5 +1,8 @@
 package com.smartvalue.apigee.configuration.infra;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -7,9 +10,11 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mashape.unirest.http.Unirest;
 import com.smartvalue.apigee.configuration.AppConfig;
+import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
-import com.smartvalue.apigee.configuration.transformer.auto.Transformer;
+import com.smartvalue.apigee.configuration.transformer.auto.TransformerConfig;
+import com.smartvalue.apigee.configuration.transformer.auto.TransformersConfig;
 import com.smartvalue.apigee.migration.transformers.apps.AppTransformer;
 import com.smartvalue.apigee.migration.transformers.developer.DeveloperTransformer;
 import com.smartvalue.apigee.migration.transformers.kvm.KvmTransformer;
@@ -21,6 +26,7 @@ import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransf
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.google.iam.GoogleServiceAccount;
+import com.smartvalue.moj.clients.environments.JsonParser;
 
 public class Infra {
 	private Customer parentCustomer ; 
@@ -40,14 +46,26 @@ public class Infra {
 	private String accessTokenSource ;   // Valid Values :  "googleServiceAccount" , "googleWebAppCredential"  
 	public static final String GoogleServiceAccount = "googleServiceAccount" ; 
 	
-	@JsonProperty("Transformers")
-    private ArrayList<Transformer> transformers ; //= new ArrayList<Transformer>();
+	private TransformersConfig transformersConfig ; 
 	
-	public ArrayList<Transformer> getTransformers() {
-		return transformers;
+	@JsonProperty("transformConfigFile")
+	private String transformConfigFile ;  
+	
+	public TransformersConfig getTransformersConfig() throws FileNotFoundException, IOException  {
+		if (transformersConfig == null)
+		{
+			if ( transformConfigFile  == null)
+			{
+				throw new IllegalArgumentException ("transformConfigFile parameter is not configured in the main config file ") ; 
+			}
+			JsonParser jsonConfigParser = new JsonParser( ) ;
+			transformersConfig = jsonConfigParser.getObject(transformConfigFile , TransformersConfig.class) ; ; 
+		}
+		return transformersConfig;
 	}
 
 	
+
 	private int connectionTimeout =0 ; //  The timeout until a connection with the server is established (in milliseconds). Default is 10000. Set to zero to disable the timeout.
 	private int socketTimeout = 1000; //The timeout to receive data (in milliseconds). Default is 60000. Set to zero to disable the timeout.
  
@@ -228,33 +246,32 @@ public class Infra {
 		return accessTokenSource;
 	}
 	
-	public <T extends ProxyTransformer> ArrayList<ApigeeObjectTransformer> buildProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	public <T extends ProxyTransformer> ArrayList<ApigeeObjectTransformer> buildProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
 	{
 		return buildTransformers(ProxyTransformer.class); 
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildSharedFlowTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public ArrayList<ApigeeObjectTransformer> buildSharedFlowTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(SharedflowTransformer.class);
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildProductsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public ArrayList<ApigeeObjectTransformer> buildProductsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(ProductTransformer.class);
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildAppsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public ArrayList<ApigeeObjectTransformer> buildAppsTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(AppTransformer.class);
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildDeveloperTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public ArrayList<ApigeeObjectTransformer> buildDeveloperTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(DeveloperTransformer.class);
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildKvmTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public ArrayList<ApigeeObjectTransformer> buildKvmTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(KvmTransformer.class);
 	}
 	
-	public ArrayList<ApigeeObjectTransformer> buildTargetServerTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
-		// TODO Auto-generated method stub
+	public ArrayList<ApigeeObjectTransformer> buildTargetServerTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return buildTransformers(TargetServerTransformer.class);
 	}
 	
@@ -272,12 +289,14 @@ public class Infra {
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchFieldException
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
 
-	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
-		for (Transformer tr :  getTransformers() )
+		for (TransformerConfig tr :  getTransformersConfig().getTransformers() )
 		{
 			String transformerClass = tr.getImplClass(); 
 			Class<?> cls = Class.forName(transformerClass);
@@ -299,10 +318,10 @@ public class Infra {
 		return result ; 
 	}
 	
-	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildNonProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildNonProxyTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
-		for (Transformer tr :  getTransformers() )
+		for (TransformerConfig tr :  getTransformersConfig().getTransformers() )
 		{
 			String transformerClass = tr.getImplClass(); 
 			Class<?> cls = Class.forName(transformerClass);
@@ -324,10 +343,10 @@ public class Infra {
 		return result ; 
 	}
 	
-	private  ArrayList<ApigeeObjectTransformer> buildAllTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+	private  ArrayList<ApigeeObjectTransformer> buildAllTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
 	{
 		ArrayList<ApigeeObjectTransformer> result = new ArrayList<ApigeeObjectTransformer>(); 
-		for (Transformer tr :  getTransformers() )
+		for (TransformerConfig tr :  getTransformersConfig().getTransformers() )
 		{
 			String transformerClass = tr.getImplClass(); 
 			Class<?> cls = Class.forName(transformerClass);
@@ -352,6 +371,9 @@ public class Infra {
 	}
 	public void setParentCustomer(Customer parentCustomer) {
 		this.parentCustomer = parentCustomer;
+	}
+	public String getTransformConfigFile() {
+		return transformConfigFile;
 	}
 	
 		

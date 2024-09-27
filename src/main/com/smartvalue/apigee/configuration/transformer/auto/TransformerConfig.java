@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "attributes"
 })
 @Generated("jsonschema2pojo")
-public class Transformer {
+public class TransformerConfig {
 
     @JsonProperty("implClass")
     private String implClass;
@@ -38,7 +38,7 @@ public class Transformer {
         this.implClass = implClass;
     }
 
-    public Transformer withImplClass(String implClass) {
+    public TransformerConfig withImplClass(String implClass) {
         this.implClass = implClass;
         return this;
     }
@@ -53,7 +53,7 @@ public class Transformer {
         this.attributes = attributes;
     }
 
-    public Transformer withAttributes(List<Attribute> attributes) {
+    public TransformerConfig withAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
         return this;
     }
@@ -68,7 +68,7 @@ public class Transformer {
         this.additionalProperties.put(name, value);
     }
 
-    public Transformer withAdditionalProperty(String name, Object value) {
+    public TransformerConfig withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
@@ -76,7 +76,7 @@ public class Transformer {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Transformer.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(TransformerConfig.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("implClass");
         sb.append('=');
         sb.append(((this.implClass == null)?"<null>":this.implClass));
@@ -111,10 +111,10 @@ public class Transformer {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Transformer) == false) {
+        if ((other instanceof TransformerConfig) == false) {
             return false;
         }
-        Transformer rhs = ((Transformer) other);
+        TransformerConfig rhs = ((TransformerConfig) other);
         return ((((this.implClass == rhs.implClass)||((this.implClass!= null)&&this.implClass.equals(rhs.implClass)))&&((this.attributes == rhs.attributes)||((this.attributes!= null)&&this.attributes.equals(rhs.attributes))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 

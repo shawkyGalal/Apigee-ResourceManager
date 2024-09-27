@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.rest.schema.keyValueMap;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class KvmServices extends EnvironmentScopeService {
 	@Override
 	public ArrayList<ApigeeObjectTransformer> buildTransformers()
 			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		// TODO Auto-generated method stub
 		return this.getMs().getInfra().buildKvmTransformers();
 	}
