@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.rest.schema.product;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public String getApigeeObjectType() {
 @Override
 public ArrayList<ApigeeObjectTransformer> buildTransformers()
 		throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
-		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 	return this.getMs().getInfra().buildProductsTransformers();
 }
 

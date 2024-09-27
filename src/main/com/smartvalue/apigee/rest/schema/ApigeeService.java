@@ -1,6 +1,7 @@
 package com.smartvalue.apigee.rest.schema;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -102,7 +103,7 @@ public abstract class ApigeeService {
 	
 	
 	public abstract ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException, Exception ; 
-	public abstract ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException  ; 
+	public abstract ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException  ; 
 
 	public abstract String  getResourcePath()  ;
 	public  ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception 

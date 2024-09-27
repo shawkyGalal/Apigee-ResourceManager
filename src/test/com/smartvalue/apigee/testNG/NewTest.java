@@ -130,6 +130,7 @@ public class NewTest extends ApigeeTest {
 		JsonParser apigeeConfigParser = new JsonParser( ) ;
 		AppConfig ac = apigeeConfigParser.getObject("config.json" , AppConfig.class) ; 
 		Infra mojStageinfra = ac.getInfra("MasterWorks" , "MOJ" , "Stage") ;
+		mojStageinfra.getTransformersConfig(); 
 		ManagementServer sourceMngServer = mojStageinfra.getManagementServer(mojStageinfra.getRegions().get(0).getName()) ;
 		//String destFolderName = "C:\\temp\\Stage" ;
 		//HashMap<String, HashMap<String, Exception>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).exportAll(destFolderName +"\\targetservers") ;
