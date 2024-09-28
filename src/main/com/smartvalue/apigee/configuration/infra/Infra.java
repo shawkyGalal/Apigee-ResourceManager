@@ -220,14 +220,14 @@ public class Infra {
 		ms.setServerProfile(m_serverProfile);
 		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
 		ms.setInfra(this);
-		boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
-		Boolean isGoogleCloudBoolean = this.isGooglecloud() ; 
-		boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(AppConfig.GoogleWebAppCredential) ;
-		boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
-		if ( cloudInfra && ! webLogin)
-		{
-			AccessToken at = ms.getAccess_token(true) ;
-		}
+		//boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
+		//Boolean isGoogleCloudBoolean = this.isGooglecloud() ; 
+		//boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(AppConfig.GoogleWebAppCredential) ;
+		//boolean cloudInfra = isGoogleCloudBoolean != null && isGoogleCloudBoolean || oauthType ;  
+		//if ( cloudInfra && ! webLogin)
+		//{
+			// AccessToken at = ms.getAccess_token(true) ;
+		//}
 		ms.setRegion(m_region);
 		
 		return ms ; 
@@ -299,6 +299,8 @@ public class Infra {
 		for (TransformerConfig tr :  getTransformersConfig().getTransformers() )
 		{
 			String transformerClass = tr.getImplClass(); 
+			String enabled = tr.getEnabled(); 
+			if (enabled.equalsIgnoreCase("false")) continue; 
 			Class<?> cls = Class.forName(transformerClass);
 			if (type.isAssignableFrom(cls))
 			{

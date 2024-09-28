@@ -187,6 +187,8 @@ public class ProxyBundleParser
 		oasStr= policy.getXpathValue(ProxyBundleParser.PAYLOAD_XPTH ) ; 
 				
 		String modifiedOasString = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
+		 modifiedOasString = modifiedOasString.replace("@oas.contact.email#", "sfoda@moj.gov.sa") ;
+		
 		oasJsonNode = ObjectMapperFactory.createJson().readTree(modifiedOasString);
 		//OpenAPIParser parser = new OpenAPIParser();
 		//swaggerParseResult =  parser.readContents(modifiedOasString , null , null);

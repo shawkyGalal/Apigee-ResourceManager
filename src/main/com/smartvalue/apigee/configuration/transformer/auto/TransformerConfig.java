@@ -27,6 +27,8 @@ public class TransformerConfig {
     private List<Attribute> attributes = new ArrayList<Attribute>();
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
+    @JsonProperty("enabled")
+    private String enabled;
 
     @JsonProperty("implClass")
     public String getImplClass() {
@@ -73,6 +75,9 @@ public class TransformerConfig {
         return this;
     }
 
+    public String getEnabled() {
+		return enabled;
+	}
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

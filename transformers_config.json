@@ -3,39 +3,43 @@
 						[
 							
 							{
-								"guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ", 
+								"guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ",
+								"enabled":"false",  
 								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer", 
 								"attributes" : 
 								[
 									{ "name" : "fileName" , "value" :"apiproxy/targets/defaultxx.xml"	}
-								  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection"	}
+								  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection" }
 								
 								]
 							},
 							
 							{
-								"guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ", 
+								"guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ",
+								"enabled":"true", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer" 
 							},  
 							 
 							{
-								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer", 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer",
+								"enabled":"false", 
 								"attributes" : 
 								[
 									 { "name" : "valueDelimiter" , "value" :";;"	}
 									,{ "name" : "filesPathInZip" , "value" :"apiproxy/policies/Regular-Expression-Protection.xml ;; apiproxy/policies/xxxxx.xml "}
 								  	,{ "name" : "searchFor" , "value" :"<Pattern/> ;; oldvlaue"	}
 									,{ "name" : "replaceBy" , "value" :"<Pattern>AABBCC</Pattern> ;; newValue"}
-								
 								]
 							}, 
 							{
-							    "guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProductTransformer to be applied for product transformation ", 
+							    "guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProductTransformer to be applied for product transformation ",
+								"enabled":"false", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.products.NullTransformer" 
 							}
 							, 
 							{
-							    "guidlines" : "Extend your class with com.smartvalue.apigee.migration.transformers.products.ProductTransformer to be applied for product transformation ", 
+							    "guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.products.ProductTransformer to be applied for product transformation ",
+								"enabled":"false", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.products.CleanUpTransformer" 
 							}
 							

@@ -76,12 +76,23 @@ public class Paths extends LinkedHashMap<String, PathItem> {
         return this;
     }
 
-    @Override
-    public String toString() {
+    public String toJsonString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("class Paths {\n");
-        sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-        sb.append("}");
+        sb.append(toIndentedString("{\n"));
+        int counter = 0 ; 
+        int size = this.size() ; 
+        for ( java.util.Map.Entry<String, PathItem> entry : this.entrySet() )
+        {
+        	counter ++; 
+        	String key = entry.getKey(); 
+        	PathItem value = entry.getValue() ; 
+        	sb.append("\"").append(toIndentedString(key)).append("\" :") ;
+        	sb.append("    \n").append(toIndentedString(value)) ;
+        	if (counter < size ) sb.append(",").append(" \n") ; 
+        	
+        }
+
+        sb.append( toIndentedString("\n}"));
         return sb.toString();
     }
 
@@ -95,6 +106,7 @@ public class Paths extends LinkedHashMap<String, PathItem> {
         }
         return o.toString().replace("\n", "\n    ");
     }
+
 
 }
 

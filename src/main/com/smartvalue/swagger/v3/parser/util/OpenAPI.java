@@ -65,7 +65,7 @@ public class OpenAPI extends io.swagger.v3.oas.models.OpenAPI {
         if (getExternalDocs() != null) sb.append("    ,\"externalDocs\": ").append(toIndentedString(getExternalDocs())).append("\n");
         sb.append("    ,\"servers\": ").append(toIndentedString(getMyServers())).append("\n");
         sb.append("    ,\"tags\": ").append(toIndentedString(getTags())).append("\n");
-        sb.append("    ,\"paths\": ").append(toIndentedString(getMyPaths())).append("\n");
+        sb.append("    ,\"paths\": ").append(toIndentedString(getMyPaths().toJsonString())).append("\n");
         sb.append("    ,\"components\": ").append(toIndentedString(getComponents())).append("\n");
         sb.append("    ,\"security\": ").append(toIndentedString(getMySecurity() )).append("\n");
         if (getSpecVersion() == SpecVersion.V31) sb.append("    webhooks: ").append(toIndentedString(getWebhooks())).append("\n");

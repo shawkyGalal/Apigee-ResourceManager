@@ -236,7 +236,7 @@ public class Flow extends BundleElement {
 			pathSuffix = result ; 
 			}
 			catch (Exception e ) {
-				System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
+				//System.out.println("Warnning : Unable to extract PathSuffix from Condition " + this.toString());
 			}
 		}
 		

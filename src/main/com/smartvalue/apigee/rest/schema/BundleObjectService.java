@@ -72,7 +72,7 @@ public abstract class BundleObjectService extends ApigeeService {
 							TransformResult  tr = null ; 
 							for (ApigeeObjectTransformer trasnformer : transformers)
 							{
-								System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
+								//System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
 								boolean transform = trasnformer.filter(pundleZipFileName) ;
 								
 								if (transform)
@@ -84,8 +84,9 @@ public abstract class BundleObjectService extends ApigeeService {
 										transformResults.add(tr);
 										break; 
 									}
+									else { System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );}
 								
-									System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
+									//System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
 									// in the next loop transform the transformed file
 									if (transformerCount != transformers.size())
 									{
