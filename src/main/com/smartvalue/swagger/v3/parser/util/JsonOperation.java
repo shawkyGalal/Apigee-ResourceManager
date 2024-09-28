@@ -10,7 +10,7 @@ import java.util.Objects;
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 
 
-public class Operation {
+public class JsonOperation implements Jsonable {
     private List<String> tags = null;
     private String summary = null;
     private String description = null;
@@ -25,7 +25,7 @@ public class Operation {
     private List<Server> servers = null;
     private java.util.Map<String, Object> extensions = null;
 
-    public Operation(io.swagger.v3.oas.models.Operation m_operation) {
+    public JsonOperation(io.swagger.v3.oas.models.Operation m_operation) {
 		// TODO Auto-generated constructor stub
 	   	if (m_operation.getCallbacks() != null && m_operation.getCallbacks().size() > 0 )
 	   	{
@@ -84,12 +84,12 @@ public class Operation {
         this.tags = tags;
     }
 
-    public Operation tags(List<String> tags) {
+    public JsonOperation tags(List<String> tags) {
         this.tags = tags;
         return this;
     }
 
-    public Operation addTagsItem(String tagsItem) {
+    public JsonOperation addTagsItem(String tagsItem) {
         if (this.tags == null) {
             this.tags = new ArrayList<>();
         }
@@ -111,7 +111,7 @@ public class Operation {
         this.summary = summary;
     }
 
-    public Operation summary(String summary) {
+    public JsonOperation summary(String summary) {
         this.summary = summary;
         return this;
     }
@@ -130,7 +130,7 @@ public class Operation {
         this.description = description;
     }
 
-    public Operation description(String description) {
+    public JsonOperation description(String description) {
         this.description = description;
         return this;
     }
@@ -149,7 +149,7 @@ public class Operation {
         this.externalDocs = externalDocs;
     }
 
-    public Operation externalDocs(ExternalDocumentation externalDocs) {
+    public JsonOperation externalDocs(ExternalDocumentation externalDocs) {
         this.externalDocs = externalDocs;
         return this;
     }
@@ -168,7 +168,7 @@ public class Operation {
         this.operationId = operationId;
     }
 
-    public Operation operationId(String operationId) {
+    public JsonOperation operationId(String operationId) {
         this.operationId = operationId;
         return this;
     }
@@ -187,12 +187,12 @@ public class Operation {
         this.parameters = parameters;
     }
 
-    public Operation parameters(List<Parameter> parameters) {
+    public JsonOperation parameters(List<Parameter> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public Operation addParametersItem(Parameter parametersItem) {
+    public JsonOperation addParametersItem(Parameter parametersItem) {
         if (this.parameters == null) {
             this.parameters = new ArrayList<>();
         }
@@ -214,7 +214,7 @@ public class Operation {
         this.requestBody = requestBody;
     }
 
-    public Operation requestBody(RequestBody requestBody) {
+    public JsonOperation requestBody(RequestBody requestBody) {
         this.requestBody = requestBody;
         return this;
     }
@@ -233,7 +233,7 @@ public class Operation {
         this.responses = responses;
     }
 
-    public Operation responses(ApiResponses responses) {
+    public JsonOperation responses(ApiResponses responses) {
         this.responses = responses;
         return this;
     }
@@ -252,12 +252,12 @@ public class Operation {
         this.callbacks = callbacks;
     }
 
-    public Operation callbacks(Map<String, Callback> callbacks) {
+    public JsonOperation callbacks(Map<String, Callback> callbacks) {
         this.callbacks = callbacks;
         return this;
     }
 
-    public Operation addCallback(String key, Callback callback) {
+    public JsonOperation addCallback(String key, Callback callback) {
         if (this.callbacks == null) {
             this.callbacks = new LinkedHashMap<>();
         }
@@ -279,7 +279,7 @@ public class Operation {
         this.deprecated = deprecated;
     }
 
-    public Operation deprecated(Boolean deprecated) {
+    public JsonOperation deprecated(Boolean deprecated) {
         this.deprecated = deprecated;
         return this;
     }
@@ -298,12 +298,12 @@ public class Operation {
         this.security = security;
     }
 
-    public Operation security(List<SecurityRequirement> security) {
+    public JsonOperation security(List<SecurityRequirement> security) {
         this.security = security;
         return this;
     }
 
-    public Operation addSecurityItem(SecurityRequirement securityItem) {
+    public JsonOperation addSecurityItem(SecurityRequirement securityItem) {
         if (this.security == null) {
             this.security = new ArrayList<>();
         }
@@ -325,12 +325,12 @@ public class Operation {
         this.servers = servers;
     }
 
-    public Operation servers(List<Server> servers) {
+    public JsonOperation servers(List<Server> servers) {
         this.servers = servers;
         return this;
     }
 
-    public Operation addServersItem(Server serversItem) {
+    public JsonOperation addServersItem(Server serversItem) {
         if (this.servers == null) {
             this.servers = new ArrayList<>();
         }
@@ -346,7 +346,7 @@ public class Operation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Operation operation = (Operation) o;
+        JsonOperation operation = (JsonOperation) o;
         return Objects.equals(this.tags, operation.tags) &&
                 Objects.equals(this.summary, operation.summary) &&
                 Objects.equals(this.description, operation.description) &&
@@ -393,13 +393,13 @@ public class Operation {
         this.extensions = extensions;
     }
 
-    public Operation extensions(java.util.Map<String, Object> extensions) {
+    public JsonOperation extensions(java.util.Map<String, Object> extensions) {
         this.extensions = extensions;
         return this;
     }
 
     @Override
-    public String toString() {
+    public String toJsonString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
 

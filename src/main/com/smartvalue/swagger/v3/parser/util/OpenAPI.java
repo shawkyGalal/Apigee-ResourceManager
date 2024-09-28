@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.SpecVersion;
 //import io.swagger.v3.oas.models.servers.Server;
 
 
-public class OpenAPI extends io.swagger.v3.oas.models.OpenAPI {
+public class OpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jsonable {
 
 	Info info ; 
     public Info getMyInfo() {
@@ -53,7 +53,16 @@ public class OpenAPI extends io.swagger.v3.oas.models.OpenAPI {
 	   	}
     	return paths ; 
 	}
-
+    
+    private JsonComponents components ; 
+    private JsonComponents getJsonComponents() 
+    {
+    	if (this.components == null )
+	   	{
+	    	this.components = new JsonComponents(this.getComponents()) ; 
+	   	}
+    return components ; 
+	}
     
 	public String toJsonString()
 	{
@@ -64,9 +73,9 @@ public class OpenAPI extends io.swagger.v3.oas.models.OpenAPI {
         sb.append("    ,\"info\": ").append(toIndentedString(getMyInfo().toJsonString())).append("\n");
         if (getExternalDocs() != null) sb.append("    ,\"externalDocs\": ").append(toIndentedString(getExternalDocs())).append("\n");
         sb.append("    ,\"servers\": ").append(toIndentedString(getMyServers())).append("\n");
-        sb.append("    ,\"tags\": ").append(toIndentedString(getTags())).append("\n");
+        if (getTags() != null ) sb.append("    ,\"tags\": ").append(toIndentedString(getTags())).append("\n");
         sb.append("    ,\"paths\": ").append(toIndentedString(getMyPaths().toJsonString())).append("\n");
-        sb.append("    ,\"components\": ").append(toIndentedString(getComponents())).append("\n");
+        sb.append("    ,\"components\": ").append(toIndentedString(getJsonComponents().toJsonString())).append("\n");
         sb.append("    ,\"security\": ").append(toIndentedString(getMySecurity() )).append("\n");
         if (getSpecVersion() == SpecVersion.V31) sb.append("    webhooks: ").append(toIndentedString(getWebhooks())).append("\n");
         if (getSpecVersion() == SpecVersion.V31) sb.append("    jsonSchemaDialect: ").append(toIndentedString(getJsonSchemaDialect())).append("\n");

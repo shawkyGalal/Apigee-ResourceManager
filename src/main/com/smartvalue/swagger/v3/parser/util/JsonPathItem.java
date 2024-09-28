@@ -10,30 +10,30 @@ import io.swagger.v3.oas.models.annotations.OpenAPI31;
 //import io.swagger.v3.oas.models.parameters.Parameter;
 //import io.swagger.v3.oas.models.servers.Server;
 
-public class PathItem {
+public class JsonPathItem implements Jsonable{
     private String summary = null;
     private String description = null;
-    private Operation get = null;
-    private Operation put = null;
-    private Operation post = null;
-    private Operation delete = null;
-    private Operation options = null;
-    private Operation head = null;
-    private Operation patch = null;
-    private Operation trace = null;
+    private JsonOperation get = null;
+    private JsonOperation put = null;
+    private JsonOperation post = null;
+    private JsonOperation delete = null;
+    private JsonOperation options = null;
+    private JsonOperation head = null;
+    private JsonOperation patch = null;
+    private JsonOperation trace = null;
     private List<Server> servers = null;
     private List<Parameter> parameters = null;
     private String $ref = null;
     private java.util.Map<String, Object> extensions = null;
 
-    public PathItem(io.swagger.v3.oas.models.PathItem m_pathItem) {
-		if (m_pathItem.getDelete() != null) this.setDelete(new Operation(m_pathItem.getDelete()));
+    public JsonPathItem(io.swagger.v3.oas.models.PathItem m_pathItem) {
+		if (m_pathItem.getDelete() != null) this.setDelete(new JsonOperation(m_pathItem.getDelete()));
 		this.set$ref(m_pathItem.get$ref());
 		this.setDescription(m_pathItem.getDescription());
 		this.setExtensions(m_pathItem.getExtensions());
-		if (m_pathItem.getGet() != null) this.setGet(new Operation(m_pathItem.getGet()));
-		if (m_pathItem.getHead() != null) this.setHead(new Operation(m_pathItem.getHead()));
-		if (m_pathItem.getOptions() != null) this.setOptions(new Operation(m_pathItem.getOptions()));
+		if (m_pathItem.getGet() != null) this.setGet(new JsonOperation(m_pathItem.getGet()));
+		if (m_pathItem.getHead() != null) this.setHead(new JsonOperation(m_pathItem.getHead()));
+		if (m_pathItem.getOptions() != null) this.setOptions(new JsonOperation(m_pathItem.getOptions()));
 		if (m_pathItem.getParameters() != null && m_pathItem.getParameters().size() > 0)
 		{	parameters = new ArrayList<Parameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_pathItem.getParameters()  )
@@ -41,9 +41,9 @@ public class PathItem {
 				parameters.add(new Parameter(par)) ; 
 			}
 		}
-		if (m_pathItem.getPatch() != null) this.setPatch(new Operation(m_pathItem.getPatch()));
-		if (m_pathItem.getPost() != null) this.setPost(new Operation(m_pathItem.getPost()));
-		if (m_pathItem.getPut() != null) this.setPut(new Operation(m_pathItem.getPut()));
+		if (m_pathItem.getPatch() != null) this.setPatch(new JsonOperation(m_pathItem.getPatch()));
+		if (m_pathItem.getPost() != null) this.setPost(new JsonOperation(m_pathItem.getPost()));
+		if (m_pathItem.getPut() != null) this.setPut(new JsonOperation(m_pathItem.getPut()));
 		if (m_pathItem.getServers() != null && m_pathItem.getServers().size() > 0)
 		{	servers = new ArrayList<Server>() ; 
 			for (io.swagger.v3.oas.models.servers.Server ser : m_pathItem.getServers()  )
@@ -52,7 +52,7 @@ public class PathItem {
 			}
 		}
 		this.setSummary(m_pathItem.getSummary());
-		if (m_pathItem.getTrace() != null) this.setTrace(new Operation(m_pathItem.getTrace()));
+		if (m_pathItem.getTrace() != null) this.setTrace(new JsonOperation(m_pathItem.getTrace()));
 		
 	}
 
@@ -70,7 +70,7 @@ public class PathItem {
         this.summary = summary;
     }
 
-    public PathItem summary(String summary) {
+    public JsonPathItem summary(String summary) {
         this.summary = summary;
         return this;
     }
@@ -89,7 +89,7 @@ public class PathItem {
         this.description = description;
     }
 
-    public PathItem description(String description) {
+    public JsonPathItem description(String description) {
         this.description = description;
         return this;
     }
@@ -100,15 +100,15 @@ public class PathItem {
      * @return Operation get
      **/
 
-    public Operation getGet() {
+    public JsonOperation getGet() {
         return get;
     }
 
-    public void setGet(Operation get) {
+    public void setGet(JsonOperation get) {
         this.get = get;
     }
 
-    public PathItem get(Operation get) {
+    public JsonPathItem get(JsonOperation get) {
         this.get = get;
         return this;
     }
@@ -119,15 +119,15 @@ public class PathItem {
      * @return Operation put
      **/
 
-    public Operation getPut() {
+    public JsonOperation getPut() {
         return put;
     }
 
-    public void setPut(Operation put) {
+    public void setPut(JsonOperation put) {
         this.put = put;
     }
 
-    public PathItem put(Operation put) {
+    public JsonPathItem put(JsonOperation put) {
         this.put = put;
         return this;
     }
@@ -138,15 +138,15 @@ public class PathItem {
      * @return Operation post
      **/
 
-    public Operation getPost() {
+    public JsonOperation getPost() {
         return post;
     }
 
-    public void setPost(Operation post) {
+    public void setPost(JsonOperation post) {
         this.post = post;
     }
 
-    public PathItem post(Operation post) {
+    public JsonPathItem post(JsonOperation post) {
         this.post = post;
         return this;
     }
@@ -157,15 +157,15 @@ public class PathItem {
      * @return Operation delete
      **/
 
-    public Operation getDelete() {
+    public JsonOperation getDelete() {
         return delete;
     }
 
-    public void setDelete(Operation delete) {
+    public void setDelete(JsonOperation delete) {
         this.delete = delete;
     }
 
-    public PathItem delete(Operation delete) {
+    public JsonPathItem delete(JsonOperation delete) {
         this.delete = delete;
         return this;
     }
@@ -176,15 +176,15 @@ public class PathItem {
      * @return Operation options
      **/
 
-    public Operation getOptions() {
+    public JsonOperation getOptions() {
         return options;
     }
 
-    public void setOptions(Operation options) {
+    public void setOptions(JsonOperation options) {
         this.options = options;
     }
 
-    public PathItem options(Operation options) {
+    public JsonPathItem options(JsonOperation options) {
         this.options = options;
         return this;
     }
@@ -195,15 +195,15 @@ public class PathItem {
      * @return Operation head
      **/
 
-    public Operation getHead() {
+    public JsonOperation getHead() {
         return head;
     }
 
-    public void setHead(Operation head) {
+    public void setHead(JsonOperation head) {
         this.head = head;
     }
 
-    public PathItem head(Operation head) {
+    public JsonPathItem head(JsonOperation head) {
         this.head = head;
         return this;
     }
@@ -214,15 +214,15 @@ public class PathItem {
      * @return Operation patch
      **/
 
-    public Operation getPatch() {
+    public JsonOperation getPatch() {
         return patch;
     }
 
-    public void setPatch(Operation patch) {
+    public void setPatch(JsonOperation patch) {
         this.patch = patch;
     }
 
-    public PathItem patch(Operation patch) {
+    public JsonPathItem patch(JsonOperation patch) {
         this.patch = patch;
         return this;
     }
@@ -233,21 +233,21 @@ public class PathItem {
      * @return Operation trace
      **/
 
-    public Operation getTrace() {
+    public JsonOperation getTrace() {
         return trace;
     }
 
-    public void setTrace(Operation trace) {
+    public void setTrace(JsonOperation trace) {
         this.trace = trace;
     }
 
-    public PathItem trace(Operation trace) {
+    public JsonPathItem trace(JsonOperation trace) {
         this.trace = trace;
         return this;
     }
 
-    public List<Operation> readOperations() {
-        List<Operation> allOperations = new ArrayList<>();
+    public List<JsonOperation> readOperations() {
+        List<JsonOperation> allOperations = new ArrayList<>();
         if (this.get != null) {
             allOperations.add(this.get);
         }
@@ -276,7 +276,7 @@ public class PathItem {
         return allOperations;
     }
 
-    public void operation(HttpMethod method, Operation operation) {
+    public void operation(HttpMethod method, JsonOperation operation) {
         switch (method) {
             case PATCH:
                 this.patch = operation;
@@ -317,8 +317,8 @@ public class PathItem {
         TRACE
     }
 
-    public Map<HttpMethod, Operation> readOperationsMap() {
-        Map<HttpMethod, Operation> result = new LinkedHashMap<>();
+    public Map<HttpMethod, JsonOperation> readOperationsMap() {
+        Map<HttpMethod, JsonOperation> result = new LinkedHashMap<>();
 
         if (this.get != null) {
             result.put(HttpMethod.GET, this.get);
@@ -362,12 +362,12 @@ public class PathItem {
         this.servers = servers;
     }
 
-    public PathItem servers(List<Server> servers) {
+    public JsonPathItem servers(List<Server> servers) {
         this.servers = servers;
         return this;
     }
 
-    public PathItem addServersItem(Server serversItem) {
+    public JsonPathItem addServersItem(Server serversItem) {
         if (this.servers == null) {
             this.servers = new ArrayList<>();
         }
@@ -389,12 +389,12 @@ public class PathItem {
         this.parameters = parameters;
     }
 
-    public PathItem parameters(List<Parameter> parameters) {
+    public JsonPathItem parameters(List<Parameter> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public PathItem addParametersItem(Parameter parametersItem) {
+    public JsonPathItem addParametersItem(Parameter parametersItem) {
         if (this.parameters == null) {
             this.parameters = new ArrayList<>();
         }
@@ -428,7 +428,7 @@ public class PathItem {
         this.extensions = extensions;
     }
 
-    public PathItem extensions(java.util.Map<String, Object> extensions) {
+    public JsonPathItem extensions(java.util.Map<String, Object> extensions) {
         this.extensions = extensions;
         return this;
     }
@@ -446,7 +446,7 @@ public class PathItem {
         this.$ref = $ref;
     }
 
-    public PathItem $ref(String $ref) {
+    public JsonPathItem $ref(String $ref) {
         set$ref($ref);
         return this;
     }
@@ -456,11 +456,11 @@ public class PathItem {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PathItem)) {
+        if (!(o instanceof JsonPathItem)) {
             return false;
         }
 
-        PathItem pathItem = (PathItem) o;
+        JsonPathItem pathItem = (JsonPathItem) o;
 
         if (summary != null ? !summary.equals(pathItem.summary) : pathItem.summary != null) {
             return false;
@@ -524,20 +524,19 @@ public class PathItem {
         return result;
     }
 
-    @Override
-    public String toString() {
+    public String toJsonString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         sb.append("    \"summary\": ").append(toIndentedString(summary)).append("\n");
         sb.append("    \"description\": ").append(toIndentedString(description)).append("\n");
-        if(get != null) sb.append("    \"get\": ").append(toIndentedString(get)).append("\n");
-        if(put != null) sb.append("    \"put\": ").append(toIndentedString(put)).append("\n");
-        if(post != null) sb.append("    \"post\": ").append(toIndentedString(post)).append("\n");
-        if(delete != null) sb.append("    \"delete\": ").append(toIndentedString(delete)).append("\n");
-        if(options != null) sb.append("    \"options\": ").append(toIndentedString(options)).append("\n");
-        if(head != null) sb.append("    \"head\": ").append(toIndentedString(head)).append("\n");
-        if(patch != null) sb.append("    \"patch\": ").append(toIndentedString(patch)).append("\n");
-        if(trace != null) sb.append("    \"trace\": ").append(toIndentedString(trace)).append("\n");
+        if(get != null) sb.append("    \"get\": ").append(toIndentedString(((Jsonable)get).toJsonString())).append("\n");
+        if(put != null) sb.append("    \"put\": ").append(toIndentedString(((Jsonable)put).toJsonString())).append("\n");
+        if(post != null) sb.append("    \"post\": ").append(toIndentedString(((Jsonable)post).toJsonString())).append("\n");
+        if(delete != null) sb.append("    \"delete\": ").append(toIndentedString(((Jsonable)delete).toJsonString())).append("\n");
+        if(options != null) sb.append("    \"options\": ").append(toIndentedString(((Jsonable)options).toJsonString())).append("\n");
+        if(head != null) sb.append("    \"head\": ").append(toIndentedString(((Jsonable)head).toJsonString())).append("\n");
+        if(patch != null) sb.append("    \"patch\": ").append(toIndentedString(((Jsonable)patch).toJsonString())).append("\n");
+        if(trace != null) sb.append("    \"trace\": ").append(toIndentedString(((Jsonable)trace).toJsonString())).append("\n");
         if(servers != null) sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n");
         if(parameters != null) sb.append("    \"parameters\": ").append(toIndentedString(parameters)).append("\n");
         if($ref != null) sb.append("    \"$ref\": ").append(toIndentedString($ref)).append("\n");

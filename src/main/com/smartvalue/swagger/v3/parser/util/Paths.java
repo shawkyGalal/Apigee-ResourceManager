@@ -1,13 +1,11 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Objects;
 
 
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 
-public class Paths extends LinkedHashMap<String, PathItem> {
+public class Paths extends JsonLinkedHashMap<String, JsonPathItem> {
     public Paths() {
     }
 
@@ -15,14 +13,14 @@ public class Paths extends LinkedHashMap<String, PathItem> {
     	for ( java.util.Map.Entry<String, io.swagger.v3.oas.models.PathItem>  entry :  paths.entrySet() )
 		{
 			String key = entry.getKey();
-			PathItem value = new PathItem(entry.getValue()) ; 
+			JsonPathItem value = new JsonPathItem(entry.getValue()) ; 
 			this.put(key, value) ; 
 		}
 	}
 
 	private java.util.Map<String, Object> extensions = null;
 
-    public Paths addPathItem(String name, PathItem item) {
+    public Paths addPathItem(String name, JsonPathItem item) {
         this.put(name, item);
         return this;
     }
@@ -76,36 +74,7 @@ public class Paths extends LinkedHashMap<String, PathItem> {
         return this;
     }
 
-    public String toJsonString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(toIndentedString("{\n"));
-        int counter = 0 ; 
-        int size = this.size() ; 
-        for ( java.util.Map.Entry<String, PathItem> entry : this.entrySet() )
-        {
-        	counter ++; 
-        	String key = entry.getKey(); 
-        	PathItem value = entry.getValue() ; 
-        	sb.append("\"").append(toIndentedString(key)).append("\" :") ;
-        	sb.append("    \n").append(toIndentedString(value)) ;
-        	if (counter < size ) sb.append(",").append(" \n") ; 
-        	
-        }
-
-        sb.append( toIndentedString("\n}"));
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(java.lang.Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    
 
 
 }

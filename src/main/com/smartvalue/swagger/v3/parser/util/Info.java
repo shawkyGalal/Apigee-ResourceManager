@@ -1,12 +1,16 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-public class Info extends io.swagger.v3.oas.models.info.Info {
 
+public class Info extends io.swagger.v3.oas.models.info.Info implements Jsonable {
+
+	private JsonContact jsonContact = null;
+    private JsonLicense jsonLicense = null;
+    
 	public Info(io.swagger.v3.oas.models.info.Info m_info) {
-		this.setContact(m_info.getContact());
+		this.setJsonContact( new JsonContact ( m_info.getContact()));
 		this.setDescription(m_info.getDescription());
 		this.setExtensions(m_info.getExtensions());
-		this.setLicense(m_info.getLicense());
+		this.setJsonLicense(new JsonLicense( m_info.getLicense()));
 		this.setSummary(m_info.getSummary());
 		this.setTermsOfService(m_info.getTermsOfService());
 		this.setTitle(m_info.getTitle());
@@ -22,8 +26,8 @@ public class Info extends io.swagger.v3.oas.models.info.Info {
         if (getDescription() != null) sb.append("    \"description\": ").append(toIndentedString(getDescription())).append("\n");
         if (getSummary() != null) sb.append("    \"summary\": ").append(toIndentedString(getSummary())).append("\n");
         if (getTermsOfService() !=null ) sb.append("    \"termsOfService\": ").append(toIndentedString(getTermsOfService())).append("\n");
-        if (getContact() !=null ) sb.append("    \"contact\": ").append(toIndentedString(getContact())).append("\n");
-        if (getLicense() !=null ) sb.append("    \"license\": ").append(toIndentedString(getLicense())).append("\n");
+        if (getContact() !=null ) sb.append("    \"contact\": ").append(toIndentedString(getJsonContact().toJsonString())).append("\n");
+        if (getLicense() !=null ) sb.append("    \"license\": ").append(toIndentedString(getJsonLicense().toJsonString())).append("\n");
         if (getVersion() !=null ) sb.append("    \"version\": ").append(toIndentedString(getVersion())).append("\n");
         sb.append("}");
         return sb.toString();
@@ -38,4 +42,28 @@ public class Info extends io.swagger.v3.oas.models.info.Info {
         }
         return o.toString().replace("\n", "\n    ");
     }
+
+
+	public JsonContact getJsonContact() {
+		return jsonContact;
+	}
+
+
+	public void setJsonContact(JsonContact jsonContact) {
+		this.jsonContact = jsonContact;
+	}
+
+
+	public JsonLicense getJsonLicense() {
+		return jsonLicense;
+	}
+
+
+	public void setJsonLicense(JsonLicense jsonLicense) {
+		this.jsonLicense = jsonLicense;
+	}
+
+
+
+	
 }
