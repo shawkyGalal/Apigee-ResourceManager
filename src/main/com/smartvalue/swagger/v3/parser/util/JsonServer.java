@@ -1,8 +1,8 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-public class Server extends io.swagger.v3.oas.models.servers.Server  {
+public class JsonServer extends io.swagger.v3.oas.models.servers.Server  implements Jsonable {
 
-	public Server(io.swagger.v3.oas.models.servers.Server server) {
+	public JsonServer(io.swagger.v3.oas.models.servers.Server server) {
 		
 		this.setDescription( server.getDescription()) ; 
 		this.setExtensions(server.getExtensions() );
@@ -10,7 +10,7 @@ public class Server extends io.swagger.v3.oas.models.servers.Server  {
 		this.setVariables(server.getVariables()); 
 	}
 
-	 public String toString() {
+	 public String toJsonString() {
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
 	        sb.append("    \"url\": ").append(toIndentedString(getUrl())).append("\n");

@@ -21,34 +21,34 @@ public class JsonPathItem implements Jsonable{
     private JsonOperation head = null;
     private JsonOperation patch = null;
     private JsonOperation trace = null;
-    private List<Server> servers = null;
-    private List<Parameter> parameters = null;
+    private List<JsonServer> servers = null;
+    private List<JsonParameter> parameters = null;
     private String $ref = null;
     private java.util.Map<String, Object> extensions = null;
 
     public JsonPathItem(io.swagger.v3.oas.models.PathItem m_pathItem) {
 		if (m_pathItem.getDelete() != null) this.setDelete(new JsonOperation(m_pathItem.getDelete()));
-		this.set$ref(m_pathItem.get$ref());
-		this.setDescription(m_pathItem.getDescription());
-		this.setExtensions(m_pathItem.getExtensions());
+		if (m_pathItem.get$ref() != null) this.set$ref(m_pathItem.get$ref());
+		if (m_pathItem.getDescription() != null) this.setDescription(m_pathItem.getDescription());
+		if (m_pathItem.getExtensions() != null) this.setExtensions(m_pathItem.getExtensions());
 		if (m_pathItem.getGet() != null) this.setGet(new JsonOperation(m_pathItem.getGet()));
 		if (m_pathItem.getHead() != null) this.setHead(new JsonOperation(m_pathItem.getHead()));
 		if (m_pathItem.getOptions() != null) this.setOptions(new JsonOperation(m_pathItem.getOptions()));
 		if (m_pathItem.getParameters() != null && m_pathItem.getParameters().size() > 0)
-		{	parameters = new ArrayList<Parameter>() ; 
+		{	parameters = new ArrayList<JsonParameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_pathItem.getParameters()  )
 			{
-				parameters.add(new Parameter(par)) ; 
+				parameters.add(new JsonParameter(par)) ; 
 			}
 		}
 		if (m_pathItem.getPatch() != null) this.setPatch(new JsonOperation(m_pathItem.getPatch()));
 		if (m_pathItem.getPost() != null) this.setPost(new JsonOperation(m_pathItem.getPost()));
 		if (m_pathItem.getPut() != null) this.setPut(new JsonOperation(m_pathItem.getPut()));
 		if (m_pathItem.getServers() != null && m_pathItem.getServers().size() > 0)
-		{	servers = new ArrayList<Server>() ; 
+		{	servers = new ArrayList<JsonServer>() ; 
 			for (io.swagger.v3.oas.models.servers.Server ser : m_pathItem.getServers()  )
 			{
-				servers.add(new Server(ser)) ; 
+				servers.add(new JsonServer(ser)) ; 
 			}
 		}
 		this.setSummary(m_pathItem.getSummary());
@@ -354,20 +354,20 @@ public class JsonPathItem implements Jsonable{
      * @return List&lt;Server&gt; servers
      **/
 
-    public List<Server> getServers() {
+    public List<JsonServer> getServers() {
         return servers;
     }
 
-    public void setServers(List<Server> servers) {
+    public void setServers(List<JsonServer> servers) {
         this.servers = servers;
     }
 
-    public JsonPathItem servers(List<Server> servers) {
+    public JsonPathItem servers(List<JsonServer> servers) {
         this.servers = servers;
         return this;
     }
 
-    public JsonPathItem addServersItem(Server serversItem) {
+    public JsonPathItem addServersItem(JsonServer serversItem) {
         if (this.servers == null) {
             this.servers = new ArrayList<>();
         }
@@ -381,20 +381,20 @@ public class JsonPathItem implements Jsonable{
      * @return List&lt;Parameter&gt; parameters
      **/
 
-    public List<Parameter> getParameters() {
+    public List<JsonParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<Parameter> parameters) {
+    public void setParameters(List<JsonParameter> parameters) {
         this.parameters = parameters;
     }
 
-    public JsonPathItem parameters(List<Parameter> parameters) {
+    public JsonPathItem parameters(List<JsonParameter> parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public JsonPathItem addParametersItem(Parameter parametersItem) {
+    public JsonPathItem addParametersItem(JsonParameter parametersItem) {
         if (this.parameters == null) {
             this.parameters = new ArrayList<>();
         }
@@ -527,8 +527,8 @@ public class JsonPathItem implements Jsonable{
     public String toJsonString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-        sb.append("    \"summary\": ").append(toIndentedString(summary)).append("\n");
-        sb.append("    \"description\": ").append(toIndentedString(description)).append("\n");
+        if(summary != null) sb.append("    \"summary\": ").append(toIndentedString(summary)).append("\n");
+        if(description != null) sb.append("    \"description\": ").append(toIndentedString(description)).append("\n");
         if(get != null) sb.append("    \"get\": ").append(toIndentedString(((Jsonable)get).toJsonString())).append("\n");
         if(put != null) sb.append("    \"put\": ").append(toIndentedString(((Jsonable)put).toJsonString())).append("\n");
         if(post != null) sb.append("    \"post\": ").append(toIndentedString(((Jsonable)post).toJsonString())).append("\n");

@@ -5,11 +5,11 @@ import java.util.Objects;
 
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 
-public class Paths extends JsonLinkedHashMap<String, JsonPathItem> {
-    public Paths() {
+public class JsonPaths extends JsonLinkedHashMap<String, JsonPathItem> {
+    public JsonPaths() {
     }
 
-    public Paths(io.swagger.v3.oas.models.Paths paths) {
+    public JsonPaths(io.swagger.v3.oas.models.Paths paths) {
     	for ( java.util.Map.Entry<String, io.swagger.v3.oas.models.PathItem>  entry :  paths.entrySet() )
 		{
 			String key = entry.getKey();
@@ -20,7 +20,7 @@ public class Paths extends JsonLinkedHashMap<String, JsonPathItem> {
 
 	private java.util.Map<String, Object> extensions = null;
 
-    public Paths addPathItem(String name, JsonPathItem item) {
+    public JsonPaths addPathItem(String name, JsonPathItem item) {
         this.put(name, item);
         return this;
     }
@@ -33,7 +33,7 @@ public class Paths extends JsonLinkedHashMap<String, JsonPathItem> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Paths paths = (Paths) o;
+        JsonPaths paths = (JsonPaths) o;
         return Objects.equals(this.extensions, paths.extensions) &&
                 super.equals(o);
     }
@@ -69,7 +69,7 @@ public class Paths extends JsonLinkedHashMap<String, JsonPathItem> {
         this.extensions = extensions;
     }
 
-    public Paths extensions(java.util.Map<String, Object> extensions) {
+    public JsonPaths extensions(java.util.Map<String, Object> extensions) {
         this.extensions = extensions;
         return this;
     }

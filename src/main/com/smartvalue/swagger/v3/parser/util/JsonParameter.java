@@ -1,23 +1,23 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-public class Parameter extends io.swagger.v3.oas.models.parameters.Parameter implements Jsonable {
+public class JsonParameter extends io.swagger.v3.oas.models.parameters.Parameter implements Jsonable {
 
-	public Parameter(io.swagger.v3.oas.models.parameters.Parameter par) {
-		this.set$ref(par.get$ref());
-		this.setAllowEmptyValue(par.getAllowEmptyValue());
-		this.setAllowReserved(par.getAllowReserved());
-		this.setContent(par.getContent());
-		this.setDeprecated(par.getDeprecated());
-		this.setDescription(par.getDescription());
-		this.setExample(par.getExample());
-		this.setExamples(par.getExamples());
-		this.setExplode(par.getExplode());
-		this.setExtensions(par.getExtensions());
-		this.setIn(par.getIn());
-		this.setName(par.getName());
-		this.setRequired(par.getRequired());
-		this.setSchema(par.getSchema());
-		this.setStyle(par.getStyle());
+	public JsonParameter(io.swagger.v3.oas.models.parameters.Parameter par) {
+		if (par.get$ref() != null ) this.set$ref(par.get$ref());
+		if (par.getAllowEmptyValue() != null ) this.setAllowEmptyValue(par.getAllowEmptyValue());
+		if (par.getAllowReserved() != null ) this.setAllowReserved(par.getAllowReserved());
+		if (par.getContent() != null ) this.setContent(par.getContent());
+		if (par.getDeprecated() != null ) this.setDeprecated(par.getDeprecated());
+		if (par.getDescription() != null ) this.setDescription(par.getDescription());
+		if (par.getExample() != null ) this.setExample(par.getExample());
+		if (par.getExamples() != null ) this.setExamples(par.getExamples());
+		if (par.getExplode() != null ) this.setExplode(par.getExplode());
+		if (par.getExtensions() != null ) this.setExtensions(par.getExtensions());
+		if (par.getIn() != null ) this.setIn(par.getIn());
+		if (par.getName() != null ) this.setName(par.getName());
+		if (par.getRequired() != null ) this.setRequired(par.getRequired());
+		if (par.getSchema() != null ) this.setSchema(par.getSchema());
+		if (par.getStyle() != null ) this.setStyle(par.getStyle());
 	}
 
 	 public String toJsonString() {

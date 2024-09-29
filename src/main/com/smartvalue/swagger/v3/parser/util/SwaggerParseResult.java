@@ -9,7 +9,7 @@ import java.util.Objects;
 public class SwaggerParseResult {
 
 	private List<String> messages = null;
-    private OpenAPI openAPI;
+    private JsonOpenAPI openAPI;
     private boolean openapi31;
 
     public SwaggerParseResult messages(List<String> messages) {
@@ -41,11 +41,11 @@ public class SwaggerParseResult {
         return this;
     }
 
-    public OpenAPI getOpenAPI() {
+    public JsonOpenAPI getOpenAPI() {
         return openAPI;
     }
 
-    public void setOpenAPI(OpenAPI openAPI) {
+    public void setOpenAPI(JsonOpenAPI openAPI) {
         this.openAPI = openAPI;
     }
 

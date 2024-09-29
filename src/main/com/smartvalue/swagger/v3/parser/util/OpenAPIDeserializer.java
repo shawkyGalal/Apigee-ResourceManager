@@ -56,7 +56,7 @@ public class OpenAPIDeserializer extends io.swagger.v3.parser.util.OpenAPIDeseri
             rootParse.setInferSchemaType(options.isInferSchemaType());
             rootParse.setAllowEmptyStrings(options.isAllowEmptyString());
             rootParse.setValidateInternalRefs(options.isValidateInternalRefs());
-            OpenAPI api = parseRoot(rootNode, rootParse, path);
+            JsonOpenAPI api = parseRoot(rootNode, rootParse, path);
             result.openapi31(rootParse.isOpenapi31());
             result.setOpenAPI(api);
             result.setMessages(rootParse.getMessages());
@@ -66,9 +66,9 @@ public class OpenAPIDeserializer extends io.swagger.v3.parser.util.OpenAPIDeseri
 		return result;
 	}
 	
-	public OpenAPI parseRoot(JsonNode node, ParseResult result, String path) {
+	public JsonOpenAPI parseRoot(JsonNode node, ParseResult result, String path) {
 		String location = "";
-		OpenAPI openAPI = new OpenAPI();
+		JsonOpenAPI openAPI = new JsonOpenAPI();
 		if (node.getNodeType().equals(JsonNodeType.OBJECT)) {
 			ObjectNode rootNode = (ObjectNode) node;
 

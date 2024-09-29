@@ -16,55 +16,53 @@ public class JsonOperation implements Jsonable {
     private String description = null;
     private ExternalDocumentation externalDocs = null;
     private String operationId = null;
-    private List<Parameter> parameters = null;
-    private RequestBody requestBody = null;
-    private ApiResponses responses = null;
-    private Map<String, Callback> callbacks = null;
+    private List<JsonParameter> jsonParameters = null;
+    private JsonRequestBody jsonRequestBody = null;
+    private JsonApiResponses jsonResponses = null;
+    private Map<String, JsonCallback> callbacks = null;
     private Boolean deprecated = null;
-    private List<SecurityRequirement> security = null;
-    private List<Server> servers = null;
+    private List<JsonSecurityRequirement> security = null;
+    private List<JsonServer> servers = null;
     private java.util.Map<String, Object> extensions = null;
 
     public JsonOperation(io.swagger.v3.oas.models.Operation m_operation) {
-		// TODO Auto-generated constructor stub
+
 	   	if (m_operation.getCallbacks() != null && m_operation.getCallbacks().size() > 0 )
 	   	{
 		    for (Entry<String, io.swagger.v3.oas.models.callbacks.Callback> entry :  m_operation.getCallbacks().entrySet()) 
 		   	{
-		   		this.callbacks.put(entry.getKey() , new Callback (entry.getKey()) ) ; 
+		   		this.callbacks.put(entry.getKey() , new JsonCallback (entry.getValue()) ) ; 
 		   	}
 	   	}
-	   	this.setDeprecated(m_operation.getDeprecated());
-	   	this.setDescription(m_operation.getDescription());
-	   	this.setExtensions(m_operation.getExtensions());
-	   	this.setExternalDocs(new ExternalDocumentation (m_operation.getExternalDocs()));
-	   	this.setOperationId(m_operation.getOperationId());
+	   	if (m_operation.getDeprecated() != null ) this.setDeprecated(m_operation.getDeprecated());
+	   	if (m_operation.getDescription() != null ) this.setDescription(m_operation.getDescription());
+	   	if (m_operation.getExtensions() != null ) this.setExtensions(m_operation.getExtensions());
+	   	if (m_operation.getExternalDocs() != null ) this.setExternalDocs(new ExternalDocumentation (m_operation.getExternalDocs()));
+	   	if (m_operation.getOperationId() != null ) this.setOperationId(m_operation.getOperationId());
 	   	if  (m_operation.getParameters() != null && m_operation.getParameters().size() > 0)
-		{	parameters = new ArrayList<Parameter>() ; 
+		{	jsonParameters = new ArrayList<JsonParameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_operation.getParameters()  )
 			{
-				parameters.add(new Parameter(par)) ; 
+				jsonParameters.add(new JsonParameter(par)) ; 
 			}
 		}
-	   	this.setRequestBody(new RequestBody(m_operation.getRequestBody()));
-	   	this.setResponses(new ApiResponses( m_operation.getResponses())) ;
+	   	if (m_operation.getRequestBody() != null ) this.setRequestBody(new JsonRequestBody(m_operation.getRequestBody()));
+	   	if (m_operation.getResponses() != null ) this.setResponses(new JsonApiResponses( m_operation.getResponses())) ;
 	   	
 	   	if (m_operation.getSecurity() != null && m_operation.getSecurity().size()>0 )
 	   	{
-	    	this.security = new ArrayList<SecurityRequirement>() ; 
-	   		for (io.swagger.v3.oas.models.security.SecurityRequirement securityRequirement : this.getSecurity() )
-	   		{	security.add(new SecurityRequirement(securityRequirement)) ;	}
+	    	this.security = new ArrayList<JsonSecurityRequirement>() ; 
+	   		for (io.swagger.v3.oas.models.security.SecurityRequirement securityRequirement : m_operation.getSecurity() )
+	   		{	security.add(new JsonSecurityRequirement(securityRequirement)) ;	}
 	   	}
 	   	if  (m_operation.getServers() != null && m_operation.getServers().size() > 0)
-		{	servers = new ArrayList<Server>() ; 
+		{	servers = new ArrayList<JsonServer>() ; 
 			for (io.swagger.v3.oas.models.servers.Server ser : m_operation.getServers()  )
-			{servers.add(new Server(ser)) ;}
+			{servers.add(new JsonServer(ser)) ;}
 		}
 	   	
 	   	this.setSummary(m_operation.getSummary());
 	   	this.setTags(m_operation.getTags());
-	   	
-
     	
 	}
     
@@ -179,24 +177,24 @@ public class JsonOperation implements Jsonable {
      * @return List&lt;Parameter&gt; parameters
      **/
 
-    public List<Parameter> getParameters() {
-        return parameters;
+    public List<JsonParameter> getParameters() {
+        return jsonParameters;
     }
 
-    public void setParameters(List<Parameter> parameters) {
-        this.parameters = parameters;
+    public void setParameters(List<JsonParameter> parameters) {
+        this.jsonParameters = parameters;
     }
 
-    public JsonOperation parameters(List<Parameter> parameters) {
-        this.parameters = parameters;
+    public JsonOperation parameters(List<JsonParameter> parameters) {
+        this.jsonParameters = parameters;
         return this;
     }
 
-    public JsonOperation addParametersItem(Parameter parametersItem) {
-        if (this.parameters == null) {
-            this.parameters = new ArrayList<>();
+    public JsonOperation addParametersItem(JsonParameter parametersItem) {
+        if (this.jsonParameters == null) {
+            this.jsonParameters = new ArrayList<>();
         }
-        this.parameters.add(parametersItem);
+        this.jsonParameters.add(parametersItem);
         return this;
     }
 
@@ -206,16 +204,16 @@ public class JsonOperation implements Jsonable {
      * @return RequestBody requestBody
      **/
 
-    public RequestBody getRequestBody() {
-        return requestBody;
+    public JsonRequestBody getRequestBody() {
+        return jsonRequestBody;
     }
 
-    public void setRequestBody(RequestBody requestBody) {
-        this.requestBody = requestBody;
+    public void setRequestBody(JsonRequestBody requestBody) {
+        this.jsonRequestBody = requestBody;
     }
 
-    public JsonOperation requestBody(RequestBody requestBody) {
-        this.requestBody = requestBody;
+    public JsonOperation requestBody(JsonRequestBody requestBody) {
+        this.jsonRequestBody = requestBody;
         return this;
     }
 
@@ -225,16 +223,16 @@ public class JsonOperation implements Jsonable {
      * @return ApiResponses responses
      **/
 
-    public ApiResponses getResponses() {
-        return responses;
+    public JsonApiResponses getResponses() {
+        return jsonResponses;
     }
 
-    public void setResponses(ApiResponses responses) {
-        this.responses = responses;
+    public void setResponses(JsonApiResponses responses) {
+        this.jsonResponses = responses;
     }
 
-    public JsonOperation responses(ApiResponses responses) {
-        this.responses = responses;
+    public JsonOperation responses(JsonApiResponses responses) {
+        this.jsonResponses = responses;
         return this;
     }
 
@@ -244,20 +242,20 @@ public class JsonOperation implements Jsonable {
      * @return Callbacks callbacks
      **/
 
-    public Map<String, Callback> getCallbacks() {
+    public Map<String, JsonCallback> getCallbacks() {
         return callbacks;
     }
 
-    public void setCallbacks(Map<String, Callback> callbacks) {
+    public void setCallbacks(Map<String, JsonCallback> callbacks) {
         this.callbacks = callbacks;
     }
 
-    public JsonOperation callbacks(Map<String, Callback> callbacks) {
+    public JsonOperation callbacks(Map<String, JsonCallback> callbacks) {
         this.callbacks = callbacks;
         return this;
     }
 
-    public JsonOperation addCallback(String key, Callback callback) {
+    public JsonOperation addCallback(String key, JsonCallback callback) {
         if (this.callbacks == null) {
             this.callbacks = new LinkedHashMap<>();
         }
@@ -290,20 +288,20 @@ public class JsonOperation implements Jsonable {
      * @return List&lt;SecurityRequirement&gt; security
      **/
 
-    public List<SecurityRequirement> getSecurity() {
+    public List<JsonSecurityRequirement> getSecurity() {
         return security;
     }
 
-    public void setSecurity(List<SecurityRequirement> security) {
+    public void setSecurity(List<JsonSecurityRequirement> security) {
         this.security = security;
     }
 
-    public JsonOperation security(List<SecurityRequirement> security) {
+    public JsonOperation security(List<JsonSecurityRequirement> security) {
         this.security = security;
         return this;
     }
 
-    public JsonOperation addSecurityItem(SecurityRequirement securityItem) {
+    public JsonOperation addSecurityItem(JsonSecurityRequirement securityItem) {
         if (this.security == null) {
             this.security = new ArrayList<>();
         }
@@ -317,20 +315,20 @@ public class JsonOperation implements Jsonable {
      * @return List&lt;Server&gt; servers
      **/
 
-    public List<Server> getServers() {
+    public List<JsonServer> getServers() {
         return servers;
     }
 
-    public void setServers(List<Server> servers) {
+    public void setServers(List<JsonServer> servers) {
         this.servers = servers;
     }
 
-    public JsonOperation servers(List<Server> servers) {
+    public JsonOperation servers(List<JsonServer> servers) {
         this.servers = servers;
         return this;
     }
 
-    public JsonOperation addServersItem(Server serversItem) {
+    public JsonOperation addServersItem(JsonServer serversItem) {
         if (this.servers == null) {
             this.servers = new ArrayList<>();
         }
@@ -352,9 +350,9 @@ public class JsonOperation implements Jsonable {
                 Objects.equals(this.description, operation.description) &&
                 Objects.equals(this.externalDocs, operation.externalDocs) &&
                 Objects.equals(this.operationId, operation.operationId) &&
-                Objects.equals(this.parameters, operation.parameters) &&
-                Objects.equals(this.requestBody, operation.requestBody) &&
-                Objects.equals(this.responses, operation.responses) &&
+                Objects.equals(this.jsonParameters, operation.jsonParameters) &&
+                Objects.equals(this.jsonRequestBody, operation.jsonRequestBody) &&
+                Objects.equals(this.jsonResponses, operation.jsonResponses) &&
                 Objects.equals(this.callbacks, operation.callbacks) &&
                 Objects.equals(this.deprecated, operation.deprecated) &&
                 Objects.equals(this.security, operation.security) &&
@@ -364,7 +362,7 @@ public class JsonOperation implements Jsonable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(tags, summary, description, externalDocs, operationId, parameters, requestBody, responses, callbacks, deprecated, security, servers, extensions);
+        return Objects.hash(tags, summary, description, externalDocs, operationId, jsonParameters, jsonRequestBody, jsonResponses, callbacks, deprecated, security, servers, extensions);
     }
 
     public java.util.Map<String, Object> getExtensions() {
@@ -400,22 +398,23 @@ public class JsonOperation implements Jsonable {
 
     @Override
     public String toJsonString() {
+    	boolean needComma = false ; 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
 
-        sb.append("    \"tags\": ").append(toIndentedString(tags)).append("\n");
-        sb.append("    \"summary\": ").append(toIndentedString(summary)).append("\n");
-        sb.append("    \"description\": ").append(toIndentedString(description)).append("\n");
-        sb.append("    \"externalDocs\": ").append(toIndentedString(externalDocs)).append("\n");
-        sb.append("    \"operationId\": ").append(toIndentedString(operationId)).append("\n");
-        sb.append("    \"parameters\": ").append(toIndentedString(parameters)).append("\n");
-        sb.append("    \"requestBody\": ").append(toIndentedString(requestBody)).append("\n");
-        sb.append("    \"responses\": ").append(toIndentedString(responses)).append("\n");
-        sb.append("    \"callbacks\": ").append(toIndentedString(callbacks)).append("\n");
-        sb.append("    \"deprecated\": ").append(toIndentedString(deprecated)).append("\n");
-        sb.append("    \"security\": ").append(toIndentedString(security)).append("\n");
-        sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n");
-        sb.append("}");
+        if (jsonRequestBody != null){sb.append("    \"requestBody\": ").append(toIndentedString(jsonRequestBody.toJsonString())); needComma = true; }
+        if (tags != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"tags\": ").append(toIndentedString(tags)); needComma = true ; }
+        if (jsonResponses != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"responses\": ").append(toIndentedString(jsonResponses.toJsonString())) ; needComma = true; }
+        if (summary != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(summary)).append("\""); needComma = true ; }
+        if (description != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": ").append(toIndentedString(description)); needComma = true; }
+        if (externalDocs != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"externalDocs\": ").append(toIndentedString(externalDocs)); needComma = true; }
+        if (operationId != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"operationId\": \"").append(toIndentedString(operationId)).append("\""); needComma = true; }
+        if (jsonParameters != null) {sb.append( Jsonable.appendCommaEnter(needComma)).append("\"parameters\": ").append(toIndentedString(jsonParameters)); needComma = true; }
+        if (callbacks != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"callbacks\": ").append(toIndentedString(callbacks)); needComma = true; }
+        if (deprecated != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"deprecated\": ").append(toIndentedString(deprecated)); needComma = true; }
+        if (security != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"security\": ").append(toIndentedString(security)); needComma = true; }
+        if (servers != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"servers\": ").append(toIndentedString(servers)); needComma = true;  }
+        sb.append("\n}");
         return sb.toString();
     }
 
