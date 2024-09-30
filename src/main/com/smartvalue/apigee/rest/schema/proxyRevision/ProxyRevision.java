@@ -279,7 +279,8 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	public static HashMap<OasOperation , Flow>  checkOpenApiConsistancy (SwaggerParseResult swaggerParse , List<Flow> allApigeeFlows , String oasProxyEndPointBasePath ,  boolean fixOperationId) throws Exception
 	{
 		HashMap<OasOperation , Flow> result = new HashMap<OasOperation , Flow>();
-		OpenAPI openapi = swaggerParse.getOpenAPI() ;  
+		OpenAPI openapi = swaggerParse.getOpenAPI() ;
+		if (openapi == null) {throw new IllegalArgumentException("Unable to Extract Documentation from Flow : " + OAS_FLOW_NAME) ; }
 		Paths 	paths =  openapi.getPaths(); 
 		//String 	oasServerBasePath =  swaggerParse.getOpenAPI().getServers().get(0).getUrl() ; 
 		//String 	serverPath = new URL(oasServerBasePath).getPath() ; 

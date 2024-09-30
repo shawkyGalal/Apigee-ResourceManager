@@ -109,10 +109,10 @@ public class JsonApiResponses extends JsonLinkedHashMap<String, JsonApiResponse>
 	@Override
 	 public String toJsonString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\n");
+        //sb.append("{\n");
         if (this.size() > 0 ) sb.append("    ").append(toIndentedString(super.toJsonString())).append("\n");
         if (getExtensions() != null ) sb.append("    \"extensions\": ").append(toIndentedString(getExtensions())).append("\n");
-        sb.append("}");
+        //sb.append("}");
         return sb.toString();
     }
 	

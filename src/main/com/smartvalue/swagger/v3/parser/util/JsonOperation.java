@@ -21,7 +21,7 @@ public class JsonOperation implements Jsonable {
     private JsonApiResponses jsonResponses = null;
     private Map<String, JsonCallback> callbacks = null;
     private Boolean deprecated = null;
-    private List<JsonSecurityRequirement> security = null;
+    private JsonArrayList<JsonSecurityRequirement> security = null;
     private List<JsonServer> servers = null;
     private java.util.Map<String, Object> extensions = null;
 
@@ -51,7 +51,7 @@ public class JsonOperation implements Jsonable {
 	   	
 	   	if (m_operation.getSecurity() != null && m_operation.getSecurity().size()>0 )
 	   	{
-	    	this.security = new ArrayList<JsonSecurityRequirement>() ; 
+	    	this.security = new JsonArrayList<JsonSecurityRequirement>() ; 
 	   		for (io.swagger.v3.oas.models.security.SecurityRequirement securityRequirement : m_operation.getSecurity() )
 	   		{	security.add(new JsonSecurityRequirement(securityRequirement)) ;	}
 	   	}
@@ -292,18 +292,18 @@ public class JsonOperation implements Jsonable {
         return security;
     }
 
-    public void setSecurity(List<JsonSecurityRequirement> security) {
+    public void setSecurity(JsonArrayList<JsonSecurityRequirement> security) {
         this.security = security;
     }
 
-    public JsonOperation security(List<JsonSecurityRequirement> security) {
+    public JsonOperation security(JsonArrayList<JsonSecurityRequirement> security) {
         this.security = security;
         return this;
     }
 
     public JsonOperation addSecurityItem(JsonSecurityRequirement securityItem) {
         if (this.security == null) {
-            this.security = new ArrayList<>();
+            this.security = new JsonArrayList<>();
         }
         this.security.add(securityItem);
         return this;
@@ -406,13 +406,14 @@ public class JsonOperation implements Jsonable {
         if (tags != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"tags\": ").append(toIndentedString(tags)); needComma = true ; }
         if (jsonResponses != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"responses\": ").append(toIndentedString(jsonResponses.toJsonString())) ; needComma = true; }
         if (summary != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(summary)).append("\""); needComma = true ; }
-        if (description != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": ").append(toIndentedString(description)); needComma = true; }
         if (externalDocs != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"externalDocs\": ").append(toIndentedString(externalDocs)); needComma = true; }
+        if (security != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"security\": ").append(toIndentedString(security.toJsonString())); needComma = true; }
         if (operationId != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"operationId\": \"").append(toIndentedString(operationId)).append("\""); needComma = true; }
+        if (description != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": \"").append(toIndentedString(description)).append("\""); needComma = true; }                
         if (jsonParameters != null) {sb.append( Jsonable.appendCommaEnter(needComma)).append("\"parameters\": ").append(toIndentedString(jsonParameters)); needComma = true; }
         if (callbacks != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"callbacks\": ").append(toIndentedString(callbacks)); needComma = true; }
         if (deprecated != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"deprecated\": ").append(toIndentedString(deprecated)); needComma = true; }
-        if (security != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"security\": ").append(toIndentedString(security)); needComma = true; }
+
         if (servers != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"servers\": ").append(toIndentedString(servers)); needComma = true;  }
         sb.append("\n}");
         return sb.toString();
