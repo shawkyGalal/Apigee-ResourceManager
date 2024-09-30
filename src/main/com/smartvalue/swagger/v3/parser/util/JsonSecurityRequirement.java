@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class JsonSecurityRequirement extends JsonLinkedHashMap<String, List<String>>
+public class JsonSecurityRequirement extends JsonLinkedHashMap<String, JsonArrayList<String>>
 {
 	/**
 	 * 
@@ -18,26 +18,17 @@ public class JsonSecurityRequirement extends JsonLinkedHashMap<String, List<Stri
 		for ( java.util.Map.Entry<String, List<String>>  entry :  securityRequirement.entrySet() )
 		{
 			String key = entry.getKey();
-			List<String> value = entry.getValue() ; 
+			JsonArrayList<String> value = new JsonArrayList<String>(entry.getValue()) ; 
 			this.put(key, value) ; 
 		}
 	}
 	
 
-    public JsonSecurityRequirement addList(String name, String item) {
-        this.put(name, Arrays.asList(item));
-        return this;
-    }
-
-    public JsonSecurityRequirement addList(String name, List<String> item) {
+    public JsonSecurityRequirement addList(String name, JsonArrayList<String> item) {
         this.put(name, item);
         return this;
     }
-
-    public JsonSecurityRequirement addList(String name) {
-        this.put(name, new ArrayList<>());
-        return this;
-    }
+    
 
     @Override
     public boolean equals(java.lang.Object o) {

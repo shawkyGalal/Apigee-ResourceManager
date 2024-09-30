@@ -12,10 +12,9 @@ public class JsonServer extends io.swagger.v3.oas.models.servers.Server  impleme
 
 	 public String toJsonString() {
 	        StringBuilder sb = new StringBuilder();
-	        sb.append("{\n");
-	        sb.append("    \"url\": ").append(toIndentedString(getUrl())).append("\n");
-	        if(getDescription()!= null) sb.append("    \"description\": ").append(toIndentedString(getDescription())).append("\n");
-	        if(getVariables()!= null) sb.append("    \"variables\": ").append(toIndentedString(getVariables())).append("\n");
+	        sb.append("{\"url\":").append(toIndentedString("\""+getUrl()+"\""));
+	        if(getDescription()!= null) sb.append("    \"description\": ").append(toIndentedString(getDescription()));
+	        if(getVariables()!= null) 	sb.append("    \"variables\": ").append(toIndentedString(getVariables()));
 	        sb.append("}");
 	        return sb.toString();
 	    }

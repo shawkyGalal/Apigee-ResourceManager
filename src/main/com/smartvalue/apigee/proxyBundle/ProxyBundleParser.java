@@ -185,19 +185,51 @@ public class ProxyBundleParser
 		
 		Policy policy = this.getPolices().get(estimatedOasPolicyName) ; 
 		oasStr= policy.getXpathValue(ProxyBundleParser.PAYLOAD_XPTH ) ; 
-				
-		String modifiedOasString = oasStr.replace("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ;
-		 modifiedOasString = modifiedOasString.replace("@oas.contact.email#", "sfoda@moj.gov.sa") ;
+		 
+		String modifiedOasString = ProxyBundleParser.substituteVarValues(oasStr, ProxyBundleParser.getVariableSubstitutions()) ; 
 		
 		oasJsonNode = ObjectMapperFactory.createJson().readTree(modifiedOasString);
-		//OpenAPIParser parser = new OpenAPIParser();
-		//swaggerParseResult =  parser.readContents(modifiedOasString , null , null);
 		
 		OpenAPIDeserializer openAPIDeserializer = new OpenAPIDeserializer() ;
 		swaggerParseResult = openAPIDeserializer.mydeserialize(oasJsonNode) ; 
 		
 	}
 	
+	private static String substituteVarValues(String inputStr , HashMap<String , String> varsNameValuePairs )
+	{
+		String result = inputStr ; 
+		for (Entry<String , String> entry :  varsNameValuePairs.entrySet() )
+		{
+			result = result.replace(entry.getKey() , entry.getValue()); 
+		}
+		return result ; 
+	}
+	private static String unSubstituteVarValues(String inputStr , HashMap<String , String> varsNameValuePairs )
+	{
+		String result = inputStr ; 
+		for (Entry<String , String> entry :  varsNameValuePairs.entrySet() )
+		{
+			result = result.replace( entry.getValue() , entry.getKey() ); 
+		}
+		return result ; 
+	}
+	private static HashMap<String , String> variableSubstitutions = null; 
+	private static HashMap<String , String> getVariableSubstitutions() 
+	{
+		if (variableSubstitutions == null)
+		{	variableSubstitutions = new HashMap<String , String>() ; 
+			variableSubstitutions.put("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ; 
+			variableSubstitutions.put("@oas.contact.email#", "XXXXXYYYYZZZZ@moj.gov.sa") ; 
+		}
+		return variableSubstitutions;
+	}
+
+
+	public void setVariableSubstitutions(HashMap<String, String> variableSubstitutions) {
+		this.variableSubstitutions = variableSubstitutions;
+	}
+
+
 	public SwaggerParseResult getSwaggerParser(String getOasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
 		if (swaggerParseResult == null)
@@ -272,8 +304,8 @@ public class ProxyBundleParser
 	
 	
 	public String getOasJsonStr() throws XPathExpressionException, JsonMappingException, JsonProcessingException {
-
-		return this.getSwaggerParser().getOpenAPI().toJsonString();
+		String jsonString = this.getSwaggerParser().getOpenAPI().toJsonString(); 
+		return unSubstituteVarValues(jsonString , ProxyBundleParser.getVariableSubstitutions()); 
 	}
 	
 	
