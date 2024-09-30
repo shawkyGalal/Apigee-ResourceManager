@@ -1,5 +1,8 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Jsonable {
 
@@ -19,11 +22,21 @@ public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Json
 	
 	
 	public String toJsonString() {
-		boolean needComma = false ; 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-
-        									//{sb.append( Jsonable.appendCommaEnter(needComma)).append("    ").append("\"tags\": ").append(toIndentedString(tags)).append("\n"); needComma = true ; }
+        
+        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        elements.put("title", getTitle()) ; 
+        elements.put("description", getDescription()) ;
+        elements.put("summary", getSummary()) ;
+        elements.put("termsOfService", getTermsOfService()) ;
+        elements.put("contact", getJsonContact()) ;
+        elements.put("license", getLicense()) ;
+        elements.put("version", getVersion()) ;
+        
+        sb = Jsonable.appendElements(sb, elements);
+        
+        /*									//{sb.append( Jsonable.appendCommaEnter(needComma)).append("    ").append("\"tags\": ").append(toIndentedString(tags)).append("\n"); needComma = true ; }
         if (getTitle() != null) 			{ sb.append("    \"title\": \"").append(toIndentedString(getTitle())).append("\""); needComma = true ; }
         if (getDescription() != null) 		{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": \"").append(toIndentedString(getDescription())); needComma = true ; }
         if (getSummary() != null) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(getSummary())).append("\""); needComma = true ;}
@@ -31,20 +44,11 @@ public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Json
         if (getContact() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"contact\": ").append(toIndentedString(getJsonContact().toJsonString())); needComma = true ; }
         if (getLicense() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"license\": ").append(toIndentedString(getJsonLicense().toJsonString())); needComma = true ; } 
         if (getVersion() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"version\": \"").append(toIndentedString(getVersion())).append("\""); needComma = true ; }
+        */
         sb.append("\n}");
         return sb.toString();
     }
-	/**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(java.lang.Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
+	
 
 	public JsonContact getJsonContact() {
 		return jsonContact;

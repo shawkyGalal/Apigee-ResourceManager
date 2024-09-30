@@ -39,7 +39,7 @@ public class JsonOperation implements Jsonable {
 	   	if (m_operation.getExtensions() != null ) this.setExtensions(m_operation.getExtensions());
 	   	if (m_operation.getExternalDocs() != null ) this.setExternalDocs(new ExternalDocumentation (m_operation.getExternalDocs()));
 	   	if (m_operation.getOperationId() != null ) this.setOperationId(m_operation.getOperationId());
-	   	if  (m_operation.getParameters() != null && m_operation.getParameters().size() > 0)
+	   	if (m_operation.getParameters() != null && m_operation.getParameters().size() > 0)
 		{	jsonParameters = new ArrayList<JsonParameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_operation.getParameters()  )
 			{

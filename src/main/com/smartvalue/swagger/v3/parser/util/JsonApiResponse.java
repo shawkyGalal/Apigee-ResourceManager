@@ -1,5 +1,9 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
 public class JsonApiResponse extends ApiResponse implements Jsonable{
@@ -18,18 +22,26 @@ public class JsonApiResponse extends ApiResponse implements Jsonable{
 
 	 @Override
 	    public String toJsonString() {
-		 	boolean needComma = false ; 
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
 
+	        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+	        elements.put("description", getDescription()) ;
+	        elements.put("content", getJsonContent()) ; 
+	        elements.put("headers", getHeaders()) ;
+	        elements.put("links", getLinks()) ;
+	        elements.put("extensions", getExtensions()) ;
+	        elements.put("$ref", get$ref()) ;
 	        
+	        sb = Jsonable.appendElements(sb, elements);
+	        /*
 	        if (getJsonContent()!= null ) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"content\": ").append(toIndentedString(getJsonContent().toJsonString())).append("\n"); needComma = true ; }
 	        if (getDescription() != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": \"").append(toIndentedString(getDescription())).append("\"\n"); needComma = true ; }
 	        if (getHeaders()!= null ) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"headers\": ").append(toIndentedString(getHeaders())).append("\n"); needComma = true ; }
 	        if (getLinks()!= null ) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"links\": ").append(toIndentedString(getLinks())).append("\n"); needComma = true ; }
 	        if (getExtensions()!= null ) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"extensions\": ").append(toIndentedString(getExtensions())).append("\n"); needComma = true ; }
 	        if (get$ref()!= null ) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"$ref\": ").append(toIndentedString(get$ref())).append("\n"); needComma = true ; }
-	        
+	        */
 	        sb.append("}");
 	        return sb.toString();
 	    }

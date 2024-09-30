@@ -3,6 +3,8 @@ package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
+
 import io.swagger.v3.oas.models.tags.Tag ;
 import io.swagger.v3.oas.models.SpecVersion;
 
@@ -76,7 +78,20 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
 		boolean needComma = false ; 
 		StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-
+        /*
+        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        elements.put("openapi", getOpenapi()) ; 
+        elements.put("info", getJsonInfo()) ;
+        elements.put("externalDocs", getExternalDocs()) ;
+        elements.put("servers", getJsonServers()) ;
+        elements.put("tags", getJsonTags()) ;
+        elements.put("paths", getJsonPaths()) ;
+        elements.put("components", getJsonComponents()) ;
+        elements.put("security", getJsonSecurity()) ;
+        
+        sb = Jsonable.appendElements(sb, elements);
+        */
+       
         if (getOpenapi() != null) 				{sb.append("    \"openapi\": \"").append(toIndentedString(getOpenapi())).append("\""); needComma = true ; } 
         if (getJsonInfo() != null ) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"info\": ").append(toIndentedString(getJsonInfo().toJsonString()));  needComma = true ;  } 
         if (getExternalDocs() != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"externalDocs\": ").append(toIndentedString(getExternalDocs()));  needComma = true ; }

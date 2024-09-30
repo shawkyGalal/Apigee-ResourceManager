@@ -1,6 +1,5 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry ; 
 
@@ -15,7 +14,11 @@ public class JsonExamples  extends JsonLinkedHashMap<String, Example>
 	
 	public JsonExamples(Map<String, Example> examples) {
 		for (Entry<String, Example> entry : examples.entrySet())
-			{ this.put(entry.getKey(), new JsonExample (entry.getValue())) ; }
+			{   
+				String key = entry.getKey(); 
+				Example example =  entry.getValue() ; 
+				this.put( key, new JsonExample (example)) ; 
+			}
 	}
 
 
