@@ -1,7 +1,5 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 import io.swagger.v3.oas.models.examples.Example;
@@ -22,10 +20,7 @@ public class JsonExample extends Example implements Jsonable {
 	
 
 	public String toJsonString() {
-		
-		
-	        
-		boolean needComma = false ; 
+
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
@@ -34,13 +29,7 @@ public class JsonExample extends Example implements Jsonable {
         elements.put("value", getJsonValue()) ;
         elements.put("$ref", get$ref()) ;
         sb = Jsonable.appendElements(sb, elements);
-        /*
-        if (getSummary() != null) 		{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(getSummary())).append("\"\n"); needComma = true ; } 
-        if (getDescription() != null) 	{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": \"").append(toIndentedString(getDescription())).append("\"\n"); needComma = true ;}
-        if (getJsonValue() != null)     { sb.append( Jsonable.appendCommaEnter(needComma)).append("\"value\": ").append(toIndentedString(getJsonValue().toJsonString())).append("\n"); needComma = true ; } 
-        if (getExternalValue() != null) { sb.append( Jsonable.appendCommaEnter(needComma)).append("\"externalValue\": ").append(toIndentedString(getExternalValue())).append("\n"); needComma = true ; }
-        if (get$ref() != null) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"$ref\": \"").append(toIndentedString(get$ref())).append("\"\n"); needComma = true ;}
-        */
+
         sb.append("}");
         return sb.toString();
     }

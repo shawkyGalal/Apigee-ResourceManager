@@ -11,7 +11,7 @@ import io.swagger.v3.oas.models.annotations.OpenAPI31;
 
 
 public class JsonOperation implements Jsonable {
-    private List<String> tags = null;
+    private JsonArrayList<String> tags = null;
     private String summary = null;
     private String description = null;
     private ExternalDocumentation externalDocs = null;
@@ -62,7 +62,7 @@ public class JsonOperation implements Jsonable {
 		}
 	   	
 	   	this.setSummary(m_operation.getSummary());
-	   	this.setTags(m_operation.getTags());
+	   	if (m_operation.getTags() != null ) this.setTags(new JsonArrayList(m_operation.getTags()));
     	
 	}
     
@@ -74,22 +74,22 @@ public class JsonOperation implements Jsonable {
      * @return List&lt;String&gt; tags
      **/
 
-    public List<String> getTags() {
+    public JsonArrayList<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(JsonArrayList<String> tags) {
         this.tags = tags;
     }
 
-    public JsonOperation tags(List<String> tags) {
+    public JsonOperation tags(JsonArrayList<String> tags) {
         this.tags = tags;
         return this;
     }
 
     public JsonOperation addTagsItem(String tagsItem) {
         if (this.tags == null) {
-            this.tags = new ArrayList<>();
+            this.tags = new JsonArrayList<>();
         }
         this.tags.add(tagsItem);
         return this;
@@ -403,7 +403,7 @@ public class JsonOperation implements Jsonable {
         sb.append("{\n");
 
         if (jsonRequestBody != null){sb.append("    \"requestBody\": ").append(toIndentedString(jsonRequestBody.toJsonString())); needComma = true; }
-        if (tags != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"tags\": ").append(toIndentedString(tags)); needComma = true ; }
+        if (tags != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"tags\": ").append(toIndentedString(tags.toJsonString())); needComma = true ; }
         if (jsonResponses != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"responses\": ").append(toIndentedString(jsonResponses.toJsonString())) ; needComma = true; }
         if (summary != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(summary)).append("\""); needComma = true ; }
         if (externalDocs != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"externalDocs\": ").append(toIndentedString(externalDocs)); needComma = true; }

@@ -28,6 +28,7 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
   		  	.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath)	
   		  	.withTransformerClass(this.getClass()); 
+        	e.printStackTrace();
         }
         return result ; 
 	}

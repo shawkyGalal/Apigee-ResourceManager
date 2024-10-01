@@ -46,7 +46,12 @@ public class JsonArrayList<T> extends ArrayList<T> implements Jsonable {
 			for ( int i = 0 ; i< this.size() ; i++)
 			{
 				boolean isJsonable = this.get(i) instanceof Jsonable ;  
-				String  objStrValue = (isJsonable)? ((Jsonable) this.get(i)).toJsonString() : this.get(i).toString() ; 
+				String  objStrValue ; 
+				if (isJsonable)
+				{	objStrValue = ((Jsonable) this.get(i)).toJsonString() ; }
+				else
+				{ objStrValue = "\""+this.get(i).toString()+"\"" ;  }
+			
 				result = result + ( (i> 0 )? ",\n":"") + objStrValue; 
 			}
 			result = result + "\n]";

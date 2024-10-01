@@ -21,8 +21,8 @@ public class JsonPathItem implements Jsonable{
     private JsonOperation head = null;
     private JsonOperation patch = null;
     private JsonOperation trace = null;
-    private List<JsonServer> servers = null;
-    private List<JsonParameter> parameters = null;
+    private JsonArrayList<JsonServer> servers = null;
+    private JsonArrayList<JsonParameter> parameters = null;
     private String $ref = null;
     private java.util.Map<String, Object> extensions = null;
 
@@ -35,7 +35,7 @@ public class JsonPathItem implements Jsonable{
 		if (m_pathItem.getHead() != null) this.setHead(new JsonOperation(m_pathItem.getHead()));
 		if (m_pathItem.getOptions() != null) this.setOptions(new JsonOperation(m_pathItem.getOptions()));
 		if (m_pathItem.getParameters() != null && m_pathItem.getParameters().size() > 0)
-		{	parameters = new ArrayList<JsonParameter>() ; 
+		{	parameters = new JsonArrayList<JsonParameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_pathItem.getParameters()  )
 			{
 				parameters.add(new JsonParameter(par)) ; 
@@ -45,7 +45,7 @@ public class JsonPathItem implements Jsonable{
 		if (m_pathItem.getPost() != null) this.setPost(new JsonOperation(m_pathItem.getPost()));
 		if (m_pathItem.getPut() != null) this.setPut(new JsonOperation(m_pathItem.getPut()));
 		if (m_pathItem.getServers() != null && m_pathItem.getServers().size() > 0)
-		{	servers = new ArrayList<JsonServer>() ; 
+		{	servers = new JsonArrayList<JsonServer>() ; 
 			for (io.swagger.v3.oas.models.servers.Server ser : m_pathItem.getServers()  )
 			{
 				servers.add(new JsonServer(ser)) ; 
@@ -358,18 +358,18 @@ public class JsonPathItem implements Jsonable{
         return servers;
     }
 
-    public void setServers(List<JsonServer> servers) {
+    public void setServers(JsonArrayList<JsonServer> servers) {
         this.servers = servers;
     }
 
-    public JsonPathItem servers(List<JsonServer> servers) {
+    public JsonPathItem servers(JsonArrayList<JsonServer> servers) {
         this.servers = servers;
         return this;
     }
 
     public JsonPathItem addServersItem(JsonServer serversItem) {
         if (this.servers == null) {
-            this.servers = new ArrayList<>();
+            this.servers = new JsonArrayList<>();
         }
         this.servers.add(serversItem);
         return this;
@@ -385,18 +385,18 @@ public class JsonPathItem implements Jsonable{
         return parameters;
     }
 
-    public void setParameters(List<JsonParameter> parameters) {
+    public void setParameters(JsonArrayList<JsonParameter> parameters) {
         this.parameters = parameters;
     }
 
-    public JsonPathItem parameters(List<JsonParameter> parameters) {
+    public JsonPathItem parameters(JsonArrayList<JsonParameter> parameters) {
         this.parameters = parameters;
         return this;
     }
 
     public JsonPathItem addParametersItem(JsonParameter parametersItem) {
         if (this.parameters == null) {
-            this.parameters = new ArrayList<>();
+            this.parameters = new JsonArrayList<>();
         }
         this.parameters.add(parametersItem);
         return this;
@@ -538,7 +538,7 @@ public class JsonPathItem implements Jsonable{
         if(patch != null) sb.append("    \"patch\": ").append(toIndentedString(((Jsonable)patch).toJsonString())).append("\n");
         if(trace != null) sb.append("    \"trace\": ").append(toIndentedString(((Jsonable)trace).toJsonString())).append("\n");
         if(servers != null) sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n");
-        if(parameters != null) sb.append("    \"parameters\": ").append(toIndentedString(parameters)).append("\n");
+        if(parameters != null) sb.append("    \"parameters\": ").append(toIndentedString(parameters.toJsonString())).append("\n");
         if($ref != null) sb.append("    \"$ref\": ").append(toIndentedString($ref)).append("\n");
         sb.append("}");
         return sb.toString();

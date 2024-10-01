@@ -61,13 +61,13 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
     	return components ; 
 	}
     
-    private JsonArrayList<Tag> jsonTags ; 
-    public JsonArrayList<Tag> getJsonTags() {
+    private JsonArrayList<JsonTag> jsonTags ; 
+    public JsonArrayList<JsonTag> getJsonTags() {
 		if (this.jsonTags == null && this.getTags() !=null && this.getTags().size()>0)
 		{
-			this.jsonTags = new JsonArrayList<Tag>() ; 
+			this.jsonTags = new JsonArrayList<JsonTag>() ; 
 			for (int i = 0 ; i< this.getTags().size() ; i++)
-			{jsonTags.add(this.getTags().get(i)) ; }
+			{jsonTags.add(new JsonTag (this.getTags().get(i))) ; }
 		}
     	return jsonTags;
 	}

@@ -1,10 +1,16 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import java.util.Map;
+
 import io.swagger.v3.oas.models.SpecVersion;
+import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.Schema;
 
 public class JsonSchema extends Schema  implements Jsonable {
 
+	private JsonProperties  jsonProperties ;
+	private JsonExamples jsonExamples ;
+	
 	public JsonSchema(Schema schema) {
 
 		this.set$anchor(schema.get$anchor());
@@ -73,7 +79,9 @@ public class JsonSchema extends Schema  implements Jsonable {
 		this.setPattern(schema.getPattern());
 		this.setPatternProperties(schema.getPatternProperties());
 		this.setPrefixItems(schema.getPrefixItems());
-		this.setProperties(schema.getProperties());
+		
+		if (schema.getProperties() != null ) this.setJsonProperties(new JsonProperties (schema.getProperties()) );
+		
 		this.setPropertyNames(schema.getPropertyNames());
 		this.setReadOnly(schema.getReadOnly());
 		this.setRequired(schema.getRequired());
@@ -122,7 +130,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        if(getMinProperties() != null ) sb.append("    \"minProperties\": ").append(toIndentedString(getMinProperties())).append("\n");
 	        if(getRequired() != null ) sb.append("    \"required\": ").append(toIndentedString(getRequired())).append("\n");
 	        if(getNot() != null ) sb.append("    \"not\": ").append(toIndentedString(getNot())).append("\n");
-	        if(getProperties() != null ) sb.append("    \"properties\": ").append(toIndentedString(getProperties())).append("\n");
+	        if(getJsonProperties() != null ) sb.append("    \"properties\": ").append(toIndentedString(getJsonProperties().toJsonString())).append("\n");
 	        if(getAdditionalProperties() != null ) sb.append("    \"additionalProperties\": ").append(toIndentedString(getAdditionalProperties())).append("\n");
 	        if(getNullable() != null ) sb.append("    \"nullable\": ").append(toIndentedString(getNullable())).append("\n");
 	        if(getReadOnly() != null ) sb.append("    \"readOnly\": ").append(toIndentedString(getReadOnly())).append("\n");
@@ -170,6 +178,22 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        }
 	        return o.toString().replace("\n", "\n    ");
 	    }
+
+		public JsonProperties getJsonProperties() {
+			return jsonProperties;
+		}
+
+		public void setJsonProperties(JsonProperties jsonProperties) {
+			this.jsonProperties = jsonProperties;
+		}
+
+		public JsonExamples getJsonExamples() {
+			return jsonExamples;
+		}
+
+		public void setJsonExamples(JsonExamples jsonExamples) {
+			this.jsonExamples = jsonExamples;
+		}
 
 
 }
