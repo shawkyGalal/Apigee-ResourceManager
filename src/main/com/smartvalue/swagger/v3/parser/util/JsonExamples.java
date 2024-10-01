@@ -8,9 +8,8 @@ import io.swagger.v3.oas.models.examples.Example;
 
 
 
-public class JsonExamples  extends JsonLinkedHashMap<String, Example>
+public class JsonExamples  extends JsonLinkedHashMap<String, JsonExample>
 {
-	private JsonExample jsonExample ; 
 	
 	public JsonExamples(Map<String, Example> examples) {
 		for (Entry<String, Example> entry : examples.entrySet())

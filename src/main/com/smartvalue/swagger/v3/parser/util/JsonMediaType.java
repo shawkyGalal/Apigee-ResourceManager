@@ -53,7 +53,7 @@ public class JsonMediaType extends io.swagger.v3.oas.models.media.MediaType impl
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
  
-        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
         elements.put("schema", getJsonSchema()) ; 
         elements.put("examples", getJsonExamples()) ;
         elements.put("example", getExample()) ;

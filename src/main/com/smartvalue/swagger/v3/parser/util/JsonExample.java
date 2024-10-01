@@ -23,7 +23,7 @@ public class JsonExample extends Example implements Jsonable {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
         elements.put("summary", getSummary()) ; 
         elements.put("description", getDescription()) ;
         elements.put("value", getJsonValue()) ;

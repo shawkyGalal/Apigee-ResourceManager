@@ -401,7 +401,22 @@ public class JsonOperation implements Jsonable {
     	boolean needComma = false ; 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
+        elements.put("requestBody", jsonRequestBody) ; 
+        elements.put("tags", tags) ;
+        elements.put("responses", jsonResponses) ;
+        elements.put("summary", summary) ;
+        elements.put("externalDocs", externalDocs) ;
+        elements.put("security", security) ;
+        elements.put("operationId", operationId) ;
+        elements.put("description", description) ;
+        elements.put("parameters", jsonParameters) ;
+        elements.put("callbacks", callbacks) ;
+        elements.put("deprecated", deprecated) ;
+        elements.put("servers", servers) ;
+        
+        sb = Jsonable.appendElements(sb, elements);
+        /*
         if (jsonRequestBody != null){sb.append("    \"requestBody\": ").append(toIndentedString(jsonRequestBody.toJsonString())); needComma = true; }
         if (tags != null) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"tags\": ").append(toIndentedString(tags.toJsonString())); needComma = true ; }
         if (jsonResponses != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"responses\": ").append(toIndentedString(jsonResponses.toJsonString())) ; needComma = true; }
@@ -413,8 +428,8 @@ public class JsonOperation implements Jsonable {
         if (jsonParameters != null) {sb.append( Jsonable.appendCommaEnter(needComma)).append("\"parameters\": ").append(toIndentedString(jsonParameters)); needComma = true; }
         if (callbacks != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"callbacks\": ").append(toIndentedString(callbacks)); needComma = true; }
         if (deprecated != null) 	{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"deprecated\": ").append(toIndentedString(deprecated)); needComma = true; }
-
         if (servers != null) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"servers\": ").append(toIndentedString(servers)); needComma = true;  }
+        */
         sb.append("\n}");
         return sb.toString();
     }

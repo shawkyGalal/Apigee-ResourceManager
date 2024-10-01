@@ -23,9 +23,24 @@ public class JsonParameter extends io.swagger.v3.oas.models.parameters.Parameter
 	}
 
 	 public String toJsonString() {
-	        StringBuilder sb = new StringBuilder();
-	        sb.append("{\n");
 
+		 StringBuilder sb = new StringBuilder();
+	        sb.append("{\n");
+	        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
+	        elements.put("name", getName()) ; 
+	        elements.put("description", getDescription()) ;
+	        elements.put("schema", getJsonSchema()) ;
+	        elements.put("in", getIn()) ;
+	        elements.put("required", getRequired()) ;
+	        elements.put("deprecated", getDeprecated()) ;
+	        elements.put("allowEmptyValue", getAllowEmptyValue()) ;
+	        elements.put("examples", getExamples()) ;
+	        elements.put("example", getExample()) ;
+	        elements.put("content", getContent()) ;
+	        elements.put("$ref", get$ref()) ;
+	        
+	        sb = Jsonable.appendElements(sb, elements);
+	        /*	        
 	        if (getName() != null ) sb.append("    \"name\": \"").append(toIndentedString(getName())).append("\"\n");
 	        if (getDescription() != null )  	sb.append("    \"description\": \"").append(toIndentedString(getDescription())).append("\"\n");
 	        if (getJsonSchema() != null ) 		sb.append("    \"schema\": ").append(toIndentedString(getJsonSchema().toJsonString())).append("\n");
@@ -40,6 +55,8 @@ public class JsonParameter extends io.swagger.v3.oas.models.parameters.Parameter
 	        if (getExample() != null ) 			sb.append("    \"example\": ").append(toIndentedString(getExample())).append("\n");
 	        if (getContent() != null ) 			sb.append("    \"content\": ").append(toIndentedString(getContent())).append("\n");
 	        if (get$ref() != null ) 			sb.append("    $ref: ").append(toIndentedString(get$ref())).append("\n");
+	        */
+	        
 	        sb.append("}");
 	        return sb.toString();
 	    }

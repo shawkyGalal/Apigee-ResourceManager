@@ -18,17 +18,12 @@ public class JsonContact extends Contact implements Jsonable {
 	public String toJsonString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
         elements.put("name", getName()) ; 
         elements.put("url", getUrl()) ;
         elements.put("email", getEmail()) ;
         sb = Jsonable.appendElements(sb, elements);
-        
-        /*
-        if(getName() != null ) sb.append("    name: ").append(toIndentedString(getName())).append("\n");
-        if(getUrl() != null ) sb.append("    url: ").append(toIndentedString(getUrl())).append("\n");
-        if(getEmail() != null ) sb.append("    email: ").append(toIndentedString(getEmail())).append("\n");
-        */
+     
         sb.append("}");
         return sb.toString();
     }

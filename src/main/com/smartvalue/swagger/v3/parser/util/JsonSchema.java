@@ -10,7 +10,8 @@ public class JsonSchema extends Schema  implements Jsonable {
 
 	private JsonProperties  jsonProperties ;
 	private JsonExamples jsonExamples ;
-	
+	private JsonAdditionalProperties jsonAdditionalProperties ;  
+	private JsonArrayList<JsonSchema> jsonAllOf ; 
 	public JsonSchema(Schema schema) {
 
 		this.set$anchor(schema.get$anchor());
@@ -20,8 +21,21 @@ public class JsonSchema extends Schema  implements Jsonable {
 		this.set$schema(schema.get$schema());
 		
 		this.setAdditionalItems(schema.getAdditionalItems());
-		this.setAdditionalProperties(schema.getAdditionalProperties());
-		this.setAllOf(schema.getAllOf());
+		if (schema.getAdditionalProperties() != null) { 
+			this.setAdditionalProperties(schema.getAdditionalProperties());
+			this.setJsonAdditionalProperties(new JsonAdditionalProperties (this.getAdditionalProperties()));
+		}
+		if (schema.getAllOf() != null) { 
+			this.setAllOf(schema.getAllOf()); 
+			
+			jsonAllOf = new JsonArrayList<JsonSchema>() ; 
+			for (int i = 0 ; i< schema.getAllOf().size() ; i++)
+			{
+				Schema xx= (Schema) schema.getAllOf().get(i) ; 
+				jsonAllOf.add(new JsonSchema(xx)) ; 	
+			}
+			
+			} 
 		this.setAnyOf(schema.getAnyOf());
 		this.setBooleanSchemaValue(schema.getBooleanSchemaValue());
 		
@@ -113,6 +127,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        if(get$ref() != null ) sb.append("    \"$ref\": \"").append(toIndentedString(get$ref())).append("\"\n");
 	        if(getDescription() != null ) sb.append("    \"description\": \"").append(toIndentedString(getDescription())).append("\"\n");
 	        if(getTitle() != null ) sb.append("    \"title\": \"").append(toIndentedString(getTitle())).append("\"\n");
+	        if(getJsonAllOf() != null ) sb.append("    \"allOf\": \"").append(toIndentedString(getJsonAllOf().toJsonString())).append("\"\n");
 	        if(getMultipleOf() != null ) sb.append("    \"multipleOf\": ").append(toIndentedString(getMultipleOf())).append("\n");
 	        if(getMaximum() != null ) sb.append("    \"maximum\": ").append(toIndentedString(getMaximum())).append("\n");
 	        Object exclusiveMaximumStr = getSpecVersion() == SpecVersion.V30 ? getExclusiveMaximum() : getExclusiveMaximumValue();
@@ -131,7 +146,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        if(getRequired() != null ) sb.append("    \"required\": ").append(toIndentedString(getRequired())).append("\n");
 	        if(getNot() != null ) sb.append("    \"not\": ").append(toIndentedString(getNot())).append("\n");
 	        if(getJsonProperties() != null ) sb.append("    \"properties\": ").append(toIndentedString(getJsonProperties().toJsonString())).append("\n");
-	        if(getAdditionalProperties() != null ) sb.append("    \"additionalProperties\": ").append(toIndentedString(getAdditionalProperties())).append("\n");
+	        if(getJsonAdditionalProperties() != null ) sb.append("    \"additionalProperties\": ").append(toIndentedString(getJsonAdditionalProperties().toJsonString())).append("\n");
 	        if(getNullable() != null ) sb.append("    \"nullable\": ").append(toIndentedString(getNullable())).append("\n");
 	        if(getReadOnly() != null ) sb.append("    \"readOnly\": ").append(toIndentedString(getReadOnly())).append("\n");
 	        if(getWriteOnly() != null ) sb.append("    \"writeOnly\": ").append(toIndentedString(getWriteOnly())).append("\n");
@@ -194,6 +209,24 @@ public class JsonSchema extends Schema  implements Jsonable {
 		public void setJsonExamples(JsonExamples jsonExamples) {
 			this.jsonExamples = jsonExamples;
 		}
+
+		public JsonAdditionalProperties getJsonAdditionalProperties() {
+			return jsonAdditionalProperties;
+		}
+
+		public void setJsonAdditionalProperties(JsonAdditionalProperties jsonAdditionalProperties) {
+			this.jsonAdditionalProperties = jsonAdditionalProperties;
+		}
+
+		public JsonArrayList<JsonSchema> getJsonAllOf() {
+			return jsonAllOf;
+		}
+
+		public void setJsonAllOf(JsonArrayList<JsonSchema> jsonAllOf) {
+			this.jsonAllOf = jsonAllOf;
+		}
+
+		
 
 
 }

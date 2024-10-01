@@ -25,7 +25,7 @@ public class JsonApiResponse extends ApiResponse implements Jsonable{
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
 
-	        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+	        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
 	        elements.put("description", getDescription()) ;
 	        elements.put("content", getJsonContent()) ; 
 	        elements.put("headers", getHeaders()) ;

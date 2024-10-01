@@ -4,12 +4,14 @@ public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.Request
 
 	private JsonContent jsonContent ; 
 	
-	public JsonRequestBody(io.swagger.v3.oas.models.parameters.RequestBody requestBody)  {
-		if (requestBody.get$ref() != null ) this.set$ref(requestBody.get$ref());
-		if (requestBody.getContent() != null ) this.setJsonContent(new JsonContent (requestBody.getContent())); 
-		if (requestBody.getDescription() != null ) this.setDescription(requestBody.getDescription());
-		if (requestBody.getExtensions() != null ) this.setExtensions(requestBody.getExtensions());
-		if (requestBody.getRequired() != null ) this.setRequired(requestBody.getRequired());
+	
+	public JsonRequestBody(io.swagger.v3.oas.models.parameters.RequestBody m_requestBody)  {
+		if (m_requestBody.get$ref() != null ) this.set$ref(m_requestBody.get$ref());
+		if (m_requestBody.getContent() != null ) { this.setContent(m_requestBody.getContent());
+												 this.setJsonContent(new JsonContent (m_requestBody.getContent())); } 
+		if (m_requestBody.getDescription() != null ) this.setDescription(m_requestBody.getDescription());
+		if (m_requestBody.getExtensions() != null ) this.setExtensions(m_requestBody.getExtensions());
+		if (m_requestBody.getRequired() != null ) this.setRequired(m_requestBody.getRequired());
 		
 	}
 

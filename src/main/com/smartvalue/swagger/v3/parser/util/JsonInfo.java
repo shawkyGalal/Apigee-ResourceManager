@@ -25,7 +25,7 @@ public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Json
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         
-        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
         elements.put("title", getTitle()) ; 
         elements.put("description", getDescription()) ;
         elements.put("summary", getSummary()) ;
@@ -35,16 +35,6 @@ public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Json
         elements.put("version", getVersion()) ;
         
         sb = Jsonable.appendElements(sb, elements);
-        
-        /*									//{sb.append( Jsonable.appendCommaEnter(needComma)).append("    ").append("\"tags\": ").append(toIndentedString(tags)).append("\n"); needComma = true ; }
-        if (getTitle() != null) 			{ sb.append("    \"title\": \"").append(toIndentedString(getTitle())).append("\""); needComma = true ; }
-        if (getDescription() != null) 		{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"description\": \"").append(toIndentedString(getDescription())); needComma = true ; }
-        if (getSummary() != null) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"summary\": \"").append(toIndentedString(getSummary())).append("\""); needComma = true ;}
-        if (getTermsOfService() !=null ) 	{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"termsOfService\": \"").append(toIndentedString(getTermsOfService())).append("\""); needComma = true ;} 
-        if (getContact() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"contact\": ").append(toIndentedString(getJsonContact().toJsonString())); needComma = true ; }
-        if (getLicense() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"license\": ").append(toIndentedString(getJsonLicense().toJsonString())); needComma = true ; } 
-        if (getVersion() !=null ) 			{ sb.append( Jsonable.appendCommaEnter(needComma)).append("\"version\": \"").append(toIndentedString(getVersion())).append("\""); needComma = true ; }
-        */
         sb.append("\n}");
         return sb.toString();
     }

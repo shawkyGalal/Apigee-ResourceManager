@@ -78,8 +78,8 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
 		boolean needComma = false ; 
 		StringBuilder sb = new StringBuilder();
         sb.append("{\n");
-        /*
-        TreeMap<String , Object > elements = new TreeMap<String , Object >() ;
+        
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
         elements.put("openapi", getOpenapi()) ; 
         elements.put("info", getJsonInfo()) ;
         elements.put("externalDocs", getExternalDocs()) ;
@@ -90,7 +90,7 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
         elements.put("security", getJsonSecurity()) ;
         
         sb = Jsonable.appendElements(sb, elements);
-        */
+        /*
        
         if (getOpenapi() != null) 				{sb.append("    \"openapi\": \"").append(toIndentedString(getOpenapi())).append("\""); needComma = true ; } 
         if (getJsonInfo() != null ) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"info\": ").append(toIndentedString(getJsonInfo().toJsonString()));  needComma = true ;  } 
@@ -100,8 +100,10 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
         if (getJsonPaths() != null ) 			{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"paths\": ").append(toIndentedString(getJsonPaths().toJsonString()));  needComma = true ; }
         if (getJsonComponents() != null)		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"components\": ").append(toIndentedString(getJsonComponents().toJsonString()));  needComma = true ; } 
         if (getJsonSecurity() != null ) 		{sb.append( Jsonable.appendCommaEnter(needComma)).append("\"security\": ").append(toIndentedString(getJsonSecurity().toJsonString() ));  needComma = true ; } 
+        */
         if (getSpecVersion() == SpecVersion.V31){sb.append( Jsonable.appendCommaEnter(needComma)).append("\"webhooks\": ").append(toIndentedString(getWebhooks()));   needComma = true ; }
         if (getSpecVersion() == SpecVersion.V31){sb.append( Jsonable.appendCommaEnter(needComma)).append("\"jsonSchemaDialect\": ").append(toIndentedString(getJsonSchemaDialect()));  needComma = true ; }
+        
         sb.append("}");
         return sb.toString(); 
 	}

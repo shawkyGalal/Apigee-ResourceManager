@@ -526,20 +526,22 @@ public class JsonPathItem implements Jsonable{
 
     public String toJsonString() {
         StringBuilder sb = new StringBuilder();
+        boolean needComma = false ; 
         sb.append("{\n");
-        if(summary != null) sb.append("    \"summary\": ").append(toIndentedString(summary)).append("\n");
-        if(description != null) sb.append("    \"description\": ").append(toIndentedString(description)).append("\n");
-        if(get != null) sb.append("    \"get\": ").append(toIndentedString(((Jsonable)get).toJsonString())).append("\n");
-        if(put != null) sb.append("    \"put\": ").append(toIndentedString(((Jsonable)put).toJsonString())).append("\n");
-        if(post != null) sb.append("    \"post\": ").append(toIndentedString(((Jsonable)post).toJsonString())).append("\n");
-        if(delete != null) sb.append("    \"delete\": ").append(toIndentedString(((Jsonable)delete).toJsonString())).append("\n");
-        if(options != null) sb.append("    \"options\": ").append(toIndentedString(((Jsonable)options).toJsonString())).append("\n");
-        if(head != null) sb.append("    \"head\": ").append(toIndentedString(((Jsonable)head).toJsonString())).append("\n");
-        if(patch != null) sb.append("    \"patch\": ").append(toIndentedString(((Jsonable)patch).toJsonString())).append("\n");
-        if(trace != null) sb.append("    \"trace\": ").append(toIndentedString(((Jsonable)trace).toJsonString())).append("\n");
-        if(servers != null) sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n");
-        if(parameters != null) sb.append("    \"parameters\": ").append(toIndentedString(parameters.toJsonString())).append("\n");
-        if($ref != null) sb.append("    \"$ref\": ").append(toIndentedString($ref)).append("\n");
+                   //           { sb.append( Jsonable.appendCommaEnter(needComma)).append("\"info\": ").append(toIndentedString(getJsonInfo().toJsonString()));  needComma = true ;  }
+        if(summary != null) 	{ sb.append(Jsonable.appendCommaEnter(needComma)).append ("\"summary\": ").append(toIndentedString(summary)).append("\n"); needComma = true; } 
+        if(description != null) { sb.append("    \"description\": ").append(toIndentedString(description)).append("\n"); needComma = true; } 
+        if(get != null) 		{ sb.append("    \"get\": ").append(toIndentedString(((Jsonable)get).toJsonString())).append("\n"); needComma = true; }
+        if(put != null) 		{ sb.append("    \"put\": ").append(toIndentedString(((Jsonable)put).toJsonString())).append("\n"); needComma = true; }
+        if(post != null) 		{ sb.append("    \"post\": ").append(toIndentedString(((Jsonable)post).toJsonString())).append("\n"); needComma = true; }
+        if(delete != null) 		{ sb.append("    \"delete\": ").append(toIndentedString(((Jsonable)delete).toJsonString())).append("\n"); needComma = true; }
+        if(options != null) 	{ sb.append("    \"options\": ").append(toIndentedString(((Jsonable)options).toJsonString())).append("\n"); needComma = true; }
+        if(head != null) 		{ sb.append("    \"head\": ").append(toIndentedString(((Jsonable)head).toJsonString())).append("\n"); needComma = true; }
+        if(patch != null) 		{ sb.append("    \"patch\": ").append(toIndentedString(((Jsonable)patch).toJsonString())).append("\n"); needComma = true; }
+        if(trace != null) 		{ sb.append("    \"trace\": ").append(toIndentedString(((Jsonable)trace).toJsonString())).append("\n"); needComma = true; }
+        if(servers != null) 	{ sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n"); needComma = true; }
+        if(parameters != null) 	{ sb.append("    \"parameters\": ").append(toIndentedString(parameters.toJsonString())).append("\n"); needComma = true; }
+        if($ref != null) 		{ sb.append("    \"$ref\": ").append(toIndentedString($ref)).append("\n"); needComma = true; }
         sb.append("}");
         return sb.toString();
     }

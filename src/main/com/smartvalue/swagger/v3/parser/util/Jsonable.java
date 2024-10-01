@@ -22,7 +22,7 @@ public interface Jsonable {
 	  return o.toString().replace("\n", "\n    ");
 	 }
 
-	public static StringBuilder appendElements(StringBuilder sb , TreeMap<String, Object> elements) 
+	public static StringBuilder appendElements(StringBuilder sb , FifoMap<String, Object> elements) 
 	{
 		boolean needComma = false;  
 		for (Entry<String, Object> entry : elements.entrySet())
@@ -40,6 +40,10 @@ public interface Jsonable {
 		 		{
 					sb.append( Jsonable.appendCommaEnter(needComma)).append("\""+objectName+"\": \"").append(toIndentedString(value)).append("\"");
 		 		}
+				else 
+				{
+					sb.append(value) ; 
+				}
 				needComma = true ; 
 			}
 		}
