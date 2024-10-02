@@ -19,6 +19,7 @@ import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer;
 import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
 public class Transform extends ApigeeTest{
@@ -26,9 +27,20 @@ public class Transform extends ApigeeTest{
 	 @Test
 	 public void transformAllProxies() throws Exception {
 		//==================Transform All Proxies ===========================
-		ApigeeService proxyServ =  sourceMngServer.getProxyServices(); 
+		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(buildProxyTransformers()); 
 		ArrayList<TransformResult> objectErrors =  proxyServ.transformAll(DEST_FOLDER_NAME + ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+	 }
+	 
+	 @Test
+	 public void transformOneProxy() throws Exception {
+		//==================Transform All Proxies ===========================
+		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
+		//proxyServ.setTranformers(buildProxyTransformers()); 
+		String proxyrelativePath = "\\moj-internal-clients\\SMS-Governance\\147" ; 
+		ArrayList<TransformResult> objectErrors =  proxyServ.transformProxy(DEST_FOLDER_NAME + ProxiesSubFolder + proxyrelativePath +"\\SMS-Governance.zip"
+				,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder + proxyrelativePath) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 

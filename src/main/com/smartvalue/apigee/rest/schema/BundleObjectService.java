@@ -2,6 +2,7 @@ package com.smartvalue.apigee.rest.schema;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -14,7 +15,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
+import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 public abstract class BundleObjectService extends ApigeeService {
@@ -38,6 +41,66 @@ public abstract class BundleObjectService extends ApigeeService {
 		this.deployUponUpload = deployUponUpload;
 	}
 	
+	public ArrayList<TransformResult> transformProxy(String pundleZipFileName, String newBundleFolderPath) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
+		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
+		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
+
+		File pundleZipFile = new File (pundleZipFileName) ; 
+		String zipFileName = pundleZipFile.getName();
+
+		 
+		String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
+		int transformerCount = 1 ; 
+		String tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
+		Path sourcePath ; 
+		Path destPath ; 
+		if (transformers.size() > 0 )
+		{
+			TransformResult  tr = null ; 
+			for (ApigeeObjectTransformer trasnformer : transformers)
+			{
+				boolean transform = trasnformer.filter(pundleZipFileName) ;
+				if (transform)
+				{	
+					tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
+					if (tr.isFailed())	
+					{	
+						transformResults.add(tr);
+						break; 
+					}
+					else { System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );}
+				
+					//System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
+					// in the next loop transform the transformed file
+					if (transformerCount != transformers.size())
+					{
+						pundleZipFileName = tempTramsformedFilePath + File.separatorChar + proxyName + ".zip" ;
+						transformerCount++;
+						tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
+					}
+				}
+				 
+			}
+			//--Upon success transformation, Copy Last Transformed file to the outputFolderPath 
+			if (tr!= null && !tr.isFailed())
+			{
+				sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + proxyName + ".zip");
+				destPath = Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
+				Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+			}
+		}
+		else
+		{
+			// if No TRansformers found, simply copy the file to destination 
+			sourcePath =  Path.of(pundleZipFileName);
+			destPath =  Path.of(newBundleFolderPath + File.separatorChar + zipFileName );
+			Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
+		}
+		
+		return transformResults ; 
+	}
+
+	
 	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
 	{
 		
@@ -59,9 +122,13 @@ public abstract class BundleObjectService extends ApigeeService {
 					String revision = revisionFolder.getName(); 
 					for (File pundleZipFile : revisionFolder.listFiles())
 					{
+						
 						String zipFileName= pundleZipFile.getName(); 
 						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
+						transformResults.addAll(this.transformProxy(pundleZipFile.getAbsolutePath(), newBundleFolderPath)) ; 
+						
+						/*
 						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
 						int transformerCount = 1 ; 
 						String tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
@@ -112,6 +179,7 @@ public abstract class BundleObjectService extends ApigeeService {
 							 Files.createDirectories(destPath.getParent());
 							 Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 						}
+						*/
 
 						
 					}

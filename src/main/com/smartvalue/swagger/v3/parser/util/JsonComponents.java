@@ -7,12 +7,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.models.parameters.RequestBody;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 public class JsonComponents  extends io.swagger.v3.oas.models.Components implements Jsonable{
 
 	private JsonSchemas jsonSchemas ;
 	private JsonLinkedHashMap<String, JsonRequestBody> jsonRequestBodies ; 
+	private Map<String, JsonSecurityScheme> jsonSecuritySchemes ;  
 	
+	public Map<String, JsonSecurityScheme> getJsonSecuritySchemes() {
+		return jsonSecuritySchemes;
+	}
+
+	public void setJsonSecuritySchemes(Map<String, JsonSecurityScheme> jsonSecuritySchemes) {
+		this.jsonSecuritySchemes = jsonSecuritySchemes;
+	}
+
 	public JsonComponents(io.swagger.v3.oas.models.Components components) {
 		this.setCallbacks(components.getCallbacks());
 		this.setExamples(components.getExamples());
@@ -34,8 +44,16 @@ public class JsonComponents  extends io.swagger.v3.oas.models.Components impleme
 			}
 		}
 		this.setResponses(components.getResponses());
-		this.setJsonSchemas(new JsonSchemas(components.getSchemas()));
-		this.setSecuritySchemes(components.getSecuritySchemes());
+		if (components.getSchemas() != null ) this.setJsonSchemas(new JsonSchemas(components.getSchemas()));
+		if (components.getSecuritySchemes() != null && components.getSecuritySchemes().size() > 0 ) {
+			this.setSecuritySchemes(components.getSecuritySchemes());
+			jsonSecuritySchemes = new JsonLinkedHashMap<String, JsonSecurityScheme>(); 
+			for (Entry<String, SecurityScheme> secSchema : components.getSecuritySchemes().entrySet() )
+			{
+				jsonSecuritySchemes.put(secSchema.getKey(), new JsonSecurityScheme(secSchema.getValue())) ; 
+			}
+			this.setJsonSecuritySchemes(jsonSecuritySchemes);
+		}
 	}
 
 	public String toJsonString() throws JsonMappingException, JsonProcessingException {
@@ -49,7 +67,7 @@ public class JsonComponents  extends io.swagger.v3.oas.models.Components impleme
 	        elements.put("examples", getExamples()) ;
 	        elements.put("requestBodies", getJsonRequestBodies()) ;
 	        elements.put("headers", getHeaders()) ;
-	        elements.put("securitySchemes", getSecuritySchemes()) ;
+	        elements.put("securitySchemes", getJsonSecuritySchemes()) ;
 	        elements.put("links", getLinks()) ;
 	        elements.put("callbacks", getCallbacks()) ;
 	        elements.put("pathItems", getPathItems()) ;

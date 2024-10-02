@@ -41,17 +41,24 @@ public interface Jsonable {
 			String objectName = entry.getKey() ; 
 			Object value = entry.getValue() ; 
 			
-			 
-			
 			if(value != null ) 
 			{ 	
 			
 				sb.append( Jsonable.appendCommaEnter(needComma)).append("\""+objectName+"\": ") ;
 	 			if ( value instanceof Jsonable )
 				{ 
+	 				boolean doNotJsonFormat = false ; 
+	 				Object firstElement ; 
+	 				if (value instanceof JsonArrayList  )
+	 				{	JsonArrayList xx = (JsonArrayList) value ;  
+	 					firstElement = (xx.size()>0 )? xx.get(0) : null ;
+	 					doNotJsonFormat = firstElement != null && firstElement instanceof JsonServer ; 
+	 				}
+	 				
 	 				String strJson = ((Jsonable)value).toJsonString() ;
+ 
 	 				try {
-	 	            	sb.append(toIndentedString(formatJson(strJson))).append("\n");
+	 	            	sb.append(toIndentedString((doNotJsonFormat) ? strJson : formatJson(strJson))).append("\n");
 	 				}
 	 				catch (Exception e) {
 	 					System.out.print(strJson);

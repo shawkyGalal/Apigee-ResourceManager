@@ -1,6 +1,7 @@
 package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry ;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +14,17 @@ public class JsonLinkedHashMap<k, v> extends LinkedHashMap<k, v > implements Jso
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public JsonLinkedHashMap ( Map<k, v> xx )
+	{
+		for ( java.util.Map.Entry<k, v> entry : xx.entrySet())
+		{
+			this.put(entry.getKey(), entry.getValue()) ; 
+		}
+		
+	}
+	public JsonLinkedHashMap() {
+		super(); 
+	}
 	public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         sb.append(toIndentedString("{\n"));
