@@ -1,5 +1,8 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.media.Schema;
 
 public class JsonAdditionalProperties implements Jsonable {
@@ -17,7 +20,7 @@ public class JsonAdditionalProperties implements Jsonable {
 	}
 
 	@Override
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
 		String result = "" ; 
 		if (value instanceof Jsonable ) result = ((Jsonable) value).toJsonString() ; 
 		return result;

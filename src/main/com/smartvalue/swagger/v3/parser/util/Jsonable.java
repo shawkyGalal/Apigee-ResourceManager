@@ -1,13 +1,24 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import static org.hamcrest.CoreMatchers.equalToObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.util.TreeMap;
+import java.util.UUID;
 
 public interface Jsonable {
 
-	public String toJsonString(); 
+	public String toJsonString() throws JsonMappingException, JsonProcessingException; 
 	
 	public static String appendCommaEnter(boolean needed )
 	{
@@ -22,7 +33,7 @@ public interface Jsonable {
 	  return o.toString().replace("\n", "\n    ");
 	 }
 
-	public static StringBuilder appendElements(StringBuilder sb , FifoMap<String, Object> elements) 
+	public static StringBuilder appendElements(StringBuilder sb , FifoMap<String, Object> elements) throws JsonMappingException, JsonProcessingException 
 	{
 		boolean needComma = false;  
 		for (Entry<String, Object> entry : elements.entrySet())
@@ -30,23 +41,62 @@ public interface Jsonable {
 			String objectName = entry.getKey() ; 
 			Object value = entry.getValue() ; 
 			
+			 
+			
 			if(value != null ) 
 			{ 	
+			
+				sb.append( Jsonable.appendCommaEnter(needComma)).append("\""+objectName+"\": ") ;
 	 			if ( value instanceof Jsonable )
 				{ 
-	 				sb.append( Jsonable.appendCommaEnter(needComma)).append("\""+objectName+"\": ").append(toIndentedString(((Jsonable)value).toJsonString())).append("\n"); 
+	 				String strJson = ((Jsonable)value).toJsonString() ;
+	 				try {
+	 	            	sb.append(toIndentedString(formatJson(strJson))).append("\n");
+	 				}
+	 				catch (Exception e) {
+	 					System.out.print(strJson);
+	 					throw e ; 
+					}
 	 			} 
-				else if ( value instanceof String )
+				else if ( value instanceof String || value instanceof UUID )
 		 		{
-					sb.append( Jsonable.appendCommaEnter(needComma)).append("\""+objectName+"\": \"").append(toIndentedString(value)).append("\"");
+					sb.append("\"").append(toIndentedString(value).replace("\"", "\\\"").replace("\n", "\\n")).append("\"");
 		 		}
+				else if ( value instanceof Boolean )
+				{
+					sb.append(toIndentedString(value));
+				}
+				else if ( value instanceof ArrayList ) 
+				{
+					ArrayList<?> arrayValue = (ArrayList<?>) value ;
+					StringBuilder xx = new StringBuilder();
+					xx.append("[ ") ; 
+					for (int i = 0 ; i< arrayValue.size() ; i++)
+					{
+						xx.append( (i>0 )? ",    ":"").append("\"" + arrayValue.get(i) +"\""); 
+					}
+					xx.append(" ]") ;
+					sb.append(formatJson(xx.toString())) ; 
+				}
+				else if (value instanceof ObjectNode )
+				{
+					sb.append(toIndentedString(value));
+				}
 				else 
 				{
-					sb.append(value) ; 
+					sb.append(toIndentedString(value)); 
 				}
 				needComma = true ; 
 			}
 		}
  		return sb;
+	}
+	
+	private static String formatJson(String m_input) throws JsonMappingException, JsonProcessingException
+	{
+		ObjectMapper mapper = new ObjectMapper();
+     	ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+     	return writer.writeValueAsString(mapper.readValue( m_input ,  Object.class));
+		
 	}
 }

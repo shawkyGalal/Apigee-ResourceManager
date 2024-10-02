@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 //import io.swagger.v3.oas.models.parameters.Parameter;
@@ -524,11 +526,28 @@ public class JsonPathItem implements Jsonable{
         return result;
     }
 
-    public String toJsonString() {
+    public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
-        boolean needComma = false ; 
+         
         sb.append("{\n");
-                   //           { sb.append( Jsonable.appendCommaEnter(needComma)).append("\"info\": ").append(toIndentedString(getJsonInfo().toJsonString()));  needComma = true ;  }
+        
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
+        elements.put("summary", summary ) ; 
+        elements.put("description", getDescription()) ;
+        elements.put("get", (Jsonable)get) ;
+        elements.put("put", (Jsonable)put) ;
+        elements.put("post", (Jsonable)post) ;
+        elements.put("delete", (Jsonable)delete) ;
+        elements.put("options", (Jsonable)options) ;
+        elements.put("head", (Jsonable)head) ;
+        elements.put("trace", (Jsonable)trace) ;
+        elements.put("servers", servers) ;
+        elements.put("parameters", parameters) ;
+        elements.put("$ref", $ref) ;
+        
+        sb = Jsonable.appendElements(sb, elements);
+        /*
+         boolean needComma = false ;
         if(summary != null) 	{ sb.append(Jsonable.appendCommaEnter(needComma)).append ("\"summary\": ").append(toIndentedString(summary)).append("\n"); needComma = true; } 
         if(description != null) { sb.append("    \"description\": ").append(toIndentedString(description)).append("\n"); needComma = true; } 
         if(get != null) 		{ sb.append("    \"get\": ").append(toIndentedString(((Jsonable)get).toJsonString())).append("\n"); needComma = true; }
@@ -542,6 +561,7 @@ public class JsonPathItem implements Jsonable{
         if(servers != null) 	{ sb.append("    \"servers\": ").append(toIndentedString(servers)).append("\n"); needComma = true; }
         if(parameters != null) 	{ sb.append("    \"parameters\": ").append(toIndentedString(parameters.toJsonString())).append("\n"); needComma = true; }
         if($ref != null) 		{ sb.append("    \"$ref\": ").append(toIndentedString($ref)).append("\n"); needComma = true; }
+        */
         sb.append("}");
         return sb.toString();
     }

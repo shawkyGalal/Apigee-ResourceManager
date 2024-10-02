@@ -1,7 +1,10 @@
 package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.LinkedHashMap;
-import java.util.Map.Entry ; 
+import java.util.Map.Entry ;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException; 
 
 public class JsonLinkedHashMap<k, v> extends LinkedHashMap<k, v > implements Jsonable {
 
@@ -10,7 +13,7 @@ public class JsonLinkedHashMap<k, v> extends LinkedHashMap<k, v > implements Jso
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         sb.append(toIndentedString("{\n"));
         int counter = 0 ; 

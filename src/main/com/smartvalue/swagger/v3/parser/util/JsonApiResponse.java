@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
 public class JsonApiResponse extends ApiResponse implements Jsonable{
@@ -21,7 +24,7 @@ public class JsonApiResponse extends ApiResponse implements Jsonable{
 	}
 
 	 @Override
-	    public String toJsonString() {
+	    public String toJsonString() throws JsonMappingException, JsonProcessingException {
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
 

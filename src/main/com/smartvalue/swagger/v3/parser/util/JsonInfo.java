@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Jsonable {
 
 	private JsonContact jsonContact = null;
@@ -21,7 +24,7 @@ public class JsonInfo extends io.swagger.v3.oas.models.info.Info implements Json
 	}
 	
 	
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         

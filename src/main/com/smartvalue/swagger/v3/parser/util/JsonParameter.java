@@ -1,5 +1,8 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public class JsonParameter extends io.swagger.v3.oas.models.parameters.Parameter implements Jsonable {
 
 	private JsonSchema jsonSchema ; 
@@ -22,7 +25,7 @@ public class JsonParameter extends io.swagger.v3.oas.models.parameters.Parameter
 		if (par.getStyle() != null ) this.setStyle(par.getStyle());
 	}
 
-	 public String toJsonString() {
+	 public String toJsonString() throws JsonMappingException, JsonProcessingException {
 
 		 StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");

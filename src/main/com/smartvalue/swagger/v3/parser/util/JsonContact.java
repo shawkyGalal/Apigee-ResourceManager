@@ -2,6 +2,9 @@ package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.info.Contact;
 
 public class JsonContact extends Contact implements Jsonable {
@@ -15,7 +18,7 @@ public class JsonContact extends Contact implements Jsonable {
 	}
 
 	@Override
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         FifoMap<String , Object > elements = new FifoMap<String , Object >() ;

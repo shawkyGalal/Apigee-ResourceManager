@@ -3,6 +3,9 @@ package com.smartvalue.swagger.v3.parser.util;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.parameters.RequestBody;
 
 public class JsonComponents  extends io.swagger.v3.oas.models.Components implements Jsonable{
@@ -35,7 +38,7 @@ public class JsonComponents  extends io.swagger.v3.oas.models.Components impleme
 		this.setSecuritySchemes(components.getSecuritySchemes());
 	}
 
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
 	        

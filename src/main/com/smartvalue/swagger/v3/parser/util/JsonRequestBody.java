@@ -1,5 +1,8 @@
 package com.smartvalue.swagger.v3.parser.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.RequestBody implements Jsonable {
 
 	private JsonContent jsonContent ; 
@@ -16,16 +19,26 @@ public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.Request
 	}
 
 	
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
 		boolean needComma = false ; 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
+        
+        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
+        elements.put("$ref", get$ref() ) ; 
+        elements.put("content", getJsonContent()) ;
+        elements.put("required", getRequired()) ;
+        elements.put("description", getDescription()) ;
+        elements.put("extensions", getExtensions()) ;
+        
+        sb = Jsonable.appendElements(sb, elements);
+        /*
         if (get$ref() != null) 		  { sb.append("    \"$ref\": \"").append(toIndentedString(get$ref())).append("\"\n"); needComma = true ; }
         if (getJsonContent() != null) { sb.append("    " + Jsonable.appendCommaEnter(needComma) +"\"content\": ").append(toIndentedString(getJsonContent().toJsonString())).append("\n"); needComma = true ; }
         if (getRequired() != null)    { sb.append("    " + Jsonable.appendCommaEnter(needComma) +"\"required\": ").append(toIndentedString(getRequired())).append("\n"); needComma = true ; }
         if (getDescription() != null) { sb.append("    " + Jsonable.appendCommaEnter(needComma) +"\"description\": \"").append(toIndentedString(getDescription())).append("\"\n"); needComma = true ; }
         if (getExtensions() != null)  { sb.append("    " + Jsonable.appendCommaEnter(needComma) +"\"extensions\": ").append(toIndentedString(getExtensions())).append("\n"); needComma = true ; }
-
+		*/
         sb.append("}");
         return sb.toString();
     }

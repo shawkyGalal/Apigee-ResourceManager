@@ -2,6 +2,10 @@ package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import io.swagger.v3.oas.models.SpecVersion;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.Schema;
@@ -118,9 +122,82 @@ public class JsonSchema extends Schema  implements Jsonable {
 	}
 
 	 @Override
-	    public String toJsonString() {
+	    public String toJsonString() throws JsonMappingException, JsonProcessingException {
 	        StringBuilder sb = new StringBuilder();
 	        sb.append("{\n");
+	        
+	        FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
+	        Object typeStr = getSpecVersion() == SpecVersion.V30 ? getType() : getTypes();
+	        elements.put("type", typeStr) ; 
+	        elements.put("format", getFormat()) ;
+	        elements.put("$ref", get$ref()) ;
+	        elements.put("description", getDescription()) ;
+	        elements.put("title", getTitle()) ;
+	        elements.put("allOf", getJsonAllOf()) ;
+	        elements.put("multipleOf", getMultipleOf()) ;
+	        elements.put("maximum", getMaximum()) ;
+	        Object exclusiveMaximumStr = getSpecVersion() == SpecVersion.V30 ? getExclusiveMaximum() : getExclusiveMaximumValue();
+	        elements.put("exclusiveMaximum", exclusiveMaximumStr ) ;
+	        elements.put("minimum", getMinimum()) ;
+	        Object exclusiveMinimumStr = getSpecVersion() == SpecVersion.V30 ? getExclusiveMinimum() : getExclusiveMinimumValue();
+	        elements.put("exclusiveMinimum", exclusiveMinimumStr) ;
+	        elements.put("maxLength", getMaxLength()) ;
+	        elements.put("minLength", getMinLength()) ;
+	        elements.put("pattern", getPattern()) ;
+	        elements.put("maxItems", getMaxItems()) ;
+	        elements.put("minItems", getMinItems()) ;
+	        elements.put("uniqueItems", getUniqueItems()) ;
+	        elements.put("maxProperties", getMaxProperties()) ;
+	        elements.put("minProperties", getMinProperties()) ;
+	        elements.put("required", getRequired()) ;
+	        elements.put("not", getNot()) ;
+	        elements.put("properties", getJsonProperties()) ;
+	        if (getJsonAdditionalProperties() != null ) 
+	        { 
+	        	elements.put("additionalProperties", getJsonAdditionalProperties()) ;
+        	}
+	        elements.put("nullable", getNullable()) ;
+	        elements.put("readOnly", getReadOnly()) ;
+	        elements.put("writeOnly", getWriteOnly()) ;
+	        //if( example != null && (example instanceof String ))
+		    //{
+	        //	System.out.print(example);
+		    //}
+	        elements.put("example", example) ;
+	        
+	        elements.put("externalDocs", getExternalDocs()) ;
+	        elements.put("deprecated", getDeprecated()) ;
+	        elements.put("discriminator", getDiscriminator()) ;
+	        elements.put("xml", getXml()) ;
+	        if (getSpecVersion() == SpecVersion.V31) {
+	        	elements.put("patternProperties", getPatternProperties()) ;
+	        	elements.put("contains", getContains()) ;
+	        	elements.put("$id", get$id()) ;
+	        	elements.put("$anchor", get$anchor()) ;
+	        	elements.put("$schema", get$schema()) ;
+	        	elements.put("const", getConst()) ;
+	        	elements.put("contentEncoding", getContentEncoding()) ;
+	        	elements.put("contentMediaType", getContentMediaType()) ;
+	        	elements.put("contentSchema", getContentSchema()) ;
+	        	elements.put("propertyNames", getPropertyNames()) ;
+	        	elements.put("unevaluatedProperties", getUnevaluatedProperties()) ;
+	        	elements.put("maxContains", getMaxContains()) ;
+	        	elements.put("minContains", getMinContains()) ;
+	        	elements.put("additionalItems", getAdditionalItems()) ;
+	        	elements.put("unevaluatedItems", getUnevaluatedItems()) ;
+	        	elements.put("_if", getIf()) ;
+	        	elements.put("_else", getElse()) ;
+	        	elements.put("then", getThen()) ;
+	        	elements.put("dependentRequired", getDependentRequired()) ;
+	        	elements.put("dependentSchemas", getDependentSchemas()) ;
+	        	elements.put("$comment", get$comment()) ;
+	        	elements.put("prefixItems", getPrefixItems()) ;
+	        }
+
+	        sb = Jsonable.appendElements(sb , elements);
+	        
+	        //=================================
+	       /*
 	        Object typeStr = getSpecVersion() == SpecVersion.V30 ? getType() : getTypes();
 	        if(typeStr != null ) sb.append("    \"type\": \"").append(toIndentedString(typeStr)).append("\"\n");
 	        if(getFormat() != null ) sb.append("    \"format\": \"").append(toIndentedString(getFormat())).append("\"\n");
@@ -155,6 +232,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        if(getDeprecated() != null ) sb.append("    \"deprecated\": ").append(toIndentedString(getDeprecated())).append("\n");
 	        if(getDiscriminator() != null ) sb.append("    \"discriminator\": ").append(toIndentedString(getDiscriminator())).append("\n");
 	        if(getXml() != null ) sb.append("    \"xml\": ").append(toIndentedString(getXml())).append("\n");
+	        	        
 	        if (getSpecVersion() == SpecVersion.V31) {
 	            sb.append("    patternProperties: ").append(toIndentedString(getPatternProperties())).append("\n");
 	            sb.append("    contains: ").append(toIndentedString(getContains())).append("\n");
@@ -178,7 +256,9 @@ public class JsonSchema extends Schema  implements Jsonable {
 	            sb.append("    dependentSchemas: ").append(toIndentedString(getDependentSchemas())).append("\n");
 	            sb.append("    $comment: ").append(toIndentedString(get$comment())).append("\n");
 	            sb.append("    prefixItems: ").append(toIndentedString(getPrefixItems())).append("\n");
+	         
 	        }
+	        */
 	        sb.append("}");
 	        return sb.toString();
 	    }

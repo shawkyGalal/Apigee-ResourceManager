@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 
 
@@ -397,7 +400,7 @@ public class JsonOperation implements Jsonable {
     }
 
     @Override
-    public String toJsonString() {
+    public String toJsonString() throws JsonMappingException, JsonProcessingException {
     	boolean needComma = false ; 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");

@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 public class JsonArrayList<T> extends ArrayList<T> implements Jsonable {
 
 	/**
@@ -23,7 +26,7 @@ public class JsonArrayList<T> extends ArrayList<T> implements Jsonable {
 	}
 
 	@Override
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
 		String elementsClassName = null ;
 		String result = null ; 
 		if(this.size() > 0 )

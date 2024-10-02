@@ -2,6 +2,9 @@ package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.annotations.OpenAPI31;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 
@@ -107,7 +110,7 @@ public class JsonApiResponses extends JsonLinkedHashMap<String, JsonApiResponse>
     
 
 	@Override
-	 public String toJsonString() {
+	 public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         //sb.append("{\n");
         if (this.size() > 0 ) sb.append("    ").append(toIndentedString(super.toJsonString())).append("\n");

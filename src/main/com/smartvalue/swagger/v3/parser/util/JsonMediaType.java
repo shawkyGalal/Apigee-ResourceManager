@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.MediaType;
 
@@ -49,7 +52,7 @@ public class JsonMediaType extends io.swagger.v3.oas.models.media.MediaType impl
 		if (mediaType.getSchema()!= null) this.setJsonSchema(new JsonSchema (mediaType.getSchema()));
 	}
 
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
  

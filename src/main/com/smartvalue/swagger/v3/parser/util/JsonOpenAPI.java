@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.tags.Tag ;
 import io.swagger.v3.oas.models.SpecVersion;
 
@@ -73,7 +76,7 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
 	}
 
     
-	public String toJsonString()
+	public String toJsonString() throws JsonMappingException, JsonProcessingException
 	{
 		boolean needComma = false ; 
 		StringBuilder sb = new StringBuilder();

@@ -2,6 +2,9 @@ package com.smartvalue.swagger.v3.parser.util;
 
 import java.util.TreeMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import io.swagger.v3.oas.models.examples.Example;
 
 public class JsonExample extends Example implements Jsonable {
@@ -19,7 +22,7 @@ public class JsonExample extends Example implements Jsonable {
 
 	
 
-	public String toJsonString() {
+	public String toJsonString() throws JsonMappingException, JsonProcessingException {
 
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
