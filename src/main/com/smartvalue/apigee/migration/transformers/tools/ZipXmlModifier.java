@@ -8,7 +8,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
@@ -68,9 +70,6 @@ public class ZipXmlModifier {
 		return processXml( zipInputStream,  xpath,  convertStringToElement(newElementStr)) ; 
 	}
 	private static String processXml(ZipInputStream zipInputStream, String xpath, Element newElement) throws Exception {
-	    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder builder = factory.newDocumentBuilder();
-
 	    // Buffer for reading data from the zip entry
 	    byte[] buffer = new byte[1024];
 	    int bytesRead;
@@ -86,7 +85,7 @@ public class ZipXmlModifier {
 
 	    // Parse the XML content into a Document
 	    InputSource source = new InputSource(new StringReader(xmlContentBuilder.toString()));
-	    Document document = builder.parse(source);
+	    Document document = ZipXmlModifier.getDocBuilder().parse(source);
 
 	    // Apply XPath to select nodes based on the provided expression
 	    XPathFactory xPathfactory = XPathFactory.newInstance();
@@ -105,9 +104,8 @@ public class ZipXmlModifier {
 	    }
 
 	    // Serialize the modified document back to a string
-	    Transformer transformer = TransformerFactory.newInstance().newTransformer();
 	    StringWriter writer = new StringWriter();
-	    transformer.transform(new DOMSource(document), new StreamResult(writer));
+	    ZipXmlModifier.getTransformer().transform(new DOMSource(document), new StreamResult(writer));
 	    return writer.toString();
 	}
 
@@ -140,6 +138,7 @@ public class ZipXmlModifier {
         return rootElement;
     }
 
+     
     private static DocumentBuilder docBuilder ; 
     public static DocumentBuilder getDocBuilder() throws ParserConfigurationException {
 		if (docBuilder == null)
@@ -148,6 +147,20 @@ public class ZipXmlModifier {
 	        docBuilder = factory.newDocumentBuilder();
 		}
 		return docBuilder;
+	}
+
+    private static Transformer transformer ;
+    public static Transformer getTransformer() throws TransformerConfigurationException, TransformerFactoryConfigurationError {
+    	if (transformer == null)
+    	{
+    		TransformerFactory transformerFactory = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl" , null);
+    		//transformerFactory.setFeature(javax.xml.transform.sax.SAXTransformerFactory.FEATURE, true); // Enable SAXTransformerFactory
+    		transformer = transformerFactory.newTransformer() ; 
+    				
+
+    		//Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    	}
+		return transformer;
 	}
 
 }

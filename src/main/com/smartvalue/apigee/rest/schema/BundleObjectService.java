@@ -17,6 +17,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
@@ -41,8 +42,8 @@ public abstract class BundleObjectService extends ApigeeService {
 		this.deployUponUpload = deployUponUpload;
 	}
 	
-	public ArrayList<TransformResult> transformProxy(String pundleZipFileName, String newBundleFolderPath) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
-		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
+	public TransformationResults transformProxy(String pundleZipFileName, String newBundleFolderPath) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
+		TransformationResults transformResults  = new TransformationResults ();
 		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
 
 		File pundleZipFile = new File (pundleZipFileName) ; 
@@ -64,10 +65,11 @@ public abstract class BundleObjectService extends ApigeeService {
 				{	
 					tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
 					if (tr.isFailed())	
-					{	transformResults.add(tr); break; 	}
+					{	System.out.println("Error  : Proxy Bundle "+ pundleZipFileName +" Transformed Failed Using "+ trasnformer.getClass().getName() + " With error : " + tr.getError());
+						transformResults.add(tr); break; 	}
 					else 
 					{ 
-						System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );
+						System.out.println("Success : Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );
 					}
 					transformResults.add(tr);
 				
@@ -102,10 +104,10 @@ public abstract class BundleObjectService extends ApigeeService {
 	}
 
 	
-	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
+	public TransformationResults  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
 	{
 		
-		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> (); 
+		TransformationResults transformResults  = new TransformationResults (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
 		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();  

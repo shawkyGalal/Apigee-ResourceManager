@@ -83,7 +83,14 @@ public interface Jsonable {
 						xx.append( (i>0 )? ",    ":"").append("\"" + arrayValue.get(i) +"\""); 
 					}
 					xx.append(" ]") ;
-					sb.append(formatJson(xx.toString())) ; 
+					try {
+					sb.append(formatJson(xx.toString())) ;
+					}
+					catch(Exception e)
+					{
+						System.out.println(xx.toString());
+						throw e ; 
+					}
 				}
 				else if (value instanceof ObjectNode )
 				{

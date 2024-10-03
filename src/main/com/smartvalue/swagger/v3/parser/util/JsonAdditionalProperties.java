@@ -21,9 +21,22 @@ public class JsonAdditionalProperties implements Jsonable {
 
 	@Override
 	public String toJsonString() throws JsonMappingException, JsonProcessingException {
-		String result = "" ; 
-		if (value instanceof Jsonable ) result = ((Jsonable) value).toJsonString() ; 
-		return result;
+		StringBuilder sb  = new StringBuilder(); 
+		sb.append("{ \"value\" : ")  ;
+		if (value != null )
+		{
+			if (value instanceof Jsonable ) 
+				sb.append (((Jsonable) value).toJsonString() );
+			else 
+			{ 
+				throw new JsonMappingException("JsonAdditionalProperties Object Conatins " + value.getClass() +" Wchis is Not Jsonable Implementation ") ; 
+			}
+		}
+		else 
+			sb.append ("\"\"");
+		
+		sb.append("}") ; 
+		return sb.toString();
 	}
 
 }

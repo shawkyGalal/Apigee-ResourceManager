@@ -37,7 +37,7 @@ public class JsonOpenAPI extends io.swagger.v3.oas.models.OpenAPI implements Jso
     private JsonArrayList<JsonSecurityRequirement> jsonSecurityRequirements ;
     private JsonArrayList<JsonSecurityRequirement> getJsonSecurity() 
     {
-    if (this.jsonSecurityRequirements == null && this.getSecurity().size()>0 )
+    if (this.jsonSecurityRequirements == null && this.getSecurity() != null && this.getSecurity().size()>0 )
 	   	{
 	    	this.jsonSecurityRequirements = new JsonArrayList<JsonSecurityRequirement>() ; 
 	   		for (io.swagger.v3.oas.models.security.SecurityRequirement securityRequirement : this.getSecurity() )

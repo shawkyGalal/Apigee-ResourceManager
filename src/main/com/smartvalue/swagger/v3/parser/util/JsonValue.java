@@ -12,15 +12,22 @@ public class JsonValue implements Jsonable {
 
 	@Override
 	public String toJsonString() {
-		String result = null ; 
-		try {
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-            result =  writer.writeValueAsString(mapper.readValue(this.value.toString(),  Object.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = this.value.toString(); 
-        }
+		String result = "\"\"" ; 
+		if (value != null)
+		{
+			try {
+	            ObjectMapper mapper = new ObjectMapper();
+	            ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+	            result =  writer.writeValueAsString(mapper.readValue(this.value.toString(),  Object.class));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            result = (this.value != null)? this.value.toString() : null; 
+	        }
+		}
+		else
+		{
+			// System.out.println("xxx");
+		}
 		return result;
 	}
 

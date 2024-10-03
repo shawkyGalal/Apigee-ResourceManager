@@ -16,6 +16,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer;
 import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
@@ -29,19 +30,23 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(buildProxyTransformers()); 
-		ArrayList<TransformResult> objectErrors =  proxyServ.transformAll(DEST_FOLDER_NAME + ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
-		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+		 TransformationResults trnsformResults =  proxyServ.transformAll(DEST_FOLDER_NAME + ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+		 int successCount = trnsformResults.filterFailed(false).size() ; 
+		 int failureCount = trnsformResults.filterFailed(true).size() ;
+		 System.out.println("Failed Transormation : " + failureCount );
+		 System.out.println("Success Transformation : " + successCount );
+		assertEquals( failureCount , 0 , "# of Errors = " + failureCount ); 
 	 }
 	 
 	 @Test
 	 public void transformOneProxy() throws Exception {
 		//==================Transform All Proxies ===========================
 		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
-		//proxyServ.setTranformers(buildProxyTransformers()); 
-		String proxyrelativePath = "\\moj-internal-clients\\SMS-Governance\\147" ; 
-		ArrayList<TransformResult> objectErrors =  proxyServ.transformProxy(DEST_FOLDER_NAME + ProxiesSubFolder + proxyrelativePath +"\\SMS-Governance.zip"
-				,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder + proxyrelativePath) ;
-		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
+		 
+		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Stage\\proxies\\moj-external-clients\\OldAttorney-API\\267\\OldAttorney-API.zip"
+				,  "C:\\temp\\") ;
+		
+		assertEquals( trnsformResults.filterFailed(false).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
 	 }
 	 
 	 @Test

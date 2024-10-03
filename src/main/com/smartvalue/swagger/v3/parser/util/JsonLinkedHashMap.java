@@ -34,8 +34,16 @@ public class JsonLinkedHashMap<k, v> extends LinkedHashMap<k, v > implements Jso
         {
         	counter ++; 
         	sb.append("\"").append(toIndentedString(entry.getKey())).append("\" :") ;
-        	Jsonable jsonableObject  = (Jsonable) entry.getValue() ; 
-        	String jsonStr = jsonableObject.toJsonString() ; 
+        	Object value = entry.getValue() ; 
+        	String jsonStr ; 
+        	if (value instanceof Jsonable)
+        	{
+        		Jsonable jsonableObject  = (Jsonable) value ; 
+        		jsonStr = jsonableObject.toJsonString() ;
+        	}
+        	else 
+        	{ jsonStr = "\"" + value +"\"" ;  	}
+        	
         	sb.append("    \n").append(toIndentedString(jsonStr)) ;
         	if (counter < size ) sb.append(",").append(" \n") ; 
         }

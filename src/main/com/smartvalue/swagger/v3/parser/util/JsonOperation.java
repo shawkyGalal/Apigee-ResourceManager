@@ -19,7 +19,7 @@ public class JsonOperation implements Jsonable {
     private String description = null;
     private ExternalDocumentation externalDocs = null;
     private String operationId = null;
-    private List<JsonParameter> jsonParameters = null;
+    private JsonArrayList<JsonParameter> jsonParameters = null;
     private JsonRequestBody jsonRequestBody = null;
     private JsonApiResponses jsonResponses = null;
     private Map<String, JsonCallback> callbacks = null;
@@ -43,7 +43,7 @@ public class JsonOperation implements Jsonable {
 	   	if (m_operation.getExternalDocs() != null ) this.setExternalDocs(new ExternalDocumentation (m_operation.getExternalDocs()));
 	   	if (m_operation.getOperationId() != null ) this.setOperationId(m_operation.getOperationId());
 	   	if (m_operation.getParameters() != null && m_operation.getParameters().size() > 0)
-		{	jsonParameters = new ArrayList<JsonParameter>() ; 
+		{	jsonParameters = new JsonArrayList<JsonParameter>() ; 
 			for (io.swagger.v3.oas.models.parameters.Parameter par : m_operation.getParameters()  )
 			{
 				jsonParameters.add(new JsonParameter(par)) ; 
@@ -184,23 +184,16 @@ public class JsonOperation implements Jsonable {
         return jsonParameters;
     }
 
-    public void setParameters(List<JsonParameter> parameters) {
+    public void setParameters(JsonArrayList<JsonParameter> parameters) {
         this.jsonParameters = parameters;
     }
 
-    public JsonOperation parameters(List<JsonParameter> parameters) {
+    public JsonOperation parameters(JsonArrayList<JsonParameter> parameters) {
         this.jsonParameters = parameters;
         return this;
     }
 
-    public JsonOperation addParametersItem(JsonParameter parametersItem) {
-        if (this.jsonParameters == null) {
-            this.jsonParameters = new ArrayList<>();
-        }
-        this.jsonParameters.add(parametersItem);
-        return this;
-    }
-
+    
     /**
      * returns the requestBody property from a Operation instance.
      *

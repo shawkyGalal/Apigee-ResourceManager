@@ -33,6 +33,7 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
   		  	.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath)	
   		  	.withTransformerClass(this.getClass()); 
+        	//System.out.println("Error Transforming Proxy Bundle : " +  bundleZipFileName );
         	e.printStackTrace();
         }
         return result ; 
