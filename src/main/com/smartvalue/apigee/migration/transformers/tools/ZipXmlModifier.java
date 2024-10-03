@@ -6,6 +6,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -132,15 +133,21 @@ public class ZipXmlModifier {
         }
     }
 
-    
     private static Element convertStringToElement(String xmlString) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new InputSource(new StringReader(xmlString)));
-
+        Document document = ZipXmlModifier.getDocBuilder().parse(new InputSource(new StringReader(xmlString)));
         // Retrieve the root element of the document
         Element rootElement = document.getDocumentElement();
-
         return rootElement;
     }
+
+    private static DocumentBuilder docBuilder ; 
+    public static DocumentBuilder getDocBuilder() throws ParserConfigurationException {
+		if (docBuilder == null)
+		{
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	        docBuilder = factory.newDocumentBuilder();
+		}
+		return docBuilder;
+	}
+
 }
