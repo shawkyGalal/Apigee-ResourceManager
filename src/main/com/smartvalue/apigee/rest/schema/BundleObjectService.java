@@ -64,11 +64,12 @@ public abstract class BundleObjectService extends ApigeeService {
 				{	
 					tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
 					if (tr.isFailed())	
-					{	
-						transformResults.add(tr);
-						break; 
+					{	transformResults.add(tr); break; 	}
+					else 
+					{ 
+						System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );
 					}
-					else { System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );}
+					transformResults.add(tr);
 				
 					//System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
 					// in the next loop transform the transformed file
@@ -119,12 +120,19 @@ public abstract class BundleObjectService extends ApigeeService {
 				envProxiesCount++; 
 				for (File revisionFolder : proxyFolder.listFiles() )
 				{
-					String revision = revisionFolder.getName(); 
+					String revision = revisionFolder.getName();
+					String zipFileName = null ;
+					String proxyName ; 
 					for (File pundleZipFile : revisionFolder.listFiles())
 					{
-						
-						String zipFileName= pundleZipFile.getName(); 
-						String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
+						try {
+						zipFileName= pundleZipFile.getName(); 
+						proxyName = zipFileName.substring(0, zipFileName.indexOf("."));
+						}
+						catch (Exception e) {
+							System.err.println("File : " + pundleZipFile + "is Not a zip File ");
+							continue; 
+						}
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
 						transformResults.addAll(this.transformProxy(pundleZipFile.getAbsolutePath(), newBundleFolderPath)) ; 
 						
