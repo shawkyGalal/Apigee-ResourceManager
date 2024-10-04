@@ -181,6 +181,9 @@ public class ProxyBundleParser
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
 		int size = xx.size() ; 
+		if (size == 0 ) {
+			throw new IllegalArgumentException ("OAS Flow ("+getOasFlowName+") Found But Empty " ) ;
+		}
 		estimatedOasPolicyName = xx.get(size-1).getStep().getName() ;
 		
 		Policy policy = this.getPolices().get(estimatedOasPolicyName) ; 
