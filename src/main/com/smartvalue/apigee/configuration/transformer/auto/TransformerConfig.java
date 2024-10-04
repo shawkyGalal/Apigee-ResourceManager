@@ -16,21 +16,33 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "implClass",
-    "attributes"
+    "attributes", 
+    "description"
 })
 @Generated("jsonschema2pojo")
 public class TransformerConfig {
 
     @JsonProperty("implClass")
     private String implClass;
+    
     @JsonProperty("attributes")
     private List<Attribute> attributes = new ArrayList<Attribute>();
+    
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
+    
     @JsonProperty("enabled")
     private String enabled;
 
-    @JsonProperty("implClass")
+    @JsonProperty("description")
+    private String description;
+    
+    
+    public String getDescription() {
+		return description;
+	}
+
+	@JsonProperty("implClass")
     public String getImplClass() {
         return implClass;
     }

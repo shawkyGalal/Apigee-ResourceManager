@@ -3,24 +3,27 @@
 						[
 							
 							{
+								"description" : "This Transformer Will modify the provided targetEndPoint xml file  " , 
 								"guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ",
 								"enabled":"false",  
 								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.TargetServerTransformer", 
 								"attributes" : 
 								[
-									{ "name" : "fileName" , "value" :"apiproxy/targets/defaultxx.xml"	}
+									{ "name" : "fileName" , "value" :"apiproxy/targets/default.xml"	}
 								  , { "name" : "xpath" , "value" :"/TargetEndpoint/HTTPTargetConnection" }
 								
 								]
 							},
 							
-							{
-								"guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer to be applied for proxy transformation ",
+							{   
+								"description" : "This Transformer Will Update the OperationId of the provided OAS in the Standard Flow GetOAS to be equals the unique identifier of the corresponding proxy flow (ProxyName.ProxyEndPointName.FlowName.Verb ) " ,
+								"guidelines" : "Create New Class and extend it with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer then implement the transform method ",
 								"enabled":"true", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer" 
 							},  
 							 
 							{
+								"description" : "This transformer Will modify the provided file paths (filesPathInZip) by updating the (searchFor)  values with the (replaceBy) values  " , 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer",
 								"enabled":"false", 
 								"attributes" : 
@@ -31,13 +34,14 @@
 									,{ "name" : "replaceBy" , "value" :"<Pattern>AABBCC</Pattern> ;; newValue"}
 								]
 							}, 
-							{
+							{	"description" :"A dummy Transformer with No Updates ",  
 							    "guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.proxy.ProductTransformer to be applied for product transformation ",
 								"enabled":"false", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.products.NullTransformer" 
 							}
 							, 
 							{
+								"description" :" This is a Product Transformer Example  ",
 							    "guidelines" : "Extend your class with com.smartvalue.apigee.migration.transformers.products.ProductTransformer to be applied for product transformation ",
 								"enabled":"false", 
 								"implClass" : "com.smartvalue.apigee.migration.transformers.products.CleanUpTransformer" 
