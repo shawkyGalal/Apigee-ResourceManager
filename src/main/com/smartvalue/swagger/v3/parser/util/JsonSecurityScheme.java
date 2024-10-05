@@ -35,7 +35,7 @@ public class JsonSecurityScheme extends SecurityScheme implements Jsonable{
 	        elements.put("type", getType().toString()) ; 
 	        elements.put("description", getDescription()) ;
 	        elements.put("name", getName()) ;
-	        elements.put("in", getIn()) ;
+	        if (getIn() != null ) elements.put("in", getIn().toString()) ;
 	        elements.put("scheme", getScheme()) ;
 	        elements.put("bearerFormat", getBearerFormat()) ;
 	        elements.put("flows", getJsonFlows()) ;

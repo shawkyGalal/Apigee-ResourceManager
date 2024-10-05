@@ -6,14 +6,18 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.RequestBody implements Jsonable {
 
 	private JsonContent jsonContent ; 
-	
+	private JsonLinkedHashMap<String , Object> jsonExtensions ;
 	
 	public JsonRequestBody(io.swagger.v3.oas.models.parameters.RequestBody m_requestBody)  {
 		if (m_requestBody.get$ref() != null ) this.set$ref(m_requestBody.get$ref());
 		if (m_requestBody.getContent() != null ) { this.setContent(m_requestBody.getContent());
 												 this.setJsonContent(new JsonContent (m_requestBody.getContent())); } 
 		if (m_requestBody.getDescription() != null ) this.setDescription(m_requestBody.getDescription());
-		if (m_requestBody.getExtensions() != null ) this.setExtensions(m_requestBody.getExtensions());
+		if (m_requestBody.getExtensions() != null ) 
+			{
+				this.setExtensions(m_requestBody.getExtensions());
+				this.setJsonExtensions(new JsonLinkedHashMap<String, Object>(m_requestBody.getExtensions()));
+			}
 		if (m_requestBody.getRequired() != null ) this.setRequired(m_requestBody.getRequired());
 		
 	}
@@ -29,7 +33,9 @@ public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.Request
         elements.put("content", getJsonContent()) ;
         elements.put("required", getRequired()) ;
         elements.put("description", getDescription()) ;
-        elements.put("extensions", getExtensions()) ;
+        if (getExtensions() != null ) { 
+        	elements.put("extensions", getJsonExtensions()) ;
+        }
         
         sb = Jsonable.appendElements(sb, elements);
         /*
@@ -63,5 +69,15 @@ public class JsonRequestBody extends io.swagger.v3.oas.models.parameters.Request
 
 	public void setJsonContent(JsonContent jsonContent) {
 		this.jsonContent = jsonContent;
+	}
+
+
+	public JsonLinkedHashMap<String , Object> getJsonExtensions() {
+		return jsonExtensions;
+	}
+
+
+	public void setJsonExtensions(JsonLinkedHashMap<String , Object> jsonExtensions) {
+		this.jsonExtensions = jsonExtensions;
 	}
 }

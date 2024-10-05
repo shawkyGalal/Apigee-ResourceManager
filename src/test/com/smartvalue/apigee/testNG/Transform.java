@@ -43,10 +43,10 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		 
-		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Stage\\proxies\\moj-external-clients\\OldAttorney-API\\267\\OldAttorney-API.zip"
-				,  "C:\\temp\\") ;
+		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\VMWare\\VALIDATE\\proxies\\iam-protected\\deed-operations\\185\\deed-operations.zip" 
+				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\") ;
 		
-		assertEquals( trnsformResults.filterFailed(false).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
+		assertEquals( trnsformResults.filterFailed(true).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
 	 }
 	 
 	 @Test

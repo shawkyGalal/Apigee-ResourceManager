@@ -41,6 +41,10 @@ public class JsonLinkedHashMap<k, v> extends LinkedHashMap<k, v > implements Jso
         		Jsonable jsonableObject  = (Jsonable) value ; 
         		jsonStr = jsonableObject.toJsonString() ;
         	}
+        	else if (value instanceof Boolean )
+        	{
+        		jsonStr = value.toString() ; 
+        	}
         	else 
         	{ jsonStr = "\"" + value +"\"" ;  	}
         	

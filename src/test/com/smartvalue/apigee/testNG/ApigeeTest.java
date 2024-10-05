@@ -22,8 +22,8 @@ public class ApigeeTest {
 	private static final String SOURCE_Org_NAME = "stg"; 
 	protected Infra sourceInfra ; 
 	protected ManagementServer sourceMngServer ;
-	protected static final String DEST_FOLDER_NAME = "C:\\temp\\"+SOURCE_INFRA_NAME ;
-	protected static final String TRANSFORM_FOLDER_NAME = "C:\\temp\\"+SOURCE_INFRA_NAME+"\\Transformed" ;
+	protected static final String DEST_FOLDER_NAME 		= "C:\\temp\\Apigee\\"+SOURCE_INFRA_NAME +"\\"+SOURCE_Org_NAME;
+	protected static final String TRANSFORM_FOLDER_NAME = DEST_FOLDER_NAME +"\\Transformed" ;
 	
 	
 	protected static final String DEST_INFRA_NAME = "Gcloud(shawky.foda@gmail.com)";  

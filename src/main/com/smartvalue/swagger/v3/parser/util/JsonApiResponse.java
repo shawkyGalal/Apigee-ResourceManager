@@ -11,13 +11,17 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 
 public class JsonApiResponse extends ApiResponse implements Jsonable{
 
-	private JsonContent jsonContent ; 
+	private JsonContent jsonContent ;
+	private JsonLinkedHashMap<String , Object> jsonExtensions ;  
 	public JsonApiResponse(ApiResponse apiResponse) {
 
 		if (apiResponse.get$ref() != null ) this.set$ref(apiResponse.get$ref());
 		if (apiResponse.getContent() != null ) this.setJsonContent(new JsonContent(apiResponse.getContent()));
 		if (apiResponse.getDescription() != null ) this.setDescription(apiResponse.getDescription());
-		if (apiResponse.getExtensions() != null ) this.setExtensions(apiResponse.getExtensions());
+		if (apiResponse.getExtensions() != null ) { 
+			this.setExtensions(apiResponse.getExtensions());
+			this.setJsonExtensions( new JsonLinkedHashMap<String , Object> (apiResponse.getExtensions())) ; 
+		}
 		if (apiResponse.getHeaders() != null ) this.setHeaders(apiResponse.getHeaders());
 		if (apiResponse.getLinks() != null ) this.setLinks(apiResponse.getLinks());
 		
@@ -33,7 +37,9 @@ public class JsonApiResponse extends ApiResponse implements Jsonable{
 	        elements.put("content", getJsonContent()) ; 
 	        elements.put("headers", getHeaders()) ;
 	        elements.put("links", getLinks()) ;
-	        elements.put("extensions", getExtensions()) ;
+	        if (getExtensions() != null) {	        	
+	        	elements.put("extensions", getJsonExtensions()) ;
+	        }
 	        elements.put("$ref", get$ref()) ;
 	        
 	        sb = Jsonable.appendElements(sb, elements);
@@ -66,6 +72,14 @@ public class JsonApiResponse extends ApiResponse implements Jsonable{
 
 		public void setJsonContent(JsonContent jsonContent) {
 			this.jsonContent = jsonContent;
+		}
+
+		public JsonLinkedHashMap<String , Object> getJsonExtensions() {
+			return jsonExtensions;
+		}
+
+		public void setJsonExtensions(JsonLinkedHashMap<String , Object> jsonExtensions) {
+			this.jsonExtensions = jsonExtensions;
 		}
 
 

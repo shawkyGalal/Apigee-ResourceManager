@@ -108,9 +108,15 @@ public interface Jsonable {
 	
 	private static String formatJson(String m_input) throws JsonMappingException, JsonProcessingException
 	{
+		try {
 		ObjectMapper mapper = new ObjectMapper();
      	ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
      	return writer.writeValueAsString(mapper.readValue( m_input ,  Object.class));
+		}
+     	catch (Exception e) {
+     	e.printStackTrace();
+     	throw e ; 
+     	}
 		
 	}
 }

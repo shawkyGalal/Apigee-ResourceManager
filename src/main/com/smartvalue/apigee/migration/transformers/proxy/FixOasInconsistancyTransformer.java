@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.migration.transformers.proxy;
 
+import java.io.File;
 import java.util.HashMap;
 
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -12,26 +13,26 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
 
 	
 	@Override
-	public TransformResult trasform(String bundleZipFileName , String newBundlePath)  {
+	public TransformResult trasform(String bundleZipFilePath , String newBundlePath)  {
 		TransformResult result = new TransformResult() ; 
         try {
-        	ProxyBundleParser proxyBundle = new ProxyBundleParser(bundleZipFileName) ;
+        	ProxyBundleParser proxyBundle = new ProxyBundleParser(bundleZipFilePath) ;
         	HashMap<OasOperation , Flow >  oas = proxyBundle.checkOpenApiConsistancy(true, false);
         	String estimatedOasPolicyFileName = "apiproxy/policies/"+ proxyBundle.getEstimatedOasPolicyName() + ".xml";
     		String oasJsonStr = proxyBundle.getOasJsonStr(); 
     		String modifiedOasElement = "<Payload contentType=\"application/json\" variablePrefix=\"@\" variableSuffix=\"#\">\n"+oasJsonStr+"\n </Payload>" ; 
         	        	
-        	ZipXmlModifier.modifyXmlElement(bundleZipFileName , estimatedOasPolicyFileName ,ProxyBundleParser.PAYLOAD_XPTH , modifiedOasElement , newBundlePath  );
+        	ZipXmlModifier.modifyXmlElement(bundleZipFilePath , estimatedOasPolicyFileName ,ProxyBundleParser.PAYLOAD_XPTH , modifiedOasElement , newBundlePath  );
         	result.withFailed(false)
-  		  	.withSource(bundleZipFileName)
+  		  	.withSource(bundleZipFilePath)
   		  	.withDestination(newBundlePath)	
   		  	.withTransformerClass(this.getClass()); 
 
         } catch (Exception e) {
         	result.withError(e.getMessage())
         	.withFailed(true)
-  		  	.withSource(bundleZipFileName)
-  		  	.withDestination(newBundlePath)	
+  		  	.withSource(bundleZipFilePath)
+  		  	.withDestination(newBundlePath+File.pathSeparator + new File (bundleZipFilePath).getName())	
   		  	.withTransformerClass(this.getClass()); 
         	//System.out.println("Error Transforming Proxy Bundle : " +  bundleZipFileName );
         	e.printStackTrace();
