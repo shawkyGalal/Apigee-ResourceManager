@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.swagger.v3.oas.models.examples.Example;
 
@@ -21,9 +22,17 @@ public class JsonExample extends Example implements Jsonable {
 	}
 
 	
+	private  ArrayNode arrayNode ; 
+	public JsonExample(ArrayNode m_arrayNode) {
+		this.setArrayNode(arrayNode);
+	}
+
 
 	public String toJsonString() throws JsonMappingException, JsonProcessingException {
-
+		if (this.getArrayNode() != null)
+		{
+			return this.getArrayNode().toString() ; 
+		}
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         FifoMap<String , Object > elements = new FifoMap<String , Object >() ;
@@ -59,5 +68,17 @@ public class JsonExample extends Example implements Jsonable {
 
 	public void setJsonValue(JsonValue jsonValue) {
 		this.jsonValue = jsonValue;
+	}
+
+
+
+	public ArrayNode getArrayNode() {
+		return arrayNode;
+	}
+
+
+
+	public void setArrayNode(ArrayNode arrayNode) {
+		this.arrayNode = arrayNode;
 	}
 }

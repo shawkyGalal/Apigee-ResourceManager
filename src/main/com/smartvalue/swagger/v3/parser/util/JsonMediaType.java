@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.node.ArrayNode ; 
 
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.MediaType;
@@ -45,7 +46,18 @@ public class JsonMediaType extends io.swagger.v3.oas.models.media.MediaType impl
 	public JsonMediaType(MediaType mediaType) {
 		// TODO Auto-generated constructor stub
 		this.setEncoding(mediaType.getEncoding());
-		if (mediaType.getExample() != null)  this.setJsonExample(new JsonExample((Example) mediaType.getExample()));
+		if (mediaType.getExample() != null)  { 
+			this.setExample(mediaType.getExample());
+			if ( mediaType.getExample() instanceof Example)
+			{
+			this.setJsonExample(new JsonExample((Example) mediaType.getExample()));
+			}
+			else if ( mediaType.getExample() instanceof ArrayNode)
+			{
+				this.setJsonExample(new JsonExample((ArrayNode) mediaType.getExample()));
+			}
+			
+		} 
 		if (mediaType.getExamples() != null) this.setJsonExamples(new JsonExamples(mediaType.getExamples()));
 		this.setExampleSetFlag(mediaType.getExampleSetFlag());
 		this.setExtensions(mediaType.getExtensions());

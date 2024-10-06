@@ -98,7 +98,9 @@ public class JsonSchema extends Schema  implements Jsonable {
 		this.setPatternProperties(schema.getPatternProperties());
 		this.setPrefixItems(schema.getPrefixItems());
 		
-		if (schema.getProperties() != null ) this.setJsonProperties(new JsonProperties (schema.getProperties()) );
+		if (schema.getProperties() != null ) { 
+			this.setJsonProperties(new JsonProperties (schema.getProperties()) );
+			}
 		
 		this.setPropertyNames(schema.getPropertyNames());
 		this.setReadOnly(schema.getReadOnly());

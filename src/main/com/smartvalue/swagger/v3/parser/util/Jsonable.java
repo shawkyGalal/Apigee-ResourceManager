@@ -56,6 +56,7 @@ public interface Jsonable {
 	 				}
 	 				
 	 				String strJson = ((Jsonable)value).toJsonString() ;
+	 				doNotJsonFormat = doNotJsonFormat || strJson.equals("") ; 
  
 	 				try {
 	 	            	sb.append(toIndentedString((doNotJsonFormat) ? strJson : formatJson(strJson))).append("\n");
@@ -67,7 +68,12 @@ public interface Jsonable {
 	 			} 
 				else if ( value instanceof String || value instanceof UUID )
 		 		{
-					sb.append("\"").append(toIndentedString(value).replace("\"", "\\\"").replace("\n", "\\n")).append("\"");
+					String escapHandledValue = toIndentedString(value)
+							.replace("\"", "\\\"")
+							.replace("\n", "\\n")
+							.replace("\\s", "\\\\s")
+							.replace("\\-", "\\\\-") ; 
+					sb.append("\"").append(escapHandledValue).append("\"");
 		 		}
 				else if ( value instanceof Boolean )
 				{

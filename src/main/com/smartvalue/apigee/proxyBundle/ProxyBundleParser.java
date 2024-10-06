@@ -221,10 +221,13 @@ public class ProxyBundleParser
 	{
 		if (variableSubstitutions == null)
 		{	variableSubstitutions = new HashMap<String , String>() ; 
-			variableSubstitutions.put("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/xxxxxxxx\"}]") ; 
-			variableSubstitutions.put("@oas.contact.email#", "\"XXXXXYYYYZZZZ@moj.gov.sa\"") ; 
+			variableSubstitutions.put("\"@oas.servers#\"", "[{\"url\":\"https://api-test.moj.gov.local/1111\"}]") ;
+			variableSubstitutions.put("@oas.servers#", "[{\"url\":\"https://api-test.moj.gov.local/1111\"}]") ; 
+
+			variableSubstitutions.put("@servers#"    , "[{\"url\":\"https://api-test.moj.gov.local/2222\"}]" ) ;
+			variableSubstitutions.put("@oas.contact.email#", "XXXXXYYYYZZZZ@moj.gov.sa") ; 
 			variableSubstitutions.put("@oas.securitySchemes#", "\"AAAAAAABBBBBBB\"") ;
-			
+		
 		}
 		return variableSubstitutions;
 	}

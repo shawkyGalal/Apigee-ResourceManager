@@ -31,7 +31,7 @@ public class BundleFlow extends Flow {
 	    private void populateRequest(String proxyName, Element element) throws ParserConfigurationException, SAXException, IOException {
 	        NodeList requestsElements = element.getElementsByTagName("Request");
 	        Element requestElement1 = (Element) requestsElements.item(0);
-	        this.setRequest(new Request(proxyName,requestElement1)); 
+	        if (requestElement1 != null) this.setRequest(new Request(proxyName,requestElement1)); 
 	    }
 
 	    private void populateResponse(String proxyName, Element element) {

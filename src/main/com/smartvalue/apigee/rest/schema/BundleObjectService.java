@@ -110,8 +110,8 @@ public abstract class BundleObjectService extends ApigeeService {
 		TransformationResults transformResults  = new TransformationResults (); 
 		String envName ;
 		File folder = new File(inputFolderPath);
-		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();  
-	
+		File[] listFiles = folder.listFiles() ; 
+		if (listFiles == null) { throw new Exception("Transformation source Folder " + folder + "  Not Found Oe Empty ") ; }
 		for (File envFolder : folder.listFiles() )
 		{
 			int envProxiesCount = 0 ; 

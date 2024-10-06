@@ -30,6 +30,7 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
 
         } catch (Exception e) {
         	result.withError(e.getMessage())
+        	.withExceptionClassName(e.getClass().getName())
         	.withFailed(true)
   		  	.withSource(bundleZipFilePath)
   		  	.withDestination(newBundlePath+File.pathSeparator + new File (bundleZipFilePath).getName())	

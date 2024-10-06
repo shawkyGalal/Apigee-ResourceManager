@@ -6,7 +6,8 @@ public class TransformResult {
 	private String destination ;
 	private String error ;
 	private boolean failed ; 
-	private Class transformerClass ; 
+	private Class transformerClass ;
+	private String exceptionClassName ; 
 
 	public String getSource() {
 		return source;
@@ -63,6 +64,19 @@ public class TransformResult {
 	public String toString()
 	{
 		return super.toString() ;
+	}
+
+	public String getExceptionClassName() {
+		return exceptionClassName;
+	}
+
+	public void setExceptionClassName(String exceptionClassName) {
+		this.exceptionClassName = exceptionClassName;
+	}
+	public TransformResult withExceptionClassName(String name) {
+		// TODO Auto-generated method stub
+		this.setExceptionClassName(name);
+		return this;
 	}
 
 }
