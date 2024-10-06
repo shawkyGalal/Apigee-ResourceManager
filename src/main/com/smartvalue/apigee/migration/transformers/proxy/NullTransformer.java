@@ -23,11 +23,11 @@ public class NullTransformer extends ProxyTransformer {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("File copied successfully!");
         } catch (IOException e) {
-        	result.withError(e.getMessage())
-        	.withFailed(true)
-  		  	.withSource(bundleZipFileName)
+        	result.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath)
-  		  	.withTransformerClass(this.getClass());
+  		  	.withTransformerClass(this.getClass())
+  		  	.withError(e.getMessage())
+  		  	.withFailed(true);
 
         }
         return result ; 

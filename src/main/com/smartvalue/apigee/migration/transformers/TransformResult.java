@@ -1,13 +1,10 @@
 package com.smartvalue.apigee.migration.transformers;
 
-public class TransformResult {
+public class TransformResult extends ProcessResult {
 	
 	private String source ;
 	private String destination ;
-	private String error ;
-	private boolean failed ; 
 	private Class transformerClass ;
-	private String exceptionClassName ; 
 
 	public String getSource() {
 		return source;
@@ -17,7 +14,6 @@ public class TransformResult {
 		this.source = source;
 		return this ; 
 	}
-	
 
 	public String getDestination() {
 		return destination;
@@ -26,32 +22,7 @@ public class TransformResult {
 		this.destination = destination;
 		return this; 
 	}
-
 	
-	public String getError() {
-		return error;
-	}
-	public TransformResult withError(String error) {
-		this.error = error;
-		return this ; 
-	}
-
-	public boolean isFailed() {
-		return failed;
-	}
-
-	public void setFailed(boolean failed) {
-		this.failed = failed;
-	} 
-	public TransformResult withFailed(boolean failed) {
-		this.failed = failed;
-		return this; 
-	}
-
-	public Class getTransformerClass() {
-		return transformerClass;
-	}
-
 	public void setTransformerClass(Class transformerClass) {
 		this.transformerClass = transformerClass;
 	}
@@ -66,17 +37,10 @@ public class TransformResult {
 		return super.toString() ;
 	}
 
-	public String getExceptionClassName() {
-		return exceptionClassName;
+	public Class getTransformerClass() {
+		return transformerClass;
 	}
 
-	public void setExceptionClassName(String exceptionClassName) {
-		this.exceptionClassName = exceptionClassName;
-	}
-	public TransformResult withExceptionClassName(String name) {
-		// TODO Auto-generated method stub
-		this.setExceptionClassName(name);
-		return this;
-	}
+
 
 }

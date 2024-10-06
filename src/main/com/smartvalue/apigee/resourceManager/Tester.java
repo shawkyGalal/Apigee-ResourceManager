@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.mashape.unirest.http.HttpResponse;
@@ -98,13 +98,13 @@ public class Tester {
 		Infra destInfra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
 		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
 		String destOrgName = "moj-prod-apigee" ;
-		ArrayList<HttpResponse<String>> importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
-		ArrayList<HttpResponse<String>> importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
-		ArrayList<HttpResponse<String>> importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;
-		ArrayList<HttpResponse<String>> importProxiesFaults =  destMngServer.getProxyServices(destOrgName).importAll(transFolder +"\\proxies") ;
-		ArrayList<HttpResponse<String>> importProductsFaults = destMngServer.getProductServices(destOrgName).importAll(transFolder +"\\products") ; 
-		ArrayList<HttpResponse<String>> importDevsFaults =  destMngServer.getDevelopersServices(destOrgName).importAll(transFolder +"\\developers") ;
-		ArrayList<HttpResponse<String>> importAppsFaults = destMngServer.getApplicationServices(destOrgName).importAll(transFolder +"\\apps") ;
+		HashMap<String, HttpResponse<String>> importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
+		HashMap<String, HttpResponse<String>> importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
+		HashMap<String, HttpResponse<String>> importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;
+		HashMap<String, HttpResponse<String>> importProxiesFaults =  destMngServer.getProxyServices(destOrgName).importAll(transFolder +"\\proxies") ;
+		HashMap<String, HttpResponse<String>> importProductsFaults = destMngServer.getProductServices(destOrgName).importAll(transFolder +"\\products") ; 
+		HashMap<String, HttpResponse<String>> importDevsFaults =  destMngServer.getDevelopersServices(destOrgName).importAll(transFolder +"\\developers") ;
+		HashMap<String, HttpResponse<String>> importAppsFaults = destMngServer.getApplicationServices(destOrgName).importAll(transFolder +"\\apps") ;
 	
 		
 

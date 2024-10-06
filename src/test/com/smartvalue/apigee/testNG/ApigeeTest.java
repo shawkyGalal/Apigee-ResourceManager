@@ -26,8 +26,8 @@ public class ApigeeTest {
 	protected static final String TRANSFORM_FOLDER_NAME = DEST_FOLDER_NAME +"\\Transformed" ;
 	
 	
-	protected static final String DEST_INFRA_NAME = "Gcloud(shawky.foda@gmail.com)";  
-	private static final String DEST_ORG_NAME = "moj-prod-apigee"; 
+	protected static final String DEST_INFRA_NAME = "VMWare" ; //"Gcloud(shawky.foda@gmail.com)";  
+	private static final String DEST_ORG_NAME = "VALIDATE" ;// "moj-prod-apigee"; 
 	protected Infra destInfra; 
 	protected ManagementServer destMngServer ; 
 	protected boolean deployUponImport = false ; 
@@ -52,7 +52,7 @@ public class ApigeeTest {
 	
 	protected void initalizeDest() throws Exception
 	{
-		destInfra = ac.getInfra("MasterWorks" , "Moj" , DEST_INFRA_NAME) ;
+		destInfra = ac.getInfra("SmartValue" , "Demo" , "VMWare") ;
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
 		if ( destInfra.isGooglecloud() != null && destInfra.isGooglecloud() )
 		{

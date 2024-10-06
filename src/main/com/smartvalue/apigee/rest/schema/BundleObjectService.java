@@ -9,11 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -203,15 +205,14 @@ public abstract class BundleObjectService extends ApigeeService {
 
 	}
 	
-	public  ArrayList<HttpResponse<String>> importAll(String folderPath) throws UnirestException, IOException 
+	public HashMap< String , HttpResponse<String>> importAll(String folderPath) throws UnirestException, IOException 
 	{
-		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		HashMap< String , HttpResponse<String> > allResults = new HashMap< String , HttpResponse<String>>(); 
 		String envName ;
 		File folder = new File(folderPath); 
 		
 		for (File envFolder : folder.listFiles() )
 		{
-			failedResult = new ArrayList<HttpResponse<String>>();  
 			int envProxiesCount = 0 ; 
 			envName = envFolder.getName(); 
 			System.out.println("================Importing "+this.getApigeeObjectType()+" Deplyed TO Environment  " + envName +"==============");
@@ -225,39 +226,24 @@ public abstract class BundleObjectService extends ApigeeService {
 					{
 						int dotIndex = zipfile.getName().indexOf(".zip");
 						if (dotIndex<0) break ; // ignore not zip files & folders 
-						/*
-						if ( this.getProxyFilter() != null && !this.getProxyFilter().filter(zipfile))
-						{
-							System.out.println("=======Proxy "+ zipfile + " Is Scaped ==========") ; 
-							break;
-						}
-						*/
+						
 						String objectName= zipfile.getName().substring(0, dotIndex ) ; 
 						System.out.println( objectName + ":" +zipfile.getAbsolutePath()  );
-						HttpResponse<String> result = importObject(zipfile.getAbsolutePath() , objectName);
-						int status = result.getStatus() ; 
-						if (! (status == 200 || status == 201) )
-						{	
-							System.out.println("Error Uploading Bundle " + objectName);
-							System.out.println("Error Details " + result.getBody());
-							failedResult.add(result) ; 
-							logger.error("Error Importing (" + this.getApigeeObjectType() +") Name : " + objectName +", Response_Body : "+ result.getBody());
+						HttpResponse<String> uploadHttpReponse = null ; 
+						try { uploadHttpReponse = importObject(zipfile.getAbsolutePath() , objectName); }
+						catch (Exception e) {
 						}
+						
+						allResults.put(zipfile.getAbsolutePath(), uploadHttpReponse ) ;
+						
 						if (this.isDeployUponUpload())
 						{
 							Gson json = new Gson(); 
-							ProxyUploadResponse pur = json.fromJson(result.getBody(), ProxyUploadResponse.class); 
+							ProxyUploadResponse pur = json.fromJson(uploadHttpReponse.getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
 							HttpResponse<String> deployresult = this.deployRevision(objectName, envName , newRevesion) ;
-							status = deployresult.getStatus() ;
-							if (status != 200)
-							{	
-								System.out.println("Error Deplying Proxy " + objectName);
-								System.out.println("Error Details " + deployresult.getBody());
-								failedResult.add(deployresult) ;
-								logger.error("Error Deploying (" + this.getApigeeObjectType() +") Name : " + objectName +"Response Body : "+ deployresult.getBody());
-							}
+							allResults.put(zipfile.getAbsolutePath(), deployresult ) ;
 						}
 					}
 			
@@ -265,15 +251,11 @@ public abstract class BundleObjectService extends ApigeeService {
 				
 			}
 			System.out.println("==== End of Importing Proxies Deplyed to Environment " + envName +"==("+envProxiesCount+") Proxies =====\n\n\n");
-			
-			if (failedResult.size() > 0 )
-			{
-				System.out.println(" Import Errors " + failedResult.size() + ", For More Details check log file /logs/system.log" );
-			}
+	
 		}
 		
 		//System.out.println("Errors:  \n" + failedResult.toString()); 
-		return failedResult;
+		return allResults;
 	}
 
 	public HttpResponse<String> importObject(String pundleZipFileName , String objectName ) throws UnirestException, IOException

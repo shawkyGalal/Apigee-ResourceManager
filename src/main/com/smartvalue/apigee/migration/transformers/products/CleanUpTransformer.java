@@ -24,11 +24,11 @@ public class CleanUpTransformer extends ProductTransformer {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("File copied successfully!");
         } catch (Exception e) {
-        	result.withError(e.getMessage())
-        	.withFailed(true)
-  		  	.withSource(sourceFileName)
+        	result.withSource(sourceFileName)
   		  	.withDestination(destPath)
-  		  	.withTransformerClass(this.getClass()); 
+  		  	.withTransformerClass(this.getClass())
+  		  	.withError(e.getMessage())
+        	.withFailed(true) 	; 
         	System.out.println(" transformation Error : " + result.toString());
         }
         return result ; 

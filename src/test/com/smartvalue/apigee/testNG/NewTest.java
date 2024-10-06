@@ -184,8 +184,8 @@ public class NewTest extends ApigeeTest {
 		//String destOrgName = "moj-prod-apigee" ; 
 		//ArrayList<HttpResponse<String>> targetServerFaults =  sourceMngServer.getTargetServersServices(sourceOrgName).importAll(sourceFolderName +"\\targetservers") ;
 		//ArrayList<HttpResponse<String>> kvmsFaults =  sourceMngServer.getKeyValueMapServices(sourceOrgName).importAll(sourceFolderName +"\\kvms") ;
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
-		ArrayList<HttpResponse<String>> proxiesFaults =  ((ProxyServices) destMngServer.getProxyServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
+		HashMap<String, HttpResponse<String>> sharedflowsFaults =  ((SharedFlowServices) destMngServer.getSharedFlowServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\sharedflows") ;
+		HashMap<String, HttpResponse<String>> proxiesFaults =  ((ProxyServices) destMngServer.getProxyServices()).withDeployUponUpload(deployUponImport).importAll(sourceFolderName +"\\proxies") ;
 		//ArrayList<HttpResponse<String>> productsFaults = sourceMngServer.getProductServices(sourceOrgName).importAll(sourceFolderName +"\\products") ; 
 		//ArrayList<HttpResponse<String>> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).importAll(sourceFolderName +"\\developers") ;
 		//ArrayList<HttpResponse<String>> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).importAll(sourceFolderName +"\\apps") ;

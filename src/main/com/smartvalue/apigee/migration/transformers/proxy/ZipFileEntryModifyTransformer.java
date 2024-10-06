@@ -57,10 +57,13 @@ public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 		 TransformResult result = new TransformResult() ;    
 		 try{ Files.createDirectories(Paths.get(outputZipFile));}
 		 catch (IOException e) {
-	        	result.withError(e.getMessage())
-	        		  .withFailed(true) 
-	      		  	  .withSource(bundleZipFileName)
-	      		  	  .withDestination(outputZipFile); 
+			 result.withSource(bundleZipFileName)
+	  		  	.withDestination(outputZipFile)
+	  		  	.withTransformerClass(this.getClass())
+	  		  	.withError(e.getMessage())
+	  		  	.withFailed(true)
+	  		  	.withExceptionClassName(e.getClass().getName());
+        	 
 	        	e.printStackTrace();
 	        	logger.error(e.getMessage());
 	        	return result; 
@@ -95,11 +98,15 @@ public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 	            zipOutputStream.closeEntry();
 
 	        } catch (IOException e) {
-	        	result.withError(e.getMessage())
-	      		  	  .withFailed(true) 
-	      		  	  .withSource(bundleZipFileName)
-	      		  	  .withDestination(outputZipFile)
-	        		  .withTransformerClass(this.getClass());
+	        	
+	        	result.withSource(bundleZipFileName)
+	  		  	.withDestination(outputZipFile)
+	  		  	.withTransformerClass(this.getClass())
+	  		  	.withError(e.getMessage())
+	  		  	.withFailed(true)
+	  		  	.withExceptionClassName(e.getClass().getName());
+	        	
+	        	
 	        	System.out.println(result.toString()); 
 	        }
 		 logger.info("End Processing Transformer " + this.getClass()) ;

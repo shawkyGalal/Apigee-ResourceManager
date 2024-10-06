@@ -23,11 +23,12 @@ public class NullTransformer extends ProductTransformer {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
             System.out.println("File copied successfully!");
         } catch (IOException e) {
-        	result.withError(e.getMessage())
-        	.withFailed(true)
-  		  	.withSource(bundleZipFileName)
+        	result.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath)
-  		  	.withTransformerClass(this.getClass()); 
+  		  	.withTransformerClass(this.getClass())
+  		  	.withError(e.getMessage())
+        	.withFailed(true)
+  		  	; 
         	System.out.println(" transformation Error : " + result.toString());
         }
         return result ; 

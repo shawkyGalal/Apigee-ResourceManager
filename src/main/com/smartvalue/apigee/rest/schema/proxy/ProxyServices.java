@@ -118,10 +118,42 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	
 	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
 	{
-		GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class);
-		return deleteAll(proxiesList); 
+		Boolean isGoogle = this.getMs().getInfra().isGooglecloud() ;  
+		if (isGoogle != null && isGoogle)
+		{
+			GoogleProxiesList proxiesList = this.getAllProxiesList(GoogleProxiesList.class) ;  
+			return deleteAll(proxiesList); 
+		}
+		else
+		{
+			return deleteAll(this.getAllProxiesList()) ;
+		}
+		
 	}
 	
+	private ArrayList<HttpResponse<String>> deleteAll(ArrayList<String> allProxiesList) {
+		ArrayList<HttpResponse<String>> allResults = new ArrayList<HttpResponse<String>>();  
+		for (int i = 0 ;  i< allProxiesList.size() ; i++ )
+		{
+			String proxyName = allProxiesList.get(i) ; 
+			
+			HttpResponse<String> result = null;
+			try {
+				result = deleteProxy(proxyName);
+			} catch (UnirestException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (result != null && result.getStatus() == 200)
+			{
+				System.out.println( "proxyName :" + proxyName + " Deleted");
+			}
+			allResults.add(result) ; 
+			
+		}
+		return allResults;
+	}
+
 	public  ArrayList<HttpResponse<String>> deleteAll(GoogleProxiesList proxiesList) throws UnirestException, IOException
 	{
 		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  

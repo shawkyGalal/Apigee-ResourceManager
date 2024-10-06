@@ -111,9 +111,9 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	/**
 	 * Environmental Based Objects Import ( targetServers , KVMs ) export 
 	 */
-	public  ArrayList<HttpResponse<String>> importAll(String folderPath) throws Exception 
+	public  HashMap<String, HttpResponse<String>> importAll(String folderPath) throws Exception 
 	{
-		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		HashMap<String, HttpResponse<String>> allResult = new HashMap<String, HttpResponse<String>>();  
 		String envName ;
 		File folder = new File(folderPath); 
 		
@@ -131,20 +131,13 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 				String ObjectName= objectFile.getName().substring(0, dotIndex ) ; 
 				System.out.println( ObjectName + ":" +objectFile.getAbsolutePath()  );
 				HttpResponse<String> result = importResource(objectFile);
-				int status = result.getStatus() ; 
-				if (! (status == 200 || status == 201) )
-				{	
-					System.out.println("Error Uploading "+this.getApigeeObjectType()+ ":" + ObjectName);
-					System.out.println("Error Details " + result.getBody());
-					failedResult.add(result) ; 
-				}
-						
+				allResult.put(objectFile.getAbsolutePath() , result ) ;
 			}
 				
 			System.out.println("==== End of Importing KVM's for Environment " + envName +"==("+envObjectCount+") KVM's =====\n\n\n");
 			
 		}
-		return failedResult ; 
+		return allResult ; 
 	}
 	
 	@Override

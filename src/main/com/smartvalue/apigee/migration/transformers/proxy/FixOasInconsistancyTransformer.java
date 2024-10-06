@@ -23,18 +23,19 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
     		String modifiedOasElement = "<Payload contentType=\"application/json\" variablePrefix=\"@\" variableSuffix=\"#\">\n"+oasJsonStr+"\n </Payload>" ; 
         	        	
         	ZipXmlModifier.modifyXmlElement(bundleZipFilePath , estimatedOasPolicyFileName ,ProxyBundleParser.PAYLOAD_XPTH , modifiedOasElement , newBundlePath  );
-        	result.withFailed(false)
-  		  	.withSource(bundleZipFilePath)
-  		  	.withDestination(newBundlePath)	
-  		  	.withTransformerClass(this.getClass()); 
+        	result.withSource(bundleZipFilePath) 
+        	.withDestination(newBundlePath)	
+        	.withTransformerClass(this.getClass())
+        	.withFailed(false); 
 
         } catch (Exception e) {
-        	result.withError(e.getMessage())
-        	.withExceptionClassName(e.getClass().getName())
-        	.withFailed(true)
-  		  	.withSource(bundleZipFilePath)
+        	result.withSource(bundleZipFilePath)
   		  	.withDestination(newBundlePath+File.pathSeparator + new File (bundleZipFilePath).getName())	
-  		  	.withTransformerClass(this.getClass()); 
+  		  	.withTransformerClass(this.getClass())
+        	.withExceptionClassName(e.getClass().getName())
+        	.withError(e.getMessage())
+        	.withFailed(true)
+; 
         	//System.out.println("Error Transforming Proxy Bundle : " +  bundleZipFileName );
         	e.printStackTrace();
         }

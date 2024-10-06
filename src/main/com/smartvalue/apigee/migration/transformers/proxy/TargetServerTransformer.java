@@ -42,11 +42,11 @@ public class TargetServerTransformer extends ProxyTransformer {
             System.out.println("New Updated Proxy Pundle " + outputZipFile + "Is Created"); 
              
         } catch (Exception e) {
-        	result.withError(e.getMessage())
-        		  .withFailed(true) 
-        		  .withSource(bundleZipFileName)
-        		  .withDestination(outputZipFile)
-        		  .withTransformerClass(this.getClass()); 
+        	result.withSource(bundleZipFileName)
+  		  	.withDestination(bundleZipFileName)
+  		  	.withTransformerClass(this.getClass())
+  		  	.withError(e.getMessage())
+  		  	.withFailed(true);
         }
 		return result ; 
 	}

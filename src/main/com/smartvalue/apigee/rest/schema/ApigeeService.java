@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -196,35 +197,19 @@ public abstract class ApigeeService {
 		}
 	}
 	
-	public ArrayList<HttpResponse<String>> importAll(String sourceFolder) throws UnirestException, IOException, Exception
+	public HashMap<String, HttpResponse<String>> importAll(String sourceFolder) throws UnirestException, IOException, Exception
 	{
-		ArrayList<HttpResponse<String>> result = new ArrayList<HttpResponse<String>> () ; 
-		ArrayList<HttpResponse<String>> failedResult ; 
+		 
+		HashMap<String, HttpResponse<String> > allResults = new HashMap<String, HttpResponse<String> >() ; 
 		File source = new File(sourceFolder); 
 		for (File resourceFile : source.listFiles() )
 		{
-			failedResult = new ArrayList<HttpResponse<String>>(); 
-			System.out.println("Importing "+this.getApigeeObjectType()+" : "  + resourceFile );
-			try {
-				HttpResponse<String> productImportresult =  importResource(resourceFile) ;
-				int status = productImportresult.getStatus() ; 
-				if (! (status == 200 || status == 201) )
-				{	int dotIndex = resourceFile.getName().indexOf(".");
-					String objectName= resourceFile.getName().substring(0, dotIndex ) ; 
-					System.out.println("Error Uploading " + this.getResourcePath() +": " + objectName);
-					System.out.println("Error Details " + productImportresult.getBody());
-					failedResult.add(productImportresult) ; 
-					logger.error("Error Importing (" + this.getApigeeObjectType() +") Name : " + objectName +", Response_Body : "+ productImportresult.getBody());
-				}
-				
-				result.add(productImportresult) ;
-			}
-			catch (Exception e ) {
-				
-			}
+			HttpResponse<String> productImportresult = null ; 
+			productImportresult =  importResource(resourceFile) ;
+			allResults.put(resourceFile.getAbsolutePath(), productImportresult);
 		}
 		
-		return result ; 
+		return allResults ; 
 	}
 	
 	
