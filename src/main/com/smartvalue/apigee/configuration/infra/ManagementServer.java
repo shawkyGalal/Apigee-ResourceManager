@@ -157,13 +157,13 @@ public class ManagementServer extends Server{
 	private String  getAuthorizationHeader() throws IOException, UnirestException
 	{
 		String authorization = null ; 
-		if (this.getServerProfile() != null)
+		if (this.onPremise &&  this.getInfra() != null)
 		{
-			if (this.getServerProfile().getAuthType().equalsIgnoreCase("Basic"))
+			if (this.getInfra().getAuthType().equalsIgnoreCase("Basic"))
 			{
 				authorization = "Basic "+ new String(Base64.encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
 			}
-			else if (this.getServerProfile().getAuthType().equalsIgnoreCase("OAuth"))
+			else if (this.getInfra().getAuthType().equalsIgnoreCase("OAuth"))
 			{
 				String accessToken  = this.getAccessToken().getAccess_token() ;
 				 authorization = "Bearer "+ accessToken ; 
@@ -621,6 +621,17 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 
 	public void setOnPremise(boolean onPremise) {
 		this.onPremise = onPremise;
+	}
+	
+	public String getInfraUniqueName()
+	{
+		String result = null ; 
+		if (this.isOnPremise() && this.getInfra() != null){
+			result = this.getInfra().getParentCustomer().getName() +"."+ infra.getName() ; 
+		}
+		else if (this.getGoogelAccessToken() != null) {result = "Google Cloud InfraStructure : (" + this.getGoogelAccessToken().getSourceCredentials().getProjectId() +")" ;
+		}
+		return result ; 
 	}
 	
 	
