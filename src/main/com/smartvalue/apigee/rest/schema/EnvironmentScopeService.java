@@ -9,6 +9,8 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.load.LoadResult;
+import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 
@@ -111,9 +113,9 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	/**
 	 * Environmental Based Objects Import ( targetServers , KVMs ) export 
 	 */
-	public  HashMap<String, HttpResponse<String>> importAll(String folderPath) throws Exception 
+	public  LoadResults importAll(String folderPath) throws Exception 
 	{
-		HashMap<String, HttpResponse<String>> allResult = new HashMap<String, HttpResponse<String>>();  
+		LoadResults allResult = new LoadResults();  
 		String envName ;
 		File folder = new File(folderPath); 
 		
@@ -129,9 +131,19 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 				int dotIndex = objectFile.getName().indexOf(".");
 					
 				String ObjectName= objectFile.getName().substring(0, dotIndex ) ; 
+				LoadResult lr = new LoadResult();
+				lr.setSource(objectFile.getAbsolutePath()) ; 
 				System.out.println( ObjectName + ":" +objectFile.getAbsolutePath()  );
+				try {
 				HttpResponse<String> result = importResource(objectFile);
-				allResult.put(objectFile.getAbsolutePath() , result ) ;
+				}
+				catch (Exception e) {
+					lr.setFailed(true); 
+					lr.setExceptionClassName(e.getClass().getName());
+					lr.setError(e.getMessage());
+				}				
+				
+				allResult.add(lr) ;
 			}
 				
 			System.out.println("==== End of Importing KVM's for Environment " + envName +"==("+envObjectCount+") KVM's =====\n\n\n");

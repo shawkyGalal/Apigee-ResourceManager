@@ -1,11 +1,13 @@
-package com.smartvalue.apigee.migration.transformers;
+package com.smartvalue.apigee.migration;
+
+import com.smartvalue.apigee.migration.load.LoadResults;
 
 public class ProcessResult {
 
 	private String error ;
 	private boolean failed ; 
 	private String exceptionClassName ; 
-
+	private LoadResults notMatchedResult ; 
 	public boolean isFailed() {
 		return failed;
 	}
@@ -46,5 +48,13 @@ public class ProcessResult {
 	public ProcessResult withError(String error) {
 		this.error = error;
 		return this ; 
+	}
+
+	public LoadResults getNotMatchedResult() {
+		return notMatchedResult;
+	}
+
+	public void setNotMatchedResult(LoadResults notMatchedResult) {
+		this.notMatchedResult = notMatchedResult;
 	}
 }

@@ -1,5 +1,7 @@
 package com.smartvalue.apigee.migration.transformers;
 
+import com.smartvalue.apigee.migration.ProcessResult;
+
 public class TransformResult extends ProcessResult {
 	
 	private String source ;

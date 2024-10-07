@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.migration.load.LoadResults;
+import com.smartvalue.apigee.migration.load.LoadResults;
 
 public class Load extends ApigeeTest{
 	 private String loadingSourceFolder ;
@@ -28,80 +29,64 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadOriginalProxies() throws Exception {
 		//==================Import All Proxies ===========================
-		HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getProxyServices().importAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
-		LoadResults lrs = new LoadResults(allResponses) ;
-		lrs.filterSuccess() ;
-		int errorCount = lrs.getUnMatchedResponses().size() ; 
-		assertEquals( errorCount , 0 , "# of Errors = " + errorCount); 
+		LoadResults allResponses =  destMngServer.getProxyServices().importAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
+		int failedSize = allResponses.filterFailed(true).size() ; 
+		assertEquals( failedSize , 0 , "# of Errors = " + failedSize); 
 	 }
 	 
 	 @Test
 	 public void loadTransformedProxies() throws Exception {
 			//==================Import All Proxies ===========================
-			HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getProxyServices().importAll(TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
-			LoadResults lrs = new LoadResults(allResponses) ;
-			lrs.filterSuccess() ;
-			int errorCount = lrs.getUnMatchedResponses().size() ; 
-			assertEquals( errorCount , 0 , "# of Errors = " + errorCount); 
+		 	LoadResults allResponses =  destMngServer.getProxyServices().importAll(TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+		 	int failedSize = allResponses.filterFailed(true).size() ; 
+			assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 		 }
 	 
 	 @Test
 	 public void loadAllSharedFlows() throws Exception {
 		//==================Import All Sharedflows ===========================
-		HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getSharedFlowServices().importAll(loadingSourceFolder +SharedflowsSubFolder) ;
-		LoadResults lrs = new LoadResults(allResponses) ;
-		lrs.filterSuccess() ;
-		int errorCount = lrs.getUnMatchedResponses().size() ; 
-		assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
-	 }
+		LoadResults  allResponses =  destMngServer.getSharedFlowServices().importAll(loadingSourceFolder +SharedflowsSubFolder) ;
+	 	int failedSize = allResponses.filterFailed(true).size() ; 
+		assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
+	}
 
 	 @Test
 	 public void loadAllProducts() throws Exception {
 		//==================Import All ===========================
-		 HashMap<String, HttpResponse<String>> allResponses = destMngServer.getProductServices().importAll(loadingSourceFolder + PrtoductsSubFolder) ;
-		 LoadResults lrs = new LoadResults(allResponses) ;
-		 lrs.filterSuccess() ;
-		 int errorCount = lrs.getUnMatchedResponses().size() ; 
-		 assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
+		 LoadResults allResponses = destMngServer.getProductServices().importAll(loadingSourceFolder + PrtoductsSubFolder) ;
+		 int failedSize = allResponses.filterFailed(true).size() ; 
+		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
 	
 	 @Test
 	 public void loadAllDevelopers() throws Exception {
 		//==================Import All ===========================
-		 HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getDevelopersServices().importAll(loadingSourceFolder + DevelopersSubFolder) ;
-		 LoadResults lrs = new LoadResults(allResponses) ;
-		 lrs.filterSuccess() ;
-		 int errorCount = lrs.getUnMatchedResponses().size() ; 
-		 assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
+		 LoadResults allResponses =  destMngServer.getDevelopersServices().importAll(loadingSourceFolder + DevelopersSubFolder) ;
+		 int failedSize = allResponses.filterFailed(true).size() ; 
+		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
 	 
 	 @Test
 	 public void loadAllTargetServers() throws Exception {
 		//==================Import All ===========================
-		 HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getTargetServersServices().importAll(loadingSourceFolder +"\\targetservers") ;
-		 LoadResults lrs = new LoadResults(allResponses) ;
-		 lrs.filterSuccess() ;
-		 int errorCount = lrs.getUnMatchedResponses().size() ; 
-		 assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
+		 LoadResults  allResponses =  destMngServer.getTargetServersServices().importAll(loadingSourceFolder +"\\targetservers") ;
+		 int failedSize = allResponses.filterFailed(true).size() ; 
+		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
 	 
 	 @Test
 	 public void loadAllKvms() throws Exception {
 		//==================Import All ===========================
-		HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getKeyValueMapServices().importAll(loadingSourceFolder +"\\kvms") ;		
-		 LoadResults lrs = new LoadResults(allResponses) ;
-		 lrs.filterSuccess() ;
-		 int errorCount = lrs.getUnMatchedResponses().size() ; 
-		 assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
+		 LoadResults  allResponses =  destMngServer.getKeyValueMapServices().importAll(loadingSourceFolder +"\\kvms") ;		
+		 int failedSize = allResponses.filterFailed(true).size() ; 
+		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
 	 @Test
 	 public void loadApps() throws Exception {
 		//==================Import All ===========================
-		 HashMap<String, HttpResponse<String>> allResponses =  destMngServer.getApplicationServices().importAll(loadingSourceFolder +"\\apps") ;
-		 LoadResults lrs = new LoadResults(allResponses) ;
-		 lrs.filterSuccess() ;
-		 int errorCount = lrs.getUnMatchedResponses().size() ; 
-		 assertEquals( errorCount , 0 , "# of Errors = " + errorCount);
+		 LoadResults  allResponses =  destMngServer.getApplicationServices().importAll(loadingSourceFolder +"\\apps") ;
+		 int failedSize = allResponses.filterFailed(true).size() ; 
+		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
 	 
 	 @BeforeMethod

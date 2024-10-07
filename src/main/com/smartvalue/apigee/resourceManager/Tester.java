@@ -12,6 +12,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.moj.clients.environments.JsonParser;
@@ -98,13 +99,13 @@ public class Tester {
 		Infra destInfra = ac.getInfra("MasterWorks" , "MOJ" , "Gcloud(shawky.foda@gmail.com)") ;
 		ManagementServer destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ;
 		String destOrgName = "moj-prod-apigee" ;
-		HashMap<String, HttpResponse<String>> importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
-		HashMap<String, HttpResponse<String>> importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
-		HashMap<String, HttpResponse<String>> importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;
-		HashMap<String, HttpResponse<String>> importProxiesFaults =  destMngServer.getProxyServices(destOrgName).importAll(transFolder +"\\proxies") ;
-		HashMap<String, HttpResponse<String>> importProductsFaults = destMngServer.getProductServices(destOrgName).importAll(transFolder +"\\products") ; 
-		HashMap<String, HttpResponse<String>> importDevsFaults =  destMngServer.getDevelopersServices(destOrgName).importAll(transFolder +"\\developers") ;
-		HashMap<String, HttpResponse<String>> importAppsFaults = destMngServer.getApplicationServices(destOrgName).importAll(transFolder +"\\apps") ;
+		LoadResults importTargetServersFaults =  destMngServer.getTargetServersServices(destOrgName).importAll(transFolder +"\\targetservers") ;
+		LoadResults importSharedflowsFaults =  destMngServer.getSharedFlowServices(destOrgName).importAll(transFolder +"\\sharedflows") ;
+		LoadResults importKvmsFaults =  destMngServer.getKeyValueMapServices(destOrgName).importAll(transFolder +"\\kvms") ;
+		LoadResults importProxiesFaults =  destMngServer.getProxyServices(destOrgName).importAll(transFolder +"\\proxies") ;
+		LoadResults importProductsFaults = destMngServer.getProductServices(destOrgName).importAll(transFolder +"\\products") ; 
+		LoadResults importDevsFaults =  destMngServer.getDevelopersServices(destOrgName).importAll(transFolder +"\\developers") ;
+		LoadResults importAppsFaults = destMngServer.getApplicationServices(destOrgName).importAll(transFolder +"\\apps") ;
 	
 		
 

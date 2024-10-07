@@ -1,6 +1,6 @@
 package com.smartvalue.apigee.migration.load;
 
-import com.smartvalue.apigee.migration.transformers.ProcessResult;
+import com.smartvalue.apigee.migration.ProcessResult;
 
 public class LoadResult extends ProcessResult {
 	
@@ -16,6 +16,10 @@ public class LoadResult extends ProcessResult {
 		return this ; 
 	}
 
+	public void setSource(String source) {
+		this.source = source;
+
+	}
 	
 		
 	public String toString()

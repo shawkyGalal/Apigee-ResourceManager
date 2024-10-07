@@ -35,10 +35,20 @@ public class GoogleWebAppCredential extends com.smartvalue.google.iam.auto.Googl
 	public GoogleAccessToken  getAccessTokenByAuthCode( String authCode , String redirectUri) throws UnirestException
 	{
 		Gson json = new Gson(); 
-		GoogleAccessToken googleAccessToken =  json.fromJson( getAccessTokenResByAuthCode(authCode, redirectUri).getBody() , GoogleAccessToken.class );
-		googleAccessToken.setSourceCredentials(this); 
-		
-		return googleAccessToken; 
+		HttpResponse<String> response = getAccessTokenResByAuthCode(authCode, redirectUri) ; 
+		String body = response.getBody() ; 
+		int status  = response.getStatus() ;
+		if (status == 200 )
+		{
+			GoogleAccessToken googleAccessToken =  json.fromJson(  body , GoogleAccessToken.class );
+			googleAccessToken.setSourceCredentials(this); 
+			
+			return googleAccessToken; 
+		}
+		else 
+		{
+			throw new IllegalArgumentException("Unable to Generate Google AccessToken Due to " + body ) ; 
+		}
 	}
 	
 }

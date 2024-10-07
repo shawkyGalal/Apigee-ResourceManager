@@ -20,6 +20,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.load.LoadResult;
+import com.smartvalue.apigee.migration.load.LoadResults;
+import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -197,16 +199,27 @@ public abstract class ApigeeService {
 		}
 	}
 	
-	public HashMap<String, HttpResponse<String>> importAll(String sourceFolder) throws UnirestException, IOException, Exception
+	public LoadResults  importAll(String sourceFolder) throws UnirestException, IOException, Exception
 	{
 		 
-		HashMap<String, HttpResponse<String> > allResults = new HashMap<String, HttpResponse<String> >() ; 
+		LoadResults allResults = new LoadResults() ; 
 		File source = new File(sourceFolder); 
+		LoadResult lr  ; 
 		for (File resourceFile : source.listFiles() )
 		{
+			lr = new LoadResult();
+			lr.setSource(resourceFile.getAbsolutePath());
 			HttpResponse<String> productImportresult = null ; 
-			productImportresult =  importResource(resourceFile) ;
-			allResults.put(resourceFile.getAbsolutePath(), productImportresult);
+			try { productImportresult =  importResource(resourceFile) ; 
+				lr.setFailed(false);
+			}
+			catch (Exception e) {
+				lr.setFailed(true); 
+				lr.setExceptionClassName(e.getClass().getName());
+				lr.setError(e.getMessage());
+			}
+			lr.setHttpResponse(productImportresult);
+			allResults.add( lr);
 		}
 		
 		return allResults ; 

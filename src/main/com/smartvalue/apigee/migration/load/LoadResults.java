@@ -1,53 +1,29 @@
 package com.smartvalue.apigee.migration.load;
+import com.smartvalue.apigee.migration.ProcessResults;
 
-import java.util.Map.Entry;
-
-import com.mashape.unirest.http.HttpResponse;
-
-public class LoadResults {
-	private java.util.HashMap<String, HttpResponse<String>> allResponses ; 
-	private java.util.HashMap<String, HttpResponse<String>> unMatchedResponses = new  java.util.HashMap<String, HttpResponse<String>> (); 
+public class LoadResults  extends ProcessResults {
 	
-	public LoadResults( java.util.HashMap<String, HttpResponse<String>> m_responses)
-	{
-		this.allResponses = m_responses ; 
-	}
-	public java.util.HashMap<String, HttpResponse<String>> getResponsees() {
-		return allResponses;
-	}
-	public void setResponsees(java.util.HashMap<String, HttpResponse<String>> responsees) {
-		this.allResponses = responsees;
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
-	public java.util.HashMap<String, HttpResponse<String>> filterSuccess( )
+	
+	public LoadResults filterFailed(boolean status )
 	{
-		java.util.HashMap<String, HttpResponse<String>> result = new java.util.HashMap<String, HttpResponse<String>> () ; 
-		for ( Entry<String, HttpResponse<String>> entry : this.getResponsees().entrySet() )
+		notMatchedResult = new LoadResults(); 
+		LoadResults results = new LoadResults() ; 
+		for( int i= 0 ; i< this.size() ; i++ )
 		{
-			HttpResponse<String> response = entry.getValue() ;
-			if (response != null )
-			{
-				int status = response.getStatus() ;  
-				boolean success = (status ==  200 || status ==  201) ;  
-				if (success )
-				{
-					result.put(entry.getKey(), response) ; 
-				}
-				else {
-					this.getUnMatchedResponses().put(entry.getKey(), response) ; 
-				}
-			}
-			else
-			{
-				this.getUnMatchedResponses().put(entry.getKey(), null) ;
+			if (this.get(i).isFailed() == status) results.add(this.get(i));
+			else {
+				notMatchedResult.add(this.get(i));
 			}
 		}
-		return result  ; 
+		
+		return results ; 
 	}
-	public java.util.HashMap<String, HttpResponse<String>> getUnMatchedResponses() {
-		return unMatchedResponses;
+	
+	
+	
 	}
-	public void setUnMatchedResponses(java.util.HashMap<String, HttpResponse<String>> unMatchedResponses) {
-		this.unMatchedResponses = unMatchedResponses;
-	}
-}

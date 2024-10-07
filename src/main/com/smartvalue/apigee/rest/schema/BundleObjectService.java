@@ -11,11 +11,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.junit.platform.commons.util.LruCache;
+
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.load.LoadResult;
+import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -205,9 +208,9 @@ public abstract class BundleObjectService extends ApigeeService {
 
 	}
 	
-	public HashMap< String , HttpResponse<String>> importAll(String folderPath) throws UnirestException, IOException 
+	public LoadResults importAll(String folderPath) throws UnirestException, IOException 
 	{
-		HashMap< String , HttpResponse<String> > allResults = new HashMap< String , HttpResponse<String>>(); 
+		LoadResults allResults = new LoadResults(); 
 		String envName ;
 		File folder = new File(folderPath); 
 		
@@ -230,20 +233,38 @@ public abstract class BundleObjectService extends ApigeeService {
 						String objectName= zipfile.getName().substring(0, dotIndex ) ; 
 						System.out.println( objectName + ":" +zipfile.getAbsolutePath()  );
 						HttpResponse<String> uploadHttpReponse = null ; 
-						try { uploadHttpReponse = importObject(zipfile.getAbsolutePath() , objectName); }
+						LoadResult lr = new LoadResult();
+						lr.setSource(zipfile.getAbsolutePath());
+						try { uploadHttpReponse = importObject(zipfile.getAbsolutePath() , objectName); 
+								lr.setFailed(false);
+							}
 						catch (Exception e) {
+							lr.setFailed(true);
+							lr.setExceptionClassName(e.getClass().getName());
+							lr.setError(e.getMessage());
 						}
-						
-						allResults.put(zipfile.getAbsolutePath(), uploadHttpReponse ) ;
+						lr.setHttpResponse(uploadHttpReponse);
+						allResults.add(lr) ;
 						
 						if (this.isDeployUponUpload())
 						{
+							lr = new LoadResult();
+							lr.setSource(zipfile.getAbsolutePath());
 							Gson json = new Gson(); 
 							ProxyUploadResponse pur = json.fromJson(uploadHttpReponse.getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
+							 
+							try {
 							HttpResponse<String> deployresult = this.deployRevision(objectName, envName , newRevesion) ;
-							allResults.put(zipfile.getAbsolutePath(), deployresult ) ;
+							lr.setFailed(false);
+							}
+							catch (Exception e) {
+								lr.setFailed(true);
+								lr.setExceptionClassName(e.getClass().getName());
+								lr.setError(e.getMessage()); 
+							}
+							allResults.add(lr ) ;
 						}
 					}
 			
