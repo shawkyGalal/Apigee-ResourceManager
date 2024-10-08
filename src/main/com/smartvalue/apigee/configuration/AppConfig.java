@@ -1,6 +1,7 @@
 package com.smartvalue.apigee.configuration;
 
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import org.apache.http.HttpHost;
@@ -19,8 +20,16 @@ public class AppConfig {
 	private String proxyHost ; 
 	private String proxyPort ;
 	private String googleApigeeAPIUrl = "https://apigee.googleapis.com" ; 
+	private static Charset charset = Charset.forName("UTF-8");
 	
-	
+	private static String migrationBasePath = "C:\\temp\\Apigee" ;
+	public static final String ProxiesSubFolder = "\\proxies" ; 
+	public static final String SharedflowsSubFolder = "\\sharedflows" ;
+	public static final String PrtoductsSubFolder = "\\products" ;
+	public static final String DevelopersSubFolder = "\\developers" ;
+	public static final String appsSubFolder = "\\apps" ;
+	public static final String kvmsSubFolder = "\\kvms" ;
+	public static final String targetserversSubFolder = "\\targetservers" ;
 
 	public ArrayList<Partner> getPartners() {
 		return Partners;
@@ -117,6 +126,18 @@ public class AppConfig {
 	
 	public String getGoogleApigeeAPIUrl() {
 		return googleApigeeAPIUrl ; 
+	}
+	public static Charset getCharset() {
+		return charset;
+	}
+	public static void setCharset(Charset m_charset) {
+		charset = m_charset;
+	}
+	public static String getMigrationBasePath() {
+		return migrationBasePath;
+	}
+	public static void setMigrationBasePath(String migrationBasePath) {
+		AppConfig.migrationBasePath = migrationBasePath;
 	}
 
 	

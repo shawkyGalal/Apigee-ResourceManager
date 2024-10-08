@@ -15,7 +15,16 @@ public class JsonSchema extends Schema  implements Jsonable {
 	private JsonProperties  jsonProperties ;
 	private JsonExamples jsonExamples ;
 	private JsonAdditionalProperties jsonAdditionalProperties ;  
-	private JsonArrayList<JsonSchema> jsonAllOf ; 
+	private JsonArrayList<JsonSchema> jsonAllOf ;
+	private JsonSchema  jsonItems ; 
+	public JsonSchema getJsonItems() {
+		return jsonItems;
+	}
+
+	public void setJsonItems(JsonSchema isonItems) {
+		this.jsonItems = isonItems;
+	}
+
 	public JsonSchema(Schema schema) {
 
 		this.set$anchor(schema.get$anchor());
@@ -71,7 +80,10 @@ public class JsonSchema extends Schema  implements Jsonable {
 		
 		this.setFormat(schema.getFormat());
 		this.setIf(schema.getIf());
-		this.setItems(schema.getItems());
+		if (schema.getItems() != null) {
+			this.setItems(schema.getItems());
+			this.setJsonItems( new JsonSchema(this.getItems()) ) ; 
+		}
 		this.setJsonSchema(schema.getJsonSchema()) ; 
 		this.setJsonSchemaImpl(schema.getJsonSchemaImpl());
 		
@@ -134,6 +146,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        elements.put("format", getFormat()) ;
 	        elements.put("$ref", get$ref()) ;
 	        elements.put("description", getDescription()) ;
+	        elements.put("items", getJsonItems()) ;
 	        elements.put("title", getTitle()) ;
 	        elements.put("allOf", getJsonAllOf()) ;
 	        elements.put("multipleOf", getMultipleOf()) ;

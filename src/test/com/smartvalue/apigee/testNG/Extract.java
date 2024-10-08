@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 
@@ -18,7 +19,7 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getProxyServices().exportAll(DEST_FOLDER_NAME + ProxiesSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getProxyServices().exportAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 
@@ -39,41 +40,41 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllSharedFlows() throws Exception {
 		//==================Export All Sharedflows===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getSharedFlowServices().exportAll(DEST_FOLDER_NAME +SharedflowsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getSharedFlowServices().exportAll(DEST_FOLDER_NAME +AppConfig.SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 
 	 @Test
 	 public void exportAllProducts() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors = sourceMngServer.getProductServices().exportAll(DEST_FOLDER_NAME + PrtoductsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors = sourceMngServer.getProductServices().exportAll(DEST_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	
 	 @Test
 	 public void exportAllDevelopers() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getDevelopersServices().exportAll(DEST_FOLDER_NAME + DevelopersSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getDevelopersServices().exportAll(DEST_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void exportAllTargetServers() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices().exportAll(DEST_FOLDER_NAME + targetserversSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getTargetServersServices().exportAll(DEST_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 
 	 @Test
 	 public void exportAllKvms() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices().exportAll(DEST_FOLDER_NAME + kvmsSubFolder) ;		
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getKeyValueMapServices().exportAll(DEST_FOLDER_NAME + AppConfig.kvmsSubFolder) ;		
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 @Test
 	 public void exportApps() throws Exception {
 		//==================Export All ===========================
-		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices().exportAll(DEST_FOLDER_NAME + appsSubFolder) ;
+		HashMap<String, HashMap<String, Exception>> objectErrors =  sourceMngServer.getApplicationServices().exportAll(DEST_FOLDER_NAME + AppConfig.appsSubFolder) ;
 		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
 	 }
 	 

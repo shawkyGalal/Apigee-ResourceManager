@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,7 +64,7 @@ public class ProxyBundleParser
 		proxyName = proxyName.substring(0 , proxyName.indexOf(".zip")) ; 
 		try (
 		        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
-		        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+		        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream , AppConfig.getCharset());
 		    ) 
 		{
 		        ZipEntry entry;

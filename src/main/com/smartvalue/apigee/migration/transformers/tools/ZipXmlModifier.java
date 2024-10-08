@@ -17,8 +17,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.zip.*;
 import org.xml.sax.InputSource;
+
+import com.smartvalue.apigee.configuration.AppConfig;
 
 public class ZipXmlModifier {
 
@@ -49,7 +52,7 @@ public class ZipXmlModifier {
 
 	                // Add the modified content to the new ZIP entry
 	                zipOutputStream.putNextEntry(new ZipEntry(entryName));
-	                zipOutputStream.write(modifiedXmlContent.getBytes());
+	                zipOutputStream.write(modifiedXmlContent.getBytes(AppConfig.getCharset()));
 	                zipOutputStream.closeEntry(); // Close the entry after writing
 	            } else {
 	                // Copy other entries without modification

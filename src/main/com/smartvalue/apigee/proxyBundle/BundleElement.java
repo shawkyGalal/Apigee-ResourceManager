@@ -2,6 +2,7 @@ package com.smartvalue.apigee.proxyBundle;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,6 +17,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.smartvalue.apigee.configuration.AppConfig;
 
 public abstract class BundleElement {
 	
@@ -69,7 +72,7 @@ public abstract class BundleElement {
 	    // Read XML content from the zip entry
 	    while ((bytesRead = zipInputStream.read(buffer)) != -1) {
 	        // Append the read bytes to the StringBuilder
-	        xmlContentBuilder.append(new String(buffer, 0, bytesRead));
+	        xmlContentBuilder.append(new String(buffer, 0, bytesRead , AppConfig.getCharset()));
 	    }
 	    return xmlContentBuilder.toString(); 
 		

@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -30,9 +31,9 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(buildProxyTransformers()); 
-		 TransformationResults trnsformResults =  proxyServ.transformAll(DEST_FOLDER_NAME + ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + ProxiesSubFolder) ;
+		 TransformationResults trnsformResults =  proxyServ.transformAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
 		 int successCount = trnsformResults.filterFailed(false).size() ; 
-		 int failureCount = trnsformResults.filterFailed(true).size() ;
+		 int failureCount = trnsformResults.getNotMatchedResult().size() ;
 		 System.out.println("Failed Transormation : " + failureCount );
 		 System.out.println("Success Transformation : " + successCount );
 		assertEquals( failureCount , 0 , "# of Errors = " + failureCount ); 
@@ -43,8 +44,8 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		 
-		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\VMWare\\VALIDATE\\proxies\\iam-protected\\deed-operations\\185\\deed-operations.zip" 
-				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\") ;
+		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\Stage\\stg\\proxies\\iam-protected\\AlRajhiPaymentGateway\\106\\AlRajhiPaymentGateway.zip" 
+				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\proxies\\iam-protected\\AlRajhiPaymentGateway\\106\\") ;
 		
 		assertEquals( trnsformResults.filterFailed(true).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
 	 }
@@ -54,7 +55,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService sharedflowsServ =  sourceMngServer.getSharedFlowServices(); 
 		//sharedflowsServ.setTranformers(buildSharedflowsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + SharedflowsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + AppConfig.SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -63,7 +64,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildDevelopersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + DevelopersSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -72,7 +73,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildAppsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + appsSubFolder,  TRANSFORM_FOLDER_NAME + appsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.appsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.appsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -81,7 +82,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Products ===========================
 		ApigeeService objectServices =  sourceMngServer.getProductServices(); 
 		//objectServices.setTranformers(buildProductssTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + PrtoductsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -90,7 +91,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildTargetServersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + targetserversSubFolder,  TRANSFORM_FOLDER_NAME + targetserversSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.targetserversSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -99,7 +100,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildKvmsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + kvmsSubFolder,  TRANSFORM_FOLDER_NAME + kvmsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.kvmsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.kvmsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
