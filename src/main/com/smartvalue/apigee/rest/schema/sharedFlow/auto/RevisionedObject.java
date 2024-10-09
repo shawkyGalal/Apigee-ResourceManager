@@ -13,6 +13,8 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResult;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.rest.schema.ApigeeComman;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
@@ -98,34 +100,43 @@ public abstract class RevisionedObject extends ApigeeComman {
 		return result ; 
 	}
 	
-	public HashMap<String , Exception>  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
+	public ExportResults  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		HashMap<String , Exception> failedResult = null ;   
+		ExportResults exportResults = new  ExportResults();   
 		
 		for ( String  DeployedEnvName :  this.getDeployedRevisions().keySet()) 
 		{
 			ArrayList<String > envRevisions = this.getDeployedRevisions().get(DeployedEnvName) ;
+			ExportResult er ; 
 			for (String revisionString : envRevisions  )
 			{
- 
 				int revision = Integer.parseInt(revisionString);
 				try {
 					String path = folderDest+ File.separatorChar + DeployedEnvName + File.separatorChar + this.getName()+ File.separatorChar + revision+ File.separatorChar ; 
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;
+					
+					er = new ExportResult() ;
+					er.setSource(DeployedEnvName + "." +this.getName()+ "." + revision);
+					er.setFailed(false);
+					
+					exportResults.add(er) ; 
 					System.out.println(this.getClass().getName() +" : " + this.getName() + " Revision " +  revision + " Deplyed to Env " + DeployedEnvName +" Exported Successfully");
 				}
 				catch (Exception e) {
-					failedResult = new HashMap<String , Exception>(); 
-					failedResult.put(revisionString, e); 
+					er = new ExportResult() ;
+					er.setFailed(true);
+					er.setExceptionClassName(e.getClass().getName());
+					er.setError(e.getMessage());
+					exportResults.add(er) ; 
 					logger.error("Failed to Export" + this.getClass().getName() +", Name : " + this.getName() +" revision # " +revision + " Due To : "+ e.getMessage()); 
 				}
 			}
 				
 		}
 		
-		return failedResult ; 
+		return exportResults ; 
 	}
 	
 

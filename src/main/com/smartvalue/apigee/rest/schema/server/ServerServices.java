@@ -13,6 +13,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -145,7 +146,7 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeServ
 
 
 @Override
-public HashMap<String, HashMap<String, Exception>> exportAll(String folderDest) throws UnirestException, IOException {
+public ExportResults exportAll(String folderDest) throws UnirestException, IOException {
 	// Not Applicable 
 	return null;
 }

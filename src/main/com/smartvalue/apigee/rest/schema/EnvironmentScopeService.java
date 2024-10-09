@@ -9,6 +9,8 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResult;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
@@ -39,27 +41,29 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	/**
 	 * Environmental Based Objects export ( targetServers , KVMs ) export 
 	 */
-	public HashMap<String , HashMap<String , Exception>> exportAll(String destFolder) throws Exception
+	public ExportResults exportAll(String destFolder) throws Exception
 	{
-		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();
+		ExportResults exportResults = new ExportResults();
 		for ( String envName : this.getOrganization().getEnvironments())
-		{
+		{	ExportResult exportResult = new ExportResult(); 
 			this.setEnvName(envName);
-			HashMap<String , Exception> xx = new HashMap<String , Exception>() ;
 			for (String kvmName : this.getAllResources())
 			{
 				try {
 					exportResource(kvmName , destFolder +File.separatorChar+ envName ) ;
 					System.out.println(this.getApigeeObjectType() + " : " + kvmName + " Exported. ");
+					exportResult.setFailed(false); 
 				}
 				catch(Exception e ) {
-					xx.put(kvmName, e) ; 
+					exportResult.setError(e.getMessage()); 
+					exportResult.setExceptionClassName(e.getClass().getName()) ; 
+					exportResult.setFailed(true); 
 				}
+				exportResult.setSource(envName + "." + this.getApigeeObjectType() + "s . " + kvmName); 
 			}
-			if ( xx.size()>0 ) failedResult.put(envName, xx) ; 
-			
+			exportResults.add(exportResult) ; 
 		}
-		return failedResult;
+		return exportResults;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -171,7 +172,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return failedResult;
 	}
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
+	public  ExportResults exportAll(String folderDest) throws Exception
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
@@ -190,23 +191,20 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return exportAll(allProxies , folderDest ); 
 	}
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+	public  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
 	{
 		
-		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();  
+		ExportResults exportResults = new ExportResults();  
 		{
 			for (String proxyName : proxiesList)
 			{
 				System.out.println( "Start Exporting Proxy :" + proxyName );
 				Proxy proxy = this.getOrganization().getProxy(proxyName); 
-				HashMap<String , Exception> failures = proxy.exportAllDeployedRevisions(folderDest) ;
-				if (failures != null)
-				{
-					failedResult.put(proxyName, failures);
-				}
+				exportResults.addAll( proxy.exportAllDeployedRevisions(folderDest)) ;
+				
 			}
 		}
-		return failedResult;
+		return exportResults;
 	}
 
 	@Override

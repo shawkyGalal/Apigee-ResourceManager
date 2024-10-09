@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResult;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.load.LoadResults;
@@ -187,17 +189,7 @@ public abstract class ApigeeService {
 		return resource ; 
 	}
 	
-	public void  exportResource(String resourceId , String destFolder) throws Exception 
-	{
-		Path path = Paths.get(destFolder);
-        Files.createDirectories(path);
- 		String responseBody = this.getMs().getGetHttpResponse(getResourcePath()+"/" + resourceId).getBody() ;
-		try(  FileWriter myWriter = new FileWriter(destFolder +File.separatorChar + resourceId+".json" ) )
-		{
-			myWriter.write(responseBody);
-			myWriter.close();
-		}
-	}
+
 	
 	public LoadResults  importAll(String sourceFolder) throws UnirestException, IOException, Exception
 	{
@@ -235,25 +227,49 @@ public abstract class ApigeeService {
 		return result ; 
 		
 	}
+	
+	public ExportResult  exportResource(String resourceId , String destFolder) throws Exception 
+	{
+		ExportResult er  = new ExportResult();
+		HttpResponse<String> response = null ; 
+		try {
+			Path path = Paths.get(destFolder);
+	        Files.createDirectories(path);
+	        response = this.getMs().getGetHttpResponse(getResourcePath()+"/" + resourceId) ; 
+	 		String responseBody = response.getBody() ;
+			try(  FileWriter myWriter = new FileWriter(destFolder +File.separatorChar + resourceId+".json" ) )
+			{
+				myWriter.write(responseBody);
+				myWriter.close();
+			}
+			boolean considerSuccess = (response.getStatus() == 200 ||  response.getStatus() == 201 ) ; 
+			er.setFailed(! considerSuccess);
+			er.setSource(this.getApigeeObjectType()+" : "  + resourceId);
+			er.setHttpResponse(response); 
+			
+		} catch (Exception e) {
+			er.setFailed(true);
+			er.setExceptionClassName(e.getClass().getName());
+			er.setError(e.getMessage());
+			er.setHttpResponse(response);
 
-	public HashMap<String , HashMap<String , Exception>>  exportAll(String destFolder) throws Exception
+		}
+		return er ; 
+		
+	}
+
+	public ExportResults  exportAll(String destFolder) throws Exception
 	{
 		// Organizational Based Objects ( Products , developers , apps ) export 
-		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();
+		ExportResults exportResults = new ExportResults();
+		
 		for (String resourceId : getAllResources() )
 		{
 			System.out.println("Exporting "+this.getApigeeObjectType()+" : "  + resourceId );
-			try {
-			exportResource(resourceId , destFolder) ;
-			}
-			catch (Exception e) {
-				HashMap<String, Exception> xx = new HashMap<String , Exception>() ;
-				xx.put(resourceId, e); 
-				failedResult.put(this.envName, xx); 
-			}
+			exportResults.add(exportResource(resourceId , destFolder) ); 
 		}
 		
-		return failedResult ; 
+		return exportResults ; 
 		
 	}
 	

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.Deployable;
@@ -172,8 +173,9 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	
 
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll(String folderDest) throws Exception
+	public  ExportResults exportAll(String folderDest) throws Exception
 	{
+		
 		ArrayList<String> allSharedflows ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
 		if (isGoogleCloud != null && isGoogleCloud)
@@ -193,23 +195,18 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return exportAll(allSharedflows , folderDest ); 
 	}
 	
-	public  HashMap<String , HashMap<String , Exception>> exportAll( ArrayList<String> sharedFlowList , String folderDest) throws UnirestException, IOException
+	public  ExportResults exportAll( ArrayList<String> sharedFlowList , String folderDest) throws UnirestException, IOException
 	{
-		
-		HashMap<String , HashMap<String , Exception>> failedResult = new HashMap<String , HashMap<String , Exception>>();  
+		ExportResults exportResults = new ExportResults(); 
 		{
 			for (String sharedFlowStr : sharedFlowList)
 			{
 				System.out.println( "Start Exporting SharedFlow :" + sharedFlowStr );
 				SharedFlow sharedFlow = this.getOrganization().getShardFlow(sharedFlowStr); 
-				HashMap<String , Exception> exportFailures = sharedFlow.exportAllDeployedRevisions(folderDest) ;
-				if (exportFailures != null)
-				{
-					failedResult.put(sharedFlowStr, exportFailures); 
-				}
+				exportResults.addAll( sharedFlow.exportAllDeployedRevisions(folderDest)) ;
 			}
 		}
-		return failedResult;
+		return exportResults;
 	}
 
 	@Override
