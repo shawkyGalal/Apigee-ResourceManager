@@ -25,17 +25,16 @@ public class FixOasInconsistancyTransformer extends ProxyTransformer {
         	ZipXmlModifier.modifyXmlElement(bundleZipFilePath , estimatedOasPolicyFileName ,ProxyBundleParser.PAYLOAD_XPTH , modifiedOasElement , newBundlePath  );
         	result.withSource(bundleZipFilePath) 
         	.withDestination(newBundlePath)	
-        	.withTransformerClass(this.getClass())
-        	.withFailed(false); 
+        	.withFailed(false);
+        	result.setTransformerClass(this.getClass());
 
         } catch (Exception e) {
         	result.withSource(bundleZipFilePath)
   		  	.withDestination(newBundlePath+File.pathSeparator + new File (bundleZipFilePath).getName())	
-  		  	.withTransformerClass(this.getClass())
         	.withExceptionClassName(e.getClass().getName())
         	.withError(e.getMessage())
-        	.withFailed(true)
-; 
+        	.withFailed(true);
+        	result.setTransformerClass(this.getClass()); 
         	//System.out.println("Error Transforming Proxy Bundle : " +  bundleZipFileName );
         	e.printStackTrace();
         }

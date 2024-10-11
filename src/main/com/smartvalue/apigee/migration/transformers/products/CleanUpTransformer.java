@@ -26,9 +26,10 @@ public class CleanUpTransformer extends ProductTransformer {
         } catch (Exception e) {
         	result.withSource(sourceFileName)
   		  	.withDestination(destPath)
-  		  	.withTransformerClass(this.getClass())
   		  	.withError(e.getMessage())
-        	.withFailed(true) 	; 
+        	.withFailed(true) ; 
+        	result.setTransformerClass(this.getClass());
+        	
         	System.out.println(" transformation Error : " + result.toString());
         }
         return result ; 

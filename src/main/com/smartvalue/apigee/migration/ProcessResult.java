@@ -1,6 +1,7 @@
 package com.smartvalue.apigee.migration;
 
 import com.smartvalue.apigee.migration.load.LoadResults;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
 
 public class ProcessResult {
 
@@ -8,6 +9,25 @@ public class ProcessResult {
 	private boolean failed ; 
 	private String exceptionClassName ; 
 	private LoadResults notMatchedResult ; 
+	private String source ;
+	private String destination ;
+	public String getSource() {
+		return source;
+	}
+
+	public ProcessResult withSource(String source) {
+		this.source = source;
+		return this ; 
+	}
+
+	public String getDestination() {
+		return destination;
+	}
+	public ProcessResult withDestination(String destination) {
+		this.destination = destination;
+		return this; 
+	}
+
 	public boolean isFailed() {
 		return failed;
 	}

@@ -44,9 +44,9 @@ public class TargetServerTransformer extends ProxyTransformer {
         } catch (Exception e) {
         	result.withSource(bundleZipFileName)
   		  	.withDestination(bundleZipFileName)
-  		  	.withTransformerClass(this.getClass())
   		  	.withError(e.getMessage())
   		  	.withFailed(true);
+        	result.setTransformerClass(this.getClass());
         }
 		return result ; 
 	}

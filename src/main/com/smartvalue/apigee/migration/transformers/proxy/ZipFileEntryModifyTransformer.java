@@ -59,10 +59,10 @@ public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 		 catch (IOException e) {
 			 result.withSource(bundleZipFileName)
 	  		  	.withDestination(outputZipFile)
-	  		  	.withTransformerClass(this.getClass())
 	  		  	.withError(e.getMessage())
 	  		  	.withFailed(true)
 	  		  	.withExceptionClassName(e.getClass().getName());
+			 	result.setTransformerClass(this.getClass()); 
         	 
 	        	e.printStackTrace();
 	        	logger.error(e.getMessage());
@@ -101,10 +101,10 @@ public class ZipFileEntryModifyTransformer extends ProxyTransformer {
 	        	
 	        	result.withSource(bundleZipFileName)
 	  		  	.withDestination(outputZipFile)
-	  		  	.withTransformerClass(this.getClass())
 	  		  	.withError(e.getMessage())
 	  		  	.withFailed(true)
 	  		  	.withExceptionClassName(e.getClass().getName());
+	        	result.setTransformerClass(this.getClass()); 
 	        	
 	        	
 	        	System.out.println(result.toString()); 

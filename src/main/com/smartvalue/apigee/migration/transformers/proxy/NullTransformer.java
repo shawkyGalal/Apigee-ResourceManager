@@ -25,9 +25,9 @@ public class NullTransformer extends ProxyTransformer {
         } catch (IOException e) {
         	result.withSource(bundleZipFileName)
   		  	.withDestination(newBundlePath)
-  		  	.withTransformerClass(this.getClass())
   		  	.withError(e.getMessage())
   		  	.withFailed(true);
+        	result.setTransformerClass(this.getClass()); 
 
         }
         return result ; 
