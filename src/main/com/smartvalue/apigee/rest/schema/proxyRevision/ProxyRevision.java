@@ -449,7 +449,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	public ProxyDeployment deploy(String envName) throws UnirestException, IOException {
 		ProxyDeployment result ; 
 		String path = "/v1/organizations/" +this.getManagmentServer().getOrgName()+"/environments/"+envName+"/apis/"+this.getParentProxy().getName()+"/revisions/"+this.getRevision()+"/deployments" ; 
-		result =  this.getManagmentServer().executePostMgmntAPI(path ,  ProxyDeployment.class , "" , "application/json") ;
+		result =  this.getManagmentServer().executePostMgmntAPI(path ,  ProxyDeployment.class , null , null) ;
 		
 		return result ; 
 	}
