@@ -15,6 +15,7 @@ import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.Deployable;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 
@@ -236,14 +237,20 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return this.getMs().getInfra().buildSharedFlowTransformers();
 	}
 
-	
-	
+	@Override
+	public HashMap<String, HashMap<String, ArrayList<String>>> getDeploymentStatus()
+			throws UnirestException, IOException, Exception {
+		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
+		for ( String sharedFlowName : this.getAllSharedFlowsList())
+		{
+			Proxy proxy = this.getOrganization().getProxy(sharedFlowName);
+			HashMap<String, ArrayList<String>> proxyDeployMentREvisions  = proxy.getDeployedRevisions()	 ;
+			result.put(sharedFlowName, proxyDeployMentREvisions) ; 
+		}
+		return result ; 
+	}
 
 	
-
-	
-	
-
 	
 	
 	

@@ -25,6 +25,7 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.ObjectMapperFactory;
 
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
@@ -442,6 +443,15 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 
 	public void setParentProxy(RevisionedObject revisionedObject) {
 		this.parentProxy = revisionedObject;
+	}
+
+
+	public ProxyDeployment deploy(String envName) throws UnirestException, IOException {
+		ProxyDeployment result ; 
+		String path = "/v1/organizations/" +this.getManagmentServer().getOrgName()+"/environments/"+envName+"/apis/"+this.getParentProxy().getName()+"/revisions/"+this.getRevision()+"/deployments" ; 
+		result =  this.getManagmentServer().executePostMgmntAPI(path ,  ProxyDeployment.class , "" , "application/json") ;
+		
+		return result ; 
 	}
 
 

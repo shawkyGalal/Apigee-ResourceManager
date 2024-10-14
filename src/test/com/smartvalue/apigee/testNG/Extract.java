@@ -14,6 +14,8 @@ import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
+import com.smartvalue.apigee.rest.schema.proxy.DeployResults;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices ; 
 
 public class Extract extends ApigeeTest{
 	 
@@ -21,6 +23,17 @@ public class Extract extends ApigeeTest{
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
 		 ExportResults expotrtresults =  sourceMngServer.getProxyServices().exportAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
+		 int failureCount = expotrtresults.filterFailed(true).size() ;  
+		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
+	 }
+	 
+	 @Test
+	 public void exportAllProxiesWithDeploymentStatus() throws Exception {
+		//==================Export All Proxies ===========================
+		 String deplyStatusFileName = DEST_FOLDER_NAME + "deplysStatus.ser" ; 
+		 ProxyServices ps = (ProxyServices) sourceMngServer.getProxyServices() ; 
+		 ExportResults expotrtresults = ps.exportAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder , deplyStatusFileName) ;
+		 DeployResults xx = ps.rollBackToLastSerializedDeployStatus(deplyStatusFileName); 
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }

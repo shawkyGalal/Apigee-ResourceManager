@@ -627,7 +627,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	{
 		String result = null ; 
 		if (this.isOnPremise() && this.getInfra() != null){
-			result = this.getInfra().getParentCustomer().getName() +"."+ infra.getName() ; 
+			result = infra.getParentCustomer().getName() +"."+ infra.getName() ; 
 		}
 		else if (this.getGoogelAccessToken() != null) {result = "Google Cloud InfraStructure : (" + this.getGoogelAccessToken().getSourceCredentials().getProjectId() +")" ;
 		}

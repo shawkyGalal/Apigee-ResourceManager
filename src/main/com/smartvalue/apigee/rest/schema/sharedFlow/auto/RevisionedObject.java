@@ -118,6 +118,7 @@ public abstract class RevisionedObject extends ApigeeComman {
 					export(revision , path) ;
 					
 					er = new ExportResult() ;
+					er.setDestination(path) ;
 					er.setSource(DeployedEnvName + "." +this.getName()+ "." + revision);
 					er.setFailed(false);
 					

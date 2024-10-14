@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.migration;
 
+import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 
@@ -22,6 +23,10 @@ public class ProcessResult {
 
 	public String getDestination() {
 		return destination;
+	}
+
+	public void  setDestination(String destination) {
+		this.destination = destination;
 	}
 	public ProcessResult withDestination(String destination) {
 		this.destination = destination;
@@ -76,5 +81,19 @@ public class ProcessResult {
 
 	public void setNotMatchedResult(LoadResults notMatchedResult) {
 		this.notMatchedResult = notMatchedResult;
+	}
+
+	public void setSource(String processSource) {
+		this.source = processSource ; 
+		
+	}
+	
+	private HttpResponse<String> httpResponse ; 
+	public HttpResponse<String> getHttpResponse() {
+		return httpResponse;
+	}
+
+	public void setHttpResponse(HttpResponse<String> httpResponse) {
+		this.httpResponse = httpResponse;
 	}
 }

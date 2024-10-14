@@ -28,6 +28,7 @@ import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 
 public abstract class ApigeeService {
@@ -242,7 +243,7 @@ public abstract class ApigeeService {
 				myWriter.write(responseBody);
 				myWriter.close();
 			}
-			boolean considerSuccess = (response.getStatus() == 200 ||  response.getStatus() == 201 ) ; 
+			boolean considerSuccess = Helper.isConsideredSuccess(response.getStatus());  
 			er.setFailed(! considerSuccess);
 			er.setSource(this.getApigeeObjectType()+" : "  + resourceId);
 			er.setHttpResponse(response); 

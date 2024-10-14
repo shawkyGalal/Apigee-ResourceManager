@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
-import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
@@ -23,10 +21,8 @@ import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 
 
-
 public class ProxyServices extends BundleObjectService implements Deployable {
 
-	
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
@@ -39,7 +35,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllProxiesList() throws Exception
+	private ArrayList<String>  getOnPremiseAllProxiesList() throws Exception
 	{
 		ArrayList<String> proxiesList = this.getAllResources(ArrayList.class) ;  
 		return proxiesList ;  
@@ -62,7 +58,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	public HashMap<String, List<Object>>  getProxiesWithoutPolices(String[] m_polices , boolean m_deployedVersionOnly ) throws Exception
 	{
 		HashMap<String, List<Object>> result = new HashMap<>() ; 
-		ArrayList<String> proxiesName = getAllProxiesList() ; 
+		ArrayList<String> proxiesName = getOnPremiseAllProxiesList() ; 
 		ManagementServer ms = this.getMs() ;
 		Organization org = (Organization) ms.getOrgByName(this.orgName) ;
 		int count = 0 ; 
@@ -127,7 +123,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		}
 		else
 		{
-			return deleteAll(this.getAllProxiesList()) ;
+			return deleteAll(this.getOnPremiseAllProxiesList()) ;
 		}
 		
 	}
@@ -172,7 +168,19 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return failedResult;
 	}
 	
+	public  ExportResults exportAll(String folderDest , String serlizeFileName) throws Exception
+	{
+		// Keep a copy of the current proxies deployment statuses in a file in case a roll back of a Load Process is required  
+		serializeDeployStatus(serlizeFileName);
+		return exportAll(getAllProxiesList() , folderDest ); 
+	} 
 	public  ExportResults exportAll(String folderDest) throws Exception
+	{
+		return exportAll(getAllProxiesList() , folderDest ); 
+	}
+	
+
+	public ArrayList<String>  getAllProxiesList() throws Exception
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
@@ -186,12 +194,13 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 			}
 		}
 		else {
-			allProxies =  this.getAllProxiesList();
+			allProxies =  this.getOnPremiseAllProxiesList();
 		}
-		return exportAll(allProxies , folderDest ); 
+		return allProxies ; 
 	}
 	
-	public  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+
+	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
 	{
 		
 		ExportResults exportResults = new ExportResults();  
@@ -223,7 +232,16 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	}
 
 	
-	
-	
+	public HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception
+	{
+		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
+		for ( String proxyName : this.getAllProxiesList())
+		{
+			Proxy proxy = this.getOrganization().getProxy(proxyName);
+			HashMap<String, ArrayList<String>> proxyDeployMentREvisions  = proxy.getDeployedRevisions()	 ;
+			result.put(proxyName, proxyDeployMentREvisions) ; 
+		}
+		return result ; 
+	}	
 	
 }

@@ -2,32 +2,39 @@ package com.smartvalue.apigee.rest.schema;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.junit.platform.commons.util.LruCache;
+import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
-import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
-import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
+import com.smartvalue.apigee.rest.schema.proxy.DeployResults;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
+import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
 
 public abstract class BundleObjectService extends ApigeeService {
 
+	
 	protected boolean deployUponUpload = false ; 
 	
 	public BundleObjectService(ManagementServer ms, String m_orgName) {
@@ -213,6 +220,8 @@ public abstract class BundleObjectService extends ApigeeService {
 		LoadResults allResults = new LoadResults(); 
 		String envName ;
 		File folder = new File(folderPath); 
+		if (folder.listFiles() == null)
+		{throw new IllegalArgumentException ("Folder Not Found or Empty: " + folder.getAbsolutePath()) ; }
 		
 		for (File envFolder : folder.listFiles() )
 		{
@@ -298,6 +307,72 @@ public abstract class BundleObjectService extends ApigeeService {
 		return result ; 
 	}
 	
+	public void serializeDeployStatus(String destFile) throws UnirestException, Exception
+	{
+		File file = new File(destFile);
+        file.getParentFile().mkdirs();
+		FileOutputStream fos = new FileOutputStream(destFile);
+        try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeObject(getDeploymentStatus());
+		}  
+	}
+	
+	public HashMap<String , HashMap<String, ArrayList<String>>> deSerializeDeployStatus(String sourceFile) throws IOException, ClassNotFoundException 
+	{
+		FileInputStream fis = new FileInputStream(sourceFile);
+        try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+			HashMap<String , HashMap<String, ArrayList<String>>> result  = (HashMap<String , HashMap<String, ArrayList<String>>>) ois.readObject(); 
+			return result ;
+		} 
+	}
+	
+	public abstract HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception ;  
+	
+
+	public RevisionedObject getRevisionedObject( String ObjectName) throws UnirestException, IOException
+	{
+		RevisionedObject revisionObject = null ; 
+		if (this instanceof ProxyServices)  revisionObject =  this.getOrganization().getProxy(ObjectName); 
+		else if ( this instanceof SharedFlowServices) revisionObject = this.getOrganization().getShardFlow(ObjectName);
+		else {throw new IllegalArgumentException("Revisioned Object Type " + this.getClass() + " is not Supported "); }
+		return revisionObject ; 
+	}
+		
+	public DeployResults rollBackToLastSerializedDeployStatus(String serlizeFileName) throws ClassNotFoundException, IOException, UnirestException
+	{
+		HashMap<String, HashMap<String, ArrayList<String>>> pds = this.deSerializeDeployStatus(serlizeFileName) ;
+		DeployResults deployResults = new DeployResults(); 
+		for (Entry<String, HashMap<String, ArrayList<String>>> entry : pds.entrySet())
+		{
+			String revisionedObjectName = entry.getKey(); 
+			
+			HashMap<String, ArrayList<String>> ds = entry.getValue();
+			for (Entry<String, ArrayList<String>> entry01 : ds.entrySet())
+			{
+				String envName = entry01.getKey(); 
+				ArrayList<String> revisions = entry01.getValue() ;
+				for (String revision : revisions)
+				{
+					String processSource = revisionedObjectName +"." + envName + "." + revision ; 
+					ProcessResult pr = new ProcessResult(); 
+					pr.setSource(processSource);
+					
+					try {
+						
+						RevisionedObject revisionedObject = this.getRevisionedObject(revisionedObjectName);
+						revisionedObject.getRevision(revision).deploy(envName); 
+						pr.withFailed(false); 
+					} catch (UnirestException | IOException e) {
+						pr.withFailed(true)
+						  .withExceptionClassName(e.getClass().getName())
+						  .withError(e.getMessage());
+					}
+					deployResults.add(pr) ; 
+				}
+			}
+		}
+		return deployResults ; 
+	}
 	
 
 }
