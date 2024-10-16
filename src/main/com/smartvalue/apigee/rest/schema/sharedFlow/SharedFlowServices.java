@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -16,6 +16,9 @@ import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.GoogleSharedflowList;
 
@@ -36,7 +39,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	
 	public ArrayList<SharedFlow>  getAllSharedFlows() throws Exception
 	{
-		ArrayList<String> sharedflowsNames = getAllSharedFlowsList() ; 
+		ArrayList<String> sharedflowsNames = getAllBundledObjectNameList() ; 
 		ManagementServer ms = this.getMs() ;
 		ArrayList<SharedFlow> AllSharedflows = new ArrayList<SharedFlow>() ; 
 		for (String sharedflowName : sharedflowsNames)
@@ -49,12 +52,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return AllSharedflows ; 
 	}
 	
-	@SuppressWarnings("unchecked")
-	public ArrayList<String>  getAllSharedFlowsList() throws Exception
-	{
-		ArrayList<String> proxiesName = this.getAllResources(ArrayList.class); 
-		return proxiesName ;  
-	}
+	
 	
 	public <T> T  getAllSharedFlowsList( Class<T> classOfT ) throws Exception
 	{
@@ -237,21 +235,6 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		return this.getMs().getInfra().buildSharedFlowTransformers();
 	}
 
-	@Override
-	public HashMap<String, HashMap<String, ArrayList<String>>> getDeploymentStatus()
-			throws UnirestException, IOException, Exception {
-		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
-		for ( String sharedFlowName : this.getAllSharedFlowsList())
-		{
-			Proxy proxy = this.getOrganization().getProxy(sharedFlowName);
-			HashMap<String, ArrayList<String>> proxyDeployMentREvisions  = proxy.getDeployedRevisions()	 ;
-			result.put(sharedFlowName, proxyDeployMentREvisions) ; 
-		}
-		return result ; 
-	}
-
-	
-	
-	
+		
 	
 }

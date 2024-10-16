@@ -22,7 +22,8 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
-		 ExportResults expotrtresults =  sourceMngServer.getProxyServices().exportAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
+		 
+		 ExportResults expotrtresults =  ((ProxyServices)sourceMngServer.getProxyServices()).exportAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder , DEST_FOLDER_NAME+"/xxxx.ser") ;
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }

@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
@@ -28,6 +29,9 @@ import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.rest.schema.proxy.DeployResults;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
@@ -258,11 +262,11 @@ public abstract class BundleObjectService extends ApigeeService {
 						if (this.isDeployUponUpload())
 						{
 							lr = new LoadResult();
-							lr.setSource(zipfile.getAbsolutePath());
+							lr.setSource(zipfile.getAbsolutePath()+"_Deployment");
 							Gson json = new Gson(); 
 							ProxyUploadResponse pur = json.fromJson(uploadHttpReponse.getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
-							int newRevesion = pur.getConfigurationVersion().getMajorVersion();
+							int newRevesion = Integer.parseInt(pur.getRevision());
 							 
 							try {
 							HttpResponse<String> deployresult = this.deployRevision(objectName, envName , newRevesion) ;
@@ -326,7 +330,35 @@ public abstract class BundleObjectService extends ApigeeService {
 		} 
 	}
 	
-	public abstract HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception ;  
+	@SuppressWarnings("unchecked")
+	public ArrayList<String>  getAllBundledObjectNameList() throws Exception
+	{
+		ArrayList<String> BundledObjectNameList = this.getAllResources(ArrayList.class); 
+		return BundledObjectNameList ;  
+	}
+	
+	public HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception
+	{
+		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
+		ArrayList<String>  allBundledObjectsNameList = this.getAllBundledObjectNameList() ; 
+		for ( String BundledObjectsName : allBundledObjectsNameList )
+		{
+			String apiPath = getResourcePath()+"/"+BundledObjectsName + "/deployments" ; 
+			ProxyDeployment proxyDeployment =  this.getMs().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
+			List<Environment> envs = proxyDeployment.getEnvironment() ; 
+			HashMap<String, ArrayList<String>> proxyDeployMentREvisions = new HashMap<String, ArrayList<String>> (); 
+			for (Environment env : envs )
+			{
+				String envname = env.getName(); 
+				ArrayList<String> revionsList = new ArrayList<String>(); 
+				for (Revision rev : env.getRevision() )
+				{revionsList.add(rev.getName());}
+				proxyDeployMentREvisions.put(envname, revionsList); 				
+			}
+			result.put(BundledObjectsName, proxyDeployMentREvisions) ; 
+		}
+		return result ; 
+	}	
 	
 
 	public RevisionedObject getRevisionedObject( String ObjectName) throws UnirestException, IOException

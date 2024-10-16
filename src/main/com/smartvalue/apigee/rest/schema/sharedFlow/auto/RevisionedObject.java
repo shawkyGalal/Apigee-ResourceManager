@@ -53,8 +53,9 @@ public abstract class RevisionedObject extends ApigeeComman {
 		for ( Environment env : proxyDeployment.getEnvironment() ) 
 		{
 			String envName= env.getName(); 
-			ArrayList<String> deployedRevision = new ArrayList<String>();  
-			for (Revision revision  : env.getRevision())
+			ArrayList<String> deployedRevision = new ArrayList<String>(); 
+			List<Revision> revisions = env.getRevision() ;  
+			for (Revision revision  : revisions )
 			{
 				deployedRevision.add(revision.getName()); 
 			}
@@ -103,10 +104,10 @@ public abstract class RevisionedObject extends ApigeeComman {
 	public ExportResults  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
 		ExportResults exportResults = new  ExportResults();   
-		
-		for ( String  DeployedEnvName :  this.getDeployedRevisions().keySet()) 
+		HashMap<String, ArrayList<String>> deployedRevisions = this.getDeployedRevisions() ; 
+		for ( String  DeployedEnvName :  deployedRevisions.keySet()) 
 		{
-			ArrayList<String > envRevisions = this.getDeployedRevisions().get(DeployedEnvName) ;
+			ArrayList<String > envRevisions = deployedRevisions.get(DeployedEnvName) ;
 			ExportResult er ; 
 			for (String revisionString : envRevisions  )
 			{

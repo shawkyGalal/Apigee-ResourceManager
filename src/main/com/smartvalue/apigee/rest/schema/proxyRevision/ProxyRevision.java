@@ -184,7 +184,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		for ( Flow flow : allApigeeFlows )
 		{
 			boolean matchedOperationFound = false ; 
-			if (flow.extractPathSuffixFromCondition() != null && flow.extractVerbFromCondition() != null)
+			if (flow.getPathSuffix() != null && flow.getVerb() != null)
 			{
 			for (  Entry<String, PathItem> entry  :  paths.entrySet()) 
 			{
@@ -308,13 +308,13 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 			boolean patchOperMachedFlowFound = false ;
 			for ( Flow flow : allApigeeFlows )
 			{
-				if (flow.extractPathSuffixFromCondition() != null && flow.extractVerbFromCondition() != null)
+				if (flow.getPathSuffix() != null && flow.getVerb() != null)
 				{ 
 					if (getOper != null)
 					{
 						if ( flow.match( getOper ) ) 
 							{ 
-								if (fixOperationId) getOper.getOperation().setOperationId(flow.getUniqueIdentifier());	
+								if (fixOperationId) getOper.setOperationId(flow.getUniqueIdentifier());	
 								result.put(getOper , flow );
 								getOperMachedFlowFound = true ; 
 							} 
@@ -323,7 +323,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					if (postOper != null)
 					{	
 						if ( flow.match(postOper ) ) {
-							if (fixOperationId) postOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							if (fixOperationId) postOper.setOperationId(flow.getUniqueIdentifier()); 
 							result.put(postOper , flow );
 							postOperMachedFlowFound= true ; 
 							} 
@@ -333,7 +333,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(putOper ) ) {
 							result.put(putOper , flow ); 
-							if (fixOperationId) putOper.getOperation().setOperationId(flow.getUniqueIdentifier());
+							if (fixOperationId) putOper.setOperationId(flow.getUniqueIdentifier());
 							putOperMachedFlowFound = true ; 
 							} 
 					}
@@ -342,7 +342,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(deleteOper ) ) {
 							result.put(deleteOper , flow );
-							if (fixOperationId) deleteOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							if (fixOperationId) deleteOper.setOperationId(flow.getUniqueIdentifier()); 
 							deleteOperMachedFlowFound = true ; 
 							} 
 					}
@@ -351,7 +351,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(patchOper ) ) {
 							result.put(patchOper , flow );
-							if (fixOperationId) patchOper.getOperation().setOperationId(flow.getUniqueIdentifier()); 
+							if (fixOperationId) patchOper.setOperationId(flow.getUniqueIdentifier()); 
 							patchOperMachedFlowFound = true ; 
 							} 
 					}

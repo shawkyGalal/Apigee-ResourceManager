@@ -19,6 +19,9 @@ import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 
 
 public class ProxyServices extends BundleObjectService implements Deployable {
@@ -218,7 +221,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 
 	@Override
 	public String getResourcePath() {
-		return "/v1/organizations/"+orgName+"/apis";
+		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType();
 	}
 
 	@Override
@@ -231,17 +234,4 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return this.getMs().getInfra().buildProxyTransformers();
 	}
 
-	
-	public HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception
-	{
-		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
-		for ( String proxyName : this.getAllProxiesList())
-		{
-			Proxy proxy = this.getOrganization().getProxy(proxyName);
-			HashMap<String, ArrayList<String>> proxyDeployMentREvisions  = proxy.getDeployedRevisions()	 ;
-			result.put(proxyName, proxyDeployMentREvisions) ; 
-		}
-		return result ; 
-	}	
-	
 }
