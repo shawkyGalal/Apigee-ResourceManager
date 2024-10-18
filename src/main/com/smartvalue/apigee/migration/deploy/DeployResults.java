@@ -1,4 +1,4 @@
-package com.smartvalue.apigee.rest.schema.proxy;
+package com.smartvalue.apigee.migration.deploy;
 
 import com.smartvalue.apigee.migration.ProcessResults;
 

@@ -23,13 +23,13 @@ public class AppConfig {
 	private static Charset charset = Charset.forName("UTF-8");
 	
 	private static String migrationBasePath = "C:\\temp\\Apigee" ;
-	public static final String ProxiesSubFolder = "\\proxies" ; 
-	public static final String SharedflowsSubFolder = "\\sharedflows" ;
-	public static final String PrtoductsSubFolder = "\\products" ;
-	public static final String DevelopersSubFolder = "\\developers" ;
-	public static final String appsSubFolder = "\\apps" ;
-	public static final String kvmsSubFolder = "\\kvms" ;
-	public static final String targetserversSubFolder = "\\targetservers" ;
+	public static final String ProxiesSubFolder = "proxies" ; 
+	public static final String SharedflowsSubFolder = "sharedflows" ;
+	public static final String PrtoductsSubFolder = "products" ;
+	public static final String DevelopersSubFolder = "developers" ;
+	public static final String appsSubFolder = "apps" ;
+	public static final String kvmsSubFolder = "kvms" ;
+	public static final String targetserversSubFolder = "targetservers" ;
 
 	public ArrayList<Partner> getPartners() {
 		return Partners;

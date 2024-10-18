@@ -1,9 +1,10 @@
-package com.smartvalue.apigee.migration;
+package com.smartvalue.apigee.migration.deploy;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 
-public class ProcessResult {
+public class DeployResult extends ProcessResult {
 
 	private String error ;
 	private boolean failed ; 
@@ -11,11 +12,12 @@ public class ProcessResult {
 	private LoadResults notMatchedResult ; 
 	private String source ;
 	private String destination ;
+	private String envName ;  
 	public String getSource() {
 		return source;
 	}
 
-	public ProcessResult withSource(String source) {
+	public DeployResult withSource(String source) {
 		this.source = source;
 		return this ; 
 	}
@@ -27,7 +29,7 @@ public class ProcessResult {
 	public void  setDestination(String destination) {
 		this.destination = destination;
 	}
-	public ProcessResult withDestination(String destination) {
+	public DeployResult withDestination(String destination) {
 		this.destination = destination;
 		return this; 
 	}
@@ -41,7 +43,7 @@ public class ProcessResult {
 	} 
 	
 	
-	public ProcessResult withFailed(boolean b) {
+	public DeployResult withFailed(boolean b) {
 		this.setFailed(b) ;
 		return this ;  
 	}
@@ -55,7 +57,7 @@ public class ProcessResult {
 	public void setExceptionClassName(String exceptionClassName) {
 		this.exceptionClassName = exceptionClassName;
 	}
-	public ProcessResult withExceptionClassName(String name) {
+	public DeployResult withExceptionClassName(String name) {
 		// TODO Auto-generated method stub
 		this.setExceptionClassName(name);
 		return this;
@@ -69,7 +71,7 @@ public class ProcessResult {
 		this.error = error;
 	}
 	
-	public ProcessResult withError(String error) {
+	public DeployResult withError(String error) {
 		this.error = error;
 		return this ; 
 	}
@@ -95,5 +97,12 @@ public class ProcessResult {
 	public void setHttpResponse(HttpResponse<String> httpResponse) {
 		this.httpResponse = httpResponse;
 	}
-	
+
+	public String getEnvName() {
+		return envName;
+	}
+
+	public void setEnvName(String envName) {
+		this.envName = envName;
+	}
 }

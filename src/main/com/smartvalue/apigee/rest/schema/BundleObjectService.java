@@ -22,12 +22,14 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.ProcessResult;
+import com.smartvalue.apigee.migration.deploy.DeployResult;
+import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
-import com.smartvalue.apigee.rest.schema.proxy.DeployResults;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
@@ -245,39 +247,19 @@ public abstract class BundleObjectService extends ApigeeService {
 						
 						String objectName= zipfile.getName().substring(0, dotIndex ) ; 
 						System.out.println( objectName + ":" +zipfile.getAbsolutePath()  );
-						HttpResponse<String> uploadHttpReponse = null ; 
-						LoadResult lr = new LoadResult();
-						lr.setSource(zipfile.getAbsolutePath());
-						try { uploadHttpReponse = importObject(zipfile.getAbsolutePath() , objectName); 
-								lr.setFailed(false);
-							}
-						catch (Exception e) {
-							lr.setFailed(true);
-							lr.setExceptionClassName(e.getClass().getName());
-							lr.setError(e.getMessage());
-						}
-						lr.setHttpResponse(uploadHttpReponse);
+						LoadResult lr = importObject(zipfile.getAbsolutePath() , objectName); 
+						
 						allResults.add(lr) ;
 						
-						if (this.isDeployUponUpload())
+						if (this.isDeployUponUpload() && !lr.isFailed())
 						{
-							lr = new LoadResult();
-							lr.setSource(zipfile.getAbsolutePath()+"_Deployment");
+							
 							Gson json = new Gson(); 
-							ProxyUploadResponse pur = json.fromJson(uploadHttpReponse.getBody(), ProxyUploadResponse.class); 
+							ProxyUploadResponse pur = json.fromJson(lr.getHttpResponse().getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = Integer.parseInt(pur.getRevision());
-							 
-							try {
-							HttpResponse<String> deployresult = this.deployRevision(objectName, envName , newRevesion) ;
-							lr.setFailed(false);
-							}
-							catch (Exception e) {
-								lr.setFailed(true);
-								lr.setExceptionClassName(e.getClass().getName());
-								lr.setError(e.getMessage()); 
-							}
-							allResults.add(lr ) ;
+							DeployResult dr = this.deployRevision(objectName, envName , newRevesion) ;
+							allResults.add(dr ) ;
 						}
 					}
 			
@@ -292,23 +274,49 @@ public abstract class BundleObjectService extends ApigeeService {
 		return allResults;
 	}
 
-	public HttpResponse<String> importObject(String pundleZipFileName , String objectName ) throws UnirestException, IOException
+	public LoadResult importObject(String pundleZipFileName , String objectName) 
 	{
-		HttpResponse<String> result = null; 
+		LoadResult loadResult = new LoadResult();
+		loadResult.setSource(pundleZipFileName);
+		
 		String apiPath = this.getResourcePath()+"?action=import&name="+objectName+"&validate=true" ; 
 		ManagementServer ms = this.getMs() ;
-		result = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
-		return result ; 
+		HttpResponse<String> httpResponse = null ; 
+		try
+		{ 
+			httpResponse = ms.getPostFileHttpResponse(apiPath , pundleZipFileName ) ;
+			loadResult.setFailed(! Helper.isConsideredSuccess(httpResponse.getStatus()));
+		}
+		catch (Exception e) {
+			loadResult.setFailed(true);
+			loadResult.setExceptionClassName(e.getClass().getName());
+			loadResult.setError(e.getMessage());
+		}
+		loadResult.setHttpResponse(httpResponse);
+		return loadResult ; 
 	}	
 	
 	
-	public HttpResponse<String> deployRevision(String m_objectName , String m_envName , int revision ) throws UnirestException, IOException
+	public DeployResult deployRevision(String m_objectName , String m_envName , int revision ) throws UnirestException, IOException
 	{
-		HttpResponse<String> result = null; 
+		DeployResult deployResult = new DeployResult() ;
+		deployResult.setSource(m_objectName + "." + revision);
+		deployResult.setDestination(m_envName);
 		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
-		ManagementServer ms = this.getMs() ; 
-		result = ms.getPostHttpResponse(apiPath, null, null ) ;
-		return result ; 
+		ManagementServer ms = this.getMs() ;
+		HttpResponse<String> response = null ; 
+		try {
+			response = ms.getPostHttpResponse(apiPath, null, null ) ;
+			deployResult.setFailed(! Helper.isConsideredSuccess(response.getStatus()));
+			
+		}
+		catch (Exception e) {
+			deployResult.setFailed(true) ; 
+			deployResult.setError(e.getMessage());
+			deployResult.setExceptionClassName(e.getClass().getName());
+		}
+		deployResult.setHttpResponse(response);
+		return deployResult ; 
 	}
 	
 	public void serializeDeployStatus(String destFile) throws UnirestException, Exception
@@ -321,11 +329,11 @@ public abstract class BundleObjectService extends ApigeeService {
 		}  
 	}
 	
-	public HashMap<String , HashMap<String, ArrayList<String>>> deSerializeDeployStatus(String sourceFile) throws IOException, ClassNotFoundException 
+	public DeploymentsStatus deSerializeDeployStatus(String sourceFile) throws IOException, ClassNotFoundException 
 	{
 		FileInputStream fis = new FileInputStream(sourceFile);
         try (ObjectInputStream ois = new ObjectInputStream(fis)) {
-			HashMap<String , HashMap<String, ArrayList<String>>> result  = (HashMap<String , HashMap<String, ArrayList<String>>>) ois.readObject(); 
+        	DeploymentsStatus result  = (DeploymentsStatus) ois.readObject(); 
 			return result ;
 		} 
 	}
@@ -337,9 +345,9 @@ public abstract class BundleObjectService extends ApigeeService {
 		return BundledObjectNameList ;  
 	}
 	
-	public HashMap<String , HashMap<String, ArrayList<String>>> getDeploymentStatus() throws UnirestException, IOException, Exception
+	public DeploymentsStatus getDeploymentStatus() throws UnirestException, IOException, Exception
 	{
-		HashMap<String , HashMap<String, ArrayList<String>>> result = new HashMap<String , HashMap<String, ArrayList<String>>> () ;  
+		DeploymentsStatus result = new DeploymentsStatus () ;  
 		ArrayList<String>  allBundledObjectsNameList = this.getAllBundledObjectNameList() ; 
 		for ( String BundledObjectsName : allBundledObjectsNameList )
 		{

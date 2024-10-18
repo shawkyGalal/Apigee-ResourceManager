@@ -31,7 +31,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(buildProxyTransformers()); 
-		 TransformationResults trnsformResults =  proxyServ.transformAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
+		 TransformationResults trnsformResults =  proxyServ.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.ProxiesSubFolder,  TRANSFORM_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder) ;
 		 int successCount = trnsformResults.filterFailed(false).size() ; 
 		 int failureCount = trnsformResults.getNotMatchedResult().size() ;
 		 System.out.println("Failed Transormation : " + failureCount );
@@ -44,8 +44,8 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		 
-		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\Stage\\stg\\proxies\\iam-protected\\AlRajhiPaymentGateway\\106\\AlRajhiPaymentGateway.zip" 
-				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\proxies\\iam-protected\\AlRajhiPaymentGateway\\106\\") ;
+		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\Stage\\stg\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip" 
+				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\proxies\\moj-internal-clients\\SMS-Governance\\147\\") ;
 		
 		assertEquals( trnsformResults.filterFailed(true).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
 	 }
@@ -55,7 +55,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService sharedflowsServ =  sourceMngServer.getSharedFlowServices(); 
 		//sharedflowsServ.setTranformers(buildSharedflowsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + AppConfig.SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.SharedflowsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -64,7 +64,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildDevelopersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -73,7 +73,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildAppsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.appsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.appsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.appsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.appsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -82,7 +82,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Products ===========================
 		ApigeeService objectServices =  sourceMngServer.getProductServices(); 
 		//objectServices.setTranformers(buildProductssTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -91,7 +91,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildTargetServersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.targetserversSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.targetserversSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -100,7 +100,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildKvmsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + AppConfig.kvmsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.kvmsSubFolder) ;
+		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.kvmsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.kvmsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 

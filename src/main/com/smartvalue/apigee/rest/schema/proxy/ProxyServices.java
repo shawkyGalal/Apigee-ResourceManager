@@ -11,6 +11,7 @@ import java.util.List;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -203,7 +204,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	}
 	
 
-	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) throws UnirestException, IOException
+	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) 
 	{
 		
 		ExportResults exportResults = new ExportResults();  
@@ -211,8 +212,18 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 			for (String proxyName : proxiesList)
 			{
 				System.out.println( "Start Exporting Proxy :" + proxyName );
-				Proxy proxy = this.getOrganization().getProxy(proxyName); 
-				exportResults.addAll( proxy.exportAllDeployedRevisions(folderDest)) ;
+				Proxy proxy;
+				try {
+					proxy = this.getOrganization().getProxy(proxyName);
+					exportResults.addAll( proxy.exportAllDeployedRevisions(folderDest)) ;
+				} catch (UnirestException | IOException e) {
+					ExportResult er = new ExportResult() ;
+					er.setFailed(true);
+					er.setSource(proxyName);
+					er.setExceptionClassName(e.getClass().getName());
+					er.setError(e.getMessage());
+					
+				} 
 				
 			}
 		}

@@ -205,8 +205,7 @@ public class Flow extends BundleElement {
     //--------------Extra Manual  Code------------------
     public Flow(String proxyName, Element element) {
 		super(proxyName, element);
-		pathSuffix = extractPathSuffixFromCondition();
-		this.verb = extractVerbFromCondition(); 
+		// TODO Auto-generated constructor stub
 	}
     
     public HttpResponse<String>  call(String serverURL , String accessToken) throws Exception {
@@ -219,12 +218,11 @@ public class Flow extends BundleElement {
 		
 	}
     private String pathSuffix ; 
-    private String verb ; 
     public String getPathSuffix() {
 		return pathSuffix;
 	}
 
-	private String extractPathSuffixFromCondition() 
+	public String extractPathSuffixFromCondition() throws Exception
 	{	
 		String result = this.getPathSuffix(); 
 		if (result == null)
@@ -245,7 +243,7 @@ public class Flow extends BundleElement {
 		return result ; 
 	}
 	
-	private String extractVerbFromCondition()
+	public String extractVerbFromCondition() throws Exception
 	{
 		String result = null ; 
 		try {
@@ -276,7 +274,7 @@ public class Flow extends BundleElement {
 		boolean result = false ;
 		try {
 			result = 	this.getCompletePath().equalsIgnoreCase(oper.getPath())	
-					&& 	this.getVerb().equalsIgnoreCase(oper.getVerb()) ;
+					&& 	this.extractVerbFromCondition().equalsIgnoreCase(oper.getVerb()) ;
 		} catch (Exception e )
 		{
 		 e.printStackTrace();	
@@ -314,15 +312,7 @@ public class Flow extends BundleElement {
 	{
 		com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint pep = this.getParentProxyEndPoint() ; 
 		ProxyRevision pr = pep.getParentProxyRevision() ; 
-		return pr.getName() + "."+ pep.getName() +"." + this.getName() + "." +this.getVerb(); 
-	}
-
-	public String getVerb() {
-		return verb;
-	}
-
-	public void setVerb(String verb) {
-		this.verb = verb;
+		return pr.getName() + "."+ pep.getName() +"." + this.getName(); 
 	}
 
 	

@@ -111,23 +111,23 @@ public abstract class RevisionedObject extends ApigeeComman {
 			ExportResult er ; 
 			for (String revisionString : envRevisions  )
 			{
+				er = new ExportResult() ;
 				int revision = Integer.parseInt(revisionString);
+				er.setRevision(revision) ; 
+				er.setDeployedEnvName(DeployedEnvName) ; 
+				er.setSource(DeployedEnvName + "." +this.getName()+ "." + revision);
+
 				try {
 					String path = folderDest+ File.separatorChar + DeployedEnvName + File.separatorChar + this.getName()+ File.separatorChar + revision+ File.separatorChar ; 
 					Path pathObj = Paths.get(path);
 			        Files.createDirectories(pathObj);
 					export(revision , path) ;
-					
-					er = new ExportResult() ;
-					er.setDestination(path) ;
-					er.setSource(DeployedEnvName + "." +this.getName()+ "." + revision);
 					er.setFailed(false);
-					
+					er.setDestination(path) ;
 					exportResults.add(er) ; 
 					System.out.println(this.getClass().getName() +" : " + this.getName() + " Revision " +  revision + " Deplyed to Env " + DeployedEnvName +" Exported Successfully");
 				}
 				catch (Exception e) {
-					er = new ExportResult() ;
 					er.setFailed(true);
 					er.setExceptionClassName(e.getClass().getName());
 					er.setError(e.getMessage());

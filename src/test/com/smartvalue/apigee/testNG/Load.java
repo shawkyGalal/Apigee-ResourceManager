@@ -30,7 +30,7 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadOriginalProxies() throws Exception {
 		//==================Import All Proxies ===========================
-		LoadResults allResponses =  destMngServer.getProxyServices().importAll(DEST_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
+		LoadResults allResponses =  destMngServer.getProxyServices().importAll(DEST_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder) ;
 		int failedSize = allResponses.filterFailed(true).size() ; 
 		assertEquals( failedSize , 0 , "# of Errors = " + failedSize); 
 	 }
@@ -38,7 +38,7 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadTransformedProxies() throws Exception {
 			//==================Import All Proxies ===========================
-		 	LoadResults allResponses =  destMngServer.getProxyServices().importAll(TRANSFORM_FOLDER_NAME + AppConfig.ProxiesSubFolder) ;
+		 	LoadResults allResponses =  destMngServer.getProxyServices().importAll(TRANSFORM_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder) ;
 		 	int failedSize = allResponses.filterFailed(true).size() ; 
 			assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 		 }
@@ -46,7 +46,7 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadAllSharedFlows() throws Exception {
 		//==================Import All Sharedflows ===========================
-		LoadResults  allResponses =  destMngServer.getSharedFlowServices().importAll(loadingSourceFolder +AppConfig.SharedflowsSubFolder) ;
+		LoadResults  allResponses =  destMngServer.getSharedFlowServices().importAll(loadingSourceFolder + "\\" +AppConfig.SharedflowsSubFolder) ;
 	 	int failedSize = allResponses.filterFailed(true).size() ; 
 		assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	}
@@ -54,7 +54,7 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadAllProducts() throws Exception {
 		//==================Import All ===========================
-		 LoadResults allResponses = destMngServer.getProductServices().importAll(loadingSourceFolder + AppConfig.PrtoductsSubFolder) ;
+		 LoadResults allResponses = destMngServer.getProductServices().importAll(loadingSourceFolder + "\\" + AppConfig.PrtoductsSubFolder) ;
 		 int failedSize = allResponses.filterFailed(true).size() ; 
 		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
@@ -62,7 +62,7 @@ public class Load extends ApigeeTest{
 	 @Test
 	 public void loadAllDevelopers() throws Exception {
 		//==================Import All ===========================
-		 LoadResults allResponses =  destMngServer.getDevelopersServices().importAll(loadingSourceFolder + AppConfig.DevelopersSubFolder) ;
+		 LoadResults allResponses =  destMngServer.getDevelopersServices().importAll(loadingSourceFolder + "\\" + AppConfig.DevelopersSubFolder) ;
 		 int failedSize = allResponses.filterFailed(true).size() ; 
 		 assertEquals( failedSize , 0 , "# of Errors = " + failedSize);
 	 }
