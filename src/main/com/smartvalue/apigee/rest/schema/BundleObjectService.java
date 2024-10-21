@@ -24,12 +24,15 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.deploy.DeployResult;
 import com.smartvalue.apigee.migration.deploy.DeployResults;
+import com.smartvalue.apigee.migration.export.ExportResult;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
@@ -412,6 +415,43 @@ public abstract class BundleObjectService extends ApigeeService {
 			}
 		}
 		return deployResults ; 
+	}
+	
+	public  ExportResults exportAll(String folderDest , String serlizeFileName) throws Exception
+	{
+		// Keep a copy of the current proxies deployment statuses in a file in case a roll back of a Load Process is required  
+		serializeDeployStatus(serlizeFileName);
+		return exportAll(getAllBundledObjectNameList() , folderDest ); 
+	} 
+	public  ExportResults exportAll(String folderDest) throws Exception
+	{
+		return exportAll(getAllBundledObjectNameList() , folderDest ); 
+	}
+	
+	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) 
+	{
+		
+		ExportResults exportResults = new ExportResults();  
+		{
+			for (String proxyName : proxiesList)
+			{
+				System.out.println( "Start Exporting "+this.getApigeeObjectType()+" :" + proxyName );
+				RevisionedObject revisionedObject;
+				try {
+					revisionedObject = this.getOrganization().getRevisionedObject(this.getApigeeObjectType() ,  proxyName);
+					exportResults.addAll( revisionedObject.exportAllDeployedRevisions(folderDest)) ;
+				} catch (UnirestException | IOException e) {
+					ExportResult er = new ExportResult() ;
+					er.setFailed(true);
+					er.setSource(proxyName);
+					er.setExceptionClassName(e.getClass().getName());
+					er.setError(e.getMessage());
+					
+				} 
+				
+			}
+		}
+		return exportResults;
 	}
 	
 

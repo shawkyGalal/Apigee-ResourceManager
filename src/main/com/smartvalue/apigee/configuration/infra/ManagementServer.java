@@ -3,6 +3,8 @@ package com.smartvalue.apigee.configuration.infra;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -23,12 +25,14 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
+import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.cloud.OrganizationList.OrganizationList;
 import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
+import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -463,22 +467,24 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new KvmServices(this , m_orgName) ; 
 	}
 	
-	public ApigeeService getProxyServices()
+	public BundleObjectService getProxyServices()
 	{
 		return  new ProxyServices(this , this.getOrgName()) ; 
 	}
 	
-	public ApigeeService getProxyServices(String m_orgName )
+	public BundleObjectService getProxyServices(String m_orgName )
 	{
 		return  new ProxyServices(this , m_orgName) ; 
 	}
 	
-	public ApigeeService getSharedFlowServices()
+	
+	
+	public BundleObjectService getSharedFlowServices()
 	{
 		return  new SharedFlowServices(this , this.getOrgName() ) ; 
 	}
 	
-	public ApigeeService getSharedFlowServices(String m_orgName )
+	public BundleObjectService getSharedFlowServices(String m_orgName )
 	{
 		return  new SharedFlowServices(this , m_orgName ) ; 
 	}
@@ -634,6 +640,19 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; 
 	}
 	
+		
+	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass , String sourceOrgName , String userEmail  ) throws Exception
+	{
+		BundleObjectService bundleObjectService = ServiceFactory.createServiceInstance(bundledObjectClass , this , sourceOrgName ) ; 
+		
+		String objectTypeName = bundleObjectService.getApigeeObjectType() ;
+		String migrationBasePath = AppConfig.getMigrationBasePath() ;
+		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getInfra().getName()+"\\"+sourceOrgName ; 
+		String sourceFolder =basePath +"\\"+objectTypeName+"\\" ; 
+		String deplyStatusFileName = basePath + "\\"+objectTypeName+"_deploysStatus.ser" ; 
+		ExportResults result = bundleObjectService.exportAll(sourceFolder , deplyStatusFileName) ;
+		return result ; 
+	}
 	
 
 }

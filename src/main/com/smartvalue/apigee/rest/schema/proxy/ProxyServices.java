@@ -172,19 +172,8 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		return failedResult;
 	}
 	
-	public  ExportResults exportAll(String folderDest , String serlizeFileName) throws Exception
-	{
-		// Keep a copy of the current proxies deployment statuses in a file in case a roll back of a Load Process is required  
-		serializeDeployStatus(serlizeFileName);
-		return exportAll(getAllProxiesList() , folderDest ); 
-	} 
-	public  ExportResults exportAll(String folderDest) throws Exception
-	{
-		return exportAll(getAllProxiesList() , folderDest ); 
-	}
-	
 
-	public ArrayList<String>  getAllProxiesList() throws Exception
+	public ArrayList<String>  getAllBundledObjectNameList() throws Exception
 	{
 		ArrayList<String> allProxies ; 
 		Boolean isGoogleCloud = this.getMs().getInfra().isGooglecloud() ;
@@ -201,33 +190,6 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 			allProxies =  this.getOnPremiseAllProxiesList();
 		}
 		return allProxies ; 
-	}
-	
-
-	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) 
-	{
-		
-		ExportResults exportResults = new ExportResults();  
-		{
-			for (String proxyName : proxiesList)
-			{
-				System.out.println( "Start Exporting Proxy :" + proxyName );
-				Proxy proxy;
-				try {
-					proxy = this.getOrganization().getProxy(proxyName);
-					exportResults.addAll( proxy.exportAllDeployedRevisions(folderDest)) ;
-				} catch (UnirestException | IOException e) {
-					ExportResult er = new ExportResult() ;
-					er.setFailed(true);
-					er.setSource(proxyName);
-					er.setExceptionClassName(e.getClass().getName());
-					er.setError(e.getMessage());
-					
-				} 
-				
-			}
-		}
-		return exportResults;
 	}
 
 	@Override

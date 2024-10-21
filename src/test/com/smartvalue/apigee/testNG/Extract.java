@@ -24,11 +24,13 @@ import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
+import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices ;
-import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse; 
+import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices; 
 
 public class Extract extends ApigeeTest{
 	 
@@ -91,7 +93,7 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllProxiesWithDeploymentStatus() throws Exception {
 		//==================Export All Proxies ===========================
-		 String deplyStatusFileName = DEST_FOLDER_NAME + "deplysStatus.ser" ; 
+		 String deplyStatusFileName = DEST_FOLDER_NAME + "\\PROXIES_DEPLOYMENTS_STATUS.ser" ; 
 		 ProxyServices ps = (ProxyServices) sourceMngServer.getProxyServices() ; 
 		 ExportResults expotrtresults = ps.exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder , deplyStatusFileName) ;
 		 DeployResults xx = ps.rollBackToLastSerializedDeployStatus(deplyStatusFileName); 
@@ -116,7 +118,10 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllSharedFlows() throws Exception {
 		//==================Export All Sharedflows===========================
-		ExportResults expotrtresults =  sourceMngServer.getSharedFlowServices().exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder) ;
+		String deplyStatusFileName = DEST_FOLDER_NAME + "\\SHAREDFLOWS_DEPLOYMENTS_STATUS.ser" ; 
+		SharedFlowServices sharedFlowServices = (SharedFlowServices) sourceMngServer.getSharedFlowServices() ; 
+		ExportResults expotrtresults =  sharedFlowServices.exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder , deplyStatusFileName ) ;
+		DeploymentsStatus xx = sharedFlowServices.deSerializeDeployStatus(deplyStatusFileName);
 		int failureCount = expotrtresults.filterFailed(true).size() ;  
 		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
