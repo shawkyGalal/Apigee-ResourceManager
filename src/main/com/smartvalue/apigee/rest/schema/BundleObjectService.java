@@ -20,7 +20,9 @@ import java.util.Map.Entry;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.configuration.infra.ServiceFactory;
 import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.deploy.DeployResult;
 import com.smartvalue.apigee.migration.deploy.DeployResults;
@@ -261,8 +263,8 @@ public abstract class BundleObjectService extends ApigeeService {
 							ProxyUploadResponse pur = json.fromJson(lr.getHttpResponse().getBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = Integer.parseInt(pur.getRevision());
-							DeployResult dr = this.deployRevision(objectName, envName , newRevesion) ;
-							allResults.add(dr ) ;
+							DeployResults dr = this.deployRevision(objectName, envName , newRevesion , true) ;
+							allResults.addAll(dr ) ;
 						}
 					}
 			
@@ -299,9 +301,12 @@ public abstract class BundleObjectService extends ApigeeService {
 		return loadResult ; 
 	}	
 	
-	
-	public DeployResult deployRevision(String m_objectName , String m_envName , int revision ) throws UnirestException, IOException
+	public DeployResults deployRevision(String m_objectName , String m_envName , int revision , boolean force ) throws UnirestException, IOException 
 	{
+		DeployResults deployResults = new DeployResults() ;
+		if(force)// Undeploy all revisions deployed to m_envName  
+		{	deployResults.addAll(this.UnDeployFromEnv(m_objectName, m_envName));	}
+		
 		DeployResult deployResult = new DeployResult() ;
 		deployResult.setSource(m_objectName + "." + revision);
 		deployResult.setDestination(m_envName);
@@ -319,11 +324,39 @@ public abstract class BundleObjectService extends ApigeeService {
 			deployResult.setExceptionClassName(e.getClass().getName());
 		}
 		deployResult.setHttpResponse(response);
-		return deployResult ; 
+		deployResults.add(deployResult); 
+		return deployResults ; 
 	}
 	
-	public void serializeDeployStatus(String destFile) throws UnirestException, Exception
+	public DeployResults UnDeployFromEnv(String m_objectName , String m_envName ) throws UnirestException, IOException 
 	{
+		List<Revision> deployedRevisions = this.getEnvDeployedRevisions( m_objectName , m_envName) ; 
+		DeployResults deployResults = new DeployResults() ;
+		for (Revision revision : deployedRevisions )
+		{
+			DeployResult deployResult = new DeployResult() ;
+			deployResult.setSource("Undeplolying " + m_objectName + "Reviasion : " + revision.getName() + " From Env. " + m_envName);
+			String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision.getName()+"/deployments" ; 
+			ManagementServer ms = this.getMs() ;
+			HttpResponse<String> response = null ; 
+			try {
+				response = ms.getDeleteHttpResponse(apiPath) ;
+				deployResult.setFailed(! Helper.isConsideredSuccess(response.getStatus()));
+			}
+			catch (Exception e) {
+				deployResult.setFailed(true) ; 
+				deployResult.setError(e.getMessage());
+				deployResult.setExceptionClassName(e.getClass().getName());
+			}
+			deployResult.setHttpResponse(response);
+			deployResults.add(deployResult); 
+		}
+		
+		return deployResults ; 
+	}
+	
+	public void serializeDeployStatus(String userEmail) throws UnirestException, Exception
+	{ 	String destFile = this.getSerlizeDeplyStateFileName(userEmail); 
 		File file = new File(destFile);
         file.getParentFile().mkdirs();
 		FileOutputStream fos = new FileOutputStream(destFile);
@@ -332,8 +365,9 @@ public abstract class BundleObjectService extends ApigeeService {
 		}  
 	}
 	
-	public DeploymentsStatus deSerializeDeployStatus(String sourceFile) throws IOException, ClassNotFoundException 
+	public DeploymentsStatus deSerializeDeployStatus(String userEmail) throws IOException, ClassNotFoundException 
 	{
+		String sourceFile = this.getSerlizeDeplyStateFileName(userEmail); 
 		FileInputStream fis = new FileInputStream(sourceFile);
         try (ObjectInputStream ois = new ObjectInputStream(fis)) {
         	DeploymentsStatus result  = (DeploymentsStatus) ois.readObject(); 
@@ -352,9 +386,9 @@ public abstract class BundleObjectService extends ApigeeService {
 	{
 		DeploymentsStatus result = new DeploymentsStatus () ;  
 		ArrayList<String>  allBundledObjectsNameList = this.getAllBundledObjectNameList() ; 
-		for ( String BundledObjectsName : allBundledObjectsNameList )
+		for ( String bundledObjectsName : allBundledObjectsNameList )
 		{
-			String apiPath = getResourcePath()+"/"+BundledObjectsName + "/deployments" ; 
+			String apiPath = getResourcePath()+"/"+bundledObjectsName + "/deployments" ; 
 			ProxyDeployment proxyDeployment =  this.getMs().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
 			List<Environment> envs = proxyDeployment.getEnvironment() ; 
 			HashMap<String, ArrayList<String>> proxyDeployMentREvisions = new HashMap<String, ArrayList<String>> (); 
@@ -366,11 +400,26 @@ public abstract class BundleObjectService extends ApigeeService {
 				{revionsList.add(rev.getName());}
 				proxyDeployMentREvisions.put(envname, revionsList); 				
 			}
-			result.put(BundledObjectsName, proxyDeployMentREvisions) ; 
+			result.put(bundledObjectsName, proxyDeployMentREvisions) ; 
 		}
 		return result ; 
 	}	
 	
+	public List<Revision> getEnvDeployedRevisions(String bundledObjectsName, String m_envName) throws UnirestException, IOException
+	{
+		List<Revision> result = new ArrayList<Revision>(); 
+		String apiPath = getResourcePath()+"/"+bundledObjectsName + "/deployments" ; 
+		ProxyDeployment proxyDeployment =  this.getMs().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
+		List<Environment> envs = proxyDeployment.getEnvironment() ; 
+		for (Environment env : envs )
+		{
+			if (env.getName().equalsIgnoreCase(m_envName))
+			{
+				result = env.getRevision(); 
+			}
+		}
+		return result ; 
+	}
 
 	public RevisionedObject getRevisionedObject( String ObjectName) throws UnirestException, IOException
 	{
@@ -417,10 +466,10 @@ public abstract class BundleObjectService extends ApigeeService {
 		return deployResults ; 
 	}
 	
-	public  ExportResults exportAll(String folderDest , String serlizeFileName) throws Exception
+	public  ExportResults exportAll(String folderDest , String userEmail) throws Exception
 	{
 		// Keep a copy of the current proxies deployment statuses in a file in case a roll back of a Load Process is required  
-		serializeDeployStatus(serlizeFileName);
+		serializeDeployStatus(userEmail);
 		return exportAll(getAllBundledObjectNameList() , folderDest ); 
 	} 
 	public  ExportResults exportAll(String folderDest) throws Exception
@@ -454,5 +503,20 @@ public abstract class BundleObjectService extends ApigeeService {
 		return exportResults;
 	}
 	
+	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass , String sourceOrgName , String userEmail  ) throws Exception
+	{
+		BundleObjectService bundleObjectService = ServiceFactory.createServiceInstance(bundledObjectClass , this.getMs() , sourceOrgName ) ; 
+		String migrationBasePath = AppConfig.getMigrationBasePath() ;
+		
+		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getMs().getInfra().getName()+"\\"+sourceOrgName ; 
+		String sourceFolder =basePath +"\\"+AppConfig.ProxiesSubFolder+"\\" ; 
+		ExportResults result = bundleObjectService.exportAll(sourceFolder , userEmail) ;
+		return result ; 
+	}
+	
+	public String getSerlizeDeplyStateFileName(String userEmail )
+	{
+		return AppConfig.getMigrationBasePath() + "\\"+userEmail + "\\"+ this.getMs().getInfraName() + "\\"+this.getMs().getOrgName() +"\\"+ this.getApigeeObjectType()+"_deploysStatus.ser" ; 
+	}
 
 }

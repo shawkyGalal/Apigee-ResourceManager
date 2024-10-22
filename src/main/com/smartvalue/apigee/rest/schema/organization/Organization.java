@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.developer.Developer;
@@ -121,10 +122,20 @@ public class Organization extends com.smartvalue.apigee.rest.schema.organization
 	{
 		String apiPath = BASE_BATH +this.getName()+"/"+type+"/" + ProxyName ; 
 		ManagementServer ms = this.getManagmentServer() ;
-		RevisionedObject revisionedObject  = ms.executeGetMgmntAPI(apiPath , RevisionedObject.class  ) ; //Proxy.class ) ; //:  )) ;
+		RevisionedObject revisionedObject = null ; 
+		if (type.equalsIgnoreCase("apis"))
+		{
+			revisionedObject =  ms.executeGetMgmntAPI(apiPath , Proxy.class  ) ; 
+		}
+		else if (type.equalsIgnoreCase("sharedFlows"))
+		{
+			revisionedObject =  ms.executeGetMgmntAPI(apiPath , SharedFlow.class  ) ; 
+		}
+		if ( revisionedObject != null)
+		{
 		revisionedObject.setOrgName(this.getName()) ; 
 		revisionedObject.setManagmentServer(ms) ; 
-		
+		}
 		return revisionedObject ; 
 	}
 	

@@ -8,13 +8,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResult;
+import com.smartvalue.apigee.migration.ProcessResults;
+import com.smartvalue.apigee.migration.deploy.DeployResult;
+import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
+import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -23,6 +31,7 @@ import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
+import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
 public class ProxyServices extends BundleObjectService implements Deployable {
@@ -206,5 +215,56 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	public ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return this.getMs().getInfra().buildProxyTransformers();
 	}
-
+/**
+ * To apply the Complete ETL ( Extract, Transform and Load and Deploy )  Process on proxyName  
+ * @param proxyName
+ * @return ProcessResults including the complete process (ETL ) results  
+ * @throws Exception
+ */
+	public ProcessResults  performETL(String proxyName ) throws Exception {
+		//==================Export One Proxy ===========================
+		 ProcessResults processResults = new ProcessResults(); 
+		 Proxy proxy = this.getOrganization().getProxy(proxyName);
+		 String exportDest = AppConfig.getMigrationBasePath() +"\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName() + "\\"+ AppConfig.ProxiesSubFolder ; 
+		 ExportResults ers =  proxy.exportAllDeployedRevisions(exportDest);
+		 processResults.addAll(ers); 
+		 
+		 //==================Transform the Exported Proxy ===========================
+	
+		 TransformationResults trnsformResults = new TransformationResults() ; 
+		 for (ProcessResult er : ers )
+		 {
+			String transformSource = er.getDestination() ;
+			String dest = transformSource.replaceAll(AppConfig.ProxiesSubFolder, AppConfig.ProxiesSubFolder +File.separatorChar+File.separatorChar+"Transformed") ;  
+			trnsformResults.addAll( this.transformProxy(transformSource +proxyName+".zip" , dest  ) ) ;
+		 }
+		 processResults.addAll(trnsformResults) ; 
+		 
+		//==================Load the Transformed Proxy ===========================
+			
+		 ProcessResults uploadResults = new ProcessResults() ;
+		 LoadResult  loadResult ; 
+		 
+		 for (TransformResult transformResult : trnsformResults )
+		 {
+			 String source = transformResult.getDestination() +"\\"+ proxyName+".zip" ;
+			 if (! transformResult.isFailed())
+			 {
+				 loadResult = this.importObject(source, proxyName) ; 
+				 uploadResults.add(loadResult) ;
+					 if ( ! loadResult.isFailed())
+					 {
+						 Gson json = new Gson(); 
+						 ProxyUploadResponse pur = json.fromJson(loadResult.getHttpResponse().getBody(), ProxyUploadResponse.class);
+						 int newRevesion = Integer.parseInt(pur.getRevision());
+						 String envName = loadResult.extractEnvNameFromsource(exportDest) ; 
+						 DeployResults deployResults = this.deployRevision(proxyName, envName , newRevesion, true) ;
+						 uploadResults.addAll(deployResults) ; 
+					 }
+			 }
+			 
+		 }
+		 processResults.addAll(uploadResults) ; 
+		 return processResults ; 
+	 }
 }
