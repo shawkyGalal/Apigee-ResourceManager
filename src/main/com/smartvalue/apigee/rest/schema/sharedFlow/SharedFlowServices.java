@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
@@ -52,7 +53,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 		for (String sharedflowName : sharedflowsNames)
 		{
 			SharedFlow sharedflow = getSharedFlows(sharedflowName) ; //ms.executeGetMgmntAPI(apiPath01 , SharedFlow.class ) ;
-			sharedflow.setOrgName(this.orgName) ; 
+			sharedflow.setOrgName(this.getMs().getOrgName()) ; 
 			sharedflow.setManagmentServer(ms) ; 
 			AllSharedflows.add (sharedflow) ; 
 		}
@@ -238,7 +239,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	@Override
 	public String getResourcePath() {
 		
-		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType();
+		return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/"+getApigeeObjectType();
 	}
 
 	public boolean isDeployUponUpload() {

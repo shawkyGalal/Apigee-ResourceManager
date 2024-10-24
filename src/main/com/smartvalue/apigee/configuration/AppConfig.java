@@ -30,6 +30,7 @@ public class AppConfig {
 	public static final String appsSubFolder = "apps" ;
 	public static final String kvmsSubFolder = "kvms" ;
 	public static final String targetserversSubFolder = "targetservers" ;
+	public static final String BASE_BATH = "/v1/organizations/" ; 
 
 	public ArrayList<Partner> getPartners() {
 		return Partners;

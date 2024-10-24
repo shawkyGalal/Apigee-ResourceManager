@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
-
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.rest.schema.application.auto.Credential;
 
 public class Application extends com.smartvalue.apigee.rest.schema.application.auto.Application
@@ -36,7 +36,7 @@ public class Application extends com.smartvalue.apigee.rest.schema.application.a
 
 	private  HttpResponse<String>  updateApiProductStatus(String consumerkey , String apiProductId , String m_action) throws UnirestException, IOException
 	{
-		String bath = "/v1/organizations/"+this.getOrgName()+"/developers/"+this.getDeveloperId()+"/apps/"+this.getName()+"/keys/"+consumerkey+"/apiproducts/"+apiProductId+"?action="+m_action ;
+		String bath = AppConfig.BASE_BATH+this.getOrgName()+"/developers/"+this.getDeveloperId()+"/apps/"+this.getName()+"/keys/"+consumerkey+"/apiproducts/"+apiProductId+"?action="+m_action ;
 		return  this.getManagmentServer().getPostHttpResponse(bath) ;
 	}
 	

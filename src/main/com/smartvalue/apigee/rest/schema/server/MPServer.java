@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -16,7 +17,7 @@ public class MPServer extends Server {
 
 	private  ArrayList<String>  associateWithEnvironment( Environment env , String m_operation ) throws UnirestException, IOException
 	{
-		String path = "/v1/organizations/"+env.getOrgName()+"/environments/"+env.getName()+"/servers" ; 
+		String path = AppConfig.BASE_BATH+env.getOrgName()+"/environments/"+env.getName()+"/servers" ; 
 		String uuid = this.getuUID() ;
 		@SuppressWarnings("unchecked")
 		ArrayList<String>  result =  this.getManagmentServer().executePostMgmntAPI(path, ArrayList.class, "action="+m_operation+"&uuid=" + uuid , "application/x-www-form-urlencoded") ; 

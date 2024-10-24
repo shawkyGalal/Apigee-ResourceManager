@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
@@ -29,7 +30,7 @@ public class ApplicationServices extends ApigeeService {
 	@Override
 	public String getResourcePath() {
 		
-		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType()+"/";
+		return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/"+getApigeeObjectType()+"/";
 	}
 	
 	

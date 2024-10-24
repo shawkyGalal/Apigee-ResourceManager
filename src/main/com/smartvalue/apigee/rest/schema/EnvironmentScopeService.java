@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
@@ -36,7 +37,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	public void setEnvName(String m_envName)
 	{
 		this.envName = m_envName ; 
-		this.resourcePath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+ this.getApigeeObjectType();
+		this.resourcePath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+ this.getApigeeObjectType();
 	}
 	
 	/**

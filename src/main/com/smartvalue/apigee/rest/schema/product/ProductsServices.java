@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -24,7 +25,7 @@ public ProductsServices(ManagementServer ms, String m_orgName) {
 
 public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, IOException
 {
-	Organization m_org= (Organization) this.getMs().getOrgByName(this.orgName) ; 
+	Organization m_org= (Organization) this.getMs().getCurrentOrg() ; 
 	ArrayList <Object> result = new ArrayList <Object> () ; 
 	ArrayList<String> all = m_org.getAllProductsNames() ; 
 	this.getPrintStream().println("======== Processing "+all.size()+" Products ==========  " );
@@ -53,7 +54,7 @@ public DeleteResults deleteAll() throws UnirestException, IOException {
 
 @Override
 public String getResourcePath() {
-	return "/v1/organizations/"+this.orgName+"/apiproducts";
+	return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/apiproducts";
 }
 
 public Product getProductByName(String productName) throws Exception

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
@@ -26,7 +27,7 @@ public class DeveloperServices extends ApigeeService {
 
 	@Override
 	public String getResourcePath() {
-		return "/v1/organizations/"+orgName+"/developers";
+		return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/developers";
 	}
 	
 	public Developer getDeveloperById(String developerId) throws Exception

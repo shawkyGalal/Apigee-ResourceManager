@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
@@ -120,7 +121,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	}
 
 	public String getResourcePath() {
-		return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
+		return AppConfig.BASE_BATH+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
 	}
 
 	/**
@@ -448,7 +449,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 
 	public ProxyDeployment deploy(String envName) throws UnirestException, IOException {
 		ProxyDeployment result ; 
-		String path = "/v1/organizations/" +this.getManagmentServer().getOrgName()+"/environments/"+envName+"/apis/"+this.getParentProxy().getName()+"/revisions/"+this.getRevision()+"/deployments" ; 
+		String path = AppConfig.BASE_BATH +this.getManagmentServer().getOrgName()+"/environments/"+envName+"/apis/"+this.getParentProxy().getName()+"/revisions/"+this.getRevision()+"/deployments" ; 
 		result =  this.getManagmentServer().executePostMgmntAPI(path ,  ProxyDeployment.class , null , null) ;
 		
 		return result ; 

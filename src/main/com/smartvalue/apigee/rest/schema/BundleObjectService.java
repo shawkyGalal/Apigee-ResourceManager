@@ -314,7 +314,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		DeployResult deployResult = new DeployResult() ;
 		deployResult.setSource(m_objectName + "." + revision);
 		deployResult.setDestination(m_envName);
-		String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
+		String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
 		ManagementServer ms = this.getMs() ;
 		HttpResponse<String> response = null ; 
 		try {
@@ -340,7 +340,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		{
 			DeployResult deployResult = new DeployResult() ;
 			deployResult.setSource("Undeplolying " + m_objectName + "Reviasion : " + revision.getName() + " From Env. " + m_envName);
-			String apiPath = "/v1/organizations/"+orgName+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision.getName()+"/deployments" ; 
+			String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision.getName()+"/deployments" ; 
 			ManagementServer ms = this.getMs() ;
 			HttpResponse<String> response = null ; 
 			try {

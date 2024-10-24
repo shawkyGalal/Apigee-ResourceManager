@@ -128,14 +128,14 @@ public class ManagementServer extends Server{
 	}
 	public String[] getAllOrgNames() throws UnirestException, IOException
 	{
-		String apiPath = "/v1/organizations/" ; 
+		String apiPath = AppConfig.BASE_BATH ; 
 		String[] orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ;
 		return orgNames ;
 	}
 	public HashMap <String , Organization>  getOrgs(boolean m_refresh) throws UnirestException, IOException {
 		if (orgs.size() ==0  || m_refresh )
 		{
-			String apiPath = "/v1/organizations/" ; 
+			String apiPath = AppConfig.BASE_BATH ; 
 			String[] orgNames ; 
 			Boolean isGoogleCloud = this.getInfra().isGooglecloud() ;
 			if (isGoogleCloud != null && isGoogleCloud)
@@ -146,7 +146,7 @@ public class ManagementServer extends Server{
 			else { orgNames  = this.executeGetMgmntAPI(apiPath , String[].class) ; }  
 			for (String orgname : orgNames )
 			{
-				String path2 = "/v1/organizations/" + orgname ; 
+				String path2 = AppConfig.BASE_BATH + orgname ; 
 				Organization org = this.executeGetMgmntAPI(path2 , Organization.class) ;
 				org.setManagmentServer(this);
 				orgs.put(orgname  , org) ; 
@@ -154,6 +154,10 @@ public class ManagementServer extends Server{
 		}
 		return orgs ; 
 	}
+	public Organization getCurrentOrg() throws UnirestException, IOException
+	{
+		return (Organization) this.getOrgs().get(this.getOrgName()) ; 
+	} 
 	public Organization getOrgByName(String m_org) throws UnirestException, IOException
 	{
 		return (Organization) this.getOrgs().get(m_org) ; 

@@ -37,7 +37,7 @@ public abstract class ApigeeService {
 
 	protected static final Logger logger = LogManager.getLogger(ApigeeService.class);
 	private ManagementServer ms ;
-	protected String orgName ; 
+	//protected String orgName ; 
 	protected String envName ; 
 	private PrintStream printStream = System.out; 
 	private Organization organization ; 
@@ -74,17 +74,14 @@ public abstract class ApigeeService {
 	//----3 Types of constructors -------
 	public  ApigeeService(ManagementServer ms ) {
 		this.ms = ms ;
-		this.orgName = ms.getOrgName(); 
 	}
 	
 	public  ApigeeService(ManagementServer ms , String m_orgName) {
 		this.ms = ms ;
-		this.orgName = m_orgName ;
 	}
 	
 	public  ApigeeService(ManagementServer ms , String m_orgName, String m_envName) {
 		this.ms = ms;
-		this.orgName = m_orgName ;
 		this.envName = m_envName ; 
 	}
 
@@ -105,7 +102,7 @@ public abstract class ApigeeService {
 	public Organization getOrganization() throws UnirestException, IOException {
 		if (organization == null)
 		{
-			organization = this.getMs().getOrgByName(this.orgName); 
+			organization = this.getMs().getCurrentOrg(); 
 		}
 		return organization;
 	}

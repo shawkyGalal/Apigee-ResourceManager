@@ -77,7 +77,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		HashMap<String, List<Object>> result = new HashMap<>() ; 
 		ArrayList<String> proxiesName = getOnPremiseAllProxiesList() ; 
 		ManagementServer ms = this.getMs() ;
-		Organization org = (Organization) ms.getOrgByName(this.orgName) ;
+		Organization org = (Organization) ms.getCurrentOrg() ;
 		int count = 0 ; 
 		System.out.println("===============Start Searching for Proxies ("+proxiesName.size()+") Does not Use Polices with names " +  m_polices +"=======");
 		for (String proxyName : proxiesName )
@@ -203,7 +203,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 
 	@Override
 	public String getResourcePath() {
-		return "/v1/organizations/"+orgName+"/"+getApigeeObjectType();
+		return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/"+getApigeeObjectType();
 	}
 
 	@Override
