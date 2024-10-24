@@ -15,6 +15,7 @@ import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public abstract class EnvironmentScopeService extends ApigeeService {
 
@@ -157,7 +158,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	}
 	
 	@Override
-	public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+	public DeleteResults deleteAll() throws UnirestException, IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

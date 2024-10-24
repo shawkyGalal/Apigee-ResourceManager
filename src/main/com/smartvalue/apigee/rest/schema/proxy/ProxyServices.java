@@ -23,6 +23,7 @@ import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -39,6 +40,9 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 
 	public ProxyServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
+	}
+	public ProxyServices(ManagementServer ms) {
+		super(ms);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -126,7 +130,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	
 	
 	
-	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
+	public  DeleteResults deleteAll() throws Exception
 	{
 		Boolean isGoogle = this.getMs().getInfra().isGooglecloud() ;  
 		if (isGoogle != null && isGoogle)
@@ -141,44 +145,40 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		
 	}
 	
-	private ArrayList<HttpResponse<String>> deleteAll(ArrayList<String> allProxiesList) {
-		ArrayList<HttpResponse<String>> allResults = new ArrayList<HttpResponse<String>>();  
+	private DeleteResults  deleteAll(ArrayList<String> allProxiesList) {
+
+		DeleteResults deletResults =  new DeleteResults(); 
 		for (int i = 0 ;  i< allProxiesList.size() ; i++ )
 		{
+			DeleteResult deletResult =  new DeleteResult(); 
 			String proxyName = allProxiesList.get(i) ; 
 			
 			HttpResponse<String> result = null;
 			try {
 				result = deleteProxy(proxyName);
+				deletResult.setSource(this.getMs().getInfraName() +"." + this.getMs().getOrgName() +"." +  proxyName );
+				deletResult.setFailed(! Helper.isConsideredSuccess(result.getStatus()));
+				
 			} catch (UnirestException | IOException e) {
-				e.printStackTrace();
+				deletResult.setFailed(true);
+				deletResult.setError(e.getMessage()); 
+				deletResult.setExceptionClassName(e.getClass().getName());
 			}
-			
-			if (result != null && result.getStatus() == 200)
-			{
-				System.out.println( "proxyName :" + proxyName + " Deleted");
-			}
-			allResults.add(result) ; 
-			
+			deletResult.setHttpResponse(result);
+			deletResults.add(deletResult); 
 		}
-		return allResults;
+		
+		return deletResults;
 	}
 
-	public  ArrayList<HttpResponse<String>> deleteAll(GoogleProxiesList proxiesList) throws UnirestException, IOException
+	public  DeleteResults deleteAll(GoogleProxiesList proxiesList) throws UnirestException, IOException
 	{
-		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		ArrayList<String> simpleProxiesList = new ArrayList<String>() ;  
 		for (com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy proxy : proxiesList.getProxies())
 		{
-			String proxyName = proxy.getName() ; 
-			System.out.println( "proxyName :" + proxyName + " Deleted");
-			HttpResponse<String> result = deleteProxy(proxyName) ; 
-			int status = result.getStatus() ; 
-			if (status != 200)
-			{
-				failedResult.add(result) ; 
-			}
+			simpleProxiesList.add(proxy.getName()) ; 
 		}
-		return failedResult;
+		return this.deleteAll(simpleProxiesList) ; 
 	}
 	
 
@@ -225,7 +225,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		//==================Export One Proxy ===========================
 		 ProcessResults processResults = new ProcessResults(); 
 		 Proxy proxy = this.getOrganization().getProxy(proxyName);
-		 String exportDest = AppConfig.getMigrationBasePath() +"\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName() + "\\"+ AppConfig.ProxiesSubFolder ; 
+		 String exportDest = AppConfig.getMigrationBasePath() +"\\sfoda@moj.gov.sa" +"\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName()  + "\\"+ AppConfig.ProxiesSubFolder ; 
 		 ExportResults ers =  proxy.exportAllDeployedRevisions(exportDest);
 		 processResults.addAll(ers); 
 		 

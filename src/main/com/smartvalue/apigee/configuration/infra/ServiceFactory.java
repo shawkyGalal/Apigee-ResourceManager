@@ -7,11 +7,11 @@ import com.smartvalue.apigee.rest.schema.ApigeeService;
 
 public class ServiceFactory {
 
-	 public static <T extends ApigeeService> T  createServiceInstance(Class<? extends ApigeeService> bundledObjectClass , ManagementServer ms , String sourceOrgName  ) 
+	 public static <T extends ApigeeService> T  createBundleServiceInstance(Class<? extends ApigeeService> bundledObjectClass , ManagementServer ms   ) 
 	  {
 	        try {
-	            Constructor<?> constructor = bundledObjectClass.getConstructor(ms.getClass() , sourceOrgName.getClass()  );
-	            return (T) constructor.newInstance(ms , sourceOrgName );
+	            Constructor<?> constructor = bundledObjectClass.getConstructor(ms.getClass() );
+	            return (T) constructor.newInstance(ms);
 	        } catch ( NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
 	            e.printStackTrace();
 	            return null;

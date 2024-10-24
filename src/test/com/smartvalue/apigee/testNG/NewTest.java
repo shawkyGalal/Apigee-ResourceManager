@@ -44,6 +44,7 @@ import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
@@ -198,7 +199,7 @@ public class NewTest extends ApigeeTest {
 	  public void testDeleteAllProxies() throws Exception {
 		//==================Import All ===========================
 		destMngServer = destInfra.getManagementServer(destInfra.getRegions().get(0).getName()) ; 
-		ArrayList<HttpResponse<String>> proxiesFaults =  destMngServer.getProxyServices().deleteAll() ;
+		DeleteResults deleteResults =  destMngServer.getProxyServices().deleteAll() ;
 	  }
 
 	 
@@ -215,32 +216,32 @@ public class NewTest extends ApigeeTest {
 	 
 	 @Test(groups = "deleteAll")
 	  public void testDeleteAllsharedflows() throws Exception {
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getSharedFlowServices().deleteAll() ;
+		 DeleteResults deleteResults =  destMngServer.getSharedFlowServices().deleteAll() ;
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	  public void testDeleteAllTargetservers() throws Exception {
-		ArrayList<HttpResponse<String>> sharedflowsFaults =  destMngServer.getTargetServersServices().deleteAll() ;
+		 DeleteResults deleteResults =  destMngServer.getTargetServersServices().deleteAll() ;
 	 }
 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllKvms() throws Exception {
-		 ArrayList<HttpResponse<String>> kvmsFaults =  destMngServer.getKeyValueMapServices().deleteAll() ;	 
+		 DeleteResults deleteResults =  destMngServer.getKeyValueMapServices().deleteAll() ;	 
 	 }
 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllProducts() throws Exception {
-		 ArrayList<HttpResponse<String>> productsFaults = destMngServer.getProductServices().deleteAll() ; 	 
+		 DeleteResults deleteResults = destMngServer.getProductServices().deleteAll() ; 	 
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllDevelopers() throws Exception {
-			ArrayList<HttpResponse<String>> devsFaults =  destMngServer.getDevelopersServices().deleteAll() ;
+		 DeleteResults deleteResults = destMngServer.getDevelopersServices().deleteAll() ;
 	 }
 	 
 	 @Test(groups = "deleteAll")
 	 public void testDeleteAllApplications() throws Exception {
-			ArrayList<HttpResponse<String>> appsFaults = destMngServer.getApplicationServices().deleteAll() ;
+		 DeleteResults deleteResults = destMngServer.getApplicationServices().deleteAll() ;
 	 }
 	 
 

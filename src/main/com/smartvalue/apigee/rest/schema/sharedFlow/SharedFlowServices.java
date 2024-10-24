@@ -14,7 +14,10 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.Deployable;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResult;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
@@ -30,6 +33,10 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 
 	public SharedFlowServices(ManagementServer ms, String m_orgName  ) {
 		super(ms, m_orgName );
+	}
+	
+	public SharedFlowServices(ManagementServer ms  ) {
+		super(ms );
 	}
 	
 	public SharedFlow  getSharedFlows(String sharedFlowName) throws Exception
@@ -147,27 +154,47 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	}
 	
 	
-	public  ArrayList<HttpResponse<String>> deleteAll() throws Exception
+	public  DeleteResults deleteAll() throws Exception
 	{
 		GoogleSharedflowList proxiesList = this.getAllSharedFlowsList(GoogleSharedflowList.class);
 		return deleteAll(proxiesList); 
 	}
 	
-	public  ArrayList<HttpResponse<String>> deleteAll(GoogleSharedflowList sharedFlowsList) throws UnirestException, IOException
+	private DeleteResults  deleteAll(ArrayList<String> allSharedFlowList) {
+
+		DeleteResults deletResults =  new DeleteResults(); 
+		for (int i = 0 ;  i< allSharedFlowList.size() ; i++ )
+		{
+			DeleteResult deletResult =  new DeleteResult(); 
+			String sharedFlowName = allSharedFlowList.get(i) ; 
+			
+			HttpResponse<String> result = null;
+			try {
+				result = deleteSharedFlow(sharedFlowName);
+				deletResult.setSource(this.getMs().getInfraName() +"." + this.getMs().getOrgName() +"." +  sharedFlowName );
+				deletResult.setFailed(! Helper.isConsideredSuccess(result.getStatus()));
+				
+			} catch (UnirestException | IOException e) {
+				deletResult.setFailed(true);
+				deletResult.setError(e.getMessage()); 
+				deletResult.setExceptionClassName(e.getClass().getName());
+			}
+			deletResult.setHttpResponse(result);
+			deletResults.add(deletResult); 
+		}
+		
+		return deletResults;
+	}
+
+	
+	public  DeleteResults deleteAll(GoogleSharedflowList sharedFlowsList) throws UnirestException, IOException
 	{
-		ArrayList<HttpResponse<String>> failedResult = new ArrayList<HttpResponse<String>>();  
+		ArrayList<String> simpleSharedFlowList = new ArrayList<String>() ;  
 		for (com.smartvalue.apigee.rest.schema.sharedFlow.google.auto.SharedFlow sharedFlow : sharedFlowsList.getSharedFlows())
 		{
-			String sharedFlowName = sharedFlow.getName() ; 
-			System.out.println( "SharedFlow : " + sharedFlowName + " Deleted");
-			HttpResponse<String> result = deleteSharedFlow(sharedFlowName) ; 
-			int status = result.getStatus() ; 
-			if (status != 200)
-			{
-				failedResult.add(result) ; 
-			}
+			simpleSharedFlowList.add(sharedFlow.getName()) ; 
 		}
-		return failedResult;
+		return this.deleteAll(simpleSharedFlowList) ; 
 	}
 	
 

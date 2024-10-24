@@ -18,6 +18,7 @@ import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeService{
 	
@@ -152,7 +153,7 @@ public ExportResults exportAll(String folderDest) throws UnirestException, IOExc
 }
 
 @Override
-public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+public DeleteResults deleteAll() throws UnirestException, IOException {
 	// Not Applicable
 	return null;
 }

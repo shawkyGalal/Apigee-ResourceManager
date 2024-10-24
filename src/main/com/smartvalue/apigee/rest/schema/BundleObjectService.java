@@ -48,8 +48,12 @@ public abstract class BundleObjectService extends ApigeeService {
 	
 	protected boolean deployUponUpload = false ; 
 	
+	
 	public BundleObjectService(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
+	}
+	public BundleObjectService(ManagementServer ms) {
+		super(ms, ms.getOrgName());
 	}
 
 	public boolean isDeployUponUpload() {
@@ -359,15 +363,16 @@ public abstract class BundleObjectService extends ApigeeService {
 	{ 	String destFile = this.getSerlizeDeplyStateFileName(userEmail); 
 		File file = new File(destFile);
         file.getParentFile().mkdirs();
+        System.out.println("Start Serializing All "+this.getApigeeObjectType()+" Deployment status to : " + destFile );
 		FileOutputStream fos = new FileOutputStream(destFile);
         try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(getDeploymentStatus());
 		}  
 	}
 	
-	public DeploymentsStatus deSerializeDeployStatus(String userEmail) throws IOException, ClassNotFoundException 
+	public DeploymentsStatus deSerializeDeployStatus(String sourceFile) throws IOException, ClassNotFoundException 
 	{
-		String sourceFile = this.getSerlizeDeplyStateFileName(userEmail); 
+		//String sourceFile = this.getSerlizeDeplyStateFileName(sourceFile); 
 		FileInputStream fis = new FileInputStream(sourceFile);
         try (ObjectInputStream ois = new ObjectInputStream(fis)) {
         	DeploymentsStatus result  = (DeploymentsStatus) ois.readObject(); 
@@ -416,6 +421,7 @@ public abstract class BundleObjectService extends ApigeeService {
 			if (env.getName().equalsIgnoreCase(m_envName))
 			{
 				result = env.getRevision(); 
+				break ; 
 			}
 		}
 		return result ; 
@@ -495,6 +501,8 @@ public abstract class BundleObjectService extends ApigeeService {
 					er.setSource(proxyName);
 					er.setExceptionClassName(e.getClass().getName());
 					er.setError(e.getMessage());
+					exportResults.add(er); 
+					
 					
 				} 
 				
@@ -503,16 +511,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		return exportResults;
 	}
 	
-	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass , String sourceOrgName , String userEmail  ) throws Exception
-	{
-		BundleObjectService bundleObjectService = ServiceFactory.createServiceInstance(bundledObjectClass , this.getMs() , sourceOrgName ) ; 
-		String migrationBasePath = AppConfig.getMigrationBasePath() ;
-		
-		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getMs().getInfra().getName()+"\\"+sourceOrgName ; 
-		String sourceFolder =basePath +"\\"+AppConfig.ProxiesSubFolder+"\\" ; 
-		ExportResults result = bundleObjectService.exportAll(sourceFolder , userEmail) ;
-		return result ; 
-	}
+
 	
 	public String getSerlizeDeplyStateFileName(String userEmail )
 	{

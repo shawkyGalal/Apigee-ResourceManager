@@ -16,6 +16,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.rest.schema.ApigeeComman;
+import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
@@ -103,7 +104,7 @@ public abstract class RevisionedObject extends ApigeeComman {
 	
 	public ExportResults  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		ExportResults exportResults = new  ExportResults();   
+		ExportResults exportResults = new  ExportResults();  
 		HashMap<String, ArrayList<String>> deployedRevisions = this.getDeployedRevisions() ; 
 		for ( String  DeployedEnvName :  deployedRevisions.keySet()) 
 		{

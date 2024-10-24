@@ -10,6 +10,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.ApigeeService {
 
@@ -46,7 +47,7 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 
 
 @Override
-public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+public DeleteResults deleteAll() throws UnirestException, IOException {
 	return null;
 }
 

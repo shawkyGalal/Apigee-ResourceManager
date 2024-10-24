@@ -10,55 +10,60 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.mashape.unirest.http.HttpResponse;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class Delete extends ApigeeTest{
 	 
 	 @Test
 	 public void deleteAllProxies() throws Exception {
 		//==================Delete All Proxies ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getProxyServices().deleteAll() ;
+		DeleteResults objectErrors =  destMngServer.getProxyServices().deleteAll() ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
 	 @Test
 	 public void deleteAllSharedFlows() throws Exception {
 		//==================Delete All Sharedflows ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getSharedFlowServices().deleteAll() ;
+		DeleteResults objectErrors =  destMngServer.getSharedFlowServices().deleteAll() ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 
 	 @Test
 	 public void deleteAllProducts() throws Exception {
 		//==================Delete All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors = destMngServer.getProductServices().deleteAll() ;
+		 DeleteResults objectErrors = destMngServer.getProductServices().deleteAll() ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
 	 }
 	
 	 @Test
 	 public void deleteAllDevelopers() throws Exception {
 		//==================Delete All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getDevelopersServices().deleteAll() ;
-		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
+		 DeleteResults deleteResults =  destMngServer.getDevelopersServices().deleteAll() ;
+		 int failureCount = deleteResults.filterFailed(true).size() ;
+		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
 	 
 	 @Test
 	 public void deleteAllTargetServers() throws Exception {
 		//==================Delete All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getTargetServersServices().deleteAll() ;
-		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
+		 DeleteResults deleteResults =  destMngServer.getTargetServersServices().deleteAll() ;
+		 int failureCount = deleteResults.filterFailed(true).size() ;
+		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
 	 
 	 @Test
 	 public void deleteAllKvms() throws Exception {
 		//==================Delete All ===========================
-		ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getKeyValueMapServices().deleteAll() ;		
-		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size());
+		 DeleteResults deleteResults =  destMngServer.getKeyValueMapServices().deleteAll() ;		
+		 int failureCount = deleteResults.filterFailed(true).size() ;
+		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
 	 @Test
 	 public void deleteAllApps() throws Exception {
 		//==================Delete All ===========================
-		 ArrayList<HttpResponse<String>> objectErrors =  destMngServer.getApplicationServices().deleteAll() ;
-		assertEquals( objectErrors.size() , 0 , "# of Errors = " + objectErrors.size());
+		 DeleteResults deleteResults =  destMngServer.getApplicationServices().deleteAll() ;
+		 int failureCount = deleteResults.filterFailed(true).size() ;
+		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
 	
 	 

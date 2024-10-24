@@ -24,7 +24,7 @@ public class Extract extends ApigeeTest{
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
 		 
-		 ExportResults expotrtresults =  ((ProxyServices)sourceMngServer.getProxyServices()).exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "shawky.foda@gmail.com") ;
+		 ExportResults expotrtresults =  ((ProxyServices)sourceMngServer.getProxyServices()).exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "sfoda@moj.gov.sa") ;
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }
@@ -32,9 +32,9 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void performETL() throws Exception {
 		//==================Export One Proxy ===========================
-		 String proxyName = "oidc-core" ;
+		 String proxyName = "SMS-Governance" ;
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
-		 proxyServ.getEnvDeployedRevisions(proxyName, "abc"); 
+		 proxyServ.getEnvDeployedRevisions(proxyName, "iam-protected"); 
 		 proxyServ.performETL(proxyName ) ; 
 	 }
 	 

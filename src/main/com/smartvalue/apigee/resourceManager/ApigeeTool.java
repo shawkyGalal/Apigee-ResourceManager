@@ -22,6 +22,7 @@ import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
@@ -393,13 +394,13 @@ public class ApigeeTool
 
 	private static void deleteAll() throws Exception {
 		org = getMandatoryArg(getArgsHashMap(), "-org");
-		ArrayList<HttpResponse<String>> appResults  = ms.getApplicationServices(org).deleteAll();
-		ArrayList<HttpResponse<String>> devResults  = ms.getDevelopersServices(org).deleteAll();
-		ArrayList<HttpResponse<String>> podResults  = ms.getProductServices(org).deleteAll(); 
-		ArrayList<HttpResponse<String>> sfResults   = ms.getSharedFlowServices(org).deleteAll(); 
-		ArrayList<HttpResponse<String>> proResults  = ms.getProxyServices(org).deleteAll();
-		ArrayList<HttpResponse<String>> kvmResults  = ms.getKeyValueMapServices(org).deleteAll();
-		ArrayList<HttpResponse<String>> tarResults  = ms.getTargetServersServices(org).deleteAll();		
+		DeleteResults appResults  = ms.getApplicationServices(org).deleteAll();
+		DeleteResults devResults  = ms.getDevelopersServices(org).deleteAll();
+		DeleteResults podResults  = ms.getProductServices(org).deleteAll(); 
+		DeleteResults sfResults   = ms.getSharedFlowServices(org).deleteAll(); 
+		DeleteResults proResults  = ms.getProxyServices(org).deleteAll();
+		DeleteResults kvmResults  = ms.getKeyValueMapServices(org).deleteAll();
+		DeleteResults tarResults  = ms.getTargetServersServices(org).deleteAll();		
 		
 	}
 	

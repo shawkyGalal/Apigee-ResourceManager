@@ -474,6 +474,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public BundleObjectService getProxyServices(String m_orgName )
 	{
+		this.setOrgName(m_orgName);
 		return  new ProxyServices(this , m_orgName) ; 
 	}
 	
@@ -485,7 +486,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 	
 	public BundleObjectService getSharedFlowServices(String m_orgName )
-	{
+	{	this.setOrgName(m_orgName);
 		return  new SharedFlowServices(this , m_orgName ) ; 
 	}
 	
@@ -494,8 +495,20 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ApplicationServices(this , this.getOrgName() ) ; 
 	}
 	
+	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass  , String userEmail  ) throws Exception
+	{
+		BundleObjectService bundleObjectService = ServiceFactory.createBundleServiceInstance(bundledObjectClass , this ) ; 
+		String migrationBasePath = AppConfig.getMigrationBasePath() ;
+		
+		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getInfra().getName()+"\\"+this.getOrgName() ; 
+		String sourceFolder =basePath +"\\"+bundleObjectService.getMigationSubFoler()+"\\" ; 
+		ExportResults result = bundleObjectService.exportAll(sourceFolder , userEmail) ;
+		return result ; 
+	}
+	
 	public ApigeeService getApplicationServices(String m_orgName )
 	{
+		this.setOrgName(m_orgName);
 		return  new ApplicationServices(this , m_orgName ) ; 
 	}
 	
@@ -504,6 +517,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 	
 	public ApigeeService getDevelopersServices(String m_orgName) {
+		this.setOrgName(m_orgName);
 		return  new DeveloperServices(this , m_orgName ) ; 
 	}
 	
@@ -512,6 +526,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	}
 	
 	public ApigeeService getTargetServersServices(String m_orgName) {
+		this.setOrgName(m_orgName);
 		return  new TargetServerServices(this , m_orgName) ; 
 	}
 	

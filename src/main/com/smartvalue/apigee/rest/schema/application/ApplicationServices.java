@@ -11,6 +11,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class ApplicationServices extends ApigeeService {
 
@@ -20,7 +21,7 @@ public class ApplicationServices extends ApigeeService {
 
 
 	@Override
-	public ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException {
+	public DeleteResults deleteAll() throws UnirestException, IOException {
 		// TODO Auto-generated method stub - 
 		return null;
 	}

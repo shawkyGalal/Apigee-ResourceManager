@@ -30,6 +30,8 @@ import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 
 public abstract class ApigeeService {
 
@@ -72,6 +74,7 @@ public abstract class ApigeeService {
 	//----3 Types of constructors -------
 	public  ApigeeService(ManagementServer ms ) {
 		this.ms = ms ;
+		this.orgName = ms.getOrgName(); 
 	}
 	
 	public  ApigeeService(ManagementServer ms , String m_orgName) {
@@ -108,7 +111,7 @@ public abstract class ApigeeService {
 	}
 	
 	
-	public abstract ArrayList<HttpResponse<String>> deleteAll() throws UnirestException, IOException, Exception ; 
+	public abstract DeleteResults deleteAll() throws UnirestException, IOException, Exception ; 
 	public abstract ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException  ; 
 
 	public abstract String  getResourcePath()  ;
@@ -275,6 +278,14 @@ public abstract class ApigeeService {
 	}
 	
 	public abstract String getApigeeObjectType() ; 
+	public String getMigationSubFoler() 
+	{
+		String result ; 
+		if ( this instanceof ProxyServices) result = "proxies" ; 
+		else result = this.getApigeeObjectType() ; 
+		return result ; 
+		
+	}
 	protected  <T> ArrayList<T>  getAllResourcesList( Class<T> classOfT ) throws Exception
 	{
 		ArrayList<String> allResourcesNames = getAllResources() ; 
