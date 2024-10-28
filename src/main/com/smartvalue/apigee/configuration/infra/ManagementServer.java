@@ -499,16 +499,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ApplicationServices(this , this.getOrgName() ) ; 
 	}
 	
-	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass  , String userEmail  ) throws Exception
-	{
-		BundleObjectService bundleObjectService = ServiceFactory.createBundleServiceInstance(bundledObjectClass , this ) ; 
-		String migrationBasePath = AppConfig.getMigrationBasePath() ;
-		
-		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getInfra().getName()+"\\"+this.getOrgName() ; 
-		String sourceFolder =basePath +"\\"+bundleObjectService.getMigationSubFoler()+"\\" ; 
-		ExportResults result = bundleObjectService.exportAll(sourceFolder , userEmail) ;
-		return result ; 
-	}
+	
 	
 	public ApigeeService getApplicationServices(String m_orgName )
 	{

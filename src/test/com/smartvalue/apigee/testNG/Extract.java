@@ -34,10 +34,17 @@ public class Extract extends ApigeeTest{
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
-		 proxyServ.getEnvDeployedRevisions(proxyName, "iam-protected"); 
 		 proxyServ.performETL(proxyName ) ; 
 	 }
-	 
+
+	 @Test
+	 public void rollBackETL() throws Exception {
+		//==================Export One Proxy ===========================
+		 String proxyName = "SMS-Governance" ;
+		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
+		 proxyServ.rollBackObjectToLastSerializedDeployStatus(proxyName , proxyServ.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ) ; 
+	 }
+
 	 
 	 @Test
 	 public void exportAllProxiesWithDeploymentStatus() throws Exception {

@@ -44,8 +44,8 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Proxies ===========================
 		ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices(); 
 		 
-		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\Stage\\stg\\proxies\\moj-internal-clients\\SMS-Governance\\147\\SMS-Governance.zip" 
-				,  "C:\\temp\\Apigee\\Stage\\stg\\Transformed\\proxies\\moj-internal-clients\\SMS-Governance\\147\\") ;
+		TransformationResults trnsformResults =  proxyServ.transformProxy("C:\\temp\\Apigee\\sfoda@moj.gov.sa\\Stage\\stg\\proxies\\moj-internal-clients\\SMS-Governance\\162\\SMS-Governance.zip" 
+				,  "C:\\temp\\Apigee\\sfoda@moj.gov.sa\\Stage\\stg\\Transformed\\proxies\\moj-internal-clients\\SMS-Governance\\162\\") ;
 		
 		assertEquals( trnsformResults.filterFailed(true).size(), 0 , "# of Errors = " + trnsformResults.filterFailed(false).size()); 
 	 }

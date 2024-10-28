@@ -304,7 +304,16 @@ public abstract class BundleObjectService extends ApigeeService {
 		loadResult.setHttpResponse(httpResponse);
 		return loadResult ; 
 	}	
-	
+	/**
+	 * 
+	 * @param m_objectName Proxy/SharedFlow to be deployed
+	 * @param m_envName  Apigee Environment Name to Deply to  
+	 * @param revision Apigee Proxy/sharedFlow Revision to be deployed
+	 * @param force : Undeploy any other revision deployed to the provided m_envName
+	 * @return
+	 * @throws UnirestException
+	 * @throws IOException
+	 */
 	public DeployResults deployRevision(String m_objectName , String m_envName , int revision , boolean force ) throws UnirestException, IOException 
 	{
 		DeployResults deployResults = new DeployResults() ;
@@ -312,7 +321,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		{	deployResults.addAll(this.UnDeployFromEnv(m_objectName, m_envName));	}
 		
 		DeployResult deployResult = new DeployResult() ;
-		deployResult.setSource(m_objectName + "." + revision);
+		deployResult.setSource("Deploying : " + m_objectName + "." + revision + "To Env: " + m_envName);
 		deployResult.setDestination(m_envName);
 		String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
 		ManagementServer ms = this.getMs() ;
@@ -443,7 +452,6 @@ public abstract class BundleObjectService extends ApigeeService {
 		for (Entry<String, HashMap<String, ArrayList<String>>> entry : pds.entrySet())
 		{
 			String revisionedObjectName = entry.getKey(); 
-			
 			HashMap<String, ArrayList<String>> ds = entry.getValue();
 			for (Entry<String, ArrayList<String>> entry01 : ds.entrySet())
 			{
@@ -456,9 +464,7 @@ public abstract class BundleObjectService extends ApigeeService {
 					pr.setSource(processSource);
 					
 					try {
-						
-						RevisionedObject revisionedObject = this.getRevisionedObject(revisionedObjectName);
-						revisionedObject.getRevision(revision).deploy(envName); 
+						this.deployRevision(revisionedObjectName, envName, Integer.parseInt(revision), true); 
 						pr.withFailed(false); 
 					} catch (UnirestException | IOException e) {
 						pr.withFailed(true)
@@ -472,6 +478,22 @@ public abstract class BundleObjectService extends ApigeeService {
 		return deployResults ; 
 	}
 	
+	public DeployResults rollBackObjectToLastSerializedDeployStatus(String revisionedObjectName , String serlizeFileName) throws ClassNotFoundException, IOException, UnirestException
+	{
+		DeployResults deployResults = new DeployResults(); 
+		HashMap<String, ArrayList<String>> pds = this.deSerializeDeployStatus(serlizeFileName).get(revisionedObjectName) ;
+		for (Entry<String, ArrayList<String>> entry : pds.entrySet())
+		{
+			String envName = entry.getKey(); 
+			ArrayList<String> revisions = entry.getValue() ;
+			for (String revision : revisions)
+			{
+				//String processSource = "Deploying : " + revisionedObjectName +"." + envName + "." + revision ; 
+				deployResults.addAll (this.deployRevision(revisionedObjectName, envName, Integer.parseInt(revision), true) ) ; 
+			}
+		}
+		return deployResults ;
+	}
 	public  ExportResults exportAll(String folderDest , String userEmail) throws Exception
 	{
 		// Keep a copy of the current proxies deployment statuses in a file in case a roll back of a Load Process is required  
@@ -518,4 +540,12 @@ public abstract class BundleObjectService extends ApigeeService {
 		return AppConfig.getMigrationBasePath() + "\\"+userEmail + "\\"+ this.getMs().getInfraName() + "\\"+this.getMs().getOrgName() +"\\"+ this.getApigeeObjectType()+"_deploysStatus.ser" ; 
 	}
 
+	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass  , String userEmail  ) throws Exception
+	{
+		String migrationBasePath = AppConfig.getMigrationBasePath() ;
+		String basePath =  migrationBasePath +"\\"+ userEmail +"\\"+this.getMs().getInfra().getName()+"\\"+this.getMs().getOrgName() ; 
+		String sourceFolder =basePath +"\\"+this.getMigationSubFoler()+"\\" ; 
+		ExportResults result = this.exportAll(sourceFolder , userEmail) ;
+		return result ; 
+	}
 }

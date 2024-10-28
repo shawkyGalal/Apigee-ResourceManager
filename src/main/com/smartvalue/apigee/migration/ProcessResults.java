@@ -1,10 +1,15 @@
 package com.smartvalue.apigee.migration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+import com.smartvalue.apigee.migration.deploy.DeployResult;
+import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.load.LoadResult;
-import com.smartvalue.apigee.migration.load.LoadResults;
+import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.rest.schema.proxy.DeleteResult;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
 
 public class ProcessResults extends ArrayList<ProcessResult>{
@@ -77,6 +82,34 @@ public class ProcessResults extends ArrayList<ProcessResult>{
             }
             familiesMap.get(exceptionClassName).add(lr);
         }
+        return familiesMap;
+    }
+	
+public HashMap<Class<?>, ProcessResults > classify() {
+        
+		HashMap<Class<?>, ProcessResults> familiesMap = new HashMap<>();
+		
+		List<Class<?>> allTypes = Arrays.asList( ExportResult.class 
+												, TransformResult.class 
+												, LoadResult.class 
+												, DeleteResult.class 
+												, DeployResult.class
+												, ProcessResult.class);
+		for (Class<?> clazz : allTypes)
+		{
+			if (!familiesMap.containsKey(clazz))
+			{
+				familiesMap.put(clazz, new ProcessResults());	
+			}
+
+			for (ProcessResult pr : this) 
+	        {
+	        	if (pr.getClass() == clazz  )
+	            {
+	        		familiesMap.get(clazz).add(pr);    
+	            }
+	        }
+		}
         return familiesMap;
     }
 }

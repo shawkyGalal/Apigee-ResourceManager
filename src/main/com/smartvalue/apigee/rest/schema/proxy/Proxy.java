@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
@@ -98,7 +99,7 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 	
 
 	public String getResourcePath() {
-			return "/v1/organizations/"+this.getOrgName()+"/apis/"+this.getName();
+			return AppConfig.BASE_BATH+this.getOrgName()+"/apis/"+this.getName();
 	}
 
 	public String generateOpenApi(String m_revision) throws UnirestException, IOException
