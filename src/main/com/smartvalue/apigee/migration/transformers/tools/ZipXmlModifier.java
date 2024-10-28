@@ -39,7 +39,7 @@ public class ZipXmlModifier {
 		outputFile.createNewFile(); 
 		try (
 	        FileInputStream fileInputStream = new FileInputStream(inputZipFilePath);
-	        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream);
+	        ZipInputStream zipInputStream = new ZipInputStream(fileInputStream , AppConfig.getCharset());
 			
 	        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(outputFilePath))
 	    ) {
@@ -83,7 +83,8 @@ public class ZipXmlModifier {
 	    // Read XML content from the zip entry
 	    while ((bytesRead = zipInputStream.read(buffer)) != -1) {
 	        // Append the read bytes to the StringBuilder
-	        xmlContentBuilder.append(new String(buffer, 0, bytesRead));
+	    	String line = new String(buffer, 0, bytesRead , AppConfig.getCharset()) ; 
+	        xmlContentBuilder.append(line);
 	    }
 
 	    // Parse the XML content into a Document

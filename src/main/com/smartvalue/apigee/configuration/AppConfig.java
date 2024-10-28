@@ -2,6 +2,7 @@ package com.smartvalue.apigee.configuration;
 
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.apache.http.HttpHost;
@@ -20,7 +21,7 @@ public class AppConfig {
 	private String proxyHost ; 
 	private String proxyPort ;
 	private String googleApigeeAPIUrl = "https://apigee.googleapis.com" ; 
-	private static Charset charset = Charset.forName("UTF-8");
+	private static Charset charset = Charset.forName("UTF-8"); //StandardCharsets.UTF_8
 	
 	private static String migrationBasePath = "C:\\temp\\Apigee" ;
 	public static final String ProxiesSubFolder = "proxies" ; 
