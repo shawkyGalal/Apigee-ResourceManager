@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import org.springframework.security.crypto.codec.Base64;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,6 +57,14 @@ public class ManagementServer extends Server{
 	private Infra infra ;  
 	private String infraName ; 
 	private GoogleAccessToken googleAccessToken ;
+	private GoogleIdToken googleIdToken ; 
+	public GoogleIdToken getGoogleIdToken() {
+		return googleIdToken;
+	}
+
+	public void setGoogleIdToken(GoogleIdToken googleIdToken) {
+		this.googleIdToken = googleIdToken;
+	}
 	private AppConfig appConfig ;
 	private boolean onPremise = true ;  // New Attribute indicate wheather this management server is for an onpremise or for a google cloud
 	private boolean internetProxyCleared = true; 
@@ -398,40 +407,41 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	{
 		if(accessToken == null || regenerate)
 		{
-		accessToken = new ApigeeAccessToken();
-		HttpResponse<String> response = null ; 
-		Gson gson = new Gson();
-		Boolean isGoogleCloudBoolean = this.infra.isGooglecloud() ;
-		if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
-		{
-			GoogleServiceAccount googleServiceAccount = this.infra.getGoogleServiceAccount() ; 
-			com.google.auth.oauth2.AccessToken googleAccessToken = googleServiceAccount.getGoogleCredentials().getAccessToken() ; // getGoogleAccessToken(googleServiceAccount.toJson()) ;
-			 
-			accessToken = new ApigeeAccessToken(); 
-			//-- Start map Google Object atts to My Object atts 
-			accessToken.setAccess_token(googleAccessToken.getTokenValue());
-			int expiresIn = googleAccessToken.getExpirationTime().compareTo(new Date())/1000; 
-			accessToken.setExpires_in(expiresIn); 
-			accessToken.setScopes(googleAccessToken.getScopes()); 
+			accessToken = new ApigeeAccessToken();
+			HttpResponse<String> response = null ; 
+			Gson gson = new Gson();
+			Boolean isGoogleCloudBoolean = this.infra.isGooglecloud() ;
+			if (isGoogleCloudBoolean != null && isGoogleCloudBoolean )
+			{
+				GoogleServiceAccount googleServiceAccount = this.infra.getGoogleServiceAccount() ; 
+				com.google.auth.oauth2.AccessToken googleAccessToken = googleServiceAccount.getGoogleCredentials().getAccessToken() ; // getGoogleAccessToken(googleServiceAccount.toJson()) ;
+				 
+				accessToken = new ApigeeAccessToken(); 
+				//-- Start map Google Object atts to My Object atts 
+				accessToken.setAccess_token(googleAccessToken.getTokenValue());
+				int expiresIn = googleAccessToken.getExpirationTime().compareTo(new Date())/1000; 
+				accessToken.setExpires_in(expiresIn); 
+				accessToken.setScopes(googleAccessToken.getScopes()); 
+			}
+			else 
+			{
+				MultipartBody multiPartBody = Unirest.post(this.getServerProfile().getTokenUrl())
+						  .header("Content-Type", "application/x-www-form-urlencoded")
+						  .header("grant_type", "client_credentials")
+						  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
+						  .header("googleIdToken", (googleIdToken != null)? googleIdToken.getPayload().toPrettyString() : "" ) 
+						  .field("grant_type", "client_credentials") ; 
+			  response = sendRequestByPassProxyIfNeeded(multiPartBody.getHttpRequest()) ; 
+			  if (Helper.isConsideredSuccess(response.getStatus()) )   
+			  {
+				  accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
+			  }
+			  else 
+			  {
+				throw new UnirestException ( "ResponseBody :" + response.getBody() + " Response Code : " + response.getStatus()) ; 
+			  }
+			}
 		}
-		else 
-		{
-			MultipartBody multiPartBody = Unirest.post(this.getServerProfile().getTokenUrl())
-					  .header("Content-Type", "application/x-www-form-urlencoded")
-					  .header("grant_type", "client_credentials")
-					  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
-					  .field("grant_type", "client_credentials") ; 
-		  response = sendRequestByPassProxyIfNeeded(multiPartBody.getHttpRequest()) ; 
-		  if (Helper.isConsideredSuccess(response.getStatus()) )   
-		  {
-			  accessToken = gson.fromJson(response.getBody(), ApigeeAccessToken.class);
-		  }
-		  else 
-		  {
-			throw new UnirestException ( "ResponseBody :" + response.getBody() + " Response Code : " + response.getStatus()) ; 
-		  }
-		}
-	}
 		
 		
 		return accessToken ; 

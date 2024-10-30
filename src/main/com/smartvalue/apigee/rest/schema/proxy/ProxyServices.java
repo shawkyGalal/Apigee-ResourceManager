@@ -221,11 +221,11 @@ public class ProxyServices extends BundleObjectService implements Deployable {
  * @return ProcessResults including the complete process (ETL ) results  
  * @throws Exception
  */
-	public ProcessResults  performETL(String proxyName ) throws Exception {
+	public ProcessResults  performETL(String proxyName , String userEmail) throws Exception {
 		//==================Export One Proxy ===========================
 		 ProcessResults processResults = new ProcessResults(); 
 		 Proxy proxy = this.getOrganization().getProxy(proxyName);
-		 String exportDest = AppConfig.getMigrationBasePath() +"\\sfoda@moj.gov.sa" +"\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName()  + "\\"+ AppConfig.ProxiesSubFolder ; 
+		 String exportDest = AppConfig.getMigrationBasePath() +"\\"+ userEmail + "\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName()  + "\\"+ AppConfig.ProxiesSubFolder ; 
 		 ExportResults ers =  proxy.exportAllDeployedRevisions(exportDest);
 		 processResults.addAll(ers); 
 		 
