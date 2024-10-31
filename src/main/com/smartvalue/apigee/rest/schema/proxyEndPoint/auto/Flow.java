@@ -243,7 +243,7 @@ public class Flow extends BundleElement {
 		return result ; 
 	}
 	
-	public String extractVerbFromCondition() throws Exception
+	public String extractVerbFromCondition() 
 	{
 		String result = null ; 
 		try {
@@ -312,7 +312,7 @@ public class Flow extends BundleElement {
 	{
 		com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint pep = this.getParentProxyEndPoint() ; 
 		ProxyRevision pr = pep.getParentProxyRevision() ; 
-		return pr.getName() + "."+ pep.getName() +"." + this.getName(); 
+		return pr.getName() + "."+ pep.getName() +"." + this.getName()+"."+ this.extractVerbFromCondition(); 
 	}
 
 	

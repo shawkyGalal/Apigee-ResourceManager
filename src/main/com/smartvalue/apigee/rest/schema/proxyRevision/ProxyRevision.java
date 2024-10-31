@@ -200,7 +200,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					if ( flow.match(getOper)) { 	
 					matchedOperationFound= true; 
 					result.put(flow, getOper) ;
-					if (fixOperationId) getOper.setOperationId(flow);
+					if (fixOperationId) getOper.updateOperationIdFromFlowIfNeeded(flow);
 					break ;	
 					}
 				}
@@ -211,7 +211,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					if (flow.match(postOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, postOper) ; 
-					if (fixOperationId) postOper.setOperationId(flow);
+					if (fixOperationId) postOper.updateOperationIdFromFlowIfNeeded(flow);
 					break ; 
 					}
 				}
@@ -222,7 +222,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					if (flow.match(putOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, putOper) ;  
-					if (fixOperationId) putOper.setOperationId(flow);
+					if (fixOperationId) putOper.updateOperationIdFromFlowIfNeeded(flow);
 					break ;	
 					}
 				}
@@ -233,7 +233,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 				if (flow.match(deleteOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, deleteOper) ; 
-					if (fixOperationId) deleteOper.setOperationId(flow);
+					if (fixOperationId) deleteOper.updateOperationIdFromFlowIfNeeded(flow);
 					break ; 
 					} 
 				}
@@ -244,7 +244,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 				if (flow.match(patchOper)) { 
 					matchedOperationFound= true;
 					result.put(flow, patchOper) ; 
-					if (fixOperationId) patchOper.setOperationId(flow);
+					if (fixOperationId) patchOper.updateOperationIdFromFlowIfNeeded(flow);
 					break ; } 
 				}
 			}
@@ -315,7 +315,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match( getOper ) ) 
 							{ 
-								if (fixOperationId) getOper.getOperation().setOperationId(flow.getUniqueIdentifier()+".GET");	
+								if (fixOperationId) getOper.updateOperationIdFromFlowIfNeeded(flow);	
 								result.put(getOper , flow );
 								getOperMachedFlowFound = true ; 
 							} 
@@ -324,7 +324,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					if (postOper != null)
 					{	
 						if ( flow.match(postOper ) ) {
-							if (fixOperationId) postOper.getOperation().setOperationId(flow.getUniqueIdentifier()+".POST"); 
+							if (fixOperationId) postOper.updateOperationIdFromFlowIfNeeded(flow); 
 							result.put(postOper , flow );
 							postOperMachedFlowFound= true ; 
 							} 
@@ -334,7 +334,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(putOper ) ) {
 							result.put(putOper , flow ); 
-							if (fixOperationId) putOper.getOperation().setOperationId(flow.getUniqueIdentifier()+".PUT");
+							if (fixOperationId) putOper.updateOperationIdFromFlowIfNeeded(flow); 
 							putOperMachedFlowFound = true ; 
 							} 
 					}
@@ -343,7 +343,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(deleteOper ) ) {
 							result.put(deleteOper , flow );
-							if (fixOperationId) deleteOper.getOperation().setOperationId(flow.getUniqueIdentifier()+".DELETE"); 
+							if (fixOperationId) deleteOper.updateOperationIdFromFlowIfNeeded(flow); 
 							deleteOperMachedFlowFound = true ; 
 							} 
 					}
@@ -352,7 +352,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 					{
 						if ( flow.match(patchOper ) ) {
 							result.put(patchOper , flow );
-							if (fixOperationId) patchOper.getOperation().setOperationId(flow.getUniqueIdentifier()+".PATCH"); 
+							if (fixOperationId) patchOper.updateOperationIdFromFlowIfNeeded(flow); 
 							patchOperMachedFlowFound = true ; 
 							} 
 					}
