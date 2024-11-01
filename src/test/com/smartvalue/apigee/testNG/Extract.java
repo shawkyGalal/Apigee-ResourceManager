@@ -34,7 +34,7 @@ public class Extract extends ApigeeTest{
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
 		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
-		 proxyServ.performETL(proxyName ) ; 
+		 proxyServ.performETL(proxyName , "shawky.foda@gmail.com") ; 
 	 }
 
 	 @Test

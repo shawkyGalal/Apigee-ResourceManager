@@ -171,8 +171,15 @@ public class ManagementServer extends Server{
 	{
 		return (Organization) this.getOrgs().get(m_org) ; 
 	}
+	
+	private String authorizationHeader ;
+	public void setAuthorizationHeader(String m_authorizationHeader)
+	{
+		authorizationHeader =   m_authorizationHeader ; 
+	}
 	private String  getAuthorizationHeader() throws IOException, UnirestException
 	{
+		if (authorizationHeader != null) return authorizationHeader ; 
 		String authorization = null ; 
 		if (this.onPremise &&  this.getInfra() != null)
 		{
