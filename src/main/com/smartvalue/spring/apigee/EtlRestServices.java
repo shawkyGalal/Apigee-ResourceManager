@@ -43,6 +43,32 @@ public class EtlRestServices {
 		System.out.println("");
 		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
     }
+	
+	@GetMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/apis/{exportUuid}")
+    public ResponseEntity<String> getExportDetails(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer") String customer,
+    		@PathVariable("infra") String infra,
+            @PathVariable("org") String org , 
+            @PathVariable("exportUuid")   String exportUuid,
+            @RequestHeader("Authorization")  String authorizationHeader
+            )
+    {
+		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
+    }
+	
+	@GetMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/apis/{transformUuid}")
+    public ResponseEntity<String> getTransformDetails(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer") String customer,
+    		@PathVariable("infra") String infra,
+            @PathVariable("org") String org , 
+            @PathVariable("transformUuid")   String transformUuid,
+            @RequestHeader("Authorization")  String authorizationHeader
+            )
+    {
+		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
+    }
     
 	
 	@PostMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/{bundleType}/")
@@ -81,7 +107,7 @@ public class EtlRestServices {
     	
     	
         // Process the request and return a response
-        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+        return new ResponseEntity<String>("{\"exportUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -96,7 +122,7 @@ public class EtlRestServices {
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
-            @PathVariable("exportUuid")   String exportUuid,
+            @PathVariable("exportUuid")   String exportUuid, // Transform the result of this exportUuid
             @RequestHeader("Authorization") String authorizationHeader ) 
          
             {
@@ -109,7 +135,6 @@ public class EtlRestServices {
     	    	
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
-    	            // Your process here
     	            try {
     	            	Class<? extends BundleObjectService> type = null ;
     	            	if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
@@ -127,7 +152,7 @@ public class EtlRestServices {
     	    	
     	    	
     	        // Process the request and return a response
-    	        return new ResponseEntity<String>("{\"processUUID\":\""+exportUuid+"\"}", HttpStatus.CREATED);
+    	        return new ResponseEntity<String>("{\"transformUUID\":\""+exportUuid+"\"}", HttpStatus.CREATED);
     			}
     			catch (Exception e) {
     				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
