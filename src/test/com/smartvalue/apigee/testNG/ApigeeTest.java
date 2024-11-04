@@ -12,7 +12,7 @@ public class ApigeeTest {
 	
 	protected static AppConfig ac ; 
 	protected static final String SOURCE_INFRA_NAME = "Stage";
-	private static final String SOURCE_Org_NAME = "stg"; 
+	public static final String SOURCE_Org_NAME = "stg"; 
 	private static final String User_Email= "sfoda@moj.gov.sa" ; 
 	protected Infra sourceInfra ; 
 	protected ManagementServer sourceMngServer ;

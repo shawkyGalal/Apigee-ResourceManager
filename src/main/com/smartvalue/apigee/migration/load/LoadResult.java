@@ -1,19 +1,17 @@
 package com.smartvalue.apigee.migration.load;
 
 import com.github.jknack.handlebars.internal.text.StringTokenizer;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.migration.ProcessResult;
 
 
 public class LoadResult extends ProcessResult {
 	
-	public String extractEnvNameFromsource(String basePath )
+	public String extractEnvNameFromsource()
 	{
-		// C:\temp\Apigee\sfoda@moj.gov.sa\Stage\stg\proxies\moj-internal-clients\_Proxy_RE_Licenses\11
-		
-		String  xx  = this.getSource().substring(basePath.length()) ;
-		// xx = \proxies\moj-internal-clients\_Proxy_RE_Licenses\11 
+		String  xx  = this.getSource().substring(AppConfig.getMigrationBasePath().length()) ;
 		StringTokenizer st = new StringTokenizer(xx , "\\"); 
-		return st.getTokenList().get(1); 
+		return st.getTokenList().get(5); 
 	}
 
 }

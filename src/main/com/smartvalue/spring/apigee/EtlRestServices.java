@@ -17,9 +17,12 @@ import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.configuration.infra.ServiceFactory;
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
+import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
@@ -31,7 +34,7 @@ public class EtlRestServices {
 		return AppConfigFactory.create( "config.json" , AppConfig.class);
 	}
 
-	@GetMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/apis/")
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/")
     public ResponseEntity<String> listAllExports(
     		@RequestHeader("partner") String partner,
             @RequestHeader("customer") String customer,
@@ -44,7 +47,7 @@ public class EtlRestServices {
 		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
     }
 	
-	@GetMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/apis/{exportUuid}")
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/{exportUuid}")
     public ResponseEntity<String> getExportDetails(
     		@RequestHeader("partner") String partner,
             @RequestHeader("customer") String customer,
@@ -57,7 +60,7 @@ public class EtlRestServices {
 		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
     }
 	
-	@GetMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/apis/{transformUuid}")
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/{transformUuid}")
     public ResponseEntity<String> getTransformDetails(
     		@RequestHeader("partner") String partner,
             @RequestHeader("customer") String customer,
@@ -70,9 +73,105 @@ public class EtlRestServices {
 		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
     }
     
+	/**
+	 * Perform a complete ETLD - Extract , Transform , Load and Deploy on a bundle object ( proxy or sharedflow ) 
+	 * using the already defined and active transformers  
+	 * @param partner
+	 * @param customer
+	 * @param infra
+	 * @param org
+	 * @param bundleType
+	 * @param objectName
+	 * @param authorizationHeader
+	 * @return
+	 */
+	@PostMapping("/apigee/migrate/infras/{infra}/orgs/{org}/etl/{bundleType}/{objectName}")
+    public ResponseEntity<String> etlBundle(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer")   String customer,
+            @PathVariable("infra") String infra,
+            @PathVariable("org") String org,
+            @PathVariable("bundleType") String bundleType,
+            @PathVariable("objectName") String objectName,
+            @RequestHeader("Authorization")  String authorizationHeader
+         
+    )  {
+		try {
+    	AppConfig ac = getAppConfig();  
+		Infra infraObject = ac.getInfra(partner , customer , infra) ;
+    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
+    	ms.setOrgName(org) ;
+    	ms.setAuthorizationHeader(authorizationHeader ) ; 
+    	String uuid = UUID.randomUUID().toString(); 
+    	Thread thread = new Thread(() -> {
+        System.out.println("Starting the complete ETL Process on " + objectName );
+        try {
+        		BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
+	       		ProcessResults eTLResult = bundleObjectService.performETL(bundleType , objectName , uuid);
+	       		String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "ETL_BUNDLE") ; 
+	       		Helper.serialize(serializePath ,eTLResult ) ; 
+        	} catch (Exception e) {
+             e.printStackTrace();
+        	}
+        }); 
+    	thread.start() ; 
+        // Process the request and return a response
+        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
 	
-	@PostMapping("/apigee/etl/infras/{infra}/orgs/{org}/export/{bundleType}/")
-    public ResponseEntity<String> exportAllProxies(
+	@PostMapping("/apigee/migrate/infras/{infra}/orgs/{org}/rollback/{bundleType}/{objectName}/{exportUUID}")
+    public ResponseEntity<String> rollBackSingleEtlBundle(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer")   String customer,
+            @PathVariable("infra") String infra,
+            @PathVariable("org") String org,
+            @PathVariable("bundleType") String bundleType,
+            @PathVariable("exportUUID") String exportUUID,
+            @PathVariable("objectName") String objectName,
+            @RequestHeader("Authorization")  String authorizationHeader
+    )  {
+		try {
+    	AppConfig ac = getAppConfig();  
+		Infra infraObject = ac.getInfra(partner , customer , infra) ;
+    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
+    	ms.setOrgName(org) ;
+    	ms.setAuthorizationHeader(authorizationHeader ) ; 
+    	String uuid = UUID.randomUUID().toString(); 
+    	Thread thread = new Thread(() -> {
+        System.out.println("Starting the complete ETL Process on " + objectName );
+        try {
+        		BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
+	       		ProcessResults eTLResult = bundleObjectService.rollBackObjectToLastSerializedDeployStatus(objectName , bundleObjectService.getSerlizeDeplyStateFileName(exportUUID));
+	       		String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "RollBack") ; 
+	       		Helper.serialize(serializePath ,eTLResult ) ; 
+        	} catch (Exception e) {
+             e.printStackTrace();
+        	}
+        }); 
+    	thread.start() ; 
+        // Process the request and return a response
+        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
+	/**
+	 * Exports All Objects 
+	 * @param partner
+	 * @param customer
+	 * @param infra
+	 * @param org
+	 * @param bundleType
+	 * @param authorizationHeader
+	 * @return
+	 */
+	@PostMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/{bundleType}/")
+    public ResponseEntity<String> exportAll(
     		@RequestHeader("partner") String partner,
             @RequestHeader("customer")   String customer,
             @PathVariable("infra") String infra,
@@ -98,6 +197,8 @@ public class EtlRestServices {
             	if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
             	BundleObjectService bundleObjectService = ServiceFactory.createBundleServiceInstance(type, ms ) ; 
             	ExportResults result = bundleObjectService.exportAllBundledObjects( type ,  uuid ) ;
+            	String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "Export") ; 
+            	Helper.serialize(serializePath ,result ) ; 
            	
             } catch (Exception e) {
                 e.printStackTrace();
@@ -115,7 +216,7 @@ public class EtlRestServices {
     }
 	
 	
-	@PostMapping("/apigee/etl/infras/{infra}/orgs/{org}/transform/{bundleType}/{exportUuid}")
+	@PostMapping("/apigee/migrate/infras/{infra}/orgs/{org}/transform/{bundleType}/{exportUuid}")
     public ResponseEntity<String> transformAllProxies(
     		@RequestHeader("partner")   String partner,
             @RequestHeader("customer")  String customer,
@@ -143,7 +244,9 @@ public class EtlRestServices {
  	            	
     	            	String migrationBasePath = AppConfig.getMigrationBasePath() ;  ; 
     	            	TransformationResults transformationResults =  bundleObjectService.transformAll(migrationBasePath	+"\\"+ exportUuid + "\\"+infra+"\\"+ org +"\\proxies"
-    	            														  				, migrationBasePath +"\\"+ exportUuid + "\\"+infra+"\\"+ org +"\\Transformed" + "\\proxies" 	) ;
+    	            													  				, migrationBasePath +"\\"+ exportUuid + "\\"+infra+"\\"+ org +"\\Transformed" + "\\proxies" 	) ;
+    	            	String serializePath = bundleObjectService.getSerlizeProcessResultFileName(exportUuid , "xxx") ; 
+    		       		Helper.serialize(serializePath ,transformationResults ) ; 
     	            } catch (Exception e) {
     	                e.printStackTrace();
     	            }

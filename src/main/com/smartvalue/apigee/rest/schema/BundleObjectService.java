@@ -22,8 +22,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.configuration.infra.ServiceFactory;
 import com.smartvalue.apigee.migration.ProcessResult;
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.migration.deploy.DeployResult;
 import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResult;
@@ -375,7 +375,18 @@ public abstract class BundleObjectService extends ApigeeService {
         System.out.println("Start Serializing All "+this.getApigeeObjectType()+" Deployment status to : " + destFile );
 		FileOutputStream fos = new FileOutputStream(destFile);
         try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			oos.writeObject(getDeploymentStatus());
+			oos.writeObject(this.getDeploymentStatus());
+		}  
+	}
+	
+	public void serializeDeployStatus(String userEmail , String bundleObjectname) throws UnirestException, Exception
+	{ 	String destFile = this.getSerlizeDeplyStateFileName(userEmail); 
+		File file = new File(destFile);
+        file.getParentFile().mkdirs();
+        System.out.println("Start Serializing All "+this.getApigeeObjectType()+" Deployment status to : " + destFile );
+		FileOutputStream fos = new FileOutputStream(destFile);
+        try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeObject(this.getDeploymentStatus(bundleObjectname));
 		}  
 	}
 	
@@ -395,6 +406,25 @@ public abstract class BundleObjectService extends ApigeeService {
 		ArrayList<String> BundledObjectNameList = this.getAllResources(ArrayList.class); 
 		return BundledObjectNameList ;  
 	}
+	
+	public DeploymentsStatus getDeploymentStatus(String bundledObjectsName) throws UnirestException, IOException, Exception
+	{
+		DeploymentsStatus result = new DeploymentsStatus () ;  
+		String apiPath = getResourcePath()+"/"+bundledObjectsName + "/deployments" ; 
+		ProxyDeployment proxyDeployment =  this.getMs().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
+		List<Environment> envs = proxyDeployment.getEnvironment() ; 
+		HashMap<String, ArrayList<String>> proxyDeployMentREvisions = new HashMap<String, ArrayList<String>> (); 
+		for (Environment env : envs )
+		{
+			String envname = env.getName(); 
+			ArrayList<String> revionsList = new ArrayList<String>(); 
+			for (Revision rev : env.getRevision() )
+			{revionsList.add(rev.getName());}
+			proxyDeployMentREvisions.put(envname, revionsList); 				
+		}
+		result.put(bundledObjectsName, proxyDeployMentREvisions) ; 
+		return result ; 
+	}	
 	
 	public DeploymentsStatus getDeploymentStatus() throws UnirestException, IOException, Exception
 	{
@@ -444,7 +474,60 @@ public abstract class BundleObjectService extends ApigeeService {
 		else {throw new IllegalArgumentException("Revisioned Object Type " + this.getClass() + " is not Supported "); }
 		return revisionObject ; 
 	}
+	
+	/**
+	 * To apply the Complete ETL ( Extract, Transform and Load and Deploy )  Process on proxyName  using the same organization for both source & destination 
+	 * @param proxyName
+	 * @return ProcessResults including the complete process (ETL ) results  
+	 * @throws Exception
+	 */
+	public ProcessResults  performETL(String bundleType , String proxyName , String userEmail) throws Exception {
 		
+		 serializeDeployStatus(userEmail , proxyName ) ; 
+		//==================Export One Proxy ===========================
+		 ProcessResults processResults = new ProcessResults(); 
+		 RevisionedObject ro =  this.getRevisionedObject(proxyName) ; 
+			 
+		 String exportDest = AppConfig.getMigrationBasePath() +"\\"+ userEmail + "\\"+this.getMs().getInfraName() +"\\"+this.getMs().getOrgName()  + "\\"+ this.getMigationSubFoler() ; 
+		 ExportResults ers =  ro.exportAllDeployedRevisions(exportDest);
+		 processResults.addAll(ers); 
+		 
+		 //==================Transform the Exported Proxy ===========================
+		 TransformationResults trnsformResults = new TransformationResults() ; 
+		 for (ProcessResult er : ers )
+		 {
+			String transformSource = er.getDestination() ;
+			String dest = transformSource.replaceAll(this.getMigationSubFoler() ,  "Transformed"+File.separatorChar+File.separatorChar + AppConfig.ProxiesSubFolder) ;  
+			trnsformResults.addAll( this.transformProxy(transformSource +proxyName+".zip" , dest  ) ) ;
+		 }
+		 processResults.addAll(trnsformResults) ; 
+			 
+		//==================Load the Transformed Proxy ===========================
+		 ProcessResults uploadResults = new ProcessResults() ;
+		 LoadResult  loadResult ; 
+		 
+		 for (TransformResult transformResult : trnsformResults )
+		 {
+			 String source = transformResult.getDestination() +"\\"+ proxyName+".zip" ;
+			 if (! transformResult.isFailed())
+			 {
+				 loadResult = this.importObject(source, proxyName) ; 
+				 uploadResults.add(loadResult) ;
+					 if ( ! loadResult.isFailed())
+					 {
+						 Gson json = new Gson(); 
+						 ProxyUploadResponse pur = json.fromJson(loadResult.getHttpResponse().getBody(), ProxyUploadResponse.class);
+						 int newRevesion = Integer.parseInt(pur.getRevision());
+						 String envName = loadResult.extractEnvNameFromsource() ; 
+						 DeployResults deployResults = this.deployRevision(proxyName, envName , newRevesion, true) ;
+						 uploadResults.addAll(deployResults) ; 
+					 }
+			 }
+		 }
+		 processResults.addAll(uploadResults) ; 
+		 return processResults ; 
+	 }
+	
 	public DeployResults rollBackToLastSerializedDeployStatus(String serlizeFileName) throws ClassNotFoundException, IOException, UnirestException
 	{
 		HashMap<String, HashMap<String, ArrayList<String>>> pds = this.deSerializeDeployStatus(serlizeFileName) ;
@@ -538,6 +621,11 @@ public abstract class BundleObjectService extends ApigeeService {
 	public String getSerlizeDeplyStateFileName(String userEmail )
 	{
 		return AppConfig.getMigrationBasePath() + "\\"+userEmail + "\\"+ this.getMs().getInfraName() + "\\"+this.getMs().getOrgName() +"\\"+ this.getApigeeObjectType()+"_deploysStatus.ser" ; 
+	}
+	
+	public String getSerlizeProcessResultFileName(String userEmail , String processId)
+	{
+		return AppConfig.getMigrationBasePath() + "\\"+userEmail + "\\"+ this.getMs().getInfraName() + "\\"+this.getMs().getOrgName() +"\\"+ this.getApigeeObjectType()+"_"+processId+"_Results.ser" ; 
 	}
 
 	public ExportResults exportAllBundledObjects(Class<? extends BundleObjectService> bundledObjectClass  , String userEmail  ) throws Exception

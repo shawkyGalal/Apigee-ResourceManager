@@ -1,5 +1,12 @@
 package com.smartvalue.apigee.migration;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,7 +19,7 @@ import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.rest.schema.proxy.DeleteResult;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
 
-public class ProcessResults extends ArrayList<ProcessResult>{
+public class ProcessResults extends ArrayList<ProcessResult> implements Serializable{
 	
 	/**
 	 * 
@@ -112,4 +119,5 @@ public HashMap<Class<?>, ProcessResults > classify() {
 		}
         return familiesMap;
     }
+	
 }

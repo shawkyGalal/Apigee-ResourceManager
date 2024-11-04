@@ -10,8 +10,11 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.smartvalue.apigee.configuration.AppConfig;
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResults;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
@@ -33,16 +36,20 @@ public class Extract extends ApigeeTest{
 	 public void performETL() throws Exception {
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
-		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
-		 proxyServ.performETL(proxyName , "shawky.foda@gmail.com") ; 
+		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 String userEmail ="sfoda@moj.gov.sa"; 
+		 ProcessResults results = bundleObjectService.performETL("apis" , proxyName , userEmail) ; 
+		 String serializeToFile = bundleObjectService.getSerlizeProcessResultFileName( userEmail , "ETL") ; 
+		 Helper.serialize(serializeToFile, results )  ; 
 	 }
 
 	 @Test
 	 public void rollBackETL() throws Exception {
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
-		 ProxyServices proxyServ =  (ProxyServices) sourceMngServer.getProxyServices();
-		 proxyServ.rollBackObjectToLastSerializedDeployStatus(proxyName , proxyServ.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ) ; 
+		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 String serlizeDeplyStateFileName = bundleObjectService.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ;
+		 bundleObjectService.rollBackObjectToLastSerializedDeployStatus(proxyName ,  serlizeDeplyStateFileName ) ;
 	 }
 
 	 

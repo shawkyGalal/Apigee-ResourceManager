@@ -1,5 +1,11 @@
 package com.smartvalue.apigee.resourceManager.helpers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import com.smartvalue.apigee.rest.schema.server.auto.Property;
@@ -27,6 +33,24 @@ public class Helper {
 		}
 		return result ;
 		
+	}
+	
+	public static Object deSerializeObject(String sourceFile) throws IOException, ClassNotFoundException 
+	{
+		FileInputStream fis = new FileInputStream(sourceFile);
+        try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+        	Object result  = ois.readObject(); 
+			return result ;
+		} 
+	}
+	
+	public static void serialize(String destFile, Object serializableObj ) throws IOException {
+		File file = new File(destFile);
+        file.getParentFile().mkdirs();
+		FileOutputStream fos = new FileOutputStream(destFile);
+	    try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeObject(serializableObj);
+	    }  
 	}
 	
 }

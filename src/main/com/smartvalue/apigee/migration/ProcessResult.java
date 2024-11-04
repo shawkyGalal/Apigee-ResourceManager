@@ -1,9 +1,11 @@
 package com.smartvalue.apigee.migration;
 
+import java.io.Serializable;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.migration.load.LoadResults;
 
-public class ProcessResult {
+public class ProcessResult implements Serializable {
 
 	private String error ;
 	private boolean failed ; 
@@ -11,6 +13,8 @@ public class ProcessResult {
 	private LoadResults notMatchedResult ; 
 	private String source ;
 	private String destination ;
+	private transient  HttpResponse<String> httpResponse ; 
+	
 	public String getSource() {
 		return source;
 	}
@@ -87,7 +91,6 @@ public class ProcessResult {
 		
 	}
 	
-	private HttpResponse<String> httpResponse ; 
 	public HttpResponse<String> getHttpResponse() {
 		return httpResponse;
 	}
