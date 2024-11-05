@@ -27,7 +27,12 @@ public class Extract extends ApigeeTest{
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
 		 
-		 ExportResults expotrtresults =  ((ProxyServices)sourceMngServer.getProxyServices()).exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "sfoda@moj.gov.sa") ;
+		 
+		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "sfoda@moj.gov.sa") ;
+		 String userEmail ="sfoda@moj.gov.sa";
+		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
+		 Helper.serialize(serializeToFile, expotrtresults )  ; 
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }
@@ -39,7 +44,7 @@ public class Extract extends ApigeeTest{
 		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
 		 String userEmail ="sfoda@moj.gov.sa"; 
 		 ProcessResults results = bundleObjectService.performETL("apis" , proxyName , userEmail) ; 
-		 String serializeToFile = bundleObjectService.getSerlizeProcessResultFileName( userEmail , "ETL") ; 
+		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
 		 Helper.serialize(serializeToFile, results )  ; 
 	 }
 
@@ -48,7 +53,7 @@ public class Extract extends ApigeeTest{
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
 		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
-		 String serlizeDeplyStateFileName = bundleObjectService.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ;
+		 String serlizeDeplyStateFileName = sourceMngServer.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ;
 		 bundleObjectService.rollBackObjectToLastSerializedDeployStatus(proxyName ,  serlizeDeplyStateFileName ) ;
 	 }
 

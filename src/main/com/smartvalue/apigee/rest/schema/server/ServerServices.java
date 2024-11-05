@@ -16,6 +16,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
@@ -169,7 +170,7 @@ public String getApigeeObjectType() {
 }
 
 @Override
-public ArrayList<TransformResult> transformAll(String inputFolderPath, String outputFolderPath) {
+public TransformationResults transformAll(String inputFolderPath, String outputFolderPath) {
 	return null;
 }
 

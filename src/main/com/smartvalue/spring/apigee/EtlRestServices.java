@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,9 +30,27 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 @RestController
 public class EtlRestServices {
 
+	ManagementServer  ms ;
 	public AppConfig getAppConfig() throws FileNotFoundException, IOException {
 		
 		return AppConfigFactory.create( "config.json" , AppConfig.class);
+	}
+	
+	private void initialize(String partner , String customer , String infra , String org , String authorizationHeader) throws Exception
+	{
+		AppConfig ac = getAppConfig();  
+		Infra infraObject = ac.getInfra(partner , customer , infra) ;
+    	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
+    	ms.setOrgName(org) ; 
+    	ms.setAuthorizationHeader(authorizationHeader ) ;
+    	ms.getAllOrgNames(); 
+	}
+	
+	private ResponseEntity<String> buildJsonResponse(String jsonString )
+	{
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.add("Content-Type", "application/json");
+ 	    return new ResponseEntity<String>(jsonString, headers , HttpStatus.CREATED);
 	}
 
 	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/")
@@ -43,23 +62,18 @@ public class EtlRestServices {
             @RequestHeader("Authorization")  String authorizationHeader
             )
     {
+		try {
+		initialize(partner , customer , infra , org, authorizationHeader); 
 		System.out.println("");
 		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
     }
 	
-	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/{exportUuid}")
-    public ResponseEntity<String> getExportDetails(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer") String customer,
-    		@PathVariable("infra") String infra,
-            @PathVariable("org") String org , 
-            @PathVariable("exportUuid")   String exportUuid,
-            @RequestHeader("Authorization")  String authorizationHeader
-            )
-    {
-		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
-    }
-	
+		
 	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/{transformUuid}")
     public ResponseEntity<String> getTransformDetails(
     		@RequestHeader("partner") String partner,
@@ -70,7 +84,14 @@ public class EtlRestServices {
             @RequestHeader("Authorization")  String authorizationHeader
             )
     {
-		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
+		try {
+			initialize(partner , customer , infra , org, authorizationHeader); 
+			System.out.println("");
+			return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
+			}
+			catch (Exception e) {
+				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+			}
     }
     
 	/**
@@ -97,18 +118,14 @@ public class EtlRestServices {
          
     )  {
 		try {
-    	AppConfig ac = getAppConfig();  
-		Infra infraObject = ac.getInfra(partner , customer , infra) ;
-    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
-    	ms.setOrgName(org) ;
-    	ms.setAuthorizationHeader(authorizationHeader ) ; 
+		initialize(partner , customer , infra , org, authorizationHeader); 
     	String uuid = UUID.randomUUID().toString(); 
     	Thread thread = new Thread(() -> {
         System.out.println("Starting the complete ETL Process on " + objectName );
         try {
         		BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
 	       		ProcessResults eTLResult = bundleObjectService.performETL(bundleType , objectName , uuid);
-	       		String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "ETL_BUNDLE") ; 
+	       		String serializePath = ms.getSerlizeProcessResultFileName(uuid) ; 
 	       		Helper.serialize(serializePath ,eTLResult ) ; 
         	} catch (Exception e) {
              e.printStackTrace();
@@ -135,23 +152,21 @@ public class EtlRestServices {
             @RequestHeader("Authorization")  String authorizationHeader
     )  {
 		try {
-    	AppConfig ac = getAppConfig();  
-		Infra infraObject = ac.getInfra(partner , customer , infra) ;
-    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
-    	ms.setOrgName(org) ;
-    	ms.setAuthorizationHeader(authorizationHeader ) ; 
+		initialize(partner , customer , infra , org, authorizationHeader);  
     	String uuid = UUID.randomUUID().toString(); 
-    	Thread thread = new Thread(() -> {
-        System.out.println("Starting the complete ETL Process on " + objectName );
-        try {
-        		BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
-	       		ProcessResults eTLResult = bundleObjectService.rollBackObjectToLastSerializedDeployStatus(objectName , bundleObjectService.getSerlizeDeplyStateFileName(exportUUID));
-	       		String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "RollBack") ; 
-	       		Helper.serialize(serializePath ,eTLResult ) ; 
-        	} catch (Exception e) {
-             e.printStackTrace();
-        	}
-        }); 
+    	Thread thread = new Thread(() -> 
+	    	{
+		        try {
+		        		BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
+		        		String deplyStateFileName = ms.getSerlizeDeplyStateFileName(exportUUID) ; 
+			       		ProcessResults eTLResult = bundleObjectService.rollBackObjectToLastSerializedDeployStatus(objectName , deplyStateFileName);
+			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid ) ; 
+			       		Helper.serialize(serializePath ,eTLResult ) ; 
+		        	} catch (Exception e) {
+		             e.printStackTrace();
+		        	}
+		    }
+    	); 
     	thread.start() ; 
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
@@ -181,34 +196,24 @@ public class EtlRestServices {
          
     )  {
 		try {
-    	AppConfig ac = getAppConfig();  
-		Infra infraObject = ac.getInfra(partner , customer , infra) ;
-    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
-    	ms.setOrgName(org) ; 
-    	ms.setAuthorizationHeader(authorizationHeader ) ; 
-    	
-    	String uuid = UUID.randomUUID().toString(); 
-    	Thread thread = new Thread(() -> {
-            System.out.println("This is a new thread.");
-            // Your process here
+			initialize(partner , customer , infra , org, authorizationHeader); 
+	    	String uuid = UUID.randomUUID().toString(); 
+	    	Thread thread = new Thread(() -> {
             try {
-            	Class<? extends BundleObjectService> type = null ;
-            	if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
-            	if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
-            	BundleObjectService bundleObjectService = ServiceFactory.createBundleServiceInstance(type, ms ) ; 
-            	ExportResults result = bundleObjectService.exportAllBundledObjects( type ,  uuid ) ;
-            	String serializePath = bundleObjectService.getSerlizeProcessResultFileName(uuid , "Export") ; 
-            	Helper.serialize(serializePath ,result ) ; 
-           	
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }); 
-    	thread.start() ; 
-    	
-    	
-        // Process the request and return a response
-        return new ResponseEntity<String>("{\"exportUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+	            	BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ; 
+	            	ExportResults result = bundleObjectService.exportAll( ms.getMigPathUpToOrgName(uuid)+"\\"+ bundleObjectService.getMigationSubFoler() ) ;
+	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid) ; 
+	            	Helper.serialize(serializePath ,result ) ; 
+	           	
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }); 
+	    	thread.start() ; 
+	    	
+	    	
+	        // Process the request and return a response
+	        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -228,24 +233,16 @@ public class EtlRestServices {
          
             {
     			try {
-    	    	AppConfig ac = getAppConfig();  
-    			Infra infraObject = ac.getInfra(partner , customer , infra) ;
-    	    	ManagementServer  ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
-    	    	ms.setOrgName(org) ; 
-    	    	ms.setAuthorizationHeader(authorizationHeader ) ; 
+    			initialize(partner , customer , infra , org, authorizationHeader);  
     	    	
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
-    	            	Class<? extends BundleObjectService> type = null ;
-    	            	if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
-    	            	if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
-    	            	BundleObjectService bundleObjectService = ServiceFactory.createBundleServiceInstance(type, ms ) ; 
- 	            	
-    	            	String migrationBasePath = AppConfig.getMigrationBasePath() ;  ; 
-    	            	TransformationResults transformationResults =  bundleObjectService.transformAll(migrationBasePath	+"\\"+ exportUuid + "\\"+infra+"\\"+ org +"\\proxies"
-    	            													  				, migrationBasePath +"\\"+ exportUuid + "\\"+infra+"\\"+ org +"\\Transformed" + "\\proxies" 	) ;
-    	            	String serializePath = bundleObjectService.getSerlizeProcessResultFileName(exportUuid , "xxx") ; 
+    	            	BundleObjectService bundleObjectService = ms.getBundleServiceByType(bundleType) ;  
+    	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(exportUuid) ; 
+    	            	TransformationResults transformationResults =  bundleObjectService.transformAll(upToOrgNamePath +"\\" + bundleObjectService.getMigationSubFoler()  
+    	            													  				  , upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() 	) ;
+    	            	String serializePath = ms.getSerlizeProcessResultFileName(exportUuid ) ; 
     		       		Helper.serialize(serializePath ,transformationResults ) ; 
     	            } catch (Exception e) {
     	                e.printStackTrace();
@@ -255,13 +252,33 @@ public class EtlRestServices {
     	    	
     	    	
     	        // Process the request and return a response
-    	        return new ResponseEntity<String>("{\"transformUUID\":\""+exportUuid+"\"}", HttpStatus.CREATED);
+    	        return new ResponseEntity<String>("{\"processUUID\":\""+exportUuid+"\"}", HttpStatus.CREATED);
     			}
     			catch (Exception e) {
     				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     			}
     	    }
 
-    
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/proesses/{processUuid}")
+    public ResponseEntity<String> getProcessResults(
+    		@RequestHeader("partner")   String partner,
+            @RequestHeader("customer")  String customer,
+            @PathVariable("infra")  String infra,
+            @PathVariable("org") String org,
+            @PathVariable("processUuid")   String processUuid, // Transform the result of this exportUuid
+            @RequestHeader("Authorization") String authorizationHeader ) 
+         
+	{
+		try {
+    		initialize(partner , customer , infra , org, authorizationHeader); 
+    		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
+    		ProcessResults pr = (ProcessResults) Helper.deSerializeObject(processResultsFileName); 
+   	        return buildJsonResponse(pr.toJsonString()) ; 
+    		}
+    		catch (Exception e) {
+    			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    		}
+	}
+
 }
 

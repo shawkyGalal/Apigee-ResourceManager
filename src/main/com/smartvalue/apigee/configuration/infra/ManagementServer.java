@@ -673,6 +673,39 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return result ; 
 	}
 	
+	private String getLoggedInUserEmail() throws IOException
+	{
+		String userEmail = null ; 
+		GoogleIdToken git = (this.getGoogelAccessToken() != null )? this.getGoogelAccessToken().getGoogleIdToken() : null; 
+		if ( git != null )
+		{
+			userEmail = git.getPayload().getEmail() ; 
+		}
+		return userEmail ; 
+	}
+
+	public String getMigPathUpToOrgName(String processId) throws IOException
+	{
+		String userEmail = getLoggedInUserEmail() ; 
+		return  AppConfig.getMigrationBasePath() + ((userEmail != null)?  "\\" + userEmail  : "") 
+												 + ((processId != null )? "\\" + processId  : "") 
+												 + "\\"+ this.getInfraName() 
+												 + "\\"+this.getOrgName() ;  
+	}
 	
+	public String getTransformedPath(String processId) throws IOException
+	{
+		return getMigPathUpToOrgName(processId) + "\\" + ApigeeService.TransformedFoldername ; 
+	}
+	
+	public String getSerlizeDeplyStateFileName(String processId) throws IOException
+	{
+		return AppConfig.getMigrationBasePath() + "\\" + processId + "\\_deploysStatus.ser" ; 
+	}
+	
+	public String getSerlizeProcessResultFileName( String processId) throws IOException
+	{  	
+		return AppConfig.getMigrationBasePath() + "\\" + processId + "\\_ProcessResults.ser" ; 
+	}
 
 }

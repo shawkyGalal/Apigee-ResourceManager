@@ -15,6 +15,16 @@ public class ProcessResult implements Serializable {
 	private String destination ;
 	private transient  HttpResponse<String> httpResponse ; 
 	
+	public ProcessResult(Exception e) {
+		this.setFailed(true);
+		this.setError(e.getMessage());
+		this.setExceptionClassName(e.getClass().getName());
+	}
+
+	public ProcessResult() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getSource() {
 		return source;
 	}

@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartvalue.apigee.migration.deploy.DeployResult;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.load.LoadResult;
@@ -119,5 +121,11 @@ public HashMap<Class<?>, ProcessResults > classify() {
 		}
         return familiesMap;
     }
+
+public String toJsonString() throws JsonProcessingException
+{
+	ObjectMapper mapper = new ObjectMapper();
+    return mapper.writeValueAsString(this);
+}
 	
 }

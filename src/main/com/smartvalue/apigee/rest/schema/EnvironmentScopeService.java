@@ -16,6 +16,7 @@ import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public abstract class EnvironmentScopeService extends ApigeeService {
@@ -79,12 +80,12 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	 * @throws SecurityException 
 	 * @throws NoSuchMethodException 
 	 */
-	public ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
+	public TransformationResults  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
 	{
 		String envName ;
 		File folder = new File(inputFolderPath);
 		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
-		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
+		TransformationResults transformResults  = new TransformationResults ();
 		
 		for (File envFolder : folder.listFiles() )
 		{

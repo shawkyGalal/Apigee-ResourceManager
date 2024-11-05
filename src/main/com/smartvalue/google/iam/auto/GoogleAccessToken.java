@@ -222,7 +222,7 @@ public class GoogleAccessToken  extends AccessToken {
 		return  verifier.verify(this.getIdToken());
 	}
     
-    public GoogleIdToken getGoogleIdToken( ) throws GeneralSecurityException, IOException
+    public GoogleIdToken getGoogleIdToken( ) throws IOException
    	{
     	GoogleIdToken result = null ; 
     	if (this.getIdToken()!=null)

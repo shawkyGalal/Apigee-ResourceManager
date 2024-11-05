@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
@@ -55,7 +56,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService sharedflowsServ =  sourceMngServer.getSharedFlowServices(); 
 		//sharedflowsServ.setTranformers(buildSharedflowsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.SharedflowsSubFolder) ;
+		TransformationResults objectErrors =  sharedflowsServ.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.SharedflowsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.SharedflowsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -64,7 +65,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildDevelopersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
+		TransformationResults objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.DevelopersSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.DevelopersSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 }
 	 
@@ -73,7 +74,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildAppsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.appsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.appsSubFolder) ;
+		TransformationResults objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.appsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.appsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -82,7 +83,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Products ===========================
 		ApigeeService objectServices =  sourceMngServer.getProductServices(); 
 		//objectServices.setTranformers(buildProductssTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
+		TransformationResults objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.PrtoductsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.PrtoductsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -91,7 +92,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildTargetServersTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.targetserversSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
+		TransformationResults objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.targetserversSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.targetserversSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 
@@ -100,7 +101,7 @@ public class Transform extends ApigeeTest{
 		//==================Transform All Sharedflows ===========================
 		ApigeeService objectServices =  sourceMngServer.getDevelopersServices(); 
 		//objectServices.setTranformers(buildKvmsTransformers()); 
-		ArrayList<TransformResult> objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.kvmsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.kvmsSubFolder) ;
+		TransformationResults objectErrors =  objectServices.transformAll(DEST_FOLDER_NAME + "\\" + AppConfig.kvmsSubFolder,  TRANSFORM_FOLDER_NAME + AppConfig.kvmsSubFolder) ;
 		assertEquals( objectErrors.size(), 0 , "# of Errors = " + objectErrors.size()); 
 	 } 
 	 

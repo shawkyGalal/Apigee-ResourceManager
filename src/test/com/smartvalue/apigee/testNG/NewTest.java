@@ -29,6 +29,7 @@ import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer;
 import com.smartvalue.apigee.migration.transformers.proxy.ZipFileEntryModifyTransformer;
 import com.smartvalue.apigee.proxyBundle.BundleProxyEndPoint;
@@ -166,11 +167,11 @@ public class NewTest extends ApigeeTest {
 		
 		SharedFlowServices sfs = (SharedFlowServices) sourceMngServer.getSharedFlowServices();
 		//sfs.setTranformers(transformers); 
-		ArrayList<TransformResult> sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
+		TransformationResults sharedflowsFaults =  sfs.transformAll(sourceFolderName +"\\sharedflows" , transformFolderName +"\\sharedflows") ;
 		
 		ApigeeService proxyServ =  sourceMngServer.getProxyServices(); 
 		//proxyServ.setTranformers(transformers); 
-		ArrayList<TransformResult> proxiesFaults =  proxyServ.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
+		TransformationResults proxiesFaults =  proxyServ.transformAll(sourceFolderName +"\\proxies" , transformFolderName +"\\proxies") ;
 		//ArrayList<TransformResult> productsFaults = sourceMngServer.getProductServices(sourceOrgName).transformAll(sourceFolderName +"\\products" , transformFolderName +"\\products") ; 
 		//ArrayList<TransformResult> devsFaults =  sourceMngServer.getDevelopersServices(sourceOrgName).transformAll(sourceFolderName +"\\developers" , transformFolderName +"\\developers" ) ;
 		//ArrayList<TransformResult> appsFaults = sourceMngServer.getApplicationServices(sourceOrgName).transformAll(sourceFolderName +"\\apps" , transformFolderName +"\\apps" ) ;

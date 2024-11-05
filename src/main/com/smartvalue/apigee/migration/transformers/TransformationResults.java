@@ -1,11 +1,10 @@
 package com.smartvalue.apigee.migration.transformers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
 
-public class TransformationResults extends ArrayList<TransformResult>{
+public class TransformationResults extends ProcessResults {
 
 	
 	/**
@@ -34,10 +33,10 @@ public class TransformationResults extends ArrayList<TransformResult>{
 		return results ; 
 	}
 	
-	public FifoMap <String , TransformationResults> filterErrorDesc(String[] ErrorContains )
+	public FifoMap<String, ProcessResults> filterErrorDesc(String[] ErrorContains )
 	{
 		notMatchedResult = new TransformationResults(); 
-		FifoMap <String , TransformationResults> results = new FifoMap <String , TransformationResults>() ; 
+		FifoMap<String, ProcessResults> results = new FifoMap <String , ProcessResults>() ; 
 		for (String contains : ErrorContains)
 		{
 			results.put(contains, new TransformationResults() ) ; 

@@ -16,8 +16,10 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
@@ -27,6 +29,7 @@ import com.smartvalue.apigee.migration.load.LoadResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.IApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
@@ -35,6 +38,7 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 
 public abstract class ApigeeService {
 
+	public static final String TransformedFoldername = "Transformed";
 	protected static final Logger logger = LogManager.getLogger(ApigeeService.class);
 	private ManagementServer ms ;
 	//protected String orgName ; 
@@ -112,12 +116,12 @@ public abstract class ApigeeService {
 	public abstract ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException  ; 
 
 	public abstract String  getResourcePath()  ;
-	public  ArrayList<TransformResult>  transformAll(String inputFolderPath , String outputFolderPath) throws Exception 
+	public  TransformationResults  transformAll(String inputFolderPath , String outputFolderPath) throws Exception 
 	{
 		// Default Simple Implementation 
 		File folder = new File(inputFolderPath);
 		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
-		ArrayList<TransformResult> transformResults  = new ArrayList<TransformResult> ();
+		TransformationResults transformResults  = new TransformationResults();
 		
 		for (File apigeeObjectFile : folder.listFiles() )
 		{
@@ -294,6 +298,7 @@ public abstract class ApigeeService {
 		return allResources ; 
 
 	}
+	
 	
 	
 	
