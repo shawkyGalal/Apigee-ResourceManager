@@ -1,10 +1,6 @@
 package com.smartvalue.swagger.v3.parser.util;
 
-import static org.hamcrest.CoreMatchers.equalToObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.TreeMap;
 import java.util.UUID;
 
 public interface Jsonable {

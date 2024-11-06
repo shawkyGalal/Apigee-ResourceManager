@@ -300,29 +300,35 @@ public class EtlRestServices {
     											@PathVariable("bundleType") String bundleType
     										 ) throws IOException 
 	{
-    	try {
-    	String sourceFolder= "C:\\temp\\source" ; 
-    	File originalFile = new File(sourceFolder + "\\" +zipBundle.getOriginalFilename());
- 	    zipBundle.transferTo(originalFile);
-        
-        String destFolder= "C:\\temp\\dest" ;
-        Class<? extends ApigeeObjectTransformer> clazz = (bundleType.equalsIgnoreCase("apis"))?  ProxyTransformer.class : SharedflowTransformer.class ;  
-        
-        ArrayList<ApigeeObjectTransformer> transformersObj = buildTransformers(clazz , transformers) ; 
-        
-		BundleObjectService.transformBundleObject(sourceFolder+"\\" + originalFile.getName(),  destFolder  , transformersObj ) ;
-		
-        File transformedFile = new File(destFolder+"\\" + originalFile.getName()) ; 
-        
-        byte[] processedFileContent = Files.readAllBytes(transformedFile.toPath());
-
-        // Clean up temporary files
-        originalFile.delete();
-        transformedFile.delete();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(processedFileContent);
+    	try 
+    	{
+	    	String sourceFolder= "C:\\temp\\source" ; 
+	    	File originalFile = new File(sourceFolder + "\\" +zipBundle.getOriginalFilename());
+	 	    zipBundle.transferTo(originalFile);
+	        
+	        String destFolder= "C:\\temp\\dest" ;
+	        Class<? extends ApigeeObjectTransformer> clazz = (bundleType.equalsIgnoreCase("apis"))?  ProxyTransformer.class : SharedflowTransformer.class ;  
+	        
+	        ArrayList<ApigeeObjectTransformer> transformersObj = buildTransformers(clazz , transformers) ; 
+	        
+			TransformationResults trs = BundleObjectService.transformBundleObject(sourceFolder+"\\" + originalFile.getName(),  destFolder  , transformersObj ) ;
+			TransformationResults failedResults = trs.filterFailed(true); 
+			if (failedResults.size() > 0 )
+			{
+				throw new Exception("Transformation Error : " + failedResults.get(0).getError()) ; 
+			}
+			
+	        File transformedFile = new File(destFolder+"\\" + originalFile.getName()) ; 
+	        
+	        byte[] processedFileContent = Files.readAllBytes(transformedFile.toPath());
+	
+	        // Clean up temporary files
+	        originalFile.delete();
+	        transformedFile.delete();
+	
+	        return ResponseEntity.ok()
+	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+	                .body(processedFileContent);
     	}
     	catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
