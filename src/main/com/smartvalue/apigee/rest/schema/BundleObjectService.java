@@ -68,13 +68,11 @@ public abstract class BundleObjectService extends ApigeeService {
 		this.deployUponUpload = deployUponUpload;
 	}
 	
-	public TransformationResults transformProxy(String pundleZipFileName, String newBundleFolderPath) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
+	public static TransformationResults transformBundleObject(String pundleZipFileName, String newBundleFolderPath , ArrayList<ApigeeObjectTransformer>  transformers ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException 
+	{
 		TransformationResults transformResults  = new TransformationResults ();
-		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
-
 		File pundleZipFile = new File (pundleZipFileName) ; 
 		String zipFileName = pundleZipFile.getName();
-
 		 
 		String proxyName = zipFileName.substring(0, zipFileName.indexOf(".")); 
 		int transformerCount = 1 ; 
@@ -128,6 +126,14 @@ public abstract class BundleObjectService extends ApigeeService {
 		
 		return transformResults ; 
 	}
+	
+	/**
+	 * Transform the provided Bundle Using the transformers associated with the current infra 
+	 */
+	public TransformationResults transformBundleObject(String pundleZipFileName, String newBundleFolderPath) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
+		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
+		return BundleObjectService.transformBundleObject( pundleZipFileName,  newBundleFolderPath , transformers) ; 
+	}
 
 	
 	public TransformationResults  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
@@ -162,61 +168,7 @@ public abstract class BundleObjectService extends ApigeeService {
 							continue; 
 						}
 						String newBundleFolderPath = outputFolderPath+ File.separatorChar + envName + File.separatorChar + proxyName + File.separatorChar + revision +File.separatorChar ;
-						transformResults.addAll(this.transformProxy(pundleZipFile.getAbsolutePath(), newBundleFolderPath)) ; 
-						
-						/*
-						String pundleZipFileName = pundleZipFile.getAbsolutePath() ; 
-						int transformerCount = 1 ; 
-						String tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
-						Path sourcePath ; 
-						Path destPath ; 
-						if (transformers.size() > 0 )
-						{
-							TransformResult  tr = null ; 
-							for (ApigeeObjectTransformer trasnformer : transformers)
-							{
-								//System.out.println("\t\tTransformer : " + trasnformer.getClass()) ; 
-								boolean transform = trasnformer.filter(pundleZipFileName) ;
-								
-								if (transform)
-								{	
-									 
-									tr = trasnformer.trasform( pundleZipFileName , tempTramsformedFilePath);
-									if (tr.isFailed())	
-									{	
-										transformResults.add(tr);
-										break; 
-									}
-									else { System.out.println("Proxy Bundle "+ pundleZipFileName +" Transformed Successully Using "+ trasnformer.getClass().getName()+" and saved to " + tempTramsformedFilePath );}
-								
-									//System.out.println("=======Proxy "+ pundleZipFile + " Is Tranformed To : "+tempTramsformedFilePath+" ==========") ;
-									// in the next loop transform the transformed file
-									if (transformerCount != transformers.size())
-									{
-										pundleZipFileName = tempTramsformedFilePath + File.separatorChar + proxyName + ".zip" ;
-										transformerCount++;
-										tempTramsformedFilePath = newBundleFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ;
-									}
-								}
-								 
-							}
-							//--Upon success transformation, Copy Last Transformed file to the outputFolderPath 
-							if (tr!= null && !tr.isFailed())
-							{
-								sourcePath = Path.of(tempTramsformedFilePath + File.separatorChar + proxyName + ".zip");
-								destPath = Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
-								Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
-							}
-						}
-						else
-						{
-							 sourcePath =  Path.of(pundleZipFileName);
-							 destPath =  Path.of(newBundleFolderPath + File.separatorChar + proxyName + ".zip");
-							 Files.createDirectories(destPath.getParent());
-							 Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
-						}
-						*/
-
+						transformResults.addAll(this.transformBundleObject(pundleZipFile.getAbsolutePath(), newBundleFolderPath)) ; 
 						
 					}
 				}
@@ -496,7 +448,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		 {
 			String transformSource = er.getDestination() ;
 			String dest = transformSource.replaceAll(this.getMigationSubFoler() ,  TransformedFoldername +File.separatorChar+File.separatorChar + AppConfig.ProxiesSubFolder) ;  
-			trnsformResults.addAll( this.transformProxy(transformSource +proxyName+".zip" , dest  ) ) ;
+			trnsformResults.addAll( this.transformBundleObject(transformSource +proxyName+".zip" , dest  ) ) ;
 		 }
 		 overallResults.addAll(trnsformResults) ; 
 			 
