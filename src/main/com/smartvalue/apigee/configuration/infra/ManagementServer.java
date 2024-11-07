@@ -499,11 +499,11 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return  new ProxyServices(this , m_orgName) ; 
 	}
 	
-	public BundleObjectService getBundleServiceByType(String bundleType )
+	public ApigeeService getServiceByType(String bundleType )
 	{
 		Class<? extends BundleObjectService> type = null ;
 		if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
-    	if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
+		else if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
     	return ServiceFactory.createBundleServiceInstance(type, this ) ;
 	}
 	

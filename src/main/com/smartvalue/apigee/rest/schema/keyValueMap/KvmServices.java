@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResults;
+import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 
@@ -51,5 +53,12 @@ public class KvmServices extends EnvironmentScopeService {
 		// TODO Auto-generated method stub
 		return this.getMs().getInfra().buildKvmTransformers();
 	}
+
+	@Override
+	public ProcessResults performETL(String objectId, String processId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

@@ -43,7 +43,7 @@ import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
 
-public abstract class BundleObjectService extends ApigeeService {
+public abstract class BundleObjectService extends ApigeeService implements RollBackable{
 
 	protected boolean deployUponUpload = false ; 
 	
@@ -432,7 +432,7 @@ public abstract class BundleObjectService extends ApigeeService {
 	 * @return ProcessResults including the complete process (ETL ) results  
 	 * @throws Exception
 	 */
-	public ProcessResults  performETL(String bundleType , String proxyName , String processId ) throws Exception {
+	public ProcessResults  performETL( String proxyName , String processId ) throws Exception {
 		
 		 serializeDeployStatus( processId , proxyName) ; 
 		//==================Export One Proxy ===========================
@@ -478,7 +478,7 @@ public abstract class BundleObjectService extends ApigeeService {
 		 return overallResults ; 
 	 }
 	
-	public DeployResults rollBackToLastSerializedDeployStatus(String serlizeFileName) 
+	public DeployResults rollBackAllToLastSerializedDeployStatus(String serlizeFileName) 
 	{
 		DeployResults deployResults = new DeployResults(); 
 		
@@ -494,7 +494,10 @@ public abstract class BundleObjectService extends ApigeeService {
 		for (Entry<String, HashMap<String, ArrayList<String>>> entry : pds.entrySet())
 		{
 			String revisionedObjectName = entry.getKey(); 
+			deployResults.addAll( rollBackObjectToLastSerializedDeployStatus( revisionedObjectName , serlizeFileName) )  ;
+			/*
 			HashMap<String, ArrayList<String>> ds = entry.getValue();
+		
 			for (Entry<String, ArrayList<String>> entry01 : ds.entrySet())
 			{
 				String envName = entry01.getKey(); 
@@ -516,6 +519,7 @@ public abstract class BundleObjectService extends ApigeeService {
 					deployResults.add(pr) ; 
 				}
 			}
+			*/
 		}
 		return deployResults ; 
 	}

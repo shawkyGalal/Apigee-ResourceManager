@@ -13,6 +13,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
 import com.smartvalue.apigee.configuration.filteredList.ListFilter;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResults;
+import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
@@ -179,6 +181,11 @@ public ArrayList<ApigeeObjectTransformer> buildTransformers()
 		throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public ProcessResults performETL(String objectId, String processId) throws Exception {
 	return null;
 }
 

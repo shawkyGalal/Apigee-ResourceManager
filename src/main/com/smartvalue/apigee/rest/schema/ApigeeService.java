@@ -21,6 +21,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResults;
+import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.migration.load.LoadResult;
@@ -298,6 +300,8 @@ public abstract class ApigeeService {
 		return allResources ; 
 
 	}
+	
+	public abstract ProcessResults  performETL( String objectId , String processId ) throws Exception ; 
 	
 	
 	

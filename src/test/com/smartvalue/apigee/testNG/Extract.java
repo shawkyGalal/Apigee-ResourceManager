@@ -14,8 +14,10 @@ import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.export.ExportResults;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
+import com.smartvalue.apigee.rest.schema.RollBackable;
 import com.smartvalue.apigee.rest.schema.application.Application;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices ;
@@ -27,8 +29,7 @@ public class Extract extends ApigeeTest{
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
 		 
-		 
-		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 BundleObjectService bundleObjectService = (BundleObjectService)this.sourceMngServer.getServiceByType("apis") ;
 		 ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "sfoda@moj.gov.sa") ;
 		 String userEmail ="sfoda@moj.gov.sa";
 		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
@@ -41,9 +42,9 @@ public class Extract extends ApigeeTest{
 	 public void performETL() throws Exception {
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
-		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 ApigeeService bundleObjectService = this.sourceMngServer.getServiceByType("apis") ;
 		 String userEmail ="sfoda@moj.gov.sa"; 
-		 ProcessResults results = bundleObjectService.performETL("apis" , proxyName , userEmail) ; 
+		 ProcessResults results = bundleObjectService.performETL(proxyName , userEmail) ; 
 		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
 		 Helper.serialize(serializeToFile, results )  ; 
 	 }
@@ -52,7 +53,7 @@ public class Extract extends ApigeeTest{
 	 public void rollBackETL() throws Exception {
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
-		 BundleObjectService bundleObjectService = this.sourceMngServer.getBundleServiceByType("apis") ;
+		 RollBackable bundleObjectService = (RollBackable) this.sourceMngServer.getServiceByType("apis") ;
 		 String serlizeDeplyStateFileName = sourceMngServer.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ;
 		 bundleObjectService.rollBackObjectToLastSerializedDeployStatus(proxyName ,  serlizeDeplyStateFileName ) ;
 	 }
@@ -64,7 +65,7 @@ public class Extract extends ApigeeTest{
 		 String deplyStatusFileName = DEST_FOLDER_NAME + "\\PROXIES_DEPLOYMENTS_STATUS.ser" ; 
 		 ProxyServices ps = (ProxyServices) sourceMngServer.getProxyServices() ; 
 		 ExportResults expotrtresults = ps.exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder , deplyStatusFileName) ;
-		 DeployResults xx = ps.rollBackToLastSerializedDeployStatus(deplyStatusFileName); 
+		 DeployResults xx = ps.rollBackAllToLastSerializedDeployStatus(deplyStatusFileName); 
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }
@@ -87,9 +88,9 @@ public class Extract extends ApigeeTest{
 	 public void exportAllSharedFlows() throws Exception {
 		//==================Export All Sharedflows===========================
 		String deplyStatusFileName = DEST_FOLDER_NAME + "\\SHAREDFLOWS_DEPLOYMENTS_STATUS.ser" ; 
-		SharedFlowServices sharedFlowServices = (SharedFlowServices) sourceMngServer.getSharedFlowServices() ; 
-		ExportResults expotrtresults =  sharedFlowServices.exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder , deplyStatusFileName ) ;
-		DeploymentsStatus xx = sharedFlowServices.deSerializeDeployStatus(deplyStatusFileName);
+		BundleObjectService bundleObjectService = (BundleObjectService) this.sourceMngServer.getServiceByType("sharedflows") ; 
+		ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder , deplyStatusFileName ) ;
+		DeploymentsStatus xx = bundleObjectService.deSerializeDeployStatus(deplyStatusFileName);
 		int failureCount = expotrtresults.filterFailed(true).size() ;  
 		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
