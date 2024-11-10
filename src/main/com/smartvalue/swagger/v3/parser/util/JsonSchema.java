@@ -16,7 +16,8 @@ public class JsonSchema extends Schema  implements Jsonable {
 	private JsonExamples jsonExamples ;
 	private JsonAdditionalProperties jsonAdditionalProperties ;  
 	private JsonArrayList<JsonSchema> jsonAllOf ;
-	private JsonSchema  jsonItems ; 
+	private JsonSchema  jsonItems ;
+	private JsonXml jsonXml ; 
 	public JsonSchema getJsonItems() {
 		return jsonItems;
 	}
@@ -130,9 +131,9 @@ public class JsonSchema extends Schema  implements Jsonable {
 		this.setUniqueItems(schema.getUniqueItems());
 		
 		this.setWriteOnly(schema.getWriteOnly());
-		
-		this.setXml(schema.getXml());
-		
+		if (schema.getXml() != null) {
+		this.setJsonXml(new JsonXml(schema.getXml()));
+		}
 	}
 
 	 @Override
@@ -183,7 +184,7 @@ public class JsonSchema extends Schema  implements Jsonable {
 	        elements.put("externalDocs", getExternalDocs()) ;
 	        elements.put("deprecated", getDeprecated()) ;
 	        elements.put("discriminator", getDiscriminator()) ;
-	        elements.put("xml", getXml()) ;
+	        elements.put("xml", getJsonXml()) ;
 	        if (getSpecVersion() == SpecVersion.V31) {
 	        	elements.put("patternProperties", getPatternProperties()) ;
 	        	elements.put("contains", getContains()) ;
@@ -319,6 +320,14 @@ public class JsonSchema extends Schema  implements Jsonable {
 
 		public void setJsonAllOf(JsonArrayList<JsonSchema> jsonAllOf) {
 			this.jsonAllOf = jsonAllOf;
+		}
+
+		public JsonXml getJsonXml() {
+			return jsonXml;
+		}
+
+		public void setJsonXml(JsonXml jsonXml) {
+			this.jsonXml = jsonXml;
 		}
 
 		

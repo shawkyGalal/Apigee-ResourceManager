@@ -8,12 +8,20 @@ import com.smartvalue.apigee.migration.transformers.tools.ZipXmlModifier;
 import com.smartvalue.apigee.proxyBundle.ProxyBundleParser;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 public class FixOasInconsistancyTransformer extends ProxyTransformer {
+ 
+public String oasFlowName = "GetOAS";
+	
+	public String getOasFlowName() {
+		return oasFlowName;
+	}
 
 	
 	@Override
 	public TransformResult trasform(String bundleZipFilePath , String newBundlePath)  {
+		ProxyRevision.setOasFlowName(this.getOasFlowName());
 		TransformResult result = new TransformResult() ; 
         try {
         	ProxyBundleParser proxyBundle = new ProxyBundleParser(bundleZipFilePath) ;

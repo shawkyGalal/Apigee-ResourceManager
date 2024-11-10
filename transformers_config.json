@@ -19,7 +19,12 @@
 								"description" : "This Transformer Will Update the OperationId of the provided OAS in the Standard Flow GetOAS to be equals the unique identifier of the corresponding proxy flow (ProxyName.ProxyEndPointName.FlowName.Verb ) " ,
 								"guidelines" : "Create New Class and extend it with com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer then implement the transform method ",
 								"enabled":"true", 
-								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer" 
+								"implClass" : "com.smartvalue.apigee.migration.transformers.proxy.FixOasInconsistancyTransformer" , 
+								"attributes" : 
+								[
+									{ "name" : "oasFlowName" , "value" :"GetOAS"	}
+								
+								]
 							},  
 							 
 							{

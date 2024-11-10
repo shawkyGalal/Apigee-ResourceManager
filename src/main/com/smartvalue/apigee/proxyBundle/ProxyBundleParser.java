@@ -103,7 +103,7 @@ public class ProxyBundleParser
 		            
 		        }
 
-		        this.estimateSwaggerParser(ProxyRevision.OAS_FLOW_NAME); 
+		        this.estimateSwaggerParser(ProxyRevision.getOasFlowName()); 
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -131,7 +131,8 @@ public class ProxyBundleParser
 			{dotIndex = entryName.indexOf(".json") ;}
 			
 			else {dotIndex = entryName.indexOf(".xml") ;}	
-			return entryName.substring(0,dotIndex).substring(elementPath.length()) ;	
+			
+			return (dotIndex==-1)? entryName : entryName.substring(0,dotIndex).substring(elementPath.length()) ;	
 		}
 		
 		return "Unknow Proxy Element ";
@@ -163,7 +164,7 @@ public class ProxyBundleParser
 	
 	public SwaggerParseResult getSwaggerParser() throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
-		return getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+		return getSwaggerParser(ProxyRevision.getOasFlowName()) ; 
 	}
 	
 	
@@ -171,19 +172,19 @@ public class ProxyBundleParser
 		return estimatedOasPolicyName;
 	}
 	
-	private void estimateSwaggerParser(String getOasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
+	private void estimateSwaggerParser(String oasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
-		Flow oasflow =  searchForGetOasFlow(getOasFlowName);  
+		Flow oasflow =  searchForGetOasFlow(oasFlowName);  
 		if ( oasflow == null ) 
 		{
-			throw new IllegalArgumentException ("OAS Flow ("+getOasFlowName+")  Not Found  " ) ;   
+			throw new IllegalArgumentException ("OAS Flow ("+oasFlowName+")  Not Found  " ) ;   
 		}
 		Request request = oasflow.getRequest() ; // "GetOAS"
 		List<Child>  xx =request.getChildren();
 		//-- Assume the last step contains the proxy OAS json   
 		int size = xx.size() ; 
 		if (size == 0 ) {
-			throw new IllegalArgumentException ("OAS Flow ("+getOasFlowName+") Found But Empty " ) ;
+			throw new IllegalArgumentException ("OAS Flow ("+oasFlowName+") Found But Empty " ) ;
 		}
 		estimatedOasPolicyName = xx.get(size-1).getStep().getName() ;
 		
@@ -251,10 +252,10 @@ public class ProxyBundleParser
 
 	public HashMap<Flow, OasOperation> checkFlowsConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
 	{
-		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.getOasFlowName()) ; 
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
 		if (execludeKnownFlows)
-		{execuldedFlowNames.add(ProxyRevision.OAS_FLOW_NAME); 
+		{execuldedFlowNames.add(ProxyRevision.getOasFlowName()); 
 		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		ProxyEndpoint oasProxyEndPoint = this.getOASProxyEndpoint(); 
@@ -263,10 +264,10 @@ public class ProxyBundleParser
 	
 	public HashMap<OasOperation , Flow> checkOpenApiConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
 	{
-		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.OAS_FLOW_NAME) ; 
+		SwaggerParseResult swaggerParse = this.getSwaggerParser(ProxyRevision.getOasFlowName()) ; 
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
 		if (execludeKnownFlows)
-		{execuldedFlowNames.add(ProxyRevision.OAS_FLOW_NAME); 
+		{execuldedFlowNames.add(ProxyRevision.getOasFlowName()); 
 		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		return ProxyRevision.checkOpenApiConsistancy(swaggerParse, allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath() , fixOperationId ) ; 
@@ -305,7 +306,7 @@ public class ProxyBundleParser
 		for ( Entry<String, BundleProxyEndPoint> entry : this.getProxies().entrySet()) 
 		{
 		    ProxyEndpoint proxyEndPoint = entry.getValue();
-		    Flow flow  = proxyEndPoint.getFlowByName(ProxyRevision.OAS_FLOW_NAME) ; 
+		    Flow flow  = proxyEndPoint.getFlowByName(ProxyRevision.getOasFlowName()) ; 
 		    if (flow != null) { result = proxyEndPoint ;  break ; } 
 		}
 		return result ;

@@ -31,7 +31,16 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint;
 
 public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevision.auto.ProxyRevision{
 
-	public static final String OAS_FLOW_NAME = "GetOAS";
+	private static String OAS_FLOW_NAME = "GetOAS";
+	
+	public static String getOasFlowName() {
+		return OAS_FLOW_NAME;
+	}
+
+	public static void setOasFlowName(String oasFlowName) {
+		ProxyRevision.OAS_FLOW_NAME = oasFlowName;
+	}
+	
 	public static final String SERVICE_NOT_AVAILABLE = "ServiceNotAvailable";
 	private RevisionedObject parentProxy ; 
 
@@ -166,7 +175,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 
 	public String  getOasString(String virtualHostUrl ) throws Exception
 	{
-		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
+		Flow oasFlow = getOASFlow() ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		String result  = oasResponse.getBody() ;
 		return result; 
@@ -271,7 +280,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ; 
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
 		if (execludeKnownFlows)
-		{execuldedFlowNames.add(OAS_FLOW_NAME); 
+		{execuldedFlowNames.add(getOasFlowName()); 
 		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		return ProxyRevision.checkFlowsConsistancy(swaggerParse, allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath(),  fixOperationId , execludeKnownFlows ) ; 
@@ -378,13 +387,13 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	public HashMap<OasOperation , Flow>  checkOpenApiConsistancy (String virtualHostUrl , boolean fixOperationId) throws Exception  
 	{
 		 
-		Flow oasFlow = getOASFlow(OAS_FLOW_NAME) ;
+		Flow oasFlow = getOASFlow() ;
 		HttpResponse<String> oasResponse =  oasFlow.call(virtualHostUrl, "") ;
 		
 		String oasJsonString  = oasResponse.getBody() ;
 		SwaggerParseResult swaggerParse = this.parseOpenAPI(oasJsonString) ;
 		ArrayList<String> execuldedFlowNames = new ArrayList<String>() ; 
-		execuldedFlowNames.add(OAS_FLOW_NAME);
+		execuldedFlowNames.add(getOasFlowName());
 		execuldedFlowNames.add(SERVICE_NOT_AVAILABLE);
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		ProxyEndpoint oasProxyEndPoint = this.getOASProxyEndpoint() ; 
@@ -412,13 +421,13 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	}
 	
 	
-	private Flow getOASFlow(String oasFlowName) throws UnirestException, IOException
+	private Flow getOASFlow() throws UnirestException, IOException
 	{
 		Flow oasFlow = null ; 
 		for ( Entry<String, ProxyEndpoint> entry : this.getProxyEndPointDetails().entrySet()) 
 		{
 		    ProxyEndpoint proxyEndPoint = entry.getValue();
-		    oasFlow = proxyEndPoint.getFlowByName(oasFlowName) ; 
+		    oasFlow = proxyEndPoint.getFlowByName(getOasFlowName()) ; 
 		    if (oasFlow != null) break ; 
 		}
 		return oasFlow;
@@ -430,7 +439,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		for ( Entry<String, ProxyEndpoint> entry : this.getProxyEndPointDetails().entrySet()) 
 		{
 		    ProxyEndpoint proxyEndPoint = entry.getValue();
-		    Flow flow  = proxyEndPoint.getFlowByName(OAS_FLOW_NAME) ; 
+		    Flow flow  = proxyEndPoint.getFlowByName(getOasFlowName()) ; 
 		    if (flow != null) { result = proxyEndPoint ;  break ; } 
 		}
 		return result ;

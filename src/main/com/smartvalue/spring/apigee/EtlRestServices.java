@@ -42,6 +42,8 @@ import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.RollBackable;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 @RestController
 public class EtlRestServices {
 
@@ -115,6 +117,47 @@ public class EtlRestServices {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
+	
+	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}")
+    public ResponseEntity<String> etlSetOfBundles(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer")   String customer,
+            @PathVariable("infra") String infra,
+            @PathVariable("org") String org,
+            @PathVariable("bundleType") String bundleType,
+            @org.springframework.web.bind.annotation.RequestBody() String ObjectsNameListStr ,  
+            @RequestHeader("Authorization")  String authorizationHeader
+         
+    )  {
+		try {
+		initialize(partner , customer , infra , org, authorizationHeader); 
+    	UUID uuid = UUID.randomUUID(); 
+    	Gson gson = new Gson(); 
+    	ArrayList<String> ObjectsNameList = (ArrayList<String>) gson.fromJson(ObjectsNameListStr , ArrayList.class) ; 
+    	Thread thread = new Thread(() -> {
+    	
+        try {
+        	ProcessResults eTLResult = new ProcessResults("ETL a set Of Proxies/SharedFlows" , uuid) ; 
+    		ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ;
+        	for (String objectName : ObjectsNameList )
+	        	{
+	                System.out.println("Starting the complete ETL Process on " + objectName );
+ 		       		eTLResult.addAll( bundleObjectService.performETL(objectName , uuid));
+		       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
+		       		Helper.serialize(serializePath ,eTLResult ) ;
+	        	}
+        	} catch (Exception e) {
+             e.printStackTrace();
+        	}
+        }); 
+    	thread.start() ; 
+        // Process the request and return a response
+        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    } 
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}")
     public ResponseEntity<String> rollBackAll(
