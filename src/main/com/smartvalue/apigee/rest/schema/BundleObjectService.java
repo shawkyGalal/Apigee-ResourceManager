@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
@@ -70,7 +71,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	
 	public static TransformationResults transformBundleObject(String pundleZipFileName, String newBundleFolderPath , ArrayList<ApigeeObjectTransformer>  transformers ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException 
 	{
-		TransformationResults transformResults  = new TransformationResults ();
+		UUID uuid = UUID.randomUUID(); 
+		TransformationResults transformResults  = new TransformationResults ("Transform " + pundleZipFileName , uuid );
 		File pundleZipFile = new File (pundleZipFileName) ; 
 		String zipFileName = pundleZipFile.getName();
 		 
@@ -120,7 +122,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		{
 			// if No TRansformers found, simply copy the file to destination 
 			sourcePath =  Path.of(pundleZipFileName);
-			destPath =  Path.of(newBundleFolderPath + File.separatorChar + zipFileName );
+			destPath =  Path.of(newBundleFolderPath  ); // + File.separatorChar + zipFileName 
+			Files.createDirectories(destPath) ; 
 			Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 		}
 		
@@ -136,10 +139,10 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	}
 
 	
-	public TransformationResults  transformAll(String inputFolderPath , String outputFolderPath) throws Exception
+	public TransformationResults  transformAll(String inputFolderPath , String outputFolderPath , UUID uuid ) throws Exception
 	{
-		
-		TransformationResults transformResults  = new TransformationResults (); 
+		if (uuid == null) uuid = UUID.randomUUID(); 
+		TransformationResults transformResults  = new TransformationResults ("Transform All " + this.getApigeeObjectType() , uuid); 
 		String envName ;
 		File folder = new File(inputFolderPath);
 		File[] listFiles = folder.listFiles() ; 
@@ -180,10 +183,17 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		return transformResults ; 
 
 	}
-	
-	public LoadResults importAll(String folderPath) throws UnirestException, IOException 
+	public LoadResults importAll(String folderPath) throws Exception 
 	{
-		LoadResults allResults = new LoadResults(); 
+		return importAll( folderPath , null ) ; 
+	}
+	public LoadResults importAll(String folderPath, UUID uuid) throws Exception 
+	{
+		// <MigrationBasePath>/<UniqueProcessId>/<Infra>/<Org>/<ObjectType>
+		// Keep a copy of all proxies deployment status before importing to be able to rollback this import action
+		if(uuid== null) uuid = UUID.randomUUID(); 
+		serializeAllDeployStatus(uuid.toString() );
+		LoadResults allResults = new LoadResults("Import All " + this.getApigeeObjectType() , uuid); 
 		String envName ;
 		File folder = new File(folderPath); 
 		if (folder.listFiles() == null)
@@ -267,7 +277,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	 */
 	public DeployResults deployRevision(String m_objectName , String m_envName , int revision , boolean force ) throws UnirestException, IOException 
 	{
-		DeployResults deployResults = new DeployResults() ;
+		UUID uuid = UUID.randomUUID() ; 
+		DeployResults deployResults = new DeployResults("Deploying " + this.getApigeeObjectType() +" : " +  m_objectName +" ,Revision : " + revision , uuid ) ;
 		if(force)// Undeploy all revisions deployed to m_envName  
 		{	deployResults.addAll(this.UnDeployFromEnv(m_objectName, m_envName));	}
 		
@@ -295,7 +306,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	public DeployResults UnDeployFromEnv(String m_objectName , String m_envName ) throws UnirestException, IOException 
 	{
 		List<Revision> deployedRevisions = this.getEnvDeployedRevisions( m_objectName , m_envName) ; 
-		DeployResults deployResults = new DeployResults() ;
+		UUID uuid = UUID.randomUUID() ; 
+		DeployResults deployResults = new DeployResults("Undeploying " + m_objectName +"From Env: "+ m_envName  , uuid) ;
 		for (Revision revision : deployedRevisions )
 		{
 			DeployResult deployResult = new DeployResult() ;
@@ -432,18 +444,20 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	 * @return ProcessResults including the complete process (ETL ) results  
 	 * @throws Exception
 	 */
-	public ProcessResults  performETL( String proxyName , String processId ) throws Exception {
+	public ProcessResults  performETL( String proxyName , UUID uuid ) throws Exception {
 		
-		 serializeDeployStatus( processId , proxyName) ; 
+		if (uuid == null) { uuid = UUID.randomUUID() ; 	}
+		 serializeDeployStatus( uuid.toString() , proxyName) ; 
 		//==================Export One Proxy ===========================
-		 ProcessResults overallResults = new ProcessResults(); 
+		 
+		 ProcessResults overallResults = new ProcessResults("Perform Complete ETL on " + proxyName  , uuid); 
 		 RevisionedObject ro =  this.getRevisionedObject(proxyName) ; 
-		 String exportDest = this.getMs().getMigPathUpToOrgName(processId)  + "\\"+ this.getMigationSubFoler() ; 
+		 String exportDest = this.getMs().getMigPathUpToOrgName(uuid.toString())  + "\\"+ this.getMigationSubFoler() ; 
 		 ExportResults ers =  ro.exportAllDeployedRevisions(exportDest);
 		 overallResults.addAll(ers); 
 		 
 		 //==================Transform the Exported Proxy ===========================
-		 TransformationResults trnsformResults = new TransformationResults() ; 
+		 TransformationResults trnsformResults = new TransformationResults("Transform Object " , uuid) ; 
 		 for (ProcessResult er : ers )
 		 {
 			String transformSource = er.getDestination() ;
@@ -453,7 +467,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		 overallResults.addAll(trnsformResults) ; 
 			 
 		//==================Load the Transformed Proxy ===========================
-		 ProcessResults uploadResults = new ProcessResults() ;
+		 ProcessResults uploadResults = new ProcessResults("Load Object " , uuid) ;
 		 LoadResult  loadResult ; 
 		 
 		 for (ProcessResult transformResult : trnsformResults )
@@ -478,13 +492,14 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		 return overallResults ; 
 	 }
 	
-	public DeployResults rollBackAllToLastSerializedDeployStatus(String serlizeFileName) 
+	public DeployResults rollBackAllToSerializedDeployStatus( UUID uuid ) 
 	{
-		DeployResults deployResults = new DeployResults(); 
+		if (uuid == null) uuid = UUID.randomUUID(); 
+		DeployResults deployResults = new DeployResults("RollBack Process" , uuid); 
 		
 		HashMap<String, HashMap<String, ArrayList<String>>> pds;
 		try {
-			pds = this.deSerializeDeployStatus(serlizeFileName);
+			pds = this.deSerializeDeployStatus(this.getMs().getSerlizeDeplyStateFileName(uuid.toString()));
 		} catch (ClassNotFoundException | IOException e) {
 			deployResults.add(new ProcessResult(e)) ; 
 			e.printStackTrace();
@@ -494,42 +509,19 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		for (Entry<String, HashMap<String, ArrayList<String>>> entry : pds.entrySet())
 		{
 			String revisionedObjectName = entry.getKey(); 
-			deployResults.addAll( rollBackObjectToLastSerializedDeployStatus( revisionedObjectName , serlizeFileName) )  ;
-			/*
-			HashMap<String, ArrayList<String>> ds = entry.getValue();
-		
-			for (Entry<String, ArrayList<String>> entry01 : ds.entrySet())
-			{
-				String envName = entry01.getKey(); 
-				ArrayList<String> revisions = entry01.getValue() ;
-				for (String revision : revisions)
-				{
-					String processSource = revisionedObjectName +"." + envName + "." + revision ; 
-					ProcessResult pr = new ProcessResult(); 
-					pr.setSource(processSource);
-					
-					try {
-						this.deployRevision(revisionedObjectName, envName, Integer.parseInt(revision), true); 
-						pr.withFailed(false); 
-					} catch (UnirestException | IOException e) {
-						pr.withFailed(true)
-						  .withExceptionClassName(e.getClass().getName())
-						  .withError(e.getMessage());
-					}
-					deployResults.add(pr) ; 
-				}
-			}
-			*/
+			deployResults.addAll( rollBackObjectToSerializedDeployStatus( revisionedObjectName , uuid) )  ;
 		}
 		return deployResults ; 
 	}
 	
-	public DeployResults rollBackObjectToLastSerializedDeployStatus(String revisionedObjectName , String serlizeFileName) 
+	public DeployResults rollBackObjectToSerializedDeployStatus(String revisionedObjectName ,  UUID uuid) 
 	{
-		DeployResults deployResults = new DeployResults(); 
+		if (uuid == null) uuid = UUID.randomUUID(); 
+		DeployResults deployResults = new DeployResults("rollBackObjectToLastSerializedDeployStatus" , uuid); 
 		HashMap<String, ArrayList<String>> pds = null;
 		try {
-			pds = this.deSerializeDeployStatus(serlizeFileName).get(revisionedObjectName);
+			String deployStatusFileName = this.getMs().getSerlizeDeplyStateFileName(uuid.toString()) ; 
+			pds = this.deSerializeDeployStatus(deployStatusFileName).get(revisionedObjectName);
 		} catch (ClassNotFoundException | IOException e) {
 			ProcessResult error = new ProcessResult(e) ;
 			deployResults.add(error) ; 
@@ -541,7 +533,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 			ArrayList<String> revisions = entry.getValue() ;
 			for (String revision : revisions)
 			{
-				DeployResults xx = new DeployResults();
+				DeployResults xx = new DeployResults("deployRevision" , uuid);
 				try {
 					xx = this.deployRevision(revisionedObjectName, envName, Integer.parseInt(revision), true);
 				} catch (NumberFormatException | UnirestException | IOException e) {
@@ -549,25 +541,25 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 					deployResults.add(error) ; 
 					e.printStackTrace();
 				} 
-				deployResults.addAll (xx) ; 
+				deployResults.addAll(xx) ; 
 			}
 		}
 		return deployResults ;
 	}
-	public  ExportResults exportAll(String folderDest , String processID) throws Exception
-	{
-		serializeAllDeployStatus(processID);
-		return exportAll(getAllBundledObjectNameList() , folderDest ); 
-	} 
+
 	public  ExportResults exportAll(String folderDest) throws Exception
 	{
-		return exportAll(getAllBundledObjectNameList() , folderDest ); 
+		return exportAll(folderDest , null);
+	}
+	public  ExportResults exportAll(String folderDest, UUID uuid) throws Exception
+	{
+		return exportAll(getAllBundledObjectNameList() , folderDest , uuid); 
 	}
 	
-	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest) 
+	private  ExportResults exportAll( ArrayList<String> proxiesList , String folderDest , UUID uuid ) 
 	{
-		
-		ExportResults exportResults = new ExportResults();  
+		if(uuid == null)  uuid = UUID.randomUUID(); 
+		ExportResults exportResults = new ExportResults("exportAll" , uuid);  
 		{
 			for (String proxyName : proxiesList)
 			{
@@ -583,25 +575,11 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 					er.setExceptionClassName(e.getClass().getName());
 					er.setError(e.getMessage());
 					exportResults.add(er); 
-					
-					
 				} 
 				
 			}
 		}
 		return exportResults;
 	}
-	
-
-
-
-	public ExportResults exportAllBundledObjects(String processId  ) throws Exception
-	{
-		String basePath =  this.getMs().getMigPathUpToOrgName(processId) ;  
-		String sourceFolder =basePath +"\\"+this.getMigationSubFoler()+"\\" ; 
-		ExportResults result = this.exportAll(sourceFolder , processId) ;
-		return result ; 
-	}
-
 
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -46,7 +47,8 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	 */
 	public ExportResults exportAll(String destFolder) throws Exception
 	{
-		ExportResults exportResults = new ExportResults();
+		UUID uuid = UUID.randomUUID(); 
+		ExportResults exportResults = new ExportResults("ExportAll " , uuid );
 		for ( String envName : this.getOrganization().getEnvironments())
 		{	ExportResult exportResult = new ExportResult(); 
 			this.setEnvName(envName);
@@ -85,7 +87,8 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 		String envName ;
 		File folder = new File(inputFolderPath);
 		ArrayList<ApigeeObjectTransformer>  transformers = this.buildTransformers();
-		TransformationResults transformResults  = new TransformationResults ();
+		UUID uuid = UUID.randomUUID(); 
+		TransformationResults transformResults  = new TransformationResults ("transformAll" , uuid );
 		
 		for (File envFolder : folder.listFiles() )
 		{
@@ -122,7 +125,8 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 	 */
 	public  LoadResults importAll(String folderPath) throws Exception 
 	{
-		LoadResults allResult = new LoadResults();  
+		UUID uuid = UUID.randomUUID();
+		LoadResults allResult = new LoadResults("ImportAll " , uuid);  
 		String envName ;
 		File folder = new File(folderPath); 
 		

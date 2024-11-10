@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -162,8 +163,8 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	}
 	
 	private DeleteResults  deleteAll(ArrayList<String> allSharedFlowList) {
-
-		DeleteResults deletResults =  new DeleteResults(); 
+		UUID uuid = UUID.randomUUID(); 
+		DeleteResults deletResults =  new DeleteResults("Delete All " + this.getApigeeObjectType() , uuid); 
 		for (int i = 0 ;  i< allSharedFlowList.size() ; i++ )
 		{
 			DeleteResult deletResult =  new DeleteResult(); 
@@ -224,7 +225,8 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 	
 	public  ExportResults exportAll( ArrayList<String> sharedFlowList , String folderDest) throws UnirestException, IOException
 	{
-		ExportResults exportResults = new ExportResults(); 
+		UUID uuid = UUID.randomUUID(); 
+		ExportResults exportResults = new ExportResults("exportAll" + this.getApigeeObjectType() , uuid); 
 		{
 			for (String sharedFlowStr : sharedFlowList)
 			{

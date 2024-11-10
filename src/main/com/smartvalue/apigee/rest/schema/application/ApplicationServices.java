@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -77,7 +78,7 @@ public class ApplicationServices extends ApigeeService {
 
 
 	@Override
-	public ProcessResults performETL(String objectId, String processId) throws Exception {
+	public ProcessResults performETL(String objectId, UUID uuid) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

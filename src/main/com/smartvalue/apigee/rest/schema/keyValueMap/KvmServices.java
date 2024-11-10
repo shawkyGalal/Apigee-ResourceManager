@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
@@ -55,7 +56,7 @@ public class KvmServices extends EnvironmentScopeService {
 	}
 
 	@Override
-	public ProcessResults performETL(String objectId, String processId) throws Exception {
+	public ProcessResults performETL(String objectId, UUID uuid) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

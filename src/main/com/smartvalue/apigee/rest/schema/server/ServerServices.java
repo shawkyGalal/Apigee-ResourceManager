@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.gson.reflect.TypeToken;
 import com.mashape.unirest.http.HttpResponse;
@@ -150,7 +151,7 @@ public class ServerServices extends com.smartvalue.apigee.rest.schema.ApigeeServ
 
 
 @Override
-public ExportResults exportAll(String folderDest) throws UnirestException, IOException {
+public ExportResults exportAll(String folderDest, UUID uuid ) throws UnirestException, IOException {
 	// Not Applicable 
 	return null;
 }
@@ -172,7 +173,7 @@ public String getApigeeObjectType() {
 }
 
 @Override
-public TransformationResults transformAll(String inputFolderPath, String outputFolderPath) {
+public TransformationResults transformAll(String inputFolderPath, String outputFolderPath, UUID uuid ) {
 	return null;
 }
 
@@ -185,7 +186,7 @@ public ArrayList<ApigeeObjectTransformer> buildTransformers()
 }
 
 @Override
-public ProcessResults performETL(String objectId, String processId) throws Exception {
+public ProcessResults performETL(String objectId, UUID uuid) throws Exception {
 	return null;
 }
 

@@ -1,12 +1,18 @@
 package com.smartvalue.apigee.migration.transformers;
 
 
+import java.util.UUID;
+
 import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
 
 public class TransformationResults extends ProcessResults {
 
 	
+	public TransformationResults(String desc, UUID m_uuid) {
+		super(desc, m_uuid);
+	}
+
 	/**
 	 * 
 	 */
@@ -20,8 +26,8 @@ public class TransformationResults extends ProcessResults {
 
 	public TransformationResults filterFailed(boolean status )
 	{
-		notMatchedResult = new TransformationResults(); 
-		TransformationResults results = new TransformationResults() ; 
+		notMatchedResult = new TransformationResults(this.getDescription() , this.getUuid()); 
+		TransformationResults results = new TransformationResults(this.getDescription() , this.getUuid()) ; 
 		for( int i= 0 ; i< this.size() ; i++ )
 		{
 			if (this.get(i).isFailed() == status) results.add(this.get(i));
@@ -35,11 +41,11 @@ public class TransformationResults extends ProcessResults {
 	
 	public FifoMap<String, ProcessResults> filterErrorDesc(String[] ErrorContains )
 	{
-		notMatchedResult = new TransformationResults(); 
+		notMatchedResult = new TransformationResults(this.getDescription() , this.getUuid()); 
 		FifoMap<String, ProcessResults> results = new FifoMap <String , ProcessResults>() ; 
 		for (String contains : ErrorContains)
 		{
-			results.put(contains, new TransformationResults() ) ; 
+			results.put(contains, new TransformationResults(this.getDescription() , this.getUuid()) ) ; 
 		}
 		
 		for( int i= 0 ; i< this.size() ; i++ )

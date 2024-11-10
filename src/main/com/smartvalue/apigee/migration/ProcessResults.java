@@ -1,16 +1,11 @@
 package com.smartvalue.apigee.migration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +21,17 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
 	/**
 	 * 
 	 */
+	private String description  ; 
+	private UUID uuid ; 
+	private ArrayList<ProcessResults> subProcessResults ; 
+	
+	public ProcessResults (String desc , UUID m_uuid)
+	{
+		this.uuid = m_uuid ; 
+		this.description = desc ; 
+		subProcessResults = new ArrayList<ProcessResults> (); 
+	}
+	
 	private static final long serialVersionUID = 1L;
 	
 	protected ProcessResults notMatchedResult ; 
@@ -36,8 +42,8 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
 
 	public ProcessResults filterFailed(boolean status )
 	{
-		notMatchedResult = new ProcessResults(); 
-		ProcessResults results = new ProcessResults() ; 
+		notMatchedResult = new ProcessResults(this.description , this.uuid); 
+		ProcessResults results = new ProcessResults(this.description , this.uuid) ; 
 		for( int i= 0 ; i< this.size() ; i++ )
 		{
 			if (this.get(i).isFailed() == status) results.add(this.get(i));
@@ -51,11 +57,11 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
 	
 	public FifoMap <String , ProcessResults> filterErrorDesc(String[] ErrorContains )
 	{
-		notMatchedResult = new ProcessResults(); 
+		notMatchedResult = new ProcessResults(this.description , this.uuid); 
 		FifoMap <String , ProcessResults> results = new FifoMap <String , ProcessResults>() ; 
 		for (String contains : ErrorContains)
 		{
-			results.put(contains, new ProcessResults() ) ; 
+			results.put(contains, new ProcessResults(this.description , this.uuid) ) ; 
 		}
 		
 		for( int i= 0 ; i< this.size() ; i++ )
@@ -87,7 +93,7 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
         for (ProcessResult lr : this) {
             String exceptionClassName = lr.getExceptionClassName(); 
             if (!familiesMap.containsKey(exceptionClassName)) {
-                familiesMap.put(exceptionClassName, new ProcessResults());
+                familiesMap.put(exceptionClassName, new ProcessResults(this.description , this.uuid));
             }
             familiesMap.get(exceptionClassName).add(lr);
         }
@@ -108,7 +114,7 @@ public HashMap<Class<?>, ProcessResults > classify() {
 		{
 			if (!familiesMap.containsKey(clazz))
 			{
-				familiesMap.put(clazz, new ProcessResults());	
+				familiesMap.put(clazz, new ProcessResults(this.description , this.uuid));	
 			}
 
 			for (ProcessResult pr : this) 
@@ -127,5 +133,31 @@ public String toJsonString() throws JsonProcessingException
 	ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(this);
 }
+
+public String getDescription() {
+	return description;
+}
+
+public void setDescription(String description) {
+	this.description = description;
+}
+
+public UUID getUuid() {
+	return uuid;
+}
+
+public void setUuid(UUID uuid) {
+	this.uuid = uuid;
+}
+
+public void addAll(ProcessResults xx) 
+{
+	this.subProcessResults.add(xx) ; 
+	super.addAll(xx) ; 
+}
+
+public ArrayList<ProcessResults> getSubProcessResults() {
+	return subProcessResults;
+} 
 	
 }

@@ -2,6 +2,7 @@ package com.smartvalue.apigee.testNG;
 import static org.testng.Assert.assertEquals;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -25,12 +26,14 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
 public class Extract extends ApigeeTest{
 	 
-	 @Test
+	 private UUID exportUUID;
+
+	@Test
 	 public void exportAllProxies() throws Exception {
 		//==================Export All Proxies ===========================
 		 
 		 BundleObjectService bundleObjectService = (BundleObjectService)this.sourceMngServer.getServiceByType("apis") ;
-		 ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder , "sfoda@moj.gov.sa") ;
+		 ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\"+AppConfig.ProxiesSubFolder ) ;
 		 String userEmail ="sfoda@moj.gov.sa";
 		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
 		 Helper.serialize(serializeToFile, expotrtresults )  ; 
@@ -44,18 +47,25 @@ public class Extract extends ApigeeTest{
 		 String proxyName = "SMS-Governance" ;
 		 ApigeeService bundleObjectService = this.sourceMngServer.getServiceByType("apis") ;
 		 String userEmail ="sfoda@moj.gov.sa"; 
-		 ProcessResults results = bundleObjectService.performETL(proxyName , userEmail) ; 
+		 ProcessResults results = bundleObjectService.performETL(proxyName , UUID.randomUUID()) ;
+		 UUID exportUUId = results.getUuid();
+		 this.setExportUUID(exportUUId); 
 		 String serializeToFile = sourceMngServer.getSerlizeProcessResultFileName( userEmail ) ; 
 		 Helper.serialize(serializeToFile, results )  ; 
 	 }
 
-	 @Test
+	 private void setExportUUID(UUID exportUUId) {
+		this.exportUUID= exportUUId ;
+		
+	}
+
+	@Test
 	 public void rollBackETL() throws Exception {
 		//==================Export One Proxy ===========================
 		 String proxyName = "SMS-Governance" ;
 		 RollBackable bundleObjectService = (RollBackable) this.sourceMngServer.getServiceByType("apis") ;
 		 String serlizeDeplyStateFileName = sourceMngServer.getSerlizeDeplyStateFileName("sfoda@moj.gov.sa") ;
-		 bundleObjectService.rollBackObjectToLastSerializedDeployStatus(proxyName ,  serlizeDeplyStateFileName ) ;
+		 bundleObjectService.rollBackObjectToSerializedDeployStatus(proxyName ,  this.exportUUID ) ;
 	 }
 
 	 
@@ -64,8 +74,8 @@ public class Extract extends ApigeeTest{
 		//==================Export All Proxies ===========================
 		 String deplyStatusFileName = DEST_FOLDER_NAME + "\\PROXIES_DEPLOYMENTS_STATUS.ser" ; 
 		 ProxyServices ps = (ProxyServices) sourceMngServer.getProxyServices() ; 
-		 ExportResults expotrtresults = ps.exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder , deplyStatusFileName) ;
-		 DeployResults xx = ps.rollBackAllToLastSerializedDeployStatus(deplyStatusFileName); 
+		 ExportResults expotrtresults = ps.exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.ProxiesSubFolder ) ;
+		 DeployResults xx = ps.rollBackAllToSerializedDeployStatus(expotrtresults.getUuid() ); 
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount); 
 	 }
@@ -87,10 +97,11 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllSharedFlows() throws Exception {
 		//==================Export All Sharedflows===========================
-		String deplyStatusFileName = DEST_FOLDER_NAME + "\\SHAREDFLOWS_DEPLOYMENTS_STATUS.ser" ; 
+		//String deplyStatusFileName = DEST_FOLDER_NAME + "\\SHAREDFLOWS_DEPLOYMENTS_STATUS.ser" ; 
 		BundleObjectService bundleObjectService = (BundleObjectService) this.sourceMngServer.getServiceByType("sharedflows") ; 
-		ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder , deplyStatusFileName ) ;
-		DeploymentsStatus xx = bundleObjectService.deSerializeDeployStatus(deplyStatusFileName);
+		ExportResults expotrtresults =  bundleObjectService.exportAll(DEST_FOLDER_NAME + "\\" +AppConfig.SharedflowsSubFolder ) ;
+		String serlizeDeplyStateFileName = sourceMngServer.getSerlizeDeplyStateFileName(expotrtresults.getUuid().toString()) ;
+		DeploymentsStatus xx = bundleObjectService.deSerializeDeployStatus( serlizeDeplyStateFileName );
 		int failureCount = expotrtresults.filterFailed(true).size() ;  
 		assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
@@ -98,7 +109,7 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllProducts() throws Exception {
 		//==================Export All ===========================
-		 ExportResults expotrtresults = sourceMngServer.getProductServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.PrtoductsSubFolder) ;
+		 ExportResults expotrtresults = sourceMngServer.getProductServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.PrtoductsSubFolder , null) ;
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
@@ -106,7 +117,7 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllDevelopers() throws Exception {
 		//==================Export All ===========================
-		ExportResults expotrtresults =  sourceMngServer.getDevelopersServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.DevelopersSubFolder) ;
+		ExportResults expotrtresults =  sourceMngServer.getDevelopersServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.DevelopersSubFolder , null ) ;
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
@@ -114,7 +125,7 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllTargetServers() throws Exception {
 		//==================Export All ===========================
-		ExportResults expotrtresults =  sourceMngServer.getTargetServersServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.targetserversSubFolder) ;
+		ExportResults expotrtresults =  sourceMngServer.getTargetServersServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.targetserversSubFolder , null ) ;
 		int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
@@ -122,14 +133,14 @@ public class Extract extends ApigeeTest{
 	 @Test
 	 public void exportAllKvms() throws Exception {
 		//==================Export All ===========================
-		 ExportResults expotrtresults =  sourceMngServer.getKeyValueMapServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.kvmsSubFolder) ;		
+		 ExportResults expotrtresults =  sourceMngServer.getKeyValueMapServices().exportAll(DEST_FOLDER_NAME + "\\" + AppConfig.kvmsSubFolder, null ) ;		
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }
 	 @Test
 	 public void exportApps() throws Exception {
 		//==================Export All ===========================
-		 ExportResults expotrtresults =  sourceMngServer.getApplicationServices().exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.appsSubFolder) ;
+		 ExportResults expotrtresults =  sourceMngServer.getApplicationServices().exportAll(DEST_FOLDER_NAME + "\\"+ AppConfig.appsSubFolder , null ) ;
 		 int failureCount = expotrtresults.filterFailed(true).size() ;  
 		 assertEquals( failureCount , 0 , "# of Errors = " + failureCount);
 	 }

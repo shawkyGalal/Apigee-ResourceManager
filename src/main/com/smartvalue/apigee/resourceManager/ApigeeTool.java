@@ -1,10 +1,10 @@
 package com.smartvalue.apigee.resourceManager;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -320,7 +320,7 @@ public class ApigeeTool
 		ApigeeService service = ms.getTargetServersServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null);
 		
 	}
 
@@ -330,7 +330,7 @@ public class ApigeeTool
 		ApigeeService service = ms.getKeyValueMapServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null);
 		
 	}
 
@@ -340,7 +340,7 @@ public class ApigeeTool
 		ApigeeService service = ms.getDevelopersServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null);
 		
 	}
 
@@ -350,7 +350,7 @@ public class ApigeeTool
 		ApigeeService service = ms.getApplicationServices(org); 
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null);
 	}
 
 	private static void transformAllProducts() throws Exception {
@@ -360,7 +360,7 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
 		
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null );
 		
 	}
 
@@ -371,7 +371,7 @@ public class ApigeeTool
 		String sourceFolder = getMandatoryArg(argsAsHashMap, "-sourceFolder");
 		String destFolder = getMandatoryArg(argsAsHashMap, "-destFolder");
 		logger.info("====== Start Tranforming All SharedFlows ==========");
-		service.transformAll(sourceFolder, destFolder);
+		service.transformAll(sourceFolder, destFolder , null);
 		logger.info("====== End Tranforming All SharedFlows ==========");
 		
 	}
@@ -493,7 +493,7 @@ public class ApigeeTool
 		org = getMandatoryArg(argsMap, "-org"); 
 		String folderDest = getMandatoryArg(argsMap, "-folderDest"); 
 		ProxyServices ps = (ProxyServices) ms.getProxyServices(org);
-		ps.exportAll(folderDest);
+		ps.exportAll(folderDest , null);
 		
 	}
 
@@ -527,7 +527,7 @@ public class ApigeeTool
 		
 	}
 
-	private static void importAllSharedFlows() throws UnirestException, IOException {
+	private static void importAllSharedFlows() throws Exception {
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
 		org = getMandatoryArg(argsMap, "-org");
@@ -535,11 +535,12 @@ public class ApigeeTool
     	SharedFlowServices sharedFlowServices = (SharedFlowServices) ms.getSharedFlowServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
 		sharedFlowServices.setDeployUponUpload(isdeploy);
+		String processUUID = UUID.randomUUID().toString();
 		sharedFlowServices.importAll(sourceFolder) ;
 		
 	}
 
-	private static void importAllProxies() throws FileNotFoundException, IOException, UnirestException {
+	private static void importAllProxies() throws Exception {
 		
 		HashMap<String , String> argsMap = getArgsHashMap() ;
 		String sourceFolder = getMandatoryArg(argsMap, "-sourceFolder")  ;
@@ -548,7 +549,8 @@ public class ApigeeTool
     	ProxyServices proxiesServices = (ProxyServices) ms.getProxyServices(org); 
 		boolean isdeploy =  deploy != null && deploy.equalsIgnoreCase("yes") ;
 		proxiesServices.setDeployUponUpload(isdeploy);
-		proxiesServices.importAll(sourceFolder) ;
+		String processUUID = UUID.randomUUID().toString();
+		proxiesServices.importAll(sourceFolder ) ;
 	}
 
 

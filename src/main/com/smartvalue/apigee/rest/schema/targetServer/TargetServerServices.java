@@ -3,12 +3,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
 import com.smartvalue.apigee.migration.ProcessResults;
-import com.smartvalue.apigee.migration.deploy.DeployResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 
@@ -43,7 +43,7 @@ public class TargetServerServices  extends EnvironmentScopeService {
 
 
 	@Override
-	public ProcessResults performETL(String objectId, String processId) throws Exception {
+	public ProcessResults performETL(String objectId, UUID  uuid) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

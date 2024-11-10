@@ -67,26 +67,6 @@ public class EtlRestServices {
  	    return new ResponseEntity<String>(jsonString, headers , HttpStatus.CREATED);
 	}
 
-	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/export/apis/")
-    public ResponseEntity<String> listAllExports(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer") String customer,
-    		@PathVariable("infra") String infra,
-            @PathVariable("org") String org , 
-            @RequestHeader("Authorization")  String authorizationHeader
-            )
-    {
-		try {
-		initialize(partner , customer , infra , org, authorizationHeader); 
-		System.out.println("");
-		return new ResponseEntity<String>("Partner =" + partner + ", customer = " + customer +", infra = " + infra, HttpStatus.ACCEPTED);
-		}
-		catch (Exception e) {
-			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-    }
-	
 		
 	    
 	/**
@@ -114,13 +94,13 @@ public class EtlRestServices {
     )  {
 		try {
 		initialize(partner , customer , infra , org, authorizationHeader); 
-    	String uuid = UUID.randomUUID().toString(); 
+    	UUID uuid = UUID.randomUUID(); 
     	Thread thread = new Thread(() -> {
         System.out.println("Starting the complete ETL Process on " + objectName );
         try {
         		ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ; 
 	       		ProcessResults eTLResult = bundleObjectService.performETL(objectName , uuid);
-	       		String serializePath = ms.getSerlizeProcessResultFileName(uuid) ; 
+	       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
 	       		Helper.serialize(serializePath ,eTLResult ) ; 
         	} catch (Exception e) {
              e.printStackTrace();
@@ -135,27 +115,27 @@ public class EtlRestServices {
 		}
     }
 	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/{objectName}/{exportUUID}")
+	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/{objectName}/{deployUUID}")
     public ResponseEntity<String> rollBackSingleEtlBundle(
     		@RequestHeader("partner") String partner,
             @RequestHeader("customer")   String customer,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
-            @PathVariable("exportUUID") String exportUUID,
+            @PathVariable("deployUUID") String deployUUID,
             @PathVariable("objectName") String objectName,
             @RequestHeader("Authorization")  String authorizationHeader
     )  {
 		try {
 		initialize(partner , customer , infra , org, authorizationHeader);  
-    	String uuid = UUID.randomUUID().toString(); 
+    	UUID uuid = UUID.randomUUID(); 
     	Thread thread = new Thread(() -> 
 	    	{
 		        try {
 		        		RollBackable apigeeService = (RollBackable) ms.getServiceByType(bundleType) ; 
-		        		String deplyStateFileName = ms.getSerlizeDeplyStateFileName(exportUUID) ; 
-			       		ProcessResults eTLResult = apigeeService.rollBackObjectToLastSerializedDeployStatus(objectName , deplyStateFileName);
-			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid ) ; 
+		        		UUID deployUUIDObj = UUID.fromString(deployUUID); 
+			       		ProcessResults eTLResult = apigeeService.rollBackObjectToSerializedDeployStatus(objectName ,  deployUUIDObj);
+			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
 			       		Helper.serialize(serializePath ,eTLResult ) ; 
 		        	} catch (Exception e) {
 		             e.printStackTrace();
@@ -192,12 +172,13 @@ public class EtlRestServices {
     )  {
 		try {
 			initialize(partner , customer , infra , org, authorizationHeader); 
-	    	String uuid = UUID.randomUUID().toString(); 
+	    	UUID uuid = UUID.randomUUID(); 
 	    	Thread thread = new Thread(() -> {
             try {
 	            	ApigeeService apigeeService = ms.getServiceByType(bundleType) ; 
-	            	ExportResults result = apigeeService.exportAll( ms.getMigPathUpToOrgName(uuid)+"\\"+ apigeeService.getMigationSubFoler() ) ;
-	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid) ; 
+	            	String destFolder = ms.getMigPathUpToOrgName(uuid.toString())+"\\"+ apigeeService.getMigationSubFoler() ; 
+	            	ExportResults result = apigeeService.exportAll( destFolder , uuid ) ;
+	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
 	            	Helper.serialize(serializePath ,result ) ; 
 	           	
 	            } catch (Exception e) {
@@ -208,7 +189,7 @@ public class EtlRestServices {
 	    	
 	    	
 	        // Process the request and return a response
-	        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+	        return new ResponseEntity<String>("{\"exportUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -228,16 +209,15 @@ public class EtlRestServices {
             {
     			try {
     			initialize(partner , customer , infra , org, authorizationHeader);  
-    			String uuid = UUID.randomUUID().toString(); 
+    			UUID uuid = UUID.randomUUID(); 
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
     	            	ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ;  
-    	            	String source = ms.getMigPathUpToOrgName(exportUuid) ; 
-    	            	String dest = ms.getMigPathUpToOrgName(uuid) ;
-    	            	TransformationResults transformationResults =  bundleObjectService.transformAll(source +"\\" + bundleObjectService.getMigationSubFoler()  
-    	            													  				  , dest +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() 	) ;
-    	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid ) ; 
+    	            	String source = ms.getMigPathUpToOrgName(exportUuid) +"\\" + bundleObjectService.getMigationSubFoler(); 
+    	            	String dest = ms.getMigPathUpToOrgName(uuid.toString()) +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler();
+    	            	TransformationResults transformationResults =  bundleObjectService.transformAll(source, dest, uuid ) ;
+    	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
     		       		Helper.serialize(serializePath ,transformationResults ) ; 
     	            } catch (Exception e) {
     	                e.printStackTrace();
@@ -247,7 +227,7 @@ public class EtlRestServices {
     	    	
     	    	
     	        // Process the request and return a response
-    	        return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+    	        return new ResponseEntity<String>("{\"transformUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
     			}
     			catch (Exception e) {
     				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -266,14 +246,15 @@ public class EtlRestServices {
             {
     			try {
     			initialize(partner , customer , infra , org, authorizationHeader);  
-    			String uuid = UUID.randomUUID().toString(); 
+    			UUID uuid = UUID.randomUUID(); 
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
     	            	BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType(bundleType) ;  
     	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(transformUUID) ; 
-    	            	LoadResults importResults =  bundleObjectService.importAll(upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() ) ;
-    	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid ) ; 
+    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() ; 
+    	            	LoadResults importResults =  bundleObjectService.importAll( importFromFolder, uuid ) ;
+    	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
     		       		Helper.serialize(serializePath ,importResults ) ; 
     	            } catch (Exception e) {
     	                e.printStackTrace();
@@ -299,7 +280,7 @@ public class EtlRestServices {
          
 	{
 		try {
-    		initialize(partner , customer , infra , org, authorizationHeader); 
+    		//initialize(partner , customer , infra , org, authorizationHeader); 
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		ProcessResults pr = (ProcessResults) Helper.deSerializeObject(processResultsFileName); 
    	        return buildJsonResponse(pr.toJsonString()) ; 

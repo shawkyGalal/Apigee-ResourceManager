@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -104,7 +105,8 @@ public abstract class RevisionedObject extends ApigeeComman {
 	
 	public ExportResults  exportAllDeployedRevisions(String folderDest ) throws NumberFormatException, UnirestException, IOException
 	{
-		ExportResults exportResults = new  ExportResults();  
+		UUID uuid = UUID.randomUUID(); 
+		ExportResults exportResults = new  ExportResults("Export All Revisions", uuid);  
 		HashMap<String, ArrayList<String>> deployedRevisions = this.getDeployedRevisions() ; 
 		for ( String  DeployedEnvName :  deployedRevisions.keySet()) 
 		{

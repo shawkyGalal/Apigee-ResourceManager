@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
@@ -140,14 +141,13 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		}
 		else
 		{
-			return deleteAll(this.getOnPremiseAllProxiesList()) ;
+			return deleteAll(this.getOnPremiseAllProxiesList() , null) ;
 		}
-		
 	}
 	
-	private DeleteResults  deleteAll(ArrayList<String> allProxiesList) {
-
-		DeleteResults deletResults =  new DeleteResults(); 
+	private DeleteResults  deleteAll(ArrayList<String> allProxiesList , UUID uuid) {
+		if (uuid == null)  uuid = UUID.randomUUID();
+		DeleteResults deletResults =  new DeleteResults("" , uuid); 
 		for (int i = 0 ;  i< allProxiesList.size() ; i++ )
 		{
 			DeleteResult deletResult =  new DeleteResult(); 
@@ -178,7 +178,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 		{
 			simpleProxiesList.add(proxy.getName()) ; 
 		}
-		return this.deleteAll(simpleProxiesList) ; 
+		return this.deleteAll(simpleProxiesList, null) ; 
 	}
 	
 
@@ -215,4 +215,5 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 	public ArrayList<ApigeeObjectTransformer> buildTransformers() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException {
 		return this.getMs().getInfra().buildProxyTransformers();
 	}
+	
 }
