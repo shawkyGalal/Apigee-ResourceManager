@@ -3,6 +3,9 @@ package com.smartvalue.apigee.rest.schema;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class DeploymentsStatus extends HashMap<String, HashMap<String, ArrayList<String>>> {
 
 	private static final long serialVersionUID = 1L;
@@ -27,6 +30,11 @@ public class DeploymentsStatus extends HashMap<String, HashMap<String, ArrayList
 			deployedEnvs.add(xx.getKey()) ; 
 		}
 		return deployedEnvs ; 
+	}
+
+	public String toJsonString() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+	    return mapper.writeValueAsString(this);
 	}
 
 	

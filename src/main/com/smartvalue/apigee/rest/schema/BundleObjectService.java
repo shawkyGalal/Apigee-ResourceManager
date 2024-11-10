@@ -311,7 +311,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		for (Revision revision : deployedRevisions )
 		{
 			DeployResult deployResult = new DeployResult() ;
-			deployResult.setSource("Undeplolying " + m_objectName + "Reviasion : " + revision.getName() + " From Env. " + m_envName);
+			deployResult.setSource("Undeplolying " + m_objectName + "." + revision.getName() + " From Env. " + m_envName);
 			String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision.getName()+"/deployments" ; 
 			ManagementServer ms = this.getMs() ;
 			HttpResponse<String> response = null ; 

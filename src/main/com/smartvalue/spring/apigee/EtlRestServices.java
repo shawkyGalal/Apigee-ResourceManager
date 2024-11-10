@@ -39,6 +39,7 @@ import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransf
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
+import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.RollBackable;
 
 @RestController
@@ -109,6 +110,41 @@ public class EtlRestServices {
     	thread.start() ; 
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
+	
+	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}")
+    public ResponseEntity<String> rollBackAll(
+    		@RequestHeader("partner") String partner,
+            @RequestHeader("customer")   String customer,
+            @PathVariable("infra") String infra,
+            @PathVariable("org") String org,
+            @PathVariable("bundleType") String bundleType,
+            @PathVariable("deployUUID") String deployUUID,
+            @RequestHeader("Authorization")  String authorizationHeader
+    )  {
+		try {
+		initialize(partner , customer , infra , org, authorizationHeader);  
+    	UUID uuid = UUID.randomUUID(); 
+    	Thread thread = new Thread(() -> 
+	    	{
+		        try {
+		        		BundleObjectService apigeeService = (BundleObjectService) ms.getServiceByType(bundleType) ; 
+		        		UUID deployUUIDObj = UUID.fromString(deployUUID); 
+			       		ProcessResults eTLResult = apigeeService.rollBackAllToSerializedDeployStatus( deployUUIDObj);
+			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
+			       		Helper.serialize(serializePath ,eTLResult ) ; 
+		        	} catch (Exception e) {
+		             e.printStackTrace();
+		        	}
+		    }
+    	); 
+    	thread.start() ; 
+        // Process the request and return a response
+        return new ResponseEntity<String>("{\"rollBackAllUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
 		catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -235,7 +271,7 @@ public class EtlRestServices {
     	    }
 
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/transformProcess/{transformUUID}")
-    public ResponseEntity<String> loadAll(
+    public ResponseEntity<String> loadAndDeployAll(
     		@RequestHeader("partner")   String partner,
             @RequestHeader("customer")  String customer,
             @PathVariable("infra")  String infra,
@@ -252,7 +288,8 @@ public class EtlRestServices {
     	            try {
     	            	BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType(bundleType) ;  
     	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(transformUUID) ; 
-    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() ; 
+    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() ;
+    	            	bundleObjectService.setDeployUponUpload(true) ; 
     	            	LoadResults importResults =  bundleObjectService.importAll( importFromFolder, uuid ) ;
     	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
     		       		Helper.serialize(serializePath ,importResults ) ; 
@@ -262,14 +299,14 @@ public class EtlRestServices {
     	        }); 
     	    	thread.start() ; 
 
-    	    	return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
+    	    	return new ResponseEntity<String>("{\"loadUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
     			}
     			catch (Exception e) {
     				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     			}
     	    }
 	
-	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/proesses/{processUuid}")
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/proesses/{processUuid}/logs")
     public ResponseEntity<String> getProcessResults(
     		@RequestHeader("partner")   String partner,
             @RequestHeader("customer")  String customer,
@@ -280,7 +317,6 @@ public class EtlRestServices {
          
 	{
 		try {
-    		//initialize(partner , customer , infra , org, authorizationHeader); 
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		ProcessResults pr = (ProcessResults) Helper.deSerializeObject(processResultsFileName); 
    	        return buildJsonResponse(pr.toJsonString()) ; 
@@ -288,6 +324,31 @@ public class EtlRestServices {
 		catch (FileNotFoundException ex  )
 		{
 			return new ResponseEntity<String>("{ \"Error\" : \"Process "+ processUuid +" Not Found Or Still in Progress \" }", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    	catch (Exception e) {
+    		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+	}
+	
+	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/processes/{loadUuid}/deployHistory")
+    public ResponseEntity<String> getDeployStatus(
+    		@RequestHeader("partner")   String partner,
+            @RequestHeader("customer")  String customer,
+            @PathVariable("infra")  String infra,
+            @PathVariable("org") String org,
+            @PathVariable("loadUuid")   String loadUuid, // Transform the result of this exportUuid
+            @RequestHeader("Authorization") String authorizationHeader ) 
+         
+	{
+		try {
+			initialize(partner , customer , infra , org, authorizationHeader);
+    		String processResultsFileName =    ms.getSerlizeDeplyStateFileName(loadUuid) ;
+    		DeploymentsStatus ds = (DeploymentsStatus) Helper.deSerializeObject(processResultsFileName); 
+   	        return buildJsonResponse(ds.toJsonString()) ; 
+    		}
+		catch (FileNotFoundException ex  )
+		{
+			return new ResponseEntity<String>("{ \"Error\" : \"Process "+ loadUuid +" Not Found Or Still in Progress \" }", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     	catch (Exception e) {
     		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
