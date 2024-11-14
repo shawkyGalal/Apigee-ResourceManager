@@ -66,6 +66,8 @@ public interface Jsonable {
 					String escapHandledValue = toIndentedString(value)
 							.replace("\"", "\\\"")
 							.replace("\n", "\\n")
+							.replace("\r", "\\r")
+							.replace("\t", "\\t")
 							.replace("\\s", "\\\\s")
 							.replace("\\-", "\\\\-") ; 
 					sb.append("\"").append(escapHandledValue).append("\"");
