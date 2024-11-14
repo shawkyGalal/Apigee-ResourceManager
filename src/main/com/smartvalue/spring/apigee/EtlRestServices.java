@@ -7,6 +7,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
@@ -41,8 +43,11 @@ import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.RollBackable;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 
 @RestController
 public class EtlRestServices {
@@ -469,6 +474,69 @@ public class EtlRestServices {
 		}
 		
 		return result ; 
+	}
+	
+	@GetMapping("/apigee/infras/{infra}/orgs/{org}/{bundleType}")
+    public ResponseEntity<String> ListOrgProxiesCreationDates(
+    		@RequestHeader("partner")   String partner,
+            @RequestHeader("customer")  String customer,
+            @PathVariable("infra")  String infra,
+            @PathVariable("org") String org,
+            @PathVariable("bundleType") String bundleType,
+            @RequestHeader("Authorization") String authorizationHeader ) 
+         
+	{
+		//ArrayList<ProxyInfo> result = new ArrayList<ProxyInfo>();   
+		HashMap<String , HashMap<String, String > > result = new HashMap<String , HashMap<String, String>  > () ; 
+		try {
+			initialize(partner , customer , infra , org, authorizationHeader);
+			System.out.println("=============Processing Org :" + org +"===============" );
+			 ProxyServices bundleService =   (ProxyServices) ms.getServiceByType(bundleType) ;
+    		ArrayList<String> allNames = bundleService.getAllBundledObjectNameList() ; 
+    		for (String proxyName : allNames )
+    		{	
+    			System.out.println("Processing Proxy :" + proxyName );
+    			ProxyDeployment proxyDeployment = bundleService.getBundleObjectDeployments(proxyName) ;
+    			for ( Environment envs :  proxyDeployment.getEnvironment())
+    			{
+    				for (Revision revision : envs.getRevision())
+    				{
+    					ProxyRevision proxyRevision = bundleService.getBundleObjectRevision(proxyName , revision.getName()) ;
+    					Date createdDateTime = new java.util.Date(proxyRevision.getCreatedAt()) ;
+    					HashMap<String, String> envDate = new HashMap<String, String>(); 
+        				envDate.put(envs.getName(), createdDateTime.toString()) ; 
+    					result.put(proxyName, envDate) ; 
+    				}
+    			}
+    					    			
+    			//--------------------Method 2 -------
+    			/*
+    			RevisionedObject  proxy = bundleService.getRevisionedObject(proxyName) ; 
+    			HashMap<String, ArrayList<String>> envDeployedRevisiosns  = proxy.getDeployedRevisions() ; 
+    			for (Entry<String, ArrayList<String>> deployedRevisions :  envDeployedRevisiosns.entrySet())
+    			{
+    				String envName = deployedRevisions.getKey(); 
+    				
+    				ArrayList<String> revisions = deployedRevisions.getValue(); 
+    				for (String revision : revisions)
+    				{
+    					ProxyRevision proxyRevision  = proxy.getRevision(revision ) ; 
+    					Date createdDateTime = new java.util.Date(proxyRevision.getCreatedAt()) ;
+    					HashMap<String, String> envDate = new HashMap<String, String>(); 
+        				envDate.put(envName, createdDateTime.toString()) ; 
+    					result.put(proxyName, envDate) ; 
+    				}
+    			}
+    			*/
+    		}
+    		System.out.println("=============End Processing Org :" + org +"===============" );
+    		
+   	        return buildJsonResponse(Helper.mapObjectToJsonStr(result)) ;  
+    		}
+		
+    	catch (Exception e) {
+    		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
 	}
 	
 	 
