@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -40,6 +39,7 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
@@ -428,6 +428,21 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		}
 		return result ; 
 	}
+
+	public ProxyDeployment getBundleObjectDeployments(String bundledObjectName) throws UnirestException, IOException
+	{
+		String apiPath = getResourcePath()+"/"+bundledObjectName + "/deployments" ; 
+		ProxyDeployment proxyDeployment =  this.getMs().executeGetMgmntAPI(apiPath , ProxyDeployment.class ) ;
+		return proxyDeployment ; 
+	}
+	
+	public ProxyRevision getBundleObjectRevision(String bundledObjectName , String revision ) throws UnirestException, IOException
+	{
+		String apiPath = getResourcePath()+"/"+bundledObjectName + "/revisions/" + revision ; 
+		ProxyRevision proxyRevision =  this.getMs().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
+		return proxyRevision ; 
+	}
+
 
 	public RevisionedObject getRevisionedObject( String ObjectName) throws UnirestException, IOException
 	{
