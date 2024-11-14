@@ -8,6 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartvalue.apigee.rest.schema.server.auto.Property;
 
 public class Helper {
@@ -51,6 +53,12 @@ public class Helper {
 	    try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(serializableObj);
 	    }  
+	}
+	
+	public static String mapObjectToJsonStr(Object obj) throws JsonProcessingException
+	{
+		ObjectMapper mapper = new ObjectMapper(); 
+		return mapper.writeValueAsString(obj);  
 	}
 	
 }

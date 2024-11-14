@@ -13,6 +13,7 @@ import com.smartvalue.apigee.migration.deploy.DeployResult;
 import com.smartvalue.apigee.migration.export.ExportResult;
 import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.proxy.DeleteResult;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
 
@@ -130,8 +131,7 @@ public HashMap<Class<?>, ProcessResults > classify() {
 
 public String toJsonString() throws JsonProcessingException
 {
-	ObjectMapper mapper = new ObjectMapper();
-    return mapper.writeValueAsString(this);
+	return Helper.mapObjectToJsonStr(this); 
 }
 
 public String getDescription() {

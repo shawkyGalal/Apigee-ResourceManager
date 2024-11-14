@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 
 public class DeploymentsStatus extends HashMap<String, HashMap<String, ArrayList<String>>> {
 
@@ -33,8 +34,7 @@ public class DeploymentsStatus extends HashMap<String, HashMap<String, ArrayList
 	}
 
 	public String toJsonString() throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-	    return mapper.writeValueAsString(this);
+		return Helper.mapObjectToJsonStr(this) ; 
 	}
 
 	
