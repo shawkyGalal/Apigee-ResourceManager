@@ -48,6 +48,7 @@ public class ProxyBundleParser
 	private String oasStr;
 	private JsonNode oasJsonNode;  
 	
+
 	public JsonNode getOasJsonNode() {
 		return oasJsonNode;
 	}
@@ -103,7 +104,7 @@ public class ProxyBundleParser
 		            
 		        }
 
-		        this.estimateSwaggerParser(ProxyRevision.getOasFlowName()); 
+		        //this.estimateSwaggerParser(ProxyRevision.getOasFlowName()); 
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -172,7 +173,7 @@ public class ProxyBundleParser
 		return estimatedOasPolicyName;
 	}
 	
-	private void estimateSwaggerParser(String oasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
+	public void estimateSwaggerParser(String oasFlowName) throws XPathExpressionException, JsonMappingException, JsonProcessingException
 	{
 		Flow oasflow =  searchForGetOasFlow(oasFlowName);  
 		if ( oasflow == null ) 
@@ -259,7 +260,7 @@ public class ProxyBundleParser
 		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
 		ProxyEndpoint oasProxyEndPoint = this.getOASProxyEndpoint(); 
-		return ProxyRevision.checkFlowsConsistancy(swaggerParse, allApigeeFlows , oasProxyEndPoint.getConnection().getBasePath(), fixOperationId , execludeKnownFlows ) ; 
+		return swaggerParse.checkFlowsConsistancy( allApigeeFlows , oasProxyEndPoint.getConnection().getBasePath(), fixOperationId , execludeKnownFlows ) ; 
 	}
 	
 	public HashMap<OasOperation , Flow> checkOpenApiConsistancy (boolean fixOperationId, boolean execludeKnownFlows ) throws Exception 
@@ -270,7 +271,7 @@ public class ProxyBundleParser
 		{execuldedFlowNames.add(ProxyRevision.getOasFlowName()); 
 		execuldedFlowNames.add(ProxyRevision.SERVICE_NOT_AVAILABLE);}
 		List<Flow> allApigeeFlows = this.getAllFlows(execuldedFlowNames) ;
-		return ProxyRevision.checkOpenApiConsistancy(swaggerParse, allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath() , fixOperationId ) ; 
+		return swaggerParse.checkConsistancyWithProxyFlows( allApigeeFlows , this.getOASProxyEndpoint().getConnection().getBasePath() , fixOperationId ) ; 
 	}
 	
 	
