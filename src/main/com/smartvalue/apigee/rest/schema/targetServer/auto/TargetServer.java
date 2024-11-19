@@ -186,4 +186,10 @@ public class TargetServer extends ApigeeComman {
         return (((((((this.port == rhs.port)||((this.port!= null)&&this.port.equals(rhs.port)))&&((this.isEnabled == rhs.isEnabled)||((this.isEnabled!= null)&&this.isEnabled.equals(rhs.isEnabled))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.host == rhs.host)||((this.host!= null)&&this.host.equals(rhs.host))))&&((this.sSLInfo == rhs.sSLInfo)||((this.sSLInfo!= null)&&this.sSLInfo.equals(rhs.sSLInfo))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		// TODO Auto-generated method stub
+		return this.getName();
+	}
+
 }

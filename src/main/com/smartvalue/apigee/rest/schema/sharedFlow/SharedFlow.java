@@ -8,4 +8,10 @@ public class SharedFlow extends com.smartvalue.apigee.rest.schema.sharedFlow.aut
 		return AppConfig.BASE_BATH+this.getOrgName()+"/sharedflows/"+this.getName();
 	}
 
+	@Override
+	protected String getUniqueId() {
+		// TODO Auto-generated method stub
+		return this.getName();
+	}
+
 }

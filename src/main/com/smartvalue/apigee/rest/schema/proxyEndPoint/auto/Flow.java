@@ -222,7 +222,7 @@ public class Flow extends BundleElement {
 		return pathSuffix;
 	}
 
-	public String extractPathSuffixFromCondition() throws Exception
+	public String extractPathSuffixFromCondition() 
 	{	
 		String result = this.getPathSuffix(); 
 		if (result == null)
@@ -312,7 +312,7 @@ public class Flow extends BundleElement {
 	{
 		com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint pep = this.getParentProxyEndPoint() ; 
 		ProxyRevision pr = pep.getParentProxyRevision() ; 
-		return pr.getName() + "."+ pep.getName() +"." + this.getName()+"."+ this.extractVerbFromCondition(); 
+		return pr.getName() + "."+ pep.getName() +"." + this.getName() ; //+"."+ this.extractPathSuffixFromCondition()+"."+this.extractVerbFromCondition(); 
 	}
 
 	

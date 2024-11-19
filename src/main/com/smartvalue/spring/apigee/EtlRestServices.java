@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
@@ -18,12 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
@@ -39,15 +42,19 @@ import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransformer;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
+import com.smartvalue.apigee.rest.schema.ApigeeComman;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.DeploymentsStatus;
 import com.smartvalue.apigee.rest.schema.RollBackable;
+import com.smartvalue.apigee.rest.schema.product.Product;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
 import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
 import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
+import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
 
 @RestController
 public class EtlRestServices {
@@ -68,11 +75,11 @@ public class EtlRestServices {
     	ms.getAllOrgNames(); 
 	}
 	
-	private ResponseEntity<String> buildJsonResponse(String jsonString )
+	private ResponseEntity<String> buildJsonResponse(String jsonString , HttpStatus status )
 	{
 		 HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/json");
- 	    return new ResponseEntity<String>(jsonString, headers , HttpStatus.CREATED);
+ 	    return new ResponseEntity<String>(jsonString, headers , status);
 	}
 
 		
@@ -367,7 +374,7 @@ public class EtlRestServices {
 		try {
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		ProcessResults pr = (ProcessResults) Helper.deSerializeObject(processResultsFileName); 
-   	        return buildJsonResponse(pr.toJsonString()) ; 
+   	        return buildJsonResponse(pr.toJsonString(), HttpStatus.OK) ; 
     		}
 		catch (FileNotFoundException ex  )
 		{
@@ -392,7 +399,7 @@ public class EtlRestServices {
 			initialize(partner , customer , infra , org, authorizationHeader);
     		String processResultsFileName =    ms.getSerlizeDeplyStateFileName(loadUuid) ;
     		DeploymentsStatus ds = (DeploymentsStatus) Helper.deSerializeObject(processResultsFileName); 
-   	        return buildJsonResponse(ds.toJsonString()) ; 
+   	        return buildJsonResponse(ds.toJsonString() , HttpStatus.OK) ; 
     		}
 		catch (FileNotFoundException ex  )
 		{
@@ -475,7 +482,7 @@ public class EtlRestServices {
 		
 		return result ; 
 	}
-	
+	/*
 	@GetMapping("/apigee/infras/{infra}/orgs/{org}/{bundleType}")
     public ResponseEntity<String> ListOrgProxiesCreationDates(
     		@RequestHeader("partner")   String partner,
@@ -486,8 +493,7 @@ public class EtlRestServices {
             @RequestHeader("Authorization") String authorizationHeader ) 
          
 	{
-		//ArrayList<ProxyInfo> result = new ArrayList<ProxyInfo>();   
-		HashMap<String , HashMap<String, String > > result = new HashMap<String , HashMap<String, String>  > () ; 
+		HashMap<String , String > result = new HashMap<String , String > () ; 
 		try {
 			initialize(partner , customer , infra , org, authorizationHeader);
 			System.out.println("=============Processing Org :" + org +"===============" );
@@ -496,42 +502,56 @@ public class EtlRestServices {
     		for (String proxyName : allNames )
     		{	
     			System.out.println("Processing Proxy :" + proxyName );
-    			ProxyDeployment proxyDeployment = bundleService.getBundleObjectDeployments(proxyName) ;
-    			for ( Environment envs :  proxyDeployment.getEnvironment())
-    			{
-    				for (Revision revision : envs.getRevision())
-    				{
-    					ProxyRevision proxyRevision = bundleService.getBundleObjectRevision(proxyName , revision.getName()) ;
-    					Date createdDateTime = new java.util.Date(proxyRevision.getCreatedAt()) ;
-    					HashMap<String, String> envDate = new HashMap<String, String>(); 
-        				envDate.put(envs.getName(), createdDateTime.toString()) ; 
-    					result.put(proxyName, envDate) ; 
-    				}
-    			}
-    					    			
-    			//--------------------Method 2 -------
-    			/*
-    			RevisionedObject  proxy = bundleService.getRevisionedObject(proxyName) ; 
-    			HashMap<String, ArrayList<String>> envDeployedRevisiosns  = proxy.getDeployedRevisions() ; 
-    			for (Entry<String, ArrayList<String>> deployedRevisions :  envDeployedRevisiosns.entrySet())
-    			{
-    				String envName = deployedRevisions.getKey(); 
-    				
-    				ArrayList<String> revisions = deployedRevisions.getValue(); 
-    				for (String revision : revisions)
-    				{
-    					ProxyRevision proxyRevision  = proxy.getRevision(revision ) ; 
-    					Date createdDateTime = new java.util.Date(proxyRevision.getCreatedAt()) ;
-    					HashMap<String, String> envDate = new HashMap<String, String>(); 
-        				envDate.put(envName, createdDateTime.toString()) ; 
-    					result.put(proxyName, envDate) ; 
-    				}
-    			}
-    			*/
+    			//	--------------------Method 1 -------
+    			Proxy  proxy = (Proxy) bundleService.getRevisionedObject(proxyName) ; 
+    			Date createdDateTime = new java.util.Date(proxy.getMetaData().getCreatedAt()) ; 
+    			result.put(proxyName, createdDateTime.toString()) ; 
+    			   			
     		}
     		System.out.println("=============End Processing Org :" + org +"===============" );
     		
-   	        return buildJsonResponse(Helper.mapObjectToJsonStr(result)) ;  
+   	        return buildJsonResponse(Helper.mapObjectToJsonStr(result) , HttpStatus.OK) ;  
+    		}
+		
+    	catch (Exception e) {
+    		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+	}
+	*/
+	@GetMapping("/apigee/infras/{infra}/orgs/{org}/{objectType}")
+    public ResponseEntity<String> ListObjects(
+    		@RequestHeader("partner")   String partner,
+            @RequestHeader("customer")  String customer,
+            @PathVariable("infra")  String infra,
+            @PathVariable("org") String org,
+            @PathVariable("objectType") String objectType,
+            @RequestHeader("Authorization") String authorizationHeader ) 
+         
+	{
+		HashMap<String , String > result = new HashMap<String , String > () ; 
+		try {
+			initialize(partner , customer , infra , org, authorizationHeader);
+			System.out.println("=============Processing Org :" + org +"===============" );
+			ApigeeService apigeeService =  ms.getServiceByType(objectType) ;
+    		ArrayList<String> allNames = apigeeService.getAllResources() ; 
+    		for (String objectName : allNames )
+    		{	
+    			System.out.println("Processing Object :" + objectName );
+    			ApigeeComman  apigeeComman =  apigeeService.getResource(objectName , Helper.mapObjectTypeToClass(objectType)) ; 
+    			if (apigeeComman instanceof Proxy) 
+    			{
+    				Proxy  proxy = (Proxy) apigeeComman ; 
+        			Date createdDateTime = new java.util.Date(proxy.getMetaData().getCreatedAt()) ; 
+        			result.put(objectName, createdDateTime.toString()) ;
+    			}
+    			else 
+    			{
+    				result.put(objectName, apigeeComman.toJsonString()) ;
+    			}
+    			   			
+    		}
+    		
+   	        return buildJsonResponse(Helper.mapObjectToJsonStr(result) , HttpStatus.OK) ;  
     		}
 		
     	catch (Exception e) {
@@ -539,8 +559,61 @@ public class EtlRestServices {
     	}
 	}
 	
-	 
-	
+	@PutMapping("/apigee/infras/{infra}/orgs/{org}/products/processes/{operation}/wildCardScopes")
+    public ResponseEntity<String> updateLegacyProductScopes(
+    		@RequestHeader("partner")   String partner,
+            @RequestHeader("customer")  String customer,
+            @PathVariable("infra")  	String infra,
+            @PathVariable("org") 		String org,
+            @PathVariable("operation")  String operation,
+            @RequestHeader("Authorization") String authorizationHeader ) 
+         
+	{
+		HashMap<String , String > result = new HashMap<String , String > () ; 
+		try {
+			initialize(partner , customer , infra , org, authorizationHeader);
+			ApigeeService apigeeService =  ms.getServiceByType("products") ;
+    		ArrayList<String> allNames = apigeeService.getAllResources() ; 
+    		for (String objectName : allNames )
+    		{	
+    			System.out.println("Processing Object :" + objectName );
+    			ApigeeComman  apigeeComman =  apigeeService.getResource(objectName , Helper.mapObjectTypeToClass("products")) ; 
+    			Product  product = (Product) apigeeComman ;
+    			List<String> scopes = product.getScopes() ; 
+    			List<String> proxies = product.getProxies(); 
+    			boolean autoGeneratedProduct = false ;
+    			try {
+    				UUID.fromString(product.getName()) ; 
+    				autoGeneratedProduct = true ; 
+    				System.out.print("..... No Action " );
+    			}
+    			catch (Exception e) {}
+    			if (! autoGeneratedProduct) // Start Updating the legacy products 
+    			{
+	    			for (String proxy : proxies)
+	    			{
+	    				String proxyAllFlowsScope = proxy + "."+ Helper.WILD_CARD_OAUTHS_COPE  ;
+	    				if(operation.equalsIgnoreCase("add"))
+	    				{if (! scopes.contains(proxyAllFlowsScope)) scopes.add(proxyAllFlowsScope);	}
+	    				else if (operation.equalsIgnoreCase("add") )
+	    				{scopes.remove(proxyAllFlowsScope); 	}
+	    			}
+	    			String productJsonStr = product.toJsonString(); 
+	    			String path = "/v1/organizations/"+ms.getOrgName()+"/apiproducts/"+product.getUniqueId() ; 
+	    			try { Thread.sleep(1000); // 1000 milliseconds = 1 second  To Allow for Service Quota Validation 
+	    			} catch (InterruptedException e) { e.printStackTrace(); }
+	    			HttpResponse<String> response = ms.getPutHttpResponse(path,  productJsonStr , "application/json") ; 
+	    			result.put(objectName, response.toString()) ;
+    			}
+   			}
+   		
+   	        return buildJsonResponse(Helper.mapObjectToJsonStr(result) , HttpStatus.OK) ;  
+    		}
+		
+    	catch (Exception e) {
+    		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+	}
     
   
 }

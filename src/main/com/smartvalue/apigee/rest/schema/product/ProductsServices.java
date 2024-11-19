@@ -26,6 +26,10 @@ public ProductsServices(ManagementServer ms, String m_orgName) {
 		super(ms, m_orgName);
 	}
 
+public ProductsServices(ManagementServer ms) {
+	super(ms, ms.getOrgName());
+}
+
 public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, IOException
 {
 	Organization m_org= (Organization) this.getMs().getCurrentOrg() ; 

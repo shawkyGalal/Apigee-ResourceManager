@@ -326,4 +326,10 @@ public class Server extends ApigeeComman {
         return (((((((((((((this.pod == rhs.pod)||((this.pod!= null)&&this.pod.equals(rhs.pod)))&&((this.externalHostName == rhs.externalHostName)||((this.externalHostName!= null)&&this.externalHostName.equals(rhs.externalHostName))))&&((this.type == rhs.type)||((this.type!= null)&&this.type.equals(rhs.type))))&&((this.internalIP == rhs.internalIP)||((this.internalIP!= null)&&this.internalIP.equals(rhs.internalIP))))&&((this.uUID == rhs.uUID)||((this.uUID!= null)&&this.uUID.equals(rhs.uUID))))&&((this.reachable == rhs.reachable)||((this.reachable!= null)&&this.reachable.equals(rhs.reachable))))&&((this.tags == rhs.tags)||((this.tags!= null)&&this.tags.equals(rhs.tags))))&&((this.isUp == rhs.isUp)||((this.isUp!= null)&&this.isUp.equals(rhs.isUp))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.internalHostName == rhs.internalHostName)||((this.internalHostName!= null)&&this.internalHostName.equals(rhs.internalHostName))))&&((this.region == rhs.region)||((this.region!= null)&&this.region.equals(rhs.region))))&&((this.externalIP == rhs.externalIP)||((this.externalIP!= null)&&this.externalIP.equals(rhs.externalIP))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		// TODO Auto-generated method stub
+		return this.getInternalIP();
+	}
+
 }

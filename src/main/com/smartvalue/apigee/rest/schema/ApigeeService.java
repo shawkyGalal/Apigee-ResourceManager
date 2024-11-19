@@ -190,15 +190,16 @@ public abstract class ApigeeService {
 		return allResourcesResponse ; 
 	}
 	
-	protected ArrayList<String> getAllResources() throws Exception 
+	public ArrayList<String> getAllResources() throws Exception 
 	{
 		ArrayList<String> allResourcesResponse = this.getMs().executeGetMgmntAPI(getResourcePath() , ArrayList.class) ;
 		return allResourcesResponse ; 
 	}
 	
-	protected <T> T getResource(String resourceId , Class<T> classOfT ) throws Exception
+	public <T extends ApigeeComman> T getResource(String resourceId , Class<T> classOfT ) throws Exception
 	{
 		T resource = this.getMs().executeGetMgmntAPI(getResourcePath()+ "/"+ resourceId, classOfT) ;
+		//resource.setManagmentServer(this.getMs());  // This Steps causes issue when serilizing the resource object 
 		return resource ; 
 	}
 	
@@ -300,13 +301,13 @@ public abstract class ApigeeService {
 		return result ; 
 		
 	}
-	protected  <T> ArrayList<T>  getAllResourcesList( Class<T> classOfT ) throws Exception
+	protected  <T extends ApigeeComman> ArrayList<T>  getAllResourcesList( Class<T> classOfT ) throws Exception
 	{
 		ArrayList<String> allResourcesNames = getAllResources() ; 
 		ArrayList<T> allResources = new ArrayList<T>() ; 
 		for (String resourceNsame : allResourcesNames)
 		{
-			allResources.add (getResource(resourceNsame , classOfT)) ; 
+			allResources.add (this.getResource(resourceNsame , classOfT)) ; 
 		}
 		return allResources ; 
 

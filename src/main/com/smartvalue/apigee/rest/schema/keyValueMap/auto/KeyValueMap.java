@@ -142,4 +142,9 @@ public class KeyValueMap extends ApigeeComman {
         return (((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.entry == rhs.entry)||((this.entry!= null)&&this.entry.equals(rhs.entry))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.encrypted == rhs.encrypted)||((this.encrypted!= null)&&this.encrypted.equals(rhs.encrypted))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		return this.getName();
+	}
+
 }

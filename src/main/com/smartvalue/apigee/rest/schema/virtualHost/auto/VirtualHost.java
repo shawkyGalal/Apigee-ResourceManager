@@ -280,4 +280,9 @@ public class VirtualHost extends ApigeeComman {
         return (((((((((((this.listenOptions == rhs.listenOptions)||((this.listenOptions!= null)&&this.listenOptions.equals(rhs.listenOptions)))&&((this.interfaces == rhs.interfaces)||((this.interfaces!= null)&&this.interfaces.equals(rhs.interfaces))))&&((this.retryOptions == rhs.retryOptions)||((this.retryOptions!= null)&&this.retryOptions.equals(rhs.retryOptions))))&&((this.port == rhs.port)||((this.port!= null)&&this.port.equals(rhs.port))))&&((this.propagateTLSInformation == rhs.propagateTLSInformation)||((this.propagateTLSInformation!= null)&&this.propagateTLSInformation.equals(rhs.propagateTLSInformation))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.hostAliases == rhs.hostAliases)||((this.hostAliases!= null)&&this.hostAliases.equals(rhs.hostAliases))))&&((this.sSLInfo == rhs.sSLInfo)||((this.sSLInfo!= null)&&this.sSLInfo.equals(rhs.sSLInfo))))&&((this.useBuiltInFreeTrialCert == rhs.useBuiltInFreeTrialCert)||((this.useBuiltInFreeTrialCert!= null)&&this.useBuiltInFreeTrialCert.equals(rhs.useBuiltInFreeTrialCert))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		return this.getName();
+	}
+
 }

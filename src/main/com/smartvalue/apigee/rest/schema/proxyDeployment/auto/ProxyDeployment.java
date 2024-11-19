@@ -142,4 +142,10 @@ public class ProxyDeployment extends ApigeeComman {
         return (((((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name)))&&((this.environment == rhs.environment)||((this.environment!= null)&&this.environment.equals(rhs.environment))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.organization == rhs.organization)||((this.organization!= null)&&this.organization.equals(rhs.organization))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		// TODO Auto-generated method stub
+		return this.getName();
+	}
+
 }

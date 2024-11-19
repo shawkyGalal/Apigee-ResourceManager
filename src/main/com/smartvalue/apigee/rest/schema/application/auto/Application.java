@@ -441,4 +441,10 @@ public class Application extends ApigeeComman {
         return ((((((((((((((((((this.lastModifiedAt == rhs.lastModifiedAt)||((this.lastModifiedAt!= null)&&this.lastModifiedAt.equals(rhs.lastModifiedAt)))&&((this.credentials == rhs.credentials)||((this.credentials!= null)&&this.credentials.equals(rhs.credentials))))&&((this.lastModifiedBy == rhs.lastModifiedBy)||((this.lastModifiedBy!= null)&&this.lastModifiedBy.equals(rhs.lastModifiedBy))))&&((this.appFamily == rhs.appFamily)||((this.appFamily!= null)&&this.appFamily.equals(rhs.appFamily))))&&((this.accessType == rhs.accessType)||((this.accessType!= null)&&this.accessType.equals(rhs.accessType))))&&((this.createdAt == rhs.createdAt)||((this.createdAt!= null)&&this.createdAt.equals(rhs.createdAt))))&&((this.developerId == rhs.developerId)||((this.developerId!= null)&&this.developerId.equals(rhs.developerId))))&&((this.createdBy == rhs.createdBy)||((this.createdBy!= null)&&this.createdBy.equals(rhs.createdBy))))&&((this.credentialsLoaded == rhs.credentialsLoaded)||((this.credentialsLoaded!= null)&&this.credentialsLoaded.equals(rhs.credentialsLoaded))))&&((this.appId == rhs.appId)||((this.appId!= null)&&this.appId.equals(rhs.appId))))&&((this.name == rhs.name)||((this.name!= null)&&this.name.equals(rhs.name))))&&((this.attributes == rhs.attributes)||((this.attributes!= null)&&this.attributes.equals(rhs.attributes))))&&((this.callbackUrl == rhs.callbackUrl)||((this.callbackUrl!= null)&&this.callbackUrl.equals(rhs.callbackUrl))))&&((this.scopes == rhs.scopes)||((this.scopes!= null)&&this.scopes.equals(rhs.scopes))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.apiProducts == rhs.apiProducts)||((this.apiProducts!= null)&&this.apiProducts.equals(rhs.apiProducts))))&&((this.status == rhs.status)||((this.status!= null)&&this.status.equals(rhs.status))));
     }
 
+	@Override
+	protected String getUniqueId() {
+		// TODO Auto-generated method stub
+		return this.getAppId();
+	}
+
 }

@@ -107,6 +107,12 @@ public class Proxy extends com.smartvalue.apigee.rest.schema.proxy.auto.Proxy {
 		ProxyRevision proxyRevision  = this.getRevision(m_revision) ; 
 		return proxyRevision.generateOpenApi(); 
 	}
+
+
+	@Override
+	protected String getUniqueId() {
+		return this.getName();
+	}
 	
 	
 	

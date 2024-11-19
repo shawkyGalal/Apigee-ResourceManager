@@ -10,9 +10,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smartvalue.apigee.rest.schema.ApigeeComman;
+import com.smartvalue.apigee.rest.schema.product.Product;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.server.auto.Property;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 
 public class Helper {
+
+	public static final String WILD_CARD_OAUTHS_COPE = "Wild_Card_Scope";
 
 	public static boolean isConsideredSuccess(int stausCode)
 	{
@@ -59,6 +65,29 @@ public class Helper {
 	{
 		ObjectMapper mapper = new ObjectMapper(); 
 		return mapper.writeValueAsString(obj);  
+	}
+	
+	public static Class<? extends ApigeeComman> mapObjectTypeToClass(String bundleType) 
+	{
+		Class<? extends ApigeeComman> clazz = null ; 
+		if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) clazz =  Proxy.class ;
+		else if (bundleType.equalsIgnoreCase("sharedFlows")) clazz =  SharedFlow.class ;
+		else if (bundleType.equalsIgnoreCase("products") || bundleType.equalsIgnoreCase("apiproducts")) clazz =  Product.class ;
+		
+		return clazz ; 
+	}
+	
+	public static String  mapClassToObjectType(Class<? extends ApigeeComman> clazz) 
+	{
+		String result = null ; 
+		if (clazz ==  Proxy.class)  
+		{return "apis" ;	}
+		else if (clazz ==  SharedFlow.class)
+		{return "sharedflows" ;	}
+		else if (clazz ==  Product.class)
+		{return "apiproducts" ;	}
+		
+		return result ; 
 	}
 	
 }

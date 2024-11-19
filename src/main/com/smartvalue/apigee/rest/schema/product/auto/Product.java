@@ -34,7 +34,7 @@ import com.smartvalue.apigee.rest.schema.ApigeeComman;
     "scopes"
 })
 @Generated("jsonschema2pojo")
-public class Product extends ApigeeComman{
+public abstract class  Product extends ApigeeComman{
 
 	@JsonProperty("apiResources")
     private List<String> apiResources = new ArrayList<String>();
@@ -43,9 +43,9 @@ public class Product extends ApigeeComman{
     @JsonProperty("attributes")
     private List<Attribute> attributes = new ArrayList<Attribute>();
     @JsonProperty("createdAt")
-    private Long createdAt;
+    private transient Long createdAt;
     @JsonProperty("createdBy")
-    private String createdBy;
+    private transient String createdBy;
     @JsonProperty("description")
     private String description;
     @JsonProperty("displayName")
@@ -53,9 +53,9 @@ public class Product extends ApigeeComman{
     @JsonProperty("environments")
     private List<String> environments = new ArrayList<String>();
     @JsonProperty("lastModifiedAt")
-    private Long lastModifiedAt;
+    private transient Long lastModifiedAt;
     @JsonProperty("lastModifiedBy")
-    private String lastModifiedBy;
+    private transient String lastModifiedBy;
     @JsonProperty("name")
     private String name;
     @JsonProperty("proxies")

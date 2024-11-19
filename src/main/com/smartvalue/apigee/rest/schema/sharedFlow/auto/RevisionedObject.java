@@ -135,7 +135,7 @@ public abstract class RevisionedObject extends ApigeeComman {
 					er.setExceptionClassName(e.getClass().getName());
 					er.setError(e.getMessage());
 					exportResults.add(er) ; 
-					logger.error("Failed to Export" + this.getClass().getName() +", Name : " + this.getName() +" revision # " +revision + " Due To : "+ e.getMessage()); 
+					System.out.println("Failed to Export" + this.getClass().getName() +", Name : " + this.getName() +" revision # " +revision + " Due To : "+ e.getMessage()); 
 				}
 			}
 				

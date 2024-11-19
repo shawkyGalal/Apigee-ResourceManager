@@ -58,8 +58,9 @@ public class BundleFlow extends Flow {
 		{
 			com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint pep = this.getParentProxyEndPoint() ; 
 			
-			return this.getBundleName() + "."+ pep.getName() +"." + this.getName(); 
+			return this.getBundleName() + "."+ pep.getName() +"." + this.getName() ; //+"."+ this.extractPathSuffixFromCondition() +"."+this.extractVerbFromCondition(); 
 		}
+		
 		
 	
 

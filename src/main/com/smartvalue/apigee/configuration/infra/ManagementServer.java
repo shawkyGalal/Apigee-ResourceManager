@@ -3,8 +3,6 @@ package com.smartvalue.apigee.configuration.infra;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.MultipartBody;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.filteredList.FilteredList;
-import com.smartvalue.apigee.migration.export.ExportResults;
+
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.cloud.OrganizationList.OrganizationList;
@@ -39,11 +37,14 @@ import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
 import com.smartvalue.apigee.rest.schema.keyValueMap.KvmServices;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
+import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.product.ProductsServices;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.server.MPServer;
 import com.smartvalue.apigee.rest.schema.server.Server  ;
 import com.smartvalue.apigee.rest.schema.server.ServerServices;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.targetServer.TargetServerServices;
 import com.smartvalue.google.iam.GoogleServiceAccount;
@@ -53,7 +54,7 @@ import com.smartvalue.google.iam.auto.GoogleAccessToken;
 public class ManagementServer extends Server{
 	
 	private MyServerProfile serverProfile ;  
-	HashMap <String , Organization> orgs = new HashMap <String , Organization>();
+	transient HashMap <String , Organization> orgs = new HashMap <String , Organization>();
 	private Infra infra ;  
 	private String infraName ; 
 	private GoogleAccessToken googleAccessToken ;
@@ -301,6 +302,21 @@ public class ManagementServer extends Server{
 		HttpResponse<String> response = this.sendRequestByPassProxyIfNeeded(request);
 		return response ;  
 	}
+	
+	public HttpResponse<String> getPutHttpResponse(String m_apiPath , String m_body , String m_contentType ) throws UnirestException, IOException  {
+		String hostUrl = getHostUrl () ; 
+		String authorization = getAuthorizationHeader() ; 
+		HttpRequestWithBody  request = Unirest.put(hostUrl + m_apiPath)
+								.header("Authorization", authorization ); 
+		if (m_contentType != null) {
+			request.header("Content-Type", m_contentType ) ; 
+		}
+		if (m_body != null) {
+			request.body(m_body);  
+		}
+		HttpResponse<String> response = this.sendRequestByPassProxyIfNeeded(request);
+		return response ;  
+	}
 	public HttpResponse<InputStream> getGetHttpBinResponse(String m_apiPath  ) throws UnirestException, IOException  {
 		
 		String hostUrl = getHostUrl() ;
@@ -501,9 +517,10 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public ApigeeService getServiceByType(String bundleType )
 	{
-		Class<? extends BundleObjectService> type = null ;
+		Class<? extends ApigeeService> type = null ;
 		if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
 		else if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
+		else if (bundleType.equalsIgnoreCase("products")) type =  ProductsServices.class ;
     	return ServiceFactory.createBundleServiceInstance(type, this ) ;
 	}
 	
