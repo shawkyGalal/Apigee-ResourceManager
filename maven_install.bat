@@ -1,1 +1,1 @@
-mvn install -DskipTests
+mvn install -DskipTests  -Dhttps.proxyHost=10.179.8.20 -Dhttp.proxyPort=8080 -Dhttp.proxyUser=sfoda@moj.gov.sa -Dhttp.proxyPassword=Redsea1!

@@ -1,0 +1,4 @@
+mvn clean package 
+
+cd target 
+java -cp "ResourceManager-jar-with-dependencies.jar;ResourceManager.jar.original;ResourceManager.jar"  com.smartvalue.spring.ResourceManagerSpringApplication
