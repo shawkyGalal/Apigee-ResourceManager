@@ -2,8 +2,12 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Suite">
   <test thread-count="5" name="Test">
-  	<classes>
-        <class name="com.smartvalue.apigee.testNG.NewTest" />
+    <classes>
+      <class name="com.smartvalue.apigee.testNG.Transform"/>
+      <class name="com.smartvalue.apigee.testNG.Delete"/>
+      <class name="com.smartvalue.apigee.testNG.NewTest"/>
+      <class name="com.smartvalue.apigee.testNG.Extract"/>
+      <class name="com.smartvalue.apigee.testNG.Load"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
