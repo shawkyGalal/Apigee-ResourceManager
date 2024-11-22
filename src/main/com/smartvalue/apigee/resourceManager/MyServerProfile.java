@@ -1,5 +1,5 @@
 package com.smartvalue.apigee.resourceManager;
-import io.apigee.buildTools.enterprise4g.utils.ServerProfile;
+//import io.apigee.buildTools.enterprise4g.utils.ServerProfile;
 public class MyServerProfile extends ServerProfile {
 
 	private String oauthHostURL ;

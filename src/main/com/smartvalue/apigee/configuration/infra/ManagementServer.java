@@ -6,10 +6,9 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
-
-import org.springframework.security.crypto.codec.Base64;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
@@ -186,7 +185,7 @@ public class ManagementServer extends Server{
 		{
 			if (this.getInfra().getAuthType().equalsIgnoreCase("Basic"))
 			{
-				authorization = "Basic "+ new String(Base64.encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
+				authorization = "Basic "+ new String(Base64.getEncoder().encode((this.getServerProfile().getCredential_user() + ":" + this.getServerProfile().getCredential_pwd()).getBytes()), Charset.forName("UTF-8")) ; 
 			}
 			else if (this.getInfra().getAuthType().equalsIgnoreCase("OAuth"))
 			{
@@ -451,7 +450,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 				MultipartBody multiPartBody = Unirest.post(this.getServerProfile().getTokenUrl())
 						  .header("Content-Type", "application/x-www-form-urlencoded")
 						  .header("grant_type", "client_credentials")
-						  .header("Authorization", "Basic "+ new String(Base64.encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
+						  .header("Authorization", "Basic "+ new String(Base64.getEncoder().encode((this.getServerProfile().getClientId() + ":" + this.getServerProfile().getClientSecret()).getBytes()), Charset.forName("UTF-8")))
 						  .header("googleIdToken", (googleIdToken != null)? googleIdToken.getPayload().toPrettyString() : "" ) 
 						  .field("grant_type", "client_credentials") ; 
 			  response = sendRequestByPassProxyIfNeeded(multiPartBody.getHttpRequest()) ; 
