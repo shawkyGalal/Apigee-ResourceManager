@@ -4,7 +4,6 @@ import java.nio.charset.Charset;
 
 import java.util.HashMap;
 
-import org.springframework.security.crypto.codec.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -121,7 +120,7 @@ public class Environment extends com.smartvalue.moj.clients.environments.auto.En
 	
 	private String getClientBasicAuth()
 	{
-		return "Basic "+new String(Base64.encode((this.getCredential().getClientId() + ":" + this.getCredential().getClientSecret()).getBytes()), Charset.forName("UTF-8")) ;
+		return "Basic "+new String(java.util.Base64.getEncoder().encode((this.getCredential().getClientId() + ":" + this.getCredential().getClientSecret()).getBytes()), Charset.forName("UTF-8")) ;
 	}
 	
 	private void handleReponseError(HttpResponse<String> response) throws UnirestException
