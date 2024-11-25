@@ -50,11 +50,7 @@ import com.smartvalue.apigee.rest.schema.RollBackable;
 import com.smartvalue.apigee.rest.schema.product.Product;
 import com.smartvalue.apigee.rest.schema.proxy.Proxy;
 import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
-import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
-import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
+import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 
 @RestController
 public class EtlRestServices {
@@ -67,7 +63,8 @@ public class EtlRestServices {
 	
 	private void initialize(String partner , String customer , String infra , String org , String authorizationHeader) throws Exception
 	{
-		AppConfig ac = getAppConfig();  
+		AppConfig ac = getAppConfig();
+		//ac.setMigrationBasePath("C:\\temp\\ApigeeXXX");
 		Infra infraObject = ac.getInfra(partner , customer , infra) ;
     	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
     	ms.setOrgName(org) ; 
@@ -288,7 +285,7 @@ public class EtlRestServices {
     }
 	
 	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/transform/{bundleType}/extractProcess/{exportUuid}")
+	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/transform/{bundleType}/process/{exportUuid}")
     public ResponseEntity<String> transformAllProxies(
     		@RequestHeader("partner")   String partner,
             @RequestHeader("customer")  String customer,
@@ -325,14 +322,14 @@ public class EtlRestServices {
     			}
     	    }
 
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/transformProcess/{transformUUID}")
+	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/process/{sourceProcessId}")
     public ResponseEntity<String> loadAndDeployAll(
     		@RequestHeader("partner")   String partner,
             @RequestHeader("customer")  String customer,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
-            @PathVariable("transformUUID")   String transformUUID, // Transform the result of this exportUuid
+            @PathVariable("sourceProcessId")   String sourceProcessId, // Transform the result of this exportUuid
             @RequestHeader("Authorization") String authorizationHeader ) 
             {
     			try {
@@ -341,11 +338,13 @@ public class EtlRestServices {
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
-    	            	BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType(bundleType) ;  
-    	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(transformUUID) ; 
-    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler() ;
-    	            	bundleObjectService.setDeployUponUpload(true) ; 
-    	            	LoadResults importResults =  bundleObjectService.importAll( importFromFolder, uuid ) ;
+    	            	ApigeeService apigeeService =  ms.getServiceByType(bundleType) ; 
+    	            	if (apigeeService.getClass() == ProxyServices.class || apigeeService.getClass() == SharedFlowServices.class)
+    	            	{  	 ((BundleObjectService) apigeeService).setDeployUponUpload(true) ; 	}
+    	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(sourceProcessId) ; 
+    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + apigeeService.getMigationSubFoler() ;
+    	            	
+    	            	LoadResults importResults =  apigeeService.importAll( importFromFolder, uuid ) ;
     	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
     		       		Helper.serialize(serializePath ,importResults ) ; 
     	            } catch (Exception e) {
@@ -372,6 +371,7 @@ public class EtlRestServices {
          
 	{
 		try {
+			initialize(partner , customer , infra , org, authorizationHeader);
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		ProcessResults pr = (ProcessResults) Helper.deSerializeObject(processResultsFileName); 
    	        return buildJsonResponse(pr.toJsonString(), HttpStatus.OK) ; 

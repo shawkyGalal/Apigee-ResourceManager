@@ -23,7 +23,7 @@ public class AppConfig {
 	private String googleApigeeAPIUrl = "https://apigee.googleapis.com" ; 
 	private static Charset charset = Charset.forName("UTF-8"); //StandardCharsets.UTF_8
 	
-	private static String migrationBasePath = "C:\\temp\\Apigee" ;
+	private  String migrationBasePath ; //= "C:\\temp\\Apigee" ;
 	public static final String ProxiesSubFolder = "proxies" ; 
 	public static final String SharedflowsSubFolder = "sharedflows" ;
 	public static final String PrtoductsSubFolder = "products" ;
@@ -115,7 +115,7 @@ public class AppConfig {
 		
 		System.clearProperty("https.proxyHost") ;
 		System.clearProperty("https.proxyPort") ;
-		Unirest.setProxy(null) ; 
+		//Unirest.setProxy(null) ; 
 	}
 	public void setFileContent(String fileContent2) {
 		 this.fileContent = fileContent2 ; 
@@ -135,11 +135,11 @@ public class AppConfig {
 	public static void setCharset(Charset m_charset) {
 		charset = m_charset;
 	}
-	public static String getMigrationBasePath() {
+	public  String getMigrationBasePath() {
 		return migrationBasePath;
 	}
-	public static void setMigrationBasePath(String migrationBasePath) {
-		AppConfig.migrationBasePath = migrationBasePath;
+	public void setMigrationBasePath(String migrationBasePath) {
+		this.migrationBasePath = migrationBasePath;
 	}
 
 	

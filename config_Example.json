@@ -1,4 +1,5 @@
 {
+	"migrationBasePath" : "C:\\temp\\Apigee",
 	"Partners":[		
 		{  "Name" : "YourCompanyName" , 
 			"Customers" : [

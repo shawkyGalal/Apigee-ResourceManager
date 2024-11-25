@@ -146,7 +146,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 				lr.setSource(objectFile.getAbsolutePath()) ; 
 				System.out.println( ObjectName + ":" +objectFile.getAbsolutePath()  );
 				try {
-				HttpResponse<String> result = importResource(objectFile);
+				HttpResponse<String> result = importResource(objectFile , true);
 				}
 				catch (Exception e) {
 					lr.setFailed(true); 

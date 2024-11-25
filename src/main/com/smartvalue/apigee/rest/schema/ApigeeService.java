@@ -135,7 +135,7 @@ public abstract class ApigeeService {
 		{
 			String objectFileName = apigeeObjectFile.getName();
 			
-			System.out.println("================Tranforming "+this.getApigeeObjectType()+" ==============");
+			System.out.println("================Tranforming "+this.getApigeeObjectType()+ ":" + objectFileName +" ==============");
 			int transformerCount = 1 ; 
 			String tempTramsformedFilePath = outputFolderPath + File.separatorChar +"temp"+ File.separatorChar + "tranformer_"+transformerCount ; 
 			Path sourcePath ; 
@@ -175,6 +175,7 @@ public abstract class ApigeeService {
 				// if No TRansformers found, simply copy the file to destination 
 				sourcePath =  Path.of(inputFolderPath + File.separatorChar + objectFileName);
 				destPath =  Path.of(outputFolderPath + File.separatorChar + objectFileName );
+				Files.createDirectories(destPath); 
 				Files.copy(sourcePath, destPath , StandardCopyOption.REPLACE_EXISTING);
 			}
 			
@@ -220,8 +221,10 @@ public abstract class ApigeeService {
 			lr = new LoadResult();
 			lr.setSource(resourceFile.getAbsolutePath());
 			HttpResponse<String> productImportresult = null ; 
-			try { productImportresult =  importResource(resourceFile) ; 
-				lr.setFailed(false);
+			try { 
+				System.out.println("==Importing " + resourceFile );
+				productImportresult =  importResource(resourceFile , true) ; 
+				lr.setHttpResponse(productImportresult);
 			}
 			catch (Exception e) {
 				lr.setFailed(true); 
@@ -236,7 +239,7 @@ public abstract class ApigeeService {
 	}
 	
 	
-	protected HttpResponse<String>  importResource(File resourceFile) throws Exception  {
+	protected HttpResponse<String>  importResource(File resourceFile , boolean replaceIfExist) throws Exception  {
 		Path path = Paths.get(resourceFile.getAbsolutePath()); 
 		String body = new String(Files.readAllBytes(path));
 		String apiPath = this.getResourcePath() ; 

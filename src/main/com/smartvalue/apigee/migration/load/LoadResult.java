@@ -7,9 +7,9 @@ import com.smartvalue.apigee.migration.ProcessResult;
 
 public class LoadResult extends ProcessResult {
 	
-	public String extractEnvNameFromsource()
+	public String extractEnvNameFromsource(AppConfig appConfig)
 	{
-		String  xx  = this.getSource().substring(AppConfig.getMigrationBasePath().length()) ;
+		String  xx  = this.getSource().substring(appConfig.getMigrationBasePath().length()) ;
 		StringTokenizer st = new StringTokenizer(xx , "\\"); 
 		return st.getTokenList().get(5); 
 	}

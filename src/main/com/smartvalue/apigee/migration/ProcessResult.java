@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.smartvalue.apigee.migration.load.LoadResults;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 
 public class ProcessResult implements Serializable {
 
@@ -13,7 +14,8 @@ public class ProcessResult implements Serializable {
 	private LoadResults notMatchedResult ; 
 	private String source ;
 	private String destination ;
-	private transient  HttpResponse<String> httpResponse ; 
+	//private transient  HttpResponse<String> httpResponse ; 
+	private String responseBody ; 
 	
 	public ProcessResult(Exception e) {
 		this.setFailed(true);
@@ -101,12 +103,22 @@ public class ProcessResult implements Serializable {
 		
 	}
 	
-	public HttpResponse<String> getHttpResponse() {
-		return httpResponse;
-	}
+	//public HttpResponse<String> getHttpResponse() {
+	//	return httpResponse;
+	//}
 
 	public void setHttpResponse(HttpResponse<String> httpResponse) {
-		this.httpResponse = httpResponse;
+		//this.httpResponse = httpResponse;
+		if (httpResponse != null)
+		{
+			boolean success = Helper.isConsideredSuccess(httpResponse.getStatus()) ;
+			this.setFailed(!success);
+			this.responseBody = httpResponse.getBody();
+		}
+	}
+
+	public String getResponseBody() {
+		return responseBody;
 	}
 	
 }

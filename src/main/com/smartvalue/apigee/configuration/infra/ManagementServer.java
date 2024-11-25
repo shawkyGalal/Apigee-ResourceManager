@@ -65,7 +65,14 @@ public class ManagementServer extends Server{
 	public void setGoogleIdToken(GoogleIdToken googleIdToken) {
 		this.googleIdToken = googleIdToken;
 	}
-	private AppConfig appConfig ;
+	public AppConfig appConfig ;
+	protected void setAppConfig(AppConfig appConfig) {
+		this.appConfig = appConfig;
+	}
+
+	public AppConfig getAppConfig() {
+		return appConfig;
+	}
 	private boolean onPremise = true ;  // New Attribute indicate wheather this management server is for an onpremise or for a google cloud
 	private boolean internetProxyCleared = true; 
 	
@@ -257,12 +264,12 @@ public class ManagementServer extends Server{
 		}	
 		
 		HttpResponse<String> response = request.asString();
-		response = handleResponseErrors(request, response) ; 
+		response = handleExpiredTokenResponse(request, response) ; 
 		return response ; 
 		
 	}
 	
-	public HttpResponse<String>  handleResponseErrors(HttpRequest request , HttpResponse<String> response) throws IOException, UnirestException 
+	public HttpResponse<String>  handleExpiredTokenResponse(HttpRequest request , HttpResponse<String> response) throws IOException, UnirestException 
 	{
 		HttpResponse<String> result = response; 
 		if (! Helper.isConsideredSuccess(response.getStatus()) )   
@@ -272,8 +279,10 @@ public class ManagementServer extends Server{
 				this.reNewAccessToken() ; 
 				result = request.asString(); 
 			}
-			else 
-			throw new UnirestException ( response.getBody()) ; 
+			//else 
+			//{throw new UnirestException ( response.getBody()) ; 
+			//}
+			
 		}
 		
 		return result ; 
@@ -519,7 +528,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		Class<? extends ApigeeService> type = null ;
 		if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
 		else if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
-		else if (bundleType.equalsIgnoreCase("products")) type =  ProductsServices.class ;
+		else if (bundleType.equalsIgnoreCase("products") || bundleType.equalsIgnoreCase("apiproducts") ) type =  ProductsServices.class ;
     	return ServiceFactory.createBundleServiceInstance(type, this ) ;
 	}
 	
@@ -703,7 +712,7 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public String getMigPathUpToOrgName(String processId) throws IOException
 	{
 		String userEmail = getLoggedInUserEmail() ; 
-		return  AppConfig.getMigrationBasePath() + ((userEmail != null)?  "\\" + userEmail  : "") 
+		return  appConfig.getMigrationBasePath() + ((userEmail != null)?  "\\" + userEmail  : "") 
 												 + ((processId != null )? "\\" + processId  : "") 
 												 + "\\"+ this.getInfraName() 
 												 + "\\"+this.getOrgName() ;  
@@ -716,12 +725,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public String getSerlizeDeplyStateFileName(String processId) throws IOException
 	{
-		return AppConfig.getMigrationBasePath() + "\\" + processId + "\\_deploysStatus.ser" ; 
+		return appConfig.getMigrationBasePath() + "\\" + processId + "\\_deploysStatus.ser" ; 
 	}
 	
 	public String getSerlizeProcessResultFileName( String processId) throws IOException
 	{  	
-		return AppConfig.getMigrationBasePath() + "\\" + processId + "\\_ProcessResults.ser" ; 
+		return appConfig.getMigrationBasePath() + "\\" + processId + "\\_ProcessResults.ser" ; 
 	}
 
 }

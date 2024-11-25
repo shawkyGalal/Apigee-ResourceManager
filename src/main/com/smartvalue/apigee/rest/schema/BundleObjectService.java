@@ -225,7 +225,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 						{
 							
 							Gson json = new Gson(); 
-							ProxyUploadResponse pur = json.fromJson(lr.getHttpResponse().getBody(), ProxyUploadResponse.class); 
+							ProxyUploadResponse pur = json.fromJson(lr.getResponseBody(), ProxyUploadResponse.class); 
 							//--- Started Deploying the proxy revision to environment 
 							int newRevesion = Integer.parseInt(pur.getRevision());
 							DeployResults dr = this.deployRevision(objectName, envName , newRevesion , true) ;
@@ -495,9 +495,10 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 					 if ( ! loadResult.isFailed())
 					 {
 						 Gson json = new Gson(); 
-						 ProxyUploadResponse pur = json.fromJson(loadResult.getHttpResponse().getBody(), ProxyUploadResponse.class);
+						 ProxyUploadResponse pur = json.fromJson(loadResult.getResponseBody(), ProxyUploadResponse.class);
 						 int newRevesion = Integer.parseInt(pur.getRevision());
-						 String envName = loadResult.extractEnvNameFromsource() ; 
+						 AppConfig appConfig = this.getMs().getAppConfig() ; 
+						 String envName = loadResult.extractEnvNameFromsource(appConfig) ; 
 						 DeployResults deployResults = this.deployRevision(proxyName, envName , newRevesion, true) ;
 						 uploadResults.addAll(deployResults) ; 
 					 }

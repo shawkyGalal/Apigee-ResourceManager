@@ -220,6 +220,7 @@ public class Infra {
 		ms.setServerProfile(m_serverProfile);
 		Unirest.setTimeouts(m_serverProfile.getConnectionTimeout(), m_serverProfile.getSocketTimeout());
 		ms.setInfra(this);
+		ms.setAppConfig(this.getParentCustomer().getParentConfig());
 		//boolean oauthType = ms.getServerProfile().getAuthType() != null && ms.getServerProfile().getAuthType().equalsIgnoreCase("OAuth") ; 
 		//Boolean isGoogleCloudBoolean = this.isGooglecloud() ; 
 		//boolean webLogin = accessTokenSource!= null && accessTokenSource.equalsIgnoreCase(AppConfig.GoogleWebAppCredential) ;
