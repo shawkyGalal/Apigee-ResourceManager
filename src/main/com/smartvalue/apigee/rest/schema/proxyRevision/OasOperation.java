@@ -1,5 +1,6 @@
 package com.smartvalue.apigee.rest.schema.proxyRevision;
 
+import java.io.Serializable;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -7,7 +8,7 @@ import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 
 import io.swagger.v3.oas.models.Operation;
 
-public class OasOperation {
+public class OasOperation implements Serializable{
 
 	private static final String UUID_SEPERATOR = "@@@";
 	private String path; 

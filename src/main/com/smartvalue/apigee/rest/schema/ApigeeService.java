@@ -249,7 +249,7 @@ public abstract class ApigeeService {
 		
 	}
 	
-	public ExportResult  exportResource(String resourceId , String destFolder) throws Exception 
+	public ExportResults  exportResource(String resourceId , String destFolder) throws UnirestException, IOException 
 	{
 		ExportResult er  = new ExportResult();
 		HttpResponse<String> response = null ; 
@@ -275,7 +275,9 @@ public abstract class ApigeeService {
 			er.setHttpResponse(response);
 
 		}
-		return er ; 
+		ExportResults ers = new ExportResults("Export Object ") ; 
+		ers.add(er) ; 
+		return ers ; 
 		
 	}
 
@@ -288,7 +290,7 @@ public abstract class ApigeeService {
 		for (String resourceId : getAllResources() )
 		{
 			System.out.println("Exporting "+this.getApigeeObjectType()+" : "  + resourceId );
-			exportResults.add(exportResource(resourceId , destFolder) ); 
+			exportResults.addAll(exportResource(resourceId , destFolder) ); 
 		}
 		
 		return exportResults ; 

@@ -43,9 +43,9 @@ public class Flow extends BundleElement {
     @JsonProperty("name")
     private String name;
     @JsonProperty("request")
-    private Request request;
+    private transient Request request;
     @JsonProperty("response")
-    private Response response;
+    private transient Response response;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
@@ -259,7 +259,7 @@ public class Flow extends BundleElement {
 		return result ; 
 	}
 	
-	private com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint parentProxyEndPoint ; 
+	private transient com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint parentProxyEndPoint ; 
 	
 	public com.smartvalue.apigee.rest.schema.proxyEndPoint.ProxyEndpoint getParentProxyEndPoint() {
 		return parentProxyEndPoint;

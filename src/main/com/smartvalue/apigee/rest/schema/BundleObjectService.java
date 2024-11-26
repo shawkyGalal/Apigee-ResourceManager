@@ -597,5 +597,14 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		}
 		return exportResults;
 	}
+	
+	public ExportResults  exportResource(String resourceId , String folderDest) throws UnirestException, IOException
+	{
+		
+		RevisionedObject revisionedObject;
+		revisionedObject = this.getOrganization().getRevisionedObject(this.getApigeeObjectType() ,  resourceId);
+		return revisionedObject.exportAllDeployedRevisions(folderDest) ;
+		
+	}
 
 }

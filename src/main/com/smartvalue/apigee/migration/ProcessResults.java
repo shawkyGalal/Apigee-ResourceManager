@@ -16,8 +16,9 @@ import com.smartvalue.apigee.migration.transformers.TransformResult;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.proxy.DeleteResult;
 import com.smartvalue.swagger.v3.parser.util.FifoMap;
+import com.smartvalue.swagger.v3.parser.util.Jsonable;
 
-public class ProcessResults extends ArrayList<ProcessResult> implements Serializable{
+public class ProcessResults extends ArrayList<ProcessResult> implements Serializable , Jsonable {
 	
 	/**
 	 * 
@@ -29,6 +30,13 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
 	public ProcessResults (String desc , UUID m_uuid)
 	{
 		this.uuid = m_uuid ; 
+		this.description = desc ; 
+		subProcessResults = new ArrayList<ProcessResults> (); 
+	}
+	
+	public ProcessResults (String desc)
+	{
+		this.uuid = UUID.randomUUID() ; 
 		this.description = desc ; 
 		subProcessResults = new ArrayList<ProcessResults> (); 
 	}

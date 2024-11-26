@@ -8,7 +8,11 @@ public class ExportResults extends ProcessResults{
 
 	public ExportResults(String desc, UUID m_uuid) {
 		super(desc, m_uuid);
-		// TODO Auto-generated constructor stub
 	}
+
+	public ExportResults(String desc) {
+		super(desc );
+	}
+
 
 }
