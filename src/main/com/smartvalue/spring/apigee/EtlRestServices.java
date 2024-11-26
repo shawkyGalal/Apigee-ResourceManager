@@ -264,7 +264,7 @@ public class EtlRestServices {
 	    	Thread thread = new Thread(() -> {
             try {
 	            	ApigeeService apigeeService = ms.getServiceByType(bundleType) ; 
-	            	String destFolder = ms.getMigPathUpToOrgName(uuid.toString())+"\\"+ apigeeService.getMigationSubFoler() ; 
+	            	String destFolder = ms.getMigPathUpToOrgName(uuid.toString())+File.separator+ apigeeService.getMigationSubFoler() ; 
 	            	ExportResults result = apigeeService.exportAll( destFolder , uuid ) ;
 	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
 	            	Helper.serialize(serializePath ,result ) ; 
@@ -302,8 +302,8 @@ public class EtlRestServices {
     	            System.out.println("This is a new thread.");
     	            try {
     	            	ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ;  
-    	            	String source = ms.getMigPathUpToOrgName(exportUuid) +"\\" + bundleObjectService.getMigationSubFoler(); 
-    	            	String dest = ms.getMigPathUpToOrgName(uuid.toString()) +"\\"+ BundleObjectService.TransformedFoldername + "\\" + bundleObjectService.getMigationSubFoler();
+    	            	String source = ms.getMigPathUpToOrgName(exportUuid) +File.separator + bundleObjectService.getMigationSubFoler(); 
+    	            	String dest = ms.getMigPathUpToOrgName(uuid.toString()) +File.separator+ BundleObjectService.TransformedFoldername + File.separator + bundleObjectService.getMigationSubFoler();
     	            	TransformationResults transformationResults =  bundleObjectService.transformAll(source, dest, uuid ) ;
     	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
     		       		Helper.serialize(serializePath ,transformationResults ) ; 
@@ -342,7 +342,7 @@ public class EtlRestServices {
     	            	if (apigeeService.getClass() == ProxyServices.class || apigeeService.getClass() == SharedFlowServices.class)
     	            	{  	 ((BundleObjectService) apigeeService).setDeployUponUpload(true) ; 	}
     	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(sourceProcessId) ; 
-    	            	String importFromFolder = upToOrgNamePath +"\\"+ BundleObjectService.TransformedFoldername + "\\" + apigeeService.getMigationSubFoler() ;
+    	            	String importFromFolder = upToOrgNamePath +File.separator+ BundleObjectService.TransformedFoldername + File.separator + apigeeService.getMigationSubFoler() ;
     	            	
     	            	LoadResults importResults =  apigeeService.importAll( importFromFolder, uuid ) ;
     	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
@@ -422,7 +422,7 @@ public class EtlRestServices {
     	try 
     	{
 	    	String sourceFolder= "C:\\temp\\source" ; 
-	    	File originalFile = new File(sourceFolder + "\\" +zipBundle.getOriginalFilename());
+	    	File originalFile = new File(sourceFolder + File.separator +zipBundle.getOriginalFilename());
 	 	    zipBundle.transferTo(originalFile);
 	        
 	        String destFolder= "C:\\temp\\dest" ;
@@ -430,14 +430,14 @@ public class EtlRestServices {
 	        
 	        ArrayList<ApigeeObjectTransformer> transformersObj = buildTransformers(clazz , transformers) ; 
 	        
-			TransformationResults trs = BundleObjectService.transformBundleObject(sourceFolder+"\\" + originalFile.getName(),  destFolder  , transformersObj ) ;
+			TransformationResults trs = BundleObjectService.transformBundleObject(sourceFolder+File.separator + originalFile.getName(),  destFolder  , transformersObj ) ;
 			TransformationResults failedResults = trs.filterFailed(true); 
 			if (failedResults.size() > 0 )
 			{
 				throw new Exception("Transformation Error : " + failedResults.get(0).getError()) ; 
 			}
 			
-	        File transformedFile = new File(destFolder+"\\" + originalFile.getName()) ; 
+	        File transformedFile = new File(destFolder+File.separator + originalFile.getName()) ; 
 	        
 	        byte[] processedFileContent = Files.readAllBytes(transformedFile.toPath());
 	

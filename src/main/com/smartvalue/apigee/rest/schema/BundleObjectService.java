@@ -467,7 +467,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		 
 		 ProcessResults overallResults = new ProcessResults("Perform Complete ETL on " + proxyName  , uuid); 
 		 RevisionedObject ro =  this.getRevisionedObject(proxyName) ; 
-		 String exportDest = this.getMs().getMigPathUpToOrgName(uuid.toString())  + "\\"+ this.getMigationSubFoler() ; 
+		 String exportDest = this.getMs().getMigPathUpToOrgName(uuid.toString())  + File.separator+ this.getMigationSubFoler() ; 
 		 ExportResults ers =  ro.exportAllDeployedRevisions(exportDest);
 		 overallResults.addAll(ers); 
 		 
@@ -487,7 +487,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		 
 		 for (ProcessResult transformResult : trnsformResults )
 		 {
-			 String source = transformResult.getDestination() +"\\"+ proxyName+".zip" ;
+			 String source = transformResult.getDestination() +File.separator+ proxyName+".zip" ;
 			 if (! transformResult.isFailed())
 			 {
 				 loadResult = this.importObject(source, proxyName) ; 

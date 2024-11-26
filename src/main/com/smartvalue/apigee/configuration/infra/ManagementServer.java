@@ -10,6 +10,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.github.jknack.handlebars.internal.Files;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -712,25 +713,25 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public String getMigPathUpToOrgName(String processId) throws IOException
 	{
 		String userEmail = getLoggedInUserEmail() ; 
-		return  appConfig.getMigrationBasePath() + ((userEmail != null)?  "\\" + userEmail  : "") 
-												 + ((processId != null )? "\\" + processId  : "") 
-												 + "\\"+ this.getInfraName() 
-												 + "\\"+this.getOrgName() ;  
+		return  appConfig.getMigrationBasePath() + ((userEmail != null)?  File.separator + userEmail  : "") 
+												 + ((processId != null )? File.separator + processId  : "") 
+												 + File.separator+ this.getInfraName() 
+												 + File.separator+this.getOrgName() ;  
 	}
 	
 	public String getTransformedPath(String processId) throws IOException
 	{
-		return getMigPathUpToOrgName(processId) + "\\" + ApigeeService.TransformedFoldername ; 
+		return getMigPathUpToOrgName(processId) + File.separator + ApigeeService.TransformedFoldername ; 
 	}
 	
 	public String getSerlizeDeplyStateFileName(String processId) throws IOException
 	{
-		return appConfig.getMigrationBasePath() + "\\" + processId + "\\_deploysStatus.ser" ; 
+		return appConfig.getMigrationBasePath() + File.separator + processId + File.separator+"_deploysStatus.ser" ; 
 	}
 	
 	public String getSerlizeProcessResultFileName( String processId) throws IOException
 	{  	
-		return appConfig.getMigrationBasePath() + "\\" + processId + "\\_ProcessResults.ser" ; 
+		return appConfig.getMigrationBasePath() + File.separator + processId + File.separator+"_ProcessResults.ser" ; 
 	}
 
 }

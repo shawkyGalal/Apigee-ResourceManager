@@ -1,5 +1,7 @@
 package com.smartvalue.apigee.testNG;
 
+import java.io.File;
+
 import org.testng.annotations.BeforeClass;
 
 import com.smartvalue.apigee.configuration.AppConfig;
@@ -16,8 +18,8 @@ public class ApigeeTest {
 	private static final String User_Email= "sfoda@moj.gov.sa" ; 
 	protected Infra sourceInfra ; 
 	protected ManagementServer sourceMngServer ;
-	protected static final String DEST_FOLDER_NAME 		= ac.getMigrationBasePath() +"\\" + User_Email +"\\"+SOURCE_INFRA_NAME +"\\"+SOURCE_Org_NAME;
-	protected static final String TRANSFORM_FOLDER_NAME = DEST_FOLDER_NAME +"\\Transformed" ;
+	protected static final String DEST_FOLDER_NAME 		= ac.getMigrationBasePath() +File.separator + User_Email +File.separator+SOURCE_INFRA_NAME +File.separator+SOURCE_Org_NAME;
+	protected static final String TRANSFORM_FOLDER_NAME = DEST_FOLDER_NAME +File.separator+"Transformed" ;
 	
 	
 	protected static final String DEST_INFRA_NAME = "Gcloud(shawky.foda@gmail.com)"; // "VMWare"  
