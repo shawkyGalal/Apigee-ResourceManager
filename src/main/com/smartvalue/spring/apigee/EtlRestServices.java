@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.http.HttpHeaders;
@@ -59,21 +58,24 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
-import com.smartvalue.swagger.v3.parser.util.Jsonable;
 
 @RestController
 public class EtlRestServices {
 
+	private static final String DEFAULT_PARTNER = "MasterWorks";
+	private static final String DEFAULT_CUSTOMER = "MOJ";
 	ManagementServer  ms ;
 	private AppConfig getAppConfig() throws FileNotFoundException, IOException {
 		
 		return AppConfigFactory.create( "config.json" , AppConfig.class);
 	}
 	
-	private void initialize(String partner , String customer , String infra , String org , String authorizationHeader) throws Exception
+	private void initialize(String partner , String customer , String infra , String org , String authorizationHeader , String migrationBasePath) throws Exception
 	{
+		if(partner == null) partner = DEFAULT_PARTNER ;
+		if (customer == null) customer = DEFAULT_CUSTOMER; 
 		AppConfig ac = getAppConfig();
-		//ac.setMigrationBasePath("C:\\temp\\ApigeeXXX");
+		if (migrationBasePath != null) ac.setMigrationBasePath(migrationBasePath);
 		Infra infraObject = ac.getInfra(partner , customer , infra) ;
     	ms = infraObject.getManagementServer(infraObject.getRegions().get(0).getName()) ;
     	ms.setOrgName(org) ; 
@@ -104,8 +106,9 @@ public class EtlRestServices {
 	 */
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}/{objectName}")
     public ResponseEntity<String> etlBundle(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -114,7 +117,7 @@ public class EtlRestServices {
          
     )  {
 		try {
-		initialize(partner , customer , infra , org, authorizationHeader); 
+		initialize(partner , customer , infra , org, authorizationHeader , migrationBasePath); 
     	UUID uuid = UUID.randomUUID(); 
     	Thread thread = new Thread(() -> {
         System.out.println("Starting the complete ETL Process on " + objectName );
@@ -138,8 +141,9 @@ public class EtlRestServices {
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}")
     public ResponseEntity<String> etlSetOfBundles(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -148,7 +152,7 @@ public class EtlRestServices {
          
     )  {
 		try {
-		initialize(partner , customer , infra , org, authorizationHeader); 
+		initialize(partner , customer , infra , org, authorizationHeader , migrationBasePath); 
     	UUID uuid = UUID.randomUUID(); 
     	Gson gson = new Gson(); 
     	ArrayList<String> ObjectsNameList = (ArrayList<String>) gson.fromJson(ObjectsNameListStr , ArrayList.class) ; 
@@ -181,8 +185,9 @@ public class EtlRestServices {
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}")
     public ResponseEntity<String> rollBackAll(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -190,7 +195,7 @@ public class EtlRestServices {
             @RequestHeader("Authorization")  String authorizationHeader
     )  {
 		try {
-		initialize(partner , customer , infra , org, authorizationHeader);  
+		initialize(partner , customer , infra , org, authorizationHeader , migrationBasePath);  
     	UUID uuid = UUID.randomUUID(); 
     	Thread thread = new Thread(() -> 
 	    	{
@@ -216,8 +221,9 @@ public class EtlRestServices {
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/{objectName}/{deployUUID}")
     public ResponseEntity<String> rollBackSingleEtlBundle(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -226,7 +232,7 @@ public class EtlRestServices {
             @RequestHeader("Authorization")  String authorizationHeader
     )  {
 		try {
-		initialize(partner , customer , infra , org, authorizationHeader);  
+		initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);  
     	UUID uuid = UUID.randomUUID(); 
     	Thread thread = new Thread(() -> 
 	    	{
@@ -261,8 +267,9 @@ public class EtlRestServices {
 	 */
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/export/{bundleType}/")
     public ResponseEntity<String> exportAll(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -270,7 +277,7 @@ public class EtlRestServices {
          
     )  {
 		try {
-			initialize(partner , customer , infra , org, authorizationHeader); 
+			initialize(partner , customer , infra , org, authorizationHeader , migrationBasePath); 
 	    	UUID uuid = UUID.randomUUID(); 
 	    	Thread thread = new Thread(() -> {
             try {
@@ -298,8 +305,9 @@ public class EtlRestServices {
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/transform/{bundleType}/process/{exportUuid}")
     public ResponseEntity<String> transformAllProxies(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -307,7 +315,7 @@ public class EtlRestServices {
             @RequestHeader("Authorization") String authorizationHeader ) 
             {
     			try {
-    			initialize(partner , customer , infra , org, authorizationHeader);  
+    			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);  
     			UUID uuid = UUID.randomUUID(); 
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
@@ -335,8 +343,9 @@ public class EtlRestServices {
 
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/process/{sourceProcessId}")
     public ResponseEntity<String> loadAndDeployAll(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("bundleType") String bundleType,
@@ -344,7 +353,7 @@ public class EtlRestServices {
             @RequestHeader("Authorization") String authorizationHeader ) 
             {
     			try {
-    			initialize(partner , customer , infra , org, authorizationHeader);  
+    			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);  
     			UUID uuid = UUID.randomUUID(); 
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
@@ -371,10 +380,11 @@ public class EtlRestServices {
     			}
     	    }
 	
-	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/proesses/{processUuid}/logs")
+	@GetMapping("/apigee/infras/{infra}/orgs/{org}/proesses/{processUuid}/logs")
     public ResponseEntity<String> getProcessResults(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("processUuid")   String processUuid, // Transform the result of this exportUuid
@@ -382,7 +392,7 @@ public class EtlRestServices {
          
 	{
 		try {
-			initialize(partner , customer , infra , org, authorizationHeader);
+			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		Object obj = Helper.deSerializeObject(processResultsFileName); 
     		
@@ -398,10 +408,11 @@ public class EtlRestServices {
     	}
 	}
 	
-	@GetMapping("/apigee/migrate/infras/{infra}/orgs/{org}/processes/{loadUuid}/deployHistory")
+	@GetMapping("/apigee/infras/{infra}/orgs/{org}/processes/{loadUuid}/deployHistory")
     public ResponseEntity<String> getDeployStatus(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("loadUuid")   String loadUuid, // Transform the result of this exportUuid
@@ -409,7 +420,7 @@ public class EtlRestServices {
          
 	{
 		try {
-			initialize(partner , customer , infra , org, authorizationHeader);
+			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
     		String processResultsFileName =    ms.getSerlizeDeplyStateFileName(loadUuid) ;
     		DeploymentsStatus ds = (DeploymentsStatus) Helper.deSerializeObject(processResultsFileName); 
    	        return buildJsonResponse(ds.toJsonString() , HttpStatus.OK) ; 
@@ -533,8 +544,9 @@ public class EtlRestServices {
 	*/
 	@GetMapping("/apigee/infras/{infra}/orgs/{org}/{objectType}")
     public ResponseEntity<String> ListObjects(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
             @PathVariable("objectType") String objectType,
@@ -543,7 +555,7 @@ public class EtlRestServices {
 	{
 		HashMap<String , String > result = new HashMap<String , String > () ; 
 		try {
-			initialize(partner , customer , infra , org, authorizationHeader);
+			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
 			System.out.println("=============Processing Org :" + org +"===============" );
 			ApigeeService apigeeService =  ms.getServiceByType(objectType) ;
     		ArrayList<String> allNames = apigeeService.getAllResources() ; 
@@ -574,23 +586,22 @@ public class EtlRestServices {
 	
 	@PutMapping("/apigee/infras/{infra}/orgs/{org}/products/processes/{operation}/wildCardScopes")
     public ResponseEntity<String> updateLegacyProductScopes(
-    		@RequestHeader("partner")   String partner,
-            @RequestHeader("customer")  String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  	String infra,
             @PathVariable("org") 		String org,
             @PathVariable("operation")  String operation,
             @RequestHeader("Authorization") String authorizationHeader ) 
-         
 	{
 		HashMap<String , String > result = new HashMap<String , String > () ; 
 		try {
-			initialize(partner , customer , infra , org, authorizationHeader);
+			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
 			ApigeeService apigeeService =  ms.getServiceByType("products") ;
-    		ArrayList<String> allNames = apigeeService.getAllResources() ; 
-    		for (String objectName : allNames )
+    		ArrayList<String> allProductsNames = apigeeService.getAllResources() ; 
+    		for (String productName : allProductsNames )
     		{	
-    			System.out.println("Processing Object :" + objectName );
-    			ApigeeComman  apigeeComman =  apigeeService.getResource(objectName , Helper.mapObjectTypeToClass("products")) ; 
+    			ApigeeComman  apigeeComman =  apigeeService.getResource(productName , Helper.mapObjectTypeToClass("products")) ; 
     			Product  product = (Product) apigeeComman ;
     			List<String> scopes = product.getScopes() ; 
     			List<String> proxies = product.getProxies(); 
@@ -598,12 +609,13 @@ public class EtlRestServices {
     			try {
     				UUID.fromString(product.getName()) ; 
     				autoGeneratedProduct = true ; 
-    				System.out.print("..... No Action " );
     			}
     			catch (Exception e) {}
     			if (! autoGeneratedProduct) // Start Updating the legacy products 
     			{
-	    			for (String proxy : proxies)
+    				String productJsonStrBeforeUpdate = product.toJsonString();
+    				System.out.print( "Processing Product : " + productName  );
+    				for (String proxy : proxies)
 	    			{
 	    				String proxyAllFlowsScope = proxy + "."+ Helper.WILD_CARD_OAUTHS_COPE  ;
 	    				if(operation.equalsIgnoreCase("add"))
@@ -616,7 +628,7 @@ public class EtlRestServices {
 	    			try { Thread.sleep(1000); // 1000 milliseconds = 1 second  To Allow for Service Quota Validation 
 	    			} catch (InterruptedException e) { e.printStackTrace(); }
 	    			HttpResponse<String> response = ms.getPutHttpResponse(path,  productJsonStr , "application/json") ; 
-	    			result.put(objectName, response.toString()) ;
+	    			result.put(productName, response.toString()) ;
     			}
    			}
    		
@@ -630,8 +642,9 @@ public class EtlRestServices {
 	
 	@PostMapping("/apigee/infras/{infra}/orgs/{org}/check/proxy/docWithoutService")
     public ResponseEntity<String> checkConsistancy(
-    		@RequestHeader("partner") String partner,
-            @RequestHeader("customer")   String customer,
+    		@RequestHeader(value = "partner" , required = false )   String partner,
+            @RequestHeader(value = "customer", required = false )  String customer,
+            @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
             @RequestBody() String ObjectsNameListStr ,  
@@ -639,7 +652,7 @@ public class EtlRestServices {
          
     )  {
 		try {
-		initialize(partner , customer , infra , org, authorizationHeader); 
+		initialize(partner , customer , infra , org, authorizationHeader , migrationBasePath); 
     	UUID uuid = UUID.randomUUID(); 
     	Gson gson = new Gson(); 
     	ArrayList<String> ObjectsNameList = (ArrayList<String>) gson.fromJson(ObjectsNameListStr , ArrayList.class) ; 
