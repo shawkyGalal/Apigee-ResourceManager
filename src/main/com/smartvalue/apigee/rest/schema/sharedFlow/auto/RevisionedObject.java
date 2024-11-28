@@ -29,13 +29,17 @@ public abstract class RevisionedObject extends ApigeeComman {
 	public abstract List<String> getRevision(); 
 	public abstract String getName(); 
 	
-	public void export(int revision , String folderDest) throws UnirestException, IOException
+	public String export(int revision , String folderDest) throws UnirestException, IOException
 	{
+		String bundleFile ; 
 		HttpResponse<InputStream> result = null; 
 		String apiPath = getResourcePath()+"/revisions/"+revision+"?format=bundle" ; 
 		ManagementServer ms = this.getManagmentServer() ; 
 		result = ms.getGetHttpBinResponse(apiPath ) ;
-		Files.copy(result.getBody(), Paths.get(folderDest + this.getName()+".zip") , java.nio.file.StandardCopyOption.REPLACE_EXISTING );
+		bundleFile = folderDest + this.getName()+".zip" ; 
+		Files.copy(result.getBody(), Paths.get(bundleFile) , java.nio.file.StandardCopyOption.REPLACE_EXISTING );
+		
+		return bundleFile ; 
 	}
 	
 	/**
