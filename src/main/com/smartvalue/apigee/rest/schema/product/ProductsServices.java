@@ -18,16 +18,8 @@ import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class ProductsServices extends com.smartvalue.apigee.rest.schema.ApigeeService {
 
-
-
-
-
-public ProductsServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
-	}
-
 public ProductsServices(ManagementServer ms) {
-	super(ms, ms.getOrgName());
+	super(ms);
 }
 
 public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, IOException

@@ -136,6 +136,7 @@ public class AppConfig {
 		charset = m_charset;
 	}
 	public  String getMigrationBasePath() {
+		if(migrationBasePath == null) {migrationBasePath = "C:\\temp\\Apigee" ; }
 		return migrationBasePath;
 	}
 	public void setMigrationBasePath(String migrationBasePath) {

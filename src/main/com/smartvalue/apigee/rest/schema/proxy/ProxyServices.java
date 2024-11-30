@@ -38,10 +38,6 @@ import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse
 
 public class ProxyServices extends BundleObjectService implements Deployable {
 
-
-	public ProxyServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
-	}
 	public ProxyServices(ManagementServer ms) {
 		super(ms);
 	}

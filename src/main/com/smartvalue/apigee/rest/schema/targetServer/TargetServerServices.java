@@ -14,8 +14,9 @@ import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 
 public class TargetServerServices  extends EnvironmentScopeService {
 	
-	public TargetServerServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
+	
+	public TargetServerServices(ManagementServer ms) {
+		super(ms);
 	}
 
 
@@ -48,4 +49,5 @@ public class TargetServerServices  extends EnvironmentScopeService {
 		return null;
 	}
 
+	
 }

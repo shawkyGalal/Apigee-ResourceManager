@@ -48,7 +48,7 @@ public abstract class ApigeeService {
 	protected String envName ; 
 	private PrintStream printStream = System.out; 
 	private Organization organization ; 
-	protected String resourcePath ; 
+	//protected String resourcePath ; 
 	
 	/*
 	ArrayList<ApigeeObjectTransformer> transformers = new ArrayList<ApigeeObjectTransformer>();
@@ -83,10 +83,7 @@ public abstract class ApigeeService {
 		this.ms = ms ;
 	}
 	
-	public  ApigeeService(ManagementServer ms , String m_orgName) {
-		this.ms = ms ;
-	}
-	
+		
 	public  ApigeeService(ManagementServer ms , String m_orgName, String m_envName) {
 		this.ms = ms;
 		this.envName = m_envName ; 
@@ -193,7 +190,8 @@ public abstract class ApigeeService {
 	
 	public ArrayList<String> getAllResources() throws Exception 
 	{
-		ArrayList<String> allResourcesResponse = this.getMs().executeGetMgmntAPI(getResourcePath() , ArrayList.class) ;
+		String resourcePath = getResourcePath() ; 
+		ArrayList<String> allResourcesResponse = this.getMs().executeGetMgmntAPI( resourcePath , ArrayList.class) ;
 		return allResourcesResponse ; 
 	}
 	

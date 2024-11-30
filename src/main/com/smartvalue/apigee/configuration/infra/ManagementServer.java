@@ -32,6 +32,7 @@ import com.smartvalue.apigee.rest.schema.AccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeAccessToken;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
+import com.smartvalue.apigee.rest.schema.EnvironmentScopeService;
 import com.smartvalue.apigee.rest.schema.application.ApplicationServices;
 import com.smartvalue.apigee.rest.schema.developer.DeveloperServices;
 import com.smartvalue.apigee.rest.schema.environment.Environment;
@@ -490,12 +491,12 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	**/
 	public ApigeeService getProductServices()
 	{
-		return  new ProductsServices( this, this.getOrgName()) ; 
+		return  new ProductsServices( this) ; 
 	}
 	
 	public ApigeeService getProductServices(String m_orgName)
 	{
-		return  new ProductsServices( this, m_orgName) ; 
+		return  new ProductsServices( this) ; 
 	}
 
 	public ServerServices  getServerServices( )
@@ -505,47 +506,53 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	
 	public ApigeeService getKeyValueMapServices()
 	{
-		return  new KvmServices(this , this.getOrgName()) ; 
+		return  new KvmServices(this) ; 
 	}
 	
 	public ApigeeService getKeyValueMapServices(String m_orgName)
 	{
-		return  new KvmServices(this , m_orgName) ; 
+		return  new KvmServices(this ) ; 
 	}
 	
 	public BundleObjectService getProxyServices()
 	{
-		return  new ProxyServices(this , this.getOrgName()) ; 
+		return  new ProxyServices(this) ; 
 	}
 	
 	public BundleObjectService getProxyServices(String m_orgName )
 	{
 		this.setOrgName(m_orgName);
-		return  new ProxyServices(this , m_orgName) ; 
+		return  new ProxyServices(this ) ; 
 	}
 	
-	public ApigeeService getServiceByType(String bundleType )
+	public ApigeeService getServiceByType(String bundleType , String envName )
 	{
 		Class<? extends ApigeeService> type = null ;
 		if (bundleType.equalsIgnoreCase("proxies") || bundleType.equalsIgnoreCase("apis")  ) type =  ProxyServices.class ;
 		else if (bundleType.equalsIgnoreCase("sharedFlows")) type =  SharedFlowServices.class ;
 		else if (bundleType.equalsIgnoreCase("products") || bundleType.equalsIgnoreCase("apiproducts") ) type =  ProductsServices.class ;
-    	return ServiceFactory.createBundleServiceInstance(type, this ) ;
+		else if (bundleType.equalsIgnoreCase("targetservers")  ) type =  TargetServerServices.class ;
+		else if (bundleType.equalsIgnoreCase("keyvaluemaps")  ) type =  KvmServices.class ;
+		else if (bundleType.equalsIgnoreCase("apps")  ) type =  ApplicationServices.class ;
+		else if (bundleType.equalsIgnoreCase("developers")  ) type =  DeveloperServices.class ;
+		ApigeeService result = ServiceFactory.createBundleServiceInstance(type, this , envName) ;
+		
+    	return  result ;
 	}
 	
 	public BundleObjectService getSharedFlowServices()
 	{
-		return  new SharedFlowServices(this , this.getOrgName() ) ; 
+		return  new SharedFlowServices(this ) ; 
 	}
 	
 	public BundleObjectService getSharedFlowServices(String m_orgName )
 	{	this.setOrgName(m_orgName);
-		return  new SharedFlowServices(this , m_orgName ) ; 
+		return  new SharedFlowServices(this ) ; 
 	}
 	
 	public ApigeeService getApplicationServices()
 	{
-		return  new ApplicationServices(this , this.getOrgName() ) ; 
+		return  new ApplicationServices(this ) ; 
 	}
 	
 	
@@ -553,25 +560,25 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 	public ApigeeService getApplicationServices(String m_orgName )
 	{
 		this.setOrgName(m_orgName);
-		return  new ApplicationServices(this , m_orgName ) ; 
+		return  new ApplicationServices(this ) ; 
 	}
 	
 	public ApigeeService getDevelopersServices() {
-		return  new DeveloperServices(this , this.getOrgName() ) ; 
+		return  new DeveloperServices(this ) ; 
 	}
 	
 	public ApigeeService getDevelopersServices(String m_orgName) {
 		this.setOrgName(m_orgName);
-		return  new DeveloperServices(this , m_orgName ) ; 
+		return  new DeveloperServices(this ) ; 
 	}
 	
 	public ApigeeService getTargetServersServices() {
-		return  new TargetServerServices(this , this.getOrgName()) ; 
+		return  new TargetServerServices(this ) ; 
 	}
 	
 	public ApigeeService getTargetServersServices(String m_orgName) {
 		this.setOrgName(m_orgName);
-		return  new TargetServerServices(this , m_orgName) ; 
+		return  new TargetServerServices(this ) ; 
 	}
 	
 	public ArrayList<ApigeeService> getAllServices(String m_orgName)

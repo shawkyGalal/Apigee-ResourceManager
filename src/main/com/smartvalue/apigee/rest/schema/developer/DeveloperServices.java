@@ -18,8 +18,8 @@ import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class DeveloperServices extends ApigeeService {
 
-	public DeveloperServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
+	public DeveloperServices(ManagementServer ms) {
+		super(ms);
 	}
 
 	@Override
