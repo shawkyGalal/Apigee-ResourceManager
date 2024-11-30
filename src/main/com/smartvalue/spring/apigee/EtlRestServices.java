@@ -58,6 +58,7 @@ import com.smartvalue.apigee.rest.schema.proxy.ProxyServices;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.proxyRevision.OasOperation;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
+import com.smartvalue.spring.ThreadStatusManager;
 
 @RestController
 public class EtlRestServices {
@@ -90,7 +91,6 @@ public class EtlRestServices {
  	    return new ResponseEntity<String>(jsonString, headers , status);
 	}
 
-		
 	    
 	/**
 	 * Perform a complete ETLD - Extract , Transform , Load and Deploy on a bundle object ( proxy or sharedflow ) 
@@ -104,13 +104,15 @@ public class EtlRestServices {
 	 * @param authorizationHeader
 	 * @return
 	 */
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}/{objectName}")
-    public ResponseEntity<String> etlBundle(
+	@PostMapping({"/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}/{objectName}" 
+		        , "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/etl/{bundleType}/{objectName}"  })
+    public ResponseEntity<String> etlApigeeObject(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @PathVariable("objectName") String objectName,
             @RequestHeader("Authorization")  String authorizationHeader
@@ -122,7 +124,7 @@ public class EtlRestServices {
     	Thread thread = new Thread(() -> {
         System.out.println("Starting the complete ETL Process on " + objectName );
         try {
-        		ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ; 
+        		ApigeeService bundleObjectService = ms.getServiceByType(bundleType , env) ; 
 	       		ProcessResults eTLResult = bundleObjectService.performETL(objectName , uuid);
 	       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
 	       		Helper.serialize(serializePath ,eTLResult ) ; 
@@ -130,7 +132,7 @@ public class EtlRestServices {
              e.printStackTrace();
         	}
         }); 
-    	thread.start() ; 
+    	ThreadStatusManager.startThread(thread, uuid) ;
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
@@ -139,15 +141,17 @@ public class EtlRestServices {
 		}
     }
 	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}")
-    public ResponseEntity<String> etlSetOfBundles(
+	@PostMapping({"/apigee/infras/{infra}/orgs/{org}/migrate/etl/{bundleType}", 
+				"/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/etl/{bundleType}"} )
+    public ResponseEntity<String> etlSetOfObjects(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
-            @org.springframework.web.bind.annotation.RequestBody() String ObjectsNameListStr ,  
+            @RequestBody() String ObjectsNameListStr ,  
             @RequestHeader("Authorization")  String authorizationHeader
          
     )  {
@@ -160,7 +164,7 @@ public class EtlRestServices {
     	
         try {
         	ProcessResults eTLResult = new ProcessResults("ETL a set Of Proxies/SharedFlows" , uuid) ; 
-    		ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ;
+    		ApigeeService bundleObjectService = ms.getServiceByType(bundleType , env) ;
         	for (String objectName : ObjectsNameList )
 	        	{
 	                System.out.println("Starting the complete ETL Process on " + objectName );
@@ -172,7 +176,7 @@ public class EtlRestServices {
              e.printStackTrace();
         	}
         }); 
-    	thread.start() ; 
+    	ThreadStatusManager.startThread(thread, uuid) ; 
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
@@ -182,14 +186,16 @@ public class EtlRestServices {
     } 
 	
 	
-	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}")
+	@PostMapping( { "/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}" 
+		, "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/rollback/{bundleType}/deployProcessId/{deployUUID}"  
+	} )
     public ResponseEntity<String> rollBackAll(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @PathVariable("deployUUID") String deployUUID,
             @RequestHeader("Authorization")  String authorizationHeader
@@ -200,7 +206,7 @@ public class EtlRestServices {
     	Thread thread = new Thread(() -> 
 	    	{
 		        try {
-		        		BundleObjectService apigeeService = (BundleObjectService) ms.getServiceByType(bundleType) ; 
+		        		BundleObjectService apigeeService = (BundleObjectService) ms.getServiceByType(bundleType, env) ; 
 		        		UUID deployUUIDObj = UUID.fromString(deployUUID); 
 			       		ProcessResults eTLResult = apigeeService.rollBackAllToSerializedDeployStatus( deployUUIDObj);
 			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
@@ -210,7 +216,7 @@ public class EtlRestServices {
 		        	}
 		    }
     	); 
-    	thread.start() ; 
+    	ThreadStatusManager.startThread(thread, uuid) ; 
         // Process the request and return a response
         return new ResponseEntity<String>("{\"rollBackAllUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
@@ -219,13 +225,15 @@ public class EtlRestServices {
 		}
     }
 	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/{objectName}/{deployUUID}")
+	@PostMapping( { "/apigee/infras/{infra}/orgs/{org}/migrate/rollback/{bundleType}/{objectName}/{deployUUID}"
+			, "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/rollback/{bundleType}/{objectName}/{deployUUID}"} )
     public ResponseEntity<String> rollBackSingleEtlBundle(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @PathVariable("deployUUID") String deployUUID,
             @PathVariable("objectName") String objectName,
@@ -237,7 +245,7 @@ public class EtlRestServices {
     	Thread thread = new Thread(() -> 
 	    	{
 		        try {
-		        		RollBackable apigeeService = (RollBackable) ms.getServiceByType(bundleType) ; 
+		        		RollBackable apigeeService = (RollBackable) ms.getServiceByType(bundleType , env ) ; 
 		        		UUID deployUUIDObj = UUID.fromString(deployUUID); 
 			       		ProcessResults eTLResult = apigeeService.rollBackObjectToSerializedDeployStatus(objectName ,  deployUUIDObj);
 			       		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString() ) ; 
@@ -247,7 +255,7 @@ public class EtlRestServices {
 		        	}
 		    }
     	); 
-    	thread.start() ; 
+    	ThreadStatusManager.startThread(thread, uuid) ; 
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
@@ -265,13 +273,16 @@ public class EtlRestServices {
 	 * @param authorizationHeader
 	 * @return
 	 */
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/export/{bundleType}/")
+	@PostMapping( value = { "/apigee/infras/{infra}/orgs/{org}/migrate/export/{bundleType}"
+		, "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/export/{bundleType}"
+	})
     public ResponseEntity<String> exportAll(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra") String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @RequestHeader("Authorization")  String authorizationHeader
          
@@ -281,7 +292,7 @@ public class EtlRestServices {
 	    	UUID uuid = UUID.randomUUID(); 
 	    	Thread thread = new Thread(() -> {
             try {
-	            	ApigeeService apigeeService = ms.getServiceByType(bundleType) ; 
+	            	ApigeeService apigeeService = ms.getServiceByType(bundleType , env ) ; 
 	            	String destFolder = ms.getMigPathUpToOrgName(uuid.toString())+File.separator+ apigeeService.getMigationSubFoler() ; 
 	            	ExportResults result = apigeeService.exportAll( destFolder , uuid ) ;
 	            	String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
@@ -291,7 +302,7 @@ public class EtlRestServices {
 	                e.printStackTrace();
 	            }
 	        }); 
-	    	thread.start() ; 
+	    	ThreadStatusManager.startThread(thread, uuid) ;
 	    	
 	    	
 	        // Process the request and return a response
@@ -303,13 +314,16 @@ public class EtlRestServices {
     }
 	
 	
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/transform/{bundleType}/process/{exportUuid}")
+	@PostMapping({"/apigee/infras/{infra}/orgs/{org}/migrate/transform/{bundleType}/process/{exportUuid}"
+		, "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/transform/{bundleType}/process/{exportUuid}"
+	})
     public ResponseEntity<String> transformAllProxies(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @PathVariable("exportUuid")   String exportUuid, // Transform the result of this exportUuid
             @RequestHeader("Authorization") String authorizationHeader ) 
@@ -320,7 +334,7 @@ public class EtlRestServices {
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
-    	            	ApigeeService bundleObjectService = ms.getServiceByType(bundleType) ;  
+    	            	ApigeeService bundleObjectService = ms.getServiceByType(bundleType, env ) ;  
     	            	String source = ms.getMigPathUpToOrgName(exportUuid) +File.separator + bundleObjectService.getMigationSubFoler(); 
     	            	String dest = ms.getMigPathUpToOrgName(uuid.toString()) +File.separator+ BundleObjectService.TransformedFoldername + File.separator + bundleObjectService.getMigationSubFoler();
     	            	TransformationResults transformationResults =  bundleObjectService.transformAll(source, dest, uuid ) ;
@@ -330,7 +344,7 @@ public class EtlRestServices {
     	                e.printStackTrace();
     	            }
     	        }); 
-    	    	thread.start() ; 
+    	    	ThreadStatusManager.startThread(thread, uuid) ;
     	    	
     	    	
     	        // Process the request and return a response
@@ -341,13 +355,16 @@ public class EtlRestServices {
     			}
     	    }
 
-	@PostMapping("/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/process/{sourceProcessId}")
+	@PostMapping({"/apigee/infras/{infra}/orgs/{org}/migrate/load/{bundleType}/process/{sourceProcessId}"
+		, "/apigee/infras/{infra}/orgs/{org}/envs/{env}/migrate/load/{bundleType}/process/{sourceProcessId}"
+	})
     public ResponseEntity<String> loadAndDeployAll(
     		@RequestHeader(value = "partner" , required = false )   String partner,
             @RequestHeader(value = "customer", required = false )  String customer,
             @RequestHeader(value = "migrationBasePath" , required = false )   String migrationBasePath,
             @PathVariable("infra")  String infra,
             @PathVariable("org") String org,
+            @PathVariable(value = "env" , required = false) String env,
             @PathVariable("bundleType") String bundleType,
             @PathVariable("sourceProcessId")   String sourceProcessId, // Transform the result of this exportUuid
             @RequestHeader("Authorization") String authorizationHeader ) 
@@ -358,7 +375,7 @@ public class EtlRestServices {
     	    	Thread thread = new Thread(() -> {
     	            System.out.println("This is a new thread.");
     	            try {
-    	            	ApigeeService apigeeService =  ms.getServiceByType(bundleType) ; 
+    	            	ApigeeService apigeeService =  ms.getServiceByType(bundleType, env ) ; 
     	            	if (apigeeService.getClass() == ProxyServices.class || apigeeService.getClass() == SharedFlowServices.class)
     	            	{  	 ((BundleObjectService) apigeeService).setDeployUponUpload(true) ; 	}
     	            	String upToOrgNamePath = ms.getMigPathUpToOrgName(sourceProcessId) ; 
@@ -371,7 +388,7 @@ public class EtlRestServices {
     	                e.printStackTrace();
     	            }
     	        }); 
-    	    	thread.start() ; 
+    	    	ThreadStatusManager.startThread(thread, uuid) ; 
 
     	    	return new ResponseEntity<String>("{\"loadUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
     			}
@@ -392,16 +409,16 @@ public class EtlRestServices {
          
 	{
 		try {
+			Thread task = ThreadStatusManager.getThread(processUuid) ;
+			if(task.isAlive()) {return new ResponseEntity<String>("{ \"Status\" :  \"Process "+ processUuid +" Still in Progress... \" }", HttpStatus.OK); }
 			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
     		String processResultsFileName =    ms.getSerlizeProcessResultFileName(processUuid) ;
     		Object obj = Helper.deSerializeObject(processResultsFileName); 
-    		
     		return buildJsonResponse(Helper.mapObjectToJsonStr(obj) , HttpStatus.OK) ;
-    		
     		}
 		catch (FileNotFoundException ex  )
 		{
-			return new ResponseEntity<String>("{ \"Error\" : \"Process "+ processUuid +" Not Found Or Still in Progress \" }", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<String>("{ \"Error\" : \"Process "+ processUuid +" Not Found \" }", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     	catch (Exception e) {
     		return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -557,7 +574,7 @@ public class EtlRestServices {
 		try {
 			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
 			System.out.println("=============Processing Org :" + org +"===============" );
-			ApigeeService apigeeService =  ms.getServiceByType(objectType) ;
+			ApigeeService apigeeService =  ms.getServiceByType(objectType, null) ;
     		ArrayList<String> allNames = apigeeService.getAllResources() ; 
     		for (String objectName : allNames )
     		{	
@@ -597,7 +614,7 @@ public class EtlRestServices {
 		HashMap<String , String > result = new HashMap<String , String > () ; 
 		try {
 			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);
-			ApigeeService apigeeService =  ms.getServiceByType("products") ;
+			ApigeeService apigeeService =  ms.getServiceByType("products" , null) ;
     		ArrayList<String> allProductsNames = apigeeService.getAllResources() ; 
     		for (String productName : allProductsNames )
     		{	
@@ -660,7 +677,7 @@ public class EtlRestServices {
     	
     		ArrayList<DocWithoutFlow> results = new ArrayList<DocWithoutFlow>();
         try {
-    		BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType("apis") ;
+    		BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType("apis" , null) ;
         	for (String proxyname : ObjectsNameList )
 	        	{
 	                System.out.println("Starting the Checking Proxy : " + proxyname );
@@ -680,20 +697,11 @@ public class EtlRestServices {
 	                		if (flow==null)
 	                		{
 	                			DocWithoutFlow zz = new  DocWithoutFlow(proxyname , revision , oasOperation.getPath() , oasOperation.getVerb()) ; 
-		                		//HashMap<String , String> xx = new HashMap<String , String > ();  
-		                		//xx.put(operationsFlows.getKey().getPath() , operationsFlows.getKey().getVerb()) ;
-		                		//HashMap<String , HashMap<String, String>> yy = new HashMap<String , HashMap<String, String>>();
-		                		//yy.put(revision, xx) ; 
 	                			results.add(zz);    
 	                		}					    ; 
 	                	}
-	                	
 	                }
-	                
-	                
 	        	}
-
-            
        		String serializePath = ms.getSerlizeProcessResultFileName(uuid.toString()) ; 
        		Helper.serialize(serializePath ,results ) ;
        		
@@ -701,7 +709,7 @@ public class EtlRestServices {
              e.printStackTrace();
         	}
         }); 
-    	thread.start() ; 
+    	ThreadStatusManager.startThread(thread, uuid) ;
         // Process the request and return a response
         return new ResponseEntity<String>("{\"processUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
 		}
