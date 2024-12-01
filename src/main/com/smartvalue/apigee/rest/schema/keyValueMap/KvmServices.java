@@ -17,8 +17,8 @@ public class KvmServices extends EnvironmentScopeService {
 	
 	
 
-	public KvmServices(ManagementServer ms, String m_orgName   ) {
-		super(ms, m_orgName );
+	public KvmServices(ManagementServer ms   ) {
+		super(ms);
 	}
 
 	public ArrayList <String>  getAllKvms() throws UnirestException, IOException

@@ -33,9 +33,6 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 
 	private boolean deployUponUpload = false ; 
 
-	public SharedFlowServices(ManagementServer ms, String m_orgName  ) {
-		super(ms, m_orgName );
-	}
 	
 	public SharedFlowServices(ManagementServer ms  ) {
 		super(ms );

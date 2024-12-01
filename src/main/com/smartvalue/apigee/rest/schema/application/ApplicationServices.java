@@ -19,8 +19,8 @@ import com.smartvalue.apigee.rest.schema.proxy.DeleteResults;
 
 public class ApplicationServices extends ApigeeService {
 
-	public ApplicationServices(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
+	public ApplicationServices(ManagementServer ms) {
+		super(ms);
 	}
 
 

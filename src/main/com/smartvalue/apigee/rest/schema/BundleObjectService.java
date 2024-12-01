@@ -48,12 +48,9 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 
 	protected boolean deployUponUpload = false ; 
 	
-	
-	public BundleObjectService(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
-	}
+		
 	public BundleObjectService(ManagementServer ms) {
-		super(ms, ms.getOrgName());
+		super(ms);
 	}
 
 	public boolean isDeployUponUpload() {

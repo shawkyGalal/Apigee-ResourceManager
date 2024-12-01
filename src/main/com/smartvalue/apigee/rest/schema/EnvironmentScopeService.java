@@ -25,21 +25,19 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 
 	@Override
 	public String getResourcePath() {
-		//if (envName == null)
-		//{
-		//	throw new Exception("Environment Name is null, this is Environment Scoped Service ") ; 
-		//}
-		return resourcePath ; 
+
+		return AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+this.envName+"/"+ this.getApigeeObjectType(); 
 	}
 	
-	public EnvironmentScopeService(ManagementServer ms, String m_orgName) {
-		super(ms, m_orgName);
+	
+	public EnvironmentScopeService(ManagementServer ms ) {
+		super(ms); 
 	}
 
 	public void setEnvName(String m_envName)
 	{
 		this.envName = m_envName ; 
-		this.resourcePath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+ this.getApigeeObjectType();
+		//this.resourcePath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+ this.getApigeeObjectType();
 	}
 	
 	/**
