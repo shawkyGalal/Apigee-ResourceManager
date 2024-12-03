@@ -717,26 +717,28 @@ private <T> T GsonClassMapper(HttpResponse<String> response ,  Class<T> classOfT
 		return userEmail ; 
 	}
 
-	public String getMigPathUpToOrgName(String processId) throws IOException
+	public String getMigPathUpToOrgName(String processId) 
 	{
-		String userEmail = getLoggedInUserEmail() ; 
+		String userEmail = null ; 
+		try { userEmail = getLoggedInUserEmail() ; } 
+		catch (Exception e) {}
 		return  appConfig.getMigrationBasePath() + ((userEmail != null)?  File.separator + userEmail  : "") 
 												 + ((processId != null )? File.separator + processId  : "") 
 												 + File.separator+ this.getInfraName() 
 												 + File.separator+this.getOrgName() ;  
 	}
 	
-	public String getTransformedPath(String processId) throws IOException
+	public String getTransformedPath(String processId) 
 	{
 		return getMigPathUpToOrgName(processId) + File.separator + ApigeeService.TransformedFoldername ; 
 	}
 	
-	public String getSerlizeDeplyStateFileName(String processId) throws IOException
+	public String getSerlizeDeplyStateFileName(String processId)
 	{
 		return appConfig.getMigrationBasePath() + File.separator + processId + File.separator+"_deploysStatus.ser" ; 
 	}
 	
-	public String getSerlizeProcessResultFileName( String processId) throws IOException
+	public String getSerlizeProcessResultFileName( String processId) 
 	{  	
 		return appConfig.getMigrationBasePath() + File.separator + processId + File.separator+"_ProcessResults.ser" ; 
 	}

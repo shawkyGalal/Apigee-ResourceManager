@@ -9,31 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
-import com.smartvalue.apigee.migration.ProcessResult;
-import com.smartvalue.apigee.migration.ProcessResults;
-import com.smartvalue.apigee.migration.deploy.DeployResult;
-import com.smartvalue.apigee.migration.deploy.DeployResults;
-import com.smartvalue.apigee.migration.export.ExportResult;
-import com.smartvalue.apigee.migration.export.ExportResults;
-import com.smartvalue.apigee.migration.load.LoadResult;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformResult;
-import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.Deployable;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
 import com.smartvalue.apigee.rest.schema.organization.Organization;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxiesList;
 import com.smartvalue.apigee.rest.schema.proxy.google.auto.GoogleProxy;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
-import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
-import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 
 
 public class ProxyServices extends BundleObjectService implements Deployable {

@@ -32,6 +32,9 @@ public class ProcessResults extends ArrayList<ProcessResult> implements Serializ
 		this.uuid = m_uuid ; 
 		this.description = desc ; 
 		subProcessResults = new ArrayList<ProcessResults> (); 
+		this.add(new ProcessResult()
+					.withSource("Starting : " + desc)
+					.withFailed(false) ) ; 
 	}
 	
 	public ProcessResults (String desc)

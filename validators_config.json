@@ -1,0 +1,45 @@
+{	"validators" :
+	[
+		{
+			"description" : "This Validator Will ......  " , 
+			"enabled":"true",  
+			"implClass" : "com.smartvalue.apigee.validators.ConditionalFlowHookValidator", 
+			"attributes" : 
+				[
+					{ "name" : "conditionalFlowHookStepName" , "value" :"FC-Conditional-Flow-Hook"	}
+				]
+		},
+		{
+			"description" : "This Validator Will check for existance of 'GetOAS' flow  " , 
+			"enabled":"true",  
+			"implClass" : "com.smartvalue.apigee.validators.MandatoryFlowValidator", 
+			"attributes" : 
+				[
+					{ "name" : "mandatoryFlowName" , "value" : "GetOAS"	},
+					{ "name" : "atLeastOnce" , "value" : "true"	}
+				]
+		},
+		{
+			"description" : "This Validator Will Check for existance of 'ServiceNotAvailable' flow " , 
+			"enabled":"true",  
+			"implClass" : "com.smartvalue.apigee.validators.MandatoryFlowValidator", 
+			"attributes" : 
+				[
+					{ "name" : "mandatoryFlowName" , "value" : "ServiceNotAvailable"	}, 
+					{ "name" : "checkLocation" , "value" : "true"	},
+					{ "name" : "location" , "value" : "last"	},
+					{ "name" : "atLeastOnce" , "value" : "false"	}
+				]
+		},
+		{
+			"description" : "This Validator Will ......  " , 
+			"enabled":"true",  
+			"implClass" : "com.smartvalue.apigee.validators.AllVerbsValidator" 
+		}, 
+		{
+			"description" : "This Validator Will ......  " , 
+			"enabled":"true",  
+			"implClass" : "com.smartvalue.apigee.validators.OperationsWithouFlow" 
+		}
+	]  
+}

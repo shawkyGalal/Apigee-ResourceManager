@@ -188,7 +188,7 @@ public abstract class ApigeeService {
 		return allResourcesResponse ; 
 	}
 	
-	public ArrayList<String> getAllResources() throws Exception 
+	public ArrayList<String> getAllResources() throws UnirestException, IOException 
 	{
 		String resourcePath = getResourcePath() ; 
 		ArrayList<String> allResourcesResponse = this.getMs().executeGetMgmntAPI( resourcePath , ArrayList.class) ;

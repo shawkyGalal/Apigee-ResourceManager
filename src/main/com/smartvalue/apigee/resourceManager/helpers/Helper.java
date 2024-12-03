@@ -19,6 +19,7 @@ import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlow;
 public class Helper {
 
 	public static final String WILD_CARD_OAUTHS_COPE = "Wild_Card_Scope";
+	public static final String TEMP_FOLDER = "C:\\temp\\Apigee\\downloads";
 
 	public static boolean isConsideredSuccess(int stausCode)
 	{

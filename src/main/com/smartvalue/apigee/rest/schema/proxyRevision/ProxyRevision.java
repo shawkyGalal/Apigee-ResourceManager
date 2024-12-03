@@ -1,12 +1,19 @@
 package com.smartvalue.apigee.rest.schema.proxyRevision;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -14,9 +21,11 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.infra.ManagementServer;
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.proxyBundle.ProxyBundleParser;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
+import com.smartvalue.apigee.validators.ProxyValidator;
 import com.smartvalue.swagger.v3.parser.util.OpenAPIDeserializer;
 import com.smartvalue.swagger.v3.parser.util.SwaggerParseResult;
 
@@ -24,7 +33,6 @@ import io.swagger.parser.OpenAPIParser;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.parser.ObjectMapperFactory;
 
 import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
@@ -130,7 +138,7 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 	}
 
 	public String getResourcePath() {
-		return AppConfig.BASE_BATH+this.getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
+		return AppConfig.BASE_BATH+this.getManagmentServer().getOrgName()+"/apis/"+this.getName()+"/revisions/" + this.getRevision();
 	}
 
 	/**
@@ -289,6 +297,39 @@ public class ProxyRevision extends com.smartvalue.apigee.rest.schema.proxyRevisi
 		
 		return result ; 
 	}
+
+	
+	public String export( String folderDest) throws UnirestException, IOException
+	{
+		String bundleFile ; 
+		HttpResponse<InputStream> result = null; 
+		String apiPath = getResourcePath()+"?format=bundle" ; 
+		ManagementServer ms = this.getManagmentServer() ; 
+		result = ms.getGetHttpBinResponse(apiPath ) ;
+		bundleFile = folderDest 
+				//+ this.getRevision()
+				//+ File.separator 
+				+ this.getName()+".zip" 
+				;
+		try{Files.createDirectories(Paths.get(bundleFile).getParent());}catch (Exception e) {	}
+		 
+		Files.copy(result.getBody(), Paths.get(bundleFile) , StandardCopyOption.REPLACE_EXISTING );
+		
+		return bundleFile ; 
+	}
+	
+	public ProcessResults validate(UUID uuid) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
+	{
+		ProcessResults results = new ProcessResults("Validating Proxy Revision " + this.getName() +"."+ this.getRevision()  , uuid) ; 
+		ArrayList<ProxyValidator> validators = this.getManagmentServer().getInfra().buildProxyValidators(); 
+		for (ProxyValidator pv : validators )
+		{
+			results.addAll(pv.validate(this, uuid)) ; 
+		}
+		
+		return results ; 
+	}
+	
 
 
 	

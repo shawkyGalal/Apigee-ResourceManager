@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ import com.google.gson.Gson;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
 import com.smartvalue.apigee.configuration.transformer.auto.TransformerConfig;
 import com.smartvalue.apigee.configuration.transformer.auto.TransformersConfig;
+import com.smartvalue.apigee.configuration.transformer.auto.ValidatorConfig;
+import com.smartvalue.apigee.configuration.transformer.auto.ValidatorsConfig;
+import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.migration.transformers.ApigeeObjectTransformer;
 import com.smartvalue.apigee.migration.transformers.TransformationResults;
 import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
@@ -30,10 +34,20 @@ import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransf
 import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.ApigeeService;
 import com.smartvalue.apigee.rest.schema.BundleObjectService;
+import com.smartvalue.apigee.rest.schema.proxy.Proxy;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.ProxyDeployment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Environment;
+import com.smartvalue.apigee.rest.schema.proxyDeployment.auto.Revision;
+import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
+import com.smartvalue.apigee.validators.ApigeeValidator;
+import com.smartvalue.apigee.validators.ProxyValidator;
+import com.smartvalue.apigee.validators.SharedFlowValidator;
 import com.smartvalue.spring.ThreadStatusManager;
 
 @RestController
 public class TransformRestServices extends RestServices {
+
+	
 
 	/**
 	 * Transforms a given APigee Bundle File 
@@ -42,15 +56,35 @@ public class TransformRestServices extends RestServices {
     public ResponseEntity<?>  transformBundle( 	
     		@RequestParam MultipartFile zipBundle ,  
     		@RequestParam String transformers ,
-    		@PathVariable String bundleType	 )  
+    		@PathVariable String bundleType	,
+    		@RequestParam (required = false ) 	String validators ,
+    		@RequestHeader(required = false )   String validateBeforTransform 
+    		)  
 	{
     	try 
     	{
-	    	String sourceFolder= "C:\\temp\\source" ; 
+			
+	    	String sourceFolder= Helper.TEMP_FOLDER ; 
 	    	File originalFile = new File(sourceFolder + File.separator +zipBundle.getOriginalFilename());
 	 	    zipBundle.transferTo(originalFile);
 	        
-	        String destFolder= "C:\\temp\\dest" ;
+	 	   
+	   		if (validateBeforTransform!= null & validateBeforTransform.equalsIgnoreCase("true"))
+	   		{
+	   			Class<? extends ApigeeValidator> valoidatorClazz = (bundleType.equalsIgnoreCase("apis"))?  ProxyValidator.class : SharedFlowValidator.class ;
+	   			
+	   	        ArrayList<ApigeeValidator> validatorObjs = buildValidators(valoidatorClazz , validators) ; 
+	   	        
+	   			ProcessResults trs = BundleObjectService.validateBundleObject(sourceFolder+File.separator + originalFile.getName(), validatorObjs ) ;
+	   			ProcessResults failedResults = trs.filterFailed(true); 
+	   			if (failedResults.size() > 0 )
+	   			{
+	   				throw new Exception("Validation Error : " + failedResults.get(0).getError()) ; 
+	   			}
+	   		}
+   		
+	 	    
+	        String destFolder= Helper.TEMP_FOLDER ;
 	        Class<? extends ApigeeObjectTransformer> clazz = (bundleType.equalsIgnoreCase("apis"))?  ProxyTransformer.class : SharedflowTransformer.class ;  
 	        
 	        ArrayList<ApigeeObjectTransformer> transformersObj = buildTransformers(clazz , transformers) ; 
@@ -79,7 +113,7 @@ public class TransformRestServices extends RestServices {
 		}
     }
 	
-	private <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type , String transformers) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
+	private static <T extends ApigeeObjectTransformer> ArrayList<ApigeeObjectTransformer> buildTransformers(Class<T> type , String transformers) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
 	{
 		Gson gson = new Gson();
 		TransformersConfig transformersConfig = gson.fromJson(transformers, TransformersConfig.class );  
@@ -94,6 +128,35 @@ public class TransformRestServices extends RestServices {
 			{
 				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
 				ApigeeObjectTransformer obj = (ApigeeObjectTransformer) cons.newInstance();
+	
+				for (Attribute att :  tr.getAttributes())
+				{
+					Field field = cls.getDeclaredField(att.getName());
+					field.setAccessible(true);
+					field.set(obj, att.getValue());
+				}
+				result.add(obj);
+			}
+		}
+		
+		return result ; 
+	}
+	
+	private static <T extends ApigeeValidator> ArrayList<ApigeeValidator> buildValidators(Class<T> type , String validators) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
+	{
+		Gson gson = new Gson();
+		ValidatorsConfig validatorsConfig = gson.fromJson(validators, ValidatorsConfig.class );  
+		ArrayList<ApigeeValidator> result = new ArrayList<ApigeeValidator>(); 
+		for (ValidatorConfig tr :  validatorsConfig.getValidators() )
+		{
+			String transformerClass = tr.getImplClass(); 
+			String enabled = tr.getEnabled(); 
+			if (enabled.equalsIgnoreCase("false")) continue; 
+			Class<?> cls = Class.forName(transformerClass);
+			if (type.isAssignableFrom(cls))
+			{
+				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
+				ApigeeValidator obj = (ApigeeValidator) cons.newInstance();
 	
 				for (Attribute att :  tr.getAttributes())
 				{
@@ -145,6 +208,58 @@ public class TransformRestServices extends RestServices {
     	        return new ResponseEntity<String>("{\"transformUUID\":\""+uuid+"\"}", HttpStatus.CREATED);
     			}
     			catch (Exception e) {
+    				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+    			}
+    	    }
+	
+	/**
+	 * Validates a given APigee Bundle File 
+	 */
+	@PostMapping("/apigee/migrate/validate/{bundleType}")
+    public ResponseEntity<?>  validateBundle( 	
+    		@RequestParam MultipartFile zipBundle ,  
+    		@PathVariable String bundleType	,
+    		@RequestParam String validators 
+    		)  
+	{
+    	try 
+    	{
+	    	String sourceFolder= Helper.TEMP_FOLDER ; 
+	    	File originalFile = new File(sourceFolder + File.separator +zipBundle.getOriginalFilename());
+	 	    zipBundle.transferTo(originalFile);
+	 	    ProcessResults prs ; 
+   			Class<? extends ApigeeValidator> valoidatorClazz = (bundleType.equalsIgnoreCase("apis"))?  ProxyValidator.class : SharedFlowValidator.class ;
+   	        ArrayList<ApigeeValidator> validatorObjs = buildValidators(valoidatorClazz , validators) ; 
+   			prs = BundleObjectService.validateBundleObject(sourceFolder+File.separator + originalFile.getName(), validatorObjs ) ;
+	   		return buildJsonResponse(Helper.mapObjectToJsonStr(prs.filterFailed(true)) , HttpStatus.OK) ;
+    	}
+    	catch (Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
+	
+	@PostMapping({"/apigee/infras/{infra}/orgs/{org}/migrate/validate/{bundleType}/{bundleName}"})
+    public ResponseEntity<String> validateProxy(
+    		@RequestHeader(required = false )   String partner,
+            @RequestHeader(required = false )  String customer,
+            @RequestHeader(required = false )   String migrationBasePath,
+            @PathVariable  String infra,
+            @PathVariable String org,
+            @PathVariable(required = false) String env,
+            @PathVariable String bundleType,
+            @PathVariable String bundleName,
+            @RequestHeader("Authorization") String authorizationHeader ) 
+            {
+				
+   			try {
+	    			initialize(partner , customer , infra , org, authorizationHeader, migrationBasePath);  
+	    			UUID uuid = UUID.randomUUID(); 
+	    			BundleObjectService bundleObjectService = (BundleObjectService) ms.getServiceByType(bundleType, env ) ;
+	    			ProcessResults prs  = bundleObjectService.validateProxy(bundleName, uuid) ; 
+	    	    	return buildJsonResponse(Helper.mapObjectToJsonStr(prs.filterFailed(true)) , HttpStatus.OK) ;
+    			}
+    			catch (Exception e) {
+    				e.printStackTrace();
     				return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     			}
     	    }

@@ -13,6 +13,8 @@ import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.Customer;
 import com.smartvalue.apigee.configuration.transformer.auto.Attribute;
+import com.smartvalue.apigee.configuration.transformer.auto.ValidatorConfig;
+import com.smartvalue.apigee.configuration.transformer.auto.ValidatorsConfig;
 import com.smartvalue.apigee.configuration.transformer.auto.TransformerConfig;
 import com.smartvalue.apigee.configuration.transformer.auto.TransformersConfig;
 import com.smartvalue.apigee.migration.transformers.apps.AppTransformer;
@@ -25,6 +27,7 @@ import com.smartvalue.apigee.migration.transformers.proxy.ProxyTransformer;
 import com.smartvalue.apigee.migration.transformers.sharedflows.SharedflowTransformer;
 import com.smartvalue.apigee.resourceManager.MyServerProfile;
 import com.smartvalue.apigee.rest.schema.AccessToken;
+import com.smartvalue.apigee.validators.ProxyValidator;
 import com.smartvalue.google.iam.GoogleServiceAccount;
 import com.smartvalue.moj.clients.environments.JsonParser;
 
@@ -63,6 +66,26 @@ public class Infra {
 		}
 		return transformersConfig;
 	}
+	
+	private ValidatorsConfig validatorsConfig ;
+	
+	@JsonProperty("validatorConfigFile")
+	private String validatorConfigFile ;  
+	
+	public ValidatorsConfig getValidatorConfig() throws FileNotFoundException, IOException  {
+		if (validatorsConfig == null)
+		{
+			if ( validatorConfigFile  == null)
+			{
+				throw new IllegalArgumentException ("validatorConfigFile parameter is not configured in the main config file ") ; 
+			}
+			JsonParser jsonConfigParser = new JsonParser( ) ;
+			validatorsConfig = jsonConfigParser.getObject(validatorConfigFile , ValidatorsConfig.class) ; ; 
+		}
+		return validatorsConfig;
+	}
+
+	
 
 	
 
@@ -307,6 +330,40 @@ public class Infra {
 			{
 				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
 				ApigeeObjectTransformer obj = (ApigeeObjectTransformer) cons.newInstance();
+	
+				for (Attribute att :  tr.getAttributes())
+				{
+					Field field = cls.getDeclaredField(att.getName());
+					field.setAccessible(true);
+					field.set(obj, att.getValue());
+				}
+				result.add(obj);
+			}
+		}
+		
+		return result ; 
+	}
+	
+	public <T extends ProxyValidator> ArrayList<ProxyValidator> buildProxyValidators() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
+	{
+		return buildValidators(ProxyValidator.class); 
+	}
+	
+		
+	
+	private  <T extends ProxyValidator> ArrayList<ProxyValidator> buildValidators(Class<T> type) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException
+	{
+		ArrayList<ProxyValidator> result = new ArrayList<ProxyValidator>(); 
+		for (ValidatorConfig tr :  getValidatorConfig().getValidators() )
+		{
+			String validatorClass = tr.getImplClass(); 
+			String enabled = tr.getEnabled(); 
+			if (enabled.equalsIgnoreCase("false")) continue; 
+			Class<?> cls = Class.forName(validatorClass);
+			if (type.isAssignableFrom(cls))
+			{
+				java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor();
+				ProxyValidator obj = (ProxyValidator) cons.newInstance();
 	
 				for (Attribute att :  tr.getAttributes())
 				{

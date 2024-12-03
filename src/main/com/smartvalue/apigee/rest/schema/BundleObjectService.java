@@ -43,6 +43,7 @@ import com.smartvalue.apigee.rest.schema.proxyRevision.ProxyRevision;
 import com.smartvalue.apigee.rest.schema.proxyUploadResponse.ProxyUploadResponse;
 import com.smartvalue.apigee.rest.schema.sharedFlow.SharedFlowServices;
 import com.smartvalue.apigee.rest.schema.sharedFlow.auto.RevisionedObject;
+import com.smartvalue.apigee.validators.ApigeeValidator;
 
 public abstract class BundleObjectService extends ApigeeService implements RollBackable{
 
@@ -64,6 +65,24 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	
 	public void setDeployUponUpload(boolean deployUponUpload) {
 		this.deployUponUpload = deployUponUpload;
+	}
+	
+	public static ProcessResults validateBundleObject(String pundleZipFileName, ArrayList<ApigeeValidator> validatorObjs) {
+		UUID uuid = UUID.randomUUID(); 
+		ProcessResults results = new ProcessResults("Validate " +  pundleZipFileName , uuid);
+		File pundleZipFile = new File (pundleZipFileName) ;
+		if (validatorObjs.size() > 0 )
+		{
+			for (ApigeeValidator validator : validatorObjs)
+			{
+				boolean validate = validator.filter(pundleZipFileName) ;
+				if (validate)
+				{	
+					results.addAll(validator.validate(pundleZipFile, uuid)) ; 
+				}
+			}
+		}
+		return results;
 	}
 	
 	public static TransformationResults transformBundleObject(String pundleZipFileName, String newBundleFolderPath , ArrayList<ApigeeObjectTransformer>  transformers ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, FileNotFoundException, IOException 
@@ -437,6 +456,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	{
 		String apiPath = getResourcePath()+"/"+bundledObjectName + "/revisions/" + revision ; 
 		ProxyRevision proxyRevision =  this.getMs().executeGetMgmntAPI(apiPath , ProxyRevision.class ) ;
+		proxyRevision.setManagementServer(this.getMs());
 		return proxyRevision ; 
 	}
 
@@ -472,9 +492,12 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		 TransformationResults trnsformResults = new TransformationResults("Transform Object " , uuid) ; 
 		 for (ProcessResult er : ers )
 		 {
-			String transformSource = er.getDestination() ;
-			String dest = transformSource.replaceAll(this.getMigationSubFoler() ,  TransformedFoldername +File.separatorChar+File.separatorChar + AppConfig.ProxiesSubFolder) ;  
-			trnsformResults.addAll( this.transformBundleObject(transformSource +proxyName+".zip" , dest  ) ) ;
+			 if ( er.getDestination()  != null)
+			 {
+				String transformSource = er.getDestination() ;
+				String dest = transformSource.replaceAll(this.getMigationSubFoler() ,  TransformedFoldername +File.separatorChar+File.separatorChar + AppConfig.ProxiesSubFolder) ;  
+				trnsformResults.addAll( this.transformBundleObject(transformSource +proxyName+".zip" , dest  ) ) ;
+			 }
 		 }
 		 overallResults.addAll(trnsformResults) ; 
 			 
@@ -603,5 +626,22 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		return revisionedObject.exportAllDeployedRevisions(folderDest) ;
 		
 	}
+	
+	public ProcessResults validateProxy(String proxyName, UUID uuid) throws UnirestException, IOException, NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException 
+	{
+		ProcessResults prs = new ProcessResults("" , uuid); 
+		ProxyDeployment deployments = this.getBundleObjectDeployments(proxyName); 
+		for ( Environment envi : deployments.getEnvironment())
+		{
+			for ( Revision revision : envi.getRevision()) 
+			{
+				ProxyRevision proxyRevision = this.getBundleObjectRevision(proxyName, revision.getName());
+				prs.addAll( proxyRevision.validate(uuid)); 
+			}
+		}
+		return prs ; 
+	}
+
+
 
 }
