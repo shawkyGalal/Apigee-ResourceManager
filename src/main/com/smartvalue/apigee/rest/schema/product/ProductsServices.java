@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -42,6 +44,58 @@ public  ArrayList<Object> getProductsWithoutProxies() throws UnirestException, I
 		counter++ ; 
 	}
 
+	return result;
+}
+
+public  ArrayList<String> getProductsUsesProxy(String proxyname) throws UnirestException, IOException
+{
+	Organization m_org= (Organization) this.getMs().getCurrentOrg() ; 
+	ArrayList <String> result = new ArrayList <String> () ; 
+	ArrayList<String> all = m_org.getAllProductsNames() ; 
+	this.getPrintStream().println("======== Processing "+all.size()+" Products ==========  " );
+	int counter = 1 ; 
+	for (String productName : all )
+	{
+		this.getPrintStream().println(counter + "-Checking Product :" + productName);
+		Product product = m_org.getProductByName(productName) ;
+		try {Thread.sleep(10);} catch (InterruptedException e) {	e.printStackTrace();}
+		for (String productProxyName  : product.getProxies() )
+		{
+			if (productProxyName.equalsIgnoreCase(proxyname))
+			{
+				result.add(productName) ; 	
+			}
+		}
+		counter++ ; 
+	}
+	return result;
+}
+
+public  HashMap<String , ArrayList<String>> getProductsUsesProxies(List<String> proxynames) throws UnirestException, IOException
+{
+	Organization m_org= (Organization) this.getMs().getCurrentOrg() ; 
+	HashMap<String , ArrayList<String>> result = new HashMap<String , ArrayList<String>> () ; 
+	ArrayList<String> all = m_org.getAllProductsNames() ; 
+	this.getPrintStream().println("======== Processing "+all.size()+" Products ==========  " );
+	int counter = 1 ; 
+	for (String productName : all )
+	{
+		this.getPrintStream().println(counter + "-Checking Product :" + productName);
+		Product product = m_org.getProductByName(productName) ;
+		try {Thread.sleep(10);} catch (InterruptedException e) {	e.printStackTrace();}
+		for (String productProxyName  : product.getProxies() )
+		{
+			if (proxynames.contains(productProxyName))
+			{
+				if (result.get(productProxyName) == null)
+				{
+					result.put(productProxyName, new ArrayList<String>() ); 
+				}
+				result.get(productProxyName).add(productName); 
+			}
+		}
+		counter++ ; 
+	}
 	return result;
 }
 

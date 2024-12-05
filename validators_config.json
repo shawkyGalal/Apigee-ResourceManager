@@ -15,7 +15,7 @@
 			"implClass" : "com.smartvalue.apigee.validators.MandatoryFlowValidator", 
 			"attributes" : 
 				[
-					{ "name" : "mandatoryFlowName" , "value" : "GetOAS"	},
+					{ "name" : "mandatoryFlowNames" , "value" : "GetOAS"	},
 					{ "name" : "atLeastOnce" , "value" : "true"	}
 				]
 		},
@@ -25,7 +25,7 @@
 			"implClass" : "com.smartvalue.apigee.validators.MandatoryFlowValidator", 
 			"attributes" : 
 				[
-					{ "name" : "mandatoryFlowName" , "value" : "ServiceNotAvailable"	}, 
+					{ "name" : "mandatoryFlowNames" , "value" : "ServiceNotAvailable , Service-Not-Found "	}, 
 					{ "name" : "checkLocation" , "value" : "true"	},
 					{ "name" : "location" , "value" : "last"	},
 					{ "name" : "atLeastOnce" , "value" : "false"	}

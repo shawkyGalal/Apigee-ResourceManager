@@ -42,7 +42,9 @@ public class ConditionalFlowHookValidator extends ProxyValidator {
 				for (Flow flow :  bundleProxyEndPoint.getFlows())
 				{
 					String flowName = flow.getName();  
-					if ((flowName.equalsIgnoreCase("GetOAS") || flowName.equalsIgnoreCase("ServiceNotAvailable") ) )
+					if ((flowName.equalsIgnoreCase("GetOAS") 
+							|| flowName.equalsIgnoreCase("ServiceNotAvailable") ) 
+							|| flowName.equalsIgnoreCase("Service-Not-Found") )
 					{ continue ;}
 					if (flow.getRequest().getChildren().size()>0 )
 					{
