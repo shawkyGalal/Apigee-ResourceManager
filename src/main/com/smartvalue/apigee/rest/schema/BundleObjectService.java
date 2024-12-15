@@ -263,6 +263,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 	public LoadResult importObject(String pundleZipFileName , String objectName) 
 	{
 		LoadResult loadResult = new LoadResult();
+		loadResult.setDescription("Loading Object");
 		loadResult.setSource(pundleZipFileName);
 		
 		String apiPath = this.getResourcePath()+"?action=import&name="+objectName+"&validate=true" ; 
@@ -299,7 +300,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		{	deployResults.addAll(this.UnDeployFromEnv(m_objectName, m_envName));	}
 		
 		DeployResult deployResult = new DeployResult() ;
-		deployResult.setSource("Deploying : " + m_objectName + "." + revision + "To Env: " + m_envName);
+		deployResult.setDescription("Deploying Object : ") ; 
+		deployResult.setSource(m_objectName + "." + revision );
 		deployResult.setDestination(m_envName);
 		String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision+"/deployments" ; 
 		ManagementServer ms = this.getMs() ;
@@ -327,7 +329,8 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 		for (Revision revision : deployedRevisions )
 		{
 			DeployResult deployResult = new DeployResult() ;
-			deployResult.setSource("Undeplolying " + m_objectName + "." + revision.getName() + " From Env. " + m_envName);
+			deployResult.setDescription("UnDeploying Object");
+			deployResult.setSource( m_objectName + "." + revision.getName() + " From Env. " + m_envName);
 			String apiPath = AppConfig.BASE_BATH+this.getMs().getOrgName()+"/environments/"+m_envName+"/"+getApigeeObjectType()+"/"+m_objectName +"/revisions/"+revision.getName()+"/deployments" ; 
 			ManagementServer ms = this.getMs() ;
 			HttpResponse<String> response = null ; 
@@ -607,6 +610,7 @@ public abstract class BundleObjectService extends ApigeeService implements RollB
 				} catch (UnirestException | IOException e) {
 					ExportResult er = new ExportResult() ;
 					er.setFailed(true);
+					er.setDescription("Error while Exporting Object");
 					er.setSource(proxyName);
 					er.setExceptionClassName(e.getClass().getName());
 					er.setError(e.getMessage());

@@ -45,7 +45,8 @@ public class OperationsWithouFlow extends ProxyValidator {
 	        	   if (flow==null)
 	               	{
 	        		   ProcessResult zz = new  ProcessResult() ;
-	        		   zz.setSource( "Operation with Path = " + oasOperation.getPath() +" and Verb = "+  oasOperation.getVerb() + " Has No Matched Flow in the Proxy");
+	        		   zz.setDescription(this.getClass().getName() + ": InConsistancy between Proxy Flows and OAS Operations") ; 
+	        		   zz.setError("OAS Operation with Path = " + oasOperation.getPath() +" and Verb = "+  oasOperation.getVerb() + " Has No Matched Flow in the Proxy" );
 	        		   zz.setFailed(true);
 	        		   prs.add(zz);    
 	               	}					  

@@ -8,14 +8,15 @@ import com.smartvalue.apigee.resourceManager.helpers.Helper;
 
 public class ProcessResult implements Serializable {
 
+	private String description; 
 	private String error ;
 	private boolean failed ; 
 	private String exceptionClassName ; 
 	private LoadResults notMatchedResult ; 
 	private String source ;
 	private String destination ;
-	//private transient  HttpResponse<String> httpResponse ; 
-	private String responseBody ; 
+	private String responseBody ;
+
 	
 	public ProcessResult(Exception e) {
 		this.setFailed(true);
@@ -120,5 +121,18 @@ public class ProcessResult implements Serializable {
 	public String getResponseBody() {
 		return responseBody;
 	}
-	
+
+	public void setDescription(String string) {
+		this.description = string ;
+		
+	}
+	public ProcessResult withDescription(String string) {
+		this.description = string ;
+		return this; 
+		
+	}
+	public String  getDescription() {
+		return this.description ;
+		
+	}
 }

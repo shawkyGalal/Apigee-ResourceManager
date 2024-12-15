@@ -170,6 +170,7 @@ public class SharedFlowServices extends BundleObjectService implements Deployabl
 			HttpResponse<String> result = null;
 			try {
 				result = deleteSharedFlow(sharedFlowName);
+				deletResult.setDescription("Delete Object");
 				deletResult.setSource(this.getMs().getInfraName() +"." + this.getMs().getOrgName() +"." +  sharedFlowName );
 				deletResult.setFailed(! Helper.isConsideredSuccess(result.getStatus()));
 				

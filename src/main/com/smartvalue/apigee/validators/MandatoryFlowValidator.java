@@ -11,6 +11,7 @@ import com.smartvalue.apigee.migration.ProcessResult;
 import com.smartvalue.apigee.migration.ProcessResults;
 import com.smartvalue.apigee.proxyBundle.BundleProxyEndPoint;
 import com.smartvalue.apigee.proxyBundle.ProxyBundleParser;
+import com.smartvalue.apigee.resourceManager.helpers.Helper;
 import com.smartvalue.apigee.rest.schema.proxyEndPoint.auto.Flow;
 
 public class MandatoryFlowValidator extends ProxyValidator {
@@ -61,8 +62,10 @@ public class MandatoryFlowValidator extends ProxyValidator {
 	            	if (! flowExist )
 	    	        {
 	    	           prs.add(new ProcessResult()
-	    	        		   .withFailed(true) 
-	    	        		   .withSource(mandatoryFlowNamesArray + " Flow Does Not Exist "+((checkLocationBool)? " in Proper Location ":"") +"in Proxy "+ proxyBundleFile.getName() +",  ProxyEndPoint " + pepname )) ;  
+	    	        		   .withFailed(true)
+	    	        		   .withDescription("Mandatory Flow(s) Does Not Exist ")
+	    	        		   .withError(Helper.mapObjectToJsonStr(mandatoryFlowNamesArray) + ((checkLocationBool)? " in Proper Location ":"") +"Proxy : "+ proxyBundleFile.getName() +",  ProxyEndPoint : " + pepname )
+	    	        		   ) ;  
 	    	        }   
                }
 	           

@@ -217,6 +217,7 @@ public abstract class ApigeeService {
 		for (File resourceFile : source.listFiles() )
 		{
 			lr = new LoadResult();
+			lr.setDescription("Import Object ");
 			lr.setSource(resourceFile.getAbsolutePath());
 			HttpResponse<String> productImportresult = null ; 
 			try { 
@@ -263,6 +264,7 @@ public abstract class ApigeeService {
 			}
 			boolean considerSuccess = Helper.isConsideredSuccess(response.getStatus());  
 			er.setFailed(! considerSuccess);
+			er.setDescription("Export Object "); 
 			er.setSource(this.getApigeeObjectType()+" : "  + resourceId);
 			er.setHttpResponse(response); 
 			

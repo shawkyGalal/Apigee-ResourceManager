@@ -55,7 +55,8 @@ public class ConditionalFlowHookValidator extends ProxyValidator {
 						{
 							ProcessResult pr = new ProcessResult()
 									.withFailed(true) 
-									.withSource( "Takamul Compliance Issue : " + proxyBundle.getName()+"."+ proxyEndPointName + "." +  flowName + " Has No FC-Conditional-Flow-Hook as the first policy in the flow ");
+									.withDescription("Takamul Compliance Issue :  No FC-Conditional-Flow-Hook as the first policy in the flow ")
+									.withError("Proxy Flow : " + proxyBundle.getName()+"."+ proxyEndPointName + "." +  flowName);
 							prs.add(pr); 
 						}
 					}

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.smartvalue.apigee.configuration.AppConfig;
 import com.smartvalue.apigee.configuration.AppConfigFactory;
 import com.smartvalue.apigee.configuration.infra.Infra;
@@ -49,6 +50,12 @@ public abstract class RestServices {
 	}
 	
 	
+	protected ResponseEntity<String> ObjectToJsonResponse(Object Obj , HttpStatus status ) throws JsonProcessingException
+	{
+		 HttpHeaders headers = new HttpHeaders();
+	        headers.add("Content-Type", "application/json");
+ 	    return new ResponseEntity<String>(Helper.mapObjectToJsonStr(Obj), headers , status);
+	}
 	
 	
 }

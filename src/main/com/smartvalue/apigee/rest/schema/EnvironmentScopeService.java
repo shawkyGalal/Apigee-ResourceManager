@@ -62,6 +62,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 					exportResult.setExceptionClassName(e.getClass().getName()) ; 
 					exportResult.setFailed(true); 
 				}
+				exportResult.setDescription("Exporting Object ") ; 
 				exportResult.setSource(envName + "." + this.getApigeeObjectType() + "s . " + kvmName); 
 			}
 			exportResults.add(exportResult) ; 
@@ -141,6 +142,7 @@ public abstract class EnvironmentScopeService extends ApigeeService {
 					
 				String ObjectName= objectFile.getName().substring(0, dotIndex ) ; 
 				LoadResult lr = new LoadResult();
+				lr.setDescription("Importing Object") ; 
 				lr.setSource(objectFile.getAbsolutePath()) ; 
 				System.out.println( ObjectName + ":" +objectFile.getAbsolutePath()  );
 				try {

@@ -139,6 +139,7 @@ public class ProxyServices extends BundleObjectService implements Deployable {
 			HttpResponse<String> result = null;
 			try {
 				result = deleteProxy(proxyName);
+				deletResult.setDescription("Delete Object");
 				deletResult.setSource(this.getMs().getInfraName() +"." + this.getMs().getOrgName() +"." +  proxyName );
 				deletResult.setFailed(! Helper.isConsideredSuccess(result.getStatus()));
 				
