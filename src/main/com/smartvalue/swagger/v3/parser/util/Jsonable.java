@@ -69,6 +69,7 @@ public interface Jsonable {
 							.replace("\r", "\\r")
 							.replace("\t", "\\t")
 							.replace("\\s", "\\\\s")
+							.replace("\\d", "\\\\d")
 							.replace("\\-", "\\\\-") ; 
 					sb.append("\"").append(escapHandledValue).append("\"");
 		 		}
